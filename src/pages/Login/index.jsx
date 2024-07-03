@@ -120,7 +120,7 @@ export const Login = () => {
         </div>
       </div>
       <div style={{width:'70%'}}>
-        <Spline scene="https://prod.spline.design/OmqPiSVCUCyBiIZa/scene.splinecode" />
+        <Spline scene="https://app.spline.design/file/51da203a-2bcb-49c3-b004-7a20d1abe595" />
       </div>
       {showPopup && <PopupCard message={`Login successful as ${role}`} onClose={handlePopupClose} />}
     </div>
