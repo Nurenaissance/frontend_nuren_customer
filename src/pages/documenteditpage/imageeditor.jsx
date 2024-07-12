@@ -2,9 +2,21 @@ import React, { useRef, useEffect, useState } from 'react';
 import 'tui-image-editor/dist/tui-image-editor.css';
 import ImageEditor from '@toast-ui/react-image-editor';
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 import uploadToBlob from "../../azureUpload.jsx";
 import './style.css';
 import { Sidebar } from '../../components/Sidebar';
+import axiosInstance from '../../api.jsx';
+
+
+const getTenantIdFromUrl = () => {
+  const pathArray = window.location.pathname.split('/');
+  if (pathArray.length >= 2) {
+    return pathArray[1]; // Assumes tenant_id is the first part of the path
+  }
+  return null; 
+};
+
 
 const ImgLogo = '../../assets/logo1.png'; // Adjust the path as per your project structure
 
@@ -22,13 +34,17 @@ const samplePrompts = [
   "Generate a professional marketing image for a Sales CRM targeting medium enterprises in finance, featuring a light blue to white background, green and orange accents, dark gray text, a modern office photo with CRM icons and interface screenshots highlighting workflows and lead management, incorporating a sales performance chart, centered company logo with Roboto font",
 ];
 
-const ImageEditorComponent = () => {
+const ImageEditorComponent = ({ onUpload }) => {
+  const tenantId=getTenantIdFromUrl();
   const editorRef = useRef(null);
   const [prompt, setPrompt] = useState(samplePrompts[0]);
   const [additionalSpecifications, setAdditionalSpecifications] = useState('');
   const [imageURL, setImageURL] = useState('');
   const [variations, setVariations] = useState([]);
   const [selectedPrompt, setSelectedPrompt] = useState(samplePrompts[0]);
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+
 
   const handleGenerateImage = async () => {
     try {
@@ -126,6 +142,48 @@ const ImageEditorComponent = () => {
     loadImageFromURL(url);
   };
 
+  const handleUploadEditedImage = async () => {
+    try {
+      const editorInstance = editorRef.current.getInstance();
+      const editedImage = editorInstance.toDataURL();
+
+      // Convert the data URL to a blob
+      const blob = await fetch(editedImage).then(res => res.blob());
+
+      // Generate a unique filename using UUID
+      const uniqueFileName = `${uuidv4()}.png`;
+
+      // Create form data and append necessary fields
+      const formData = new FormData();
+      formData.append('file', blob, uniqueFileName);
+      formData.append('name', uniqueFileName);  // Use unique filename
+      formData.append('document_type', blob.type);  // Use blob type
+      formData.append('description', 'Your file description');  // Hardcoded description
+      formData.append('entity_type', '1');  // Hardcoded entity_type
+      formData.append('entity_id', '12345');  // Hardcoded entity_id
+      formData.append('tenant', tenantId);  
+
+      // Upload the edited image to your endpoint
+      const response = await axiosInstance.post('/documents/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const uploadedImageUrl = response.data.url; // Adjust based on your API response structure
+      setUploadedImageUrl(uploadedImageUrl);
+
+      console.log('Edited image uploaded:', response.data);
+      if (onUpload) {
+        onUpload(uploadedImageUrl);  // Pass uploaded image URL to parent component
+      }
+    } catch (error) {
+      console.error('Error uploading edited image:', error);
+    }
+  };
+
+
+  
   
 
   useEffect(() => {
@@ -186,6 +244,9 @@ const ImageEditorComponent = () => {
             </button>
             <button onClick={handleGenerateVariationsClick} className="generate-variations-button">
               Generate Variations
+            </button>
+            <button onClick={handleUploadEditedImage} className="upload-button">
+              Upload Edited Image
             </button>
           </div>
         </div>

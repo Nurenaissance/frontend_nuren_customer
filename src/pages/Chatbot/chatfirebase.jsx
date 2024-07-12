@@ -3,7 +3,7 @@ import 'firebase/compat/firestore';
 import {db} from '../socialmedia/instagram/firebase'
 
 const firebaseConfig = {
-
+ 
 };
 
 

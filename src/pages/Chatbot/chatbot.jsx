@@ -342,7 +342,7 @@ socket.on('node-message', (message) => {
           <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
           <div className="editimage-popup-container">
             <div className="editimage-popup-content">
-              <ImageEditorComponent onClose={handlePopupClose} />
+              <ImageEditorComponent onClose={handlePopupClose}/>
             </div>
             <button onClick={handlePopupClose} className="close-popup-button">
               Close
