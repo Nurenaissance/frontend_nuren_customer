@@ -68,7 +68,7 @@ import Vendorsform from "../pages/Vendors/createVendors";
 import VendorInfo from "../pages/Vendors/VendorInfo";
 import TopNavbar from "../pages/TopNavbar/TopNavbar";
 import Report from "../pages/Reports/report";
-import Reportform from "../pages/Reports/reportform";
+
 import Loyalityform from "../pages/LoyaltyProgram/Loyalityform";
 import Loyalcard from "../pages/LoyaltyProgram/loyalcard";
 import LoyaltyInfo from "../pages/LoyaltyProgram/loyaltyinfo";
@@ -100,6 +100,8 @@ const getTenantIdFromUrl = () => {
   }
   return null; 
 };
+
+import PdfUploader from "../pages/PDF";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -308,7 +310,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/meetings" element={<Met handleScheduleMeeting={handleScheduleMeeting} scheduleData={scheduleData} setScheduleData={setScheduleData} />}  />
           <Route path=":tenant_id/meetings/:id" element={<Meetinginfo/>}  />
          <Route path="/:tenantId/report" element={<Report />} />
-          <Route path=":tenant_id/reportform"   element={<Reportform/>}/>  
+       
           <Route path=":tenant_id/calendar"   element={<Calendar/>}/>  
 
 
@@ -324,6 +326,10 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/interaction" element={<Interaction/>}/>
           <Route path=":tenant_id/addtask" element={<AddTaskForm/>}/>
           <Route path=":tenant_id/loyaltyform" element ={<Loyalityform/>}/>
+         
+          <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
+
+
           
 
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>

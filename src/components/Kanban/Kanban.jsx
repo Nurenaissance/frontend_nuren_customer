@@ -7,7 +7,6 @@ import { sendEmail } from './email.jsx'; // Import the sendEmail function
 import axiosInstance from "../../api.jsx";
 
 const getTenantIdFromUrl = () => {
-  // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
     return pathArray[1]; // Assumes tenant_id is the first part of the path
@@ -15,47 +14,80 @@ const getTenantIdFromUrl = () => {
   return null; // Return null if tenant ID is not found or not in the expected place
 };
 
-const leadStages = {
-  'assigned': { label: 'Assigned', color: '#FF0000' },
-  'in process': { label: 'In Process', color: '#00FF00' },
-  'converted': { label: 'Converted', color: '#0000FF' },
-  'recycled': { label: 'Recycled', color: '#43A5BE' },
-  'dead': { label: 'Dead', color: '#5c62d6' }
-};
+const colors = [
+  "#5DADE2", "#34495E", "#D5DBDB", "#566573", "#F5CBA7",
+  "#708090", "#B0C4DE", "#82E0AA", "#F08080" // Add more colors if needed
+];
 
 function Kanban({ leadCountsData }) {
   const tenantId = getTenantIdFromUrl();
   const [columns, setColumns] = useState({});
+  const [stages, setStages] = useState([]);
+
+  useEffect(() => {
+    const fetchStagesAndColors = async () => {
+      try {
+        const response = await axiosInstance.get('lead/stage/');
+        const stagesData = response.data;
+
+        if (stagesData && stagesData.stages && Array.isArray(stagesData.stages)) {
+          const stagesWithColors = stagesData.stages.map((stage, index) => {
+            const color = colors[index % colors.length]; // Use color from the predefined array
+            return { ...stage, color }; // Add the color to the stage object
+          });
+          setStages(stagesWithColors);
+        } else {
+          console.error("Fetched stages data is not an array:", stagesData);
+        }
+      } catch (error) {
+        console.error("Error fetching stages and colors:", error);
+      }
+    };
+
+    fetchStagesAndColors();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch leads data
-        const response = await axiosInstance.get(`/leads/`);
-        const leads = response.data;
+        const leadsResponse = await axiosInstance.get(`/leads/`);
+        const leads = leadsResponse.data;
 
-        // Calculate the sum of leads for each stage
-        const leadCountsResponse = await axiosInstance.get('/leads_sum/');
-        const leadCountsData = leadCountsResponse.data;
-
-        const categorizedLeads = {};
-        for (const stage in leadStages) {
-          categorizedLeads[stage] = [];
+        // Ensure leads array is valid
+        if (!Array.isArray(leads)) {
+          console.error("Invalid leads data:", leads);
+          return;
         }
 
-        leads.forEach(lead => {
-          const stage = lead.status;
-          categorizedLeads[stage].push(lead);
+        // Initialize categorizedLeads object
+        const categorizedLeads = {};
+        stages.forEach((stage) => {
+          categorizedLeads[stage.id] = [];
+        });
+
+        // Categorize leads into respective stages
+        leads.forEach((lead) => {
+          const stageId = lead.stage; // Adjust based on your actual lead data structure
+          if (categorizedLeads[stageId]) {
+            categorizedLeads[stageId].push(lead);
+          } else {
+            console.error(`Unknown stage ID: ${stageId} for lead with ID: ${lead.id}`);
+          }
         });
 
         // Map leads to cards for each column
         const columnsData = {};
-        for (const stage in leadStages) {
-          const label = leadStages[stage].label;
-          const count = leadCountsData[stage] || 0;
-          const cards = mapLeadsToCards(categorizedLeads[stage]);
-          columnsData[stage] = { title: `${label}`, count, cards, bg: leadStages[stage].color };
-        }
+        stages.forEach((stage) => {
+          const count = categorizedLeads[stage.id].length || 0;
+          const cards = mapLeadsToCards(categorizedLeads[stage.id]);
+          columnsData[stage.id] = {
+            title: stage.status, // Ensure `title` is set correctly
+            count,
+            cards,
+            bg: stage.color // Set the background color
+          };
+        });
 
         // Set the columns state with the mapped cards and lead count
         setColumns(columnsData);
@@ -64,10 +96,17 @@ function Kanban({ leadCountsData }) {
       }
     };
 
-    fetchData();
-  }, []);
+    if (stages.length > 0) {
+      fetchData();
+    }
+  }, [stages]);
 
   const mapLeadsToCards = (leads) => {
+    if (!Array.isArray(leads)) {
+      console.error("Invalid leads data:", leads);
+      return [];
+    }
+
     return leads.map((lead) => ({
       id: lead.id.toString(),
       name: lead.first_name + " " + lead.last_name,
@@ -111,8 +150,6 @@ function Kanban({ leadCountsData }) {
       });
 
       try {
-       
-
         const leadData = {
           ...movedCard, // Include existing lead data
           status: mapStatusToBackend(endColumn.title), // Update the status
@@ -121,8 +158,9 @@ function Kanban({ leadCountsData }) {
           email: movedCard.email,
           assigned_to: movedCard.assigned_to,
           createdBy: movedCard.createdBy,
-          tenant:tenantId,
+          tenant: tenantId,
         };
+
         // Make a PUT request to update the lead status in the backend
         await axiosInstance.put(`leads/${movedCard.id}/`, leadData);
       } catch (error) {
@@ -135,8 +173,9 @@ function Kanban({ leadCountsData }) {
         [destination.droppableId]: { ...endColumn, cards: endCards },
       };
       setColumns(newColumns);
-    } 
+    }
   };
+
   const mapStatusToBackend = (frontendStatus) => {
     switch (frontendStatus) {
       case 'Assigned':
@@ -154,7 +193,6 @@ function Kanban({ leadCountsData }) {
     }
   };
 
-
   return (
     <>
       <br />
@@ -167,7 +205,7 @@ function Kanban({ leadCountsData }) {
                 <div className="column" key={columnId}>
                   <div
                     className="title htext1"
-                    style={{ backgroundColor: column.bg }}
+                    style={{ backgroundColor: column.bg }} // Apply the background color here
                   >
                     {column.title} ({column.count})
                   </div>
@@ -192,38 +230,34 @@ function Kanban({ leadCountsData }) {
                                 className="card_"
                               >
                                 <div className="license">
-                                  {card.amount}licenses
+                                  {card.amount} licenses
                                   <div className="status">{card.status}</div>
                                 </div>
                                 <div className="content_">
                                   {/* Content of the card */}
                                   {columnId === 'new' && (
-                        <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
-                          <div className="c1">{card.name}</div>
-                        </NavLink>
-                      )}
-                      {columnId !== '0' ? (
-                        <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
-                          <div className="c1">{card.name}</div>
-                        </NavLink>
-                      ) : (
-                        <NavLink to={`/${tenantId}/lead/${card.id}`}>
-                          <div className="c1">{card.name}</div>
-                        </NavLink>
-                      )}
-                      <div className="c2">
-                        {card.address}
-                      
-                      </div>
-                      <div className="c2">
-                        {card.email}
-                      
-                      </div>
-                      <div className="c2">{card.website}</div>
-                    </div>
-
+                                    <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
+                                      <div className="c1">{card.name}</div>
+                                    </NavLink>
+                                  )}
+                                  {columnId !== '0' ? (
+                                    <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
+                                      <div className="c1">{card.name}</div>
+                                    </NavLink>
+                                  ) : (
+                                    <NavLink to={`/${tenantId}/lead/${card.id}`}>
+                                      <div className="c1">{card.name}</div>
+                                    </NavLink>
+                                  )}
+                                  <div className="c2">
+                                    {card.address}
+                                  </div>
+                                  <div className="c2">
+                                    {card.email}
+                                  </div>
+                                  <div className="c2">{card.website}</div>
                                 </div>
-                        
+                              </div>
                             )}
                           </Draggable>
                         ))}

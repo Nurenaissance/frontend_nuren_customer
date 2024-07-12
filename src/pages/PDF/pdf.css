@@ -1,0 +1,305 @@
+.edit-docspage {
+    display: flex;
+    flex-direction: row;
+}
+
+.side-editdocs {
+    width: 256px;
+    height: 100vh;
+    background: #FAFAFB;
+    box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+    padding: 20px;
+    z-index: 999;
+}
+
+.back-button-edit {
+    display: block;
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-decoration: none;
+    color: #171a1f;
+}
+
+.editdocs-heading {
+    font-family: 'Lexend', sans-serif;
+    font-size: 32px;
+    line-height: 48px;
+    font-weight: 800;
+    color: #171A1F;
+    margin-bottom: 20px;
+}
+
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.editdocs-nav {
+    margin-bottom: 20px;
+    position: relative;
+    bottom: 7rem;
+    right: 2rem;
+}
+
+
+
+
+.pdf-uploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .upload-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+    height: 150px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  .upload-section input[type="file"] {
+    display: none;
+  }
+  
+  .upload-label {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .upload-label span {
+    cursor: pointer;
+  }
+  
+  .pdf-uploader-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+ .text-options{
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+ }
+  
+  
+ 
+  .image-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .text-options textarea {
+    width: 200px;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+  }
+  
+  .text-options.Draggable {
+    position: relative;
+    display: inline-block;
+    cursor: move;
+  }
+  .pdf-preview {
+position: relative;
+bottom: 60rem;
+margin-left: 160px;
+text-align: center;
+
+  }
+  .text-options.Draggable span {
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+  }
+  .pdf-preview iframe {
+    border: 1px solid #ddd;
+  }
+  
+  .image-preview {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .image-preview img {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+  }
+  .action-buttons{
+display: flex;
+flex-direction: column;
+margin: 20px;
+padding: 10px;
+position: relative;
+left: 30px;
+bottom: 3rem;
+  }
+  .action-buttons-1{
+    padding: 20px;
+  }
+  .action-btn1,.action-btn2,.action-btn3,.action-btn4,.action-btn5,.action-btn6{
+    width: 246px;
+height: 49px;
+padding-left: 34px;
+padding-right: 12px;
+font-family: 'Manrope';
+font-size: 14px;
+line-height: 22px;
+font-weight: 400;
+
+border-radius: 4px;
+border-width: 1px;
+
+outline: none;
+  }
+   .action-btn1{
+     background: #6D31ED4D;   
+    border-color: #6D31EDFF;
+  }
+  .action-btn2{
+  background: #FFD3174D;
+border-color: #EFB034FF;
+margin-left: 14rem;
+ }
+ .action-btn3{
+    background: #F9623E4D;   
+   border-color: #F9623EFF;
+   margin-left: 14rem;
+ }
+ .action-btn4{
+    background: #15ABFF4D;   
+   border-color: #379AE6FF;
+ }
+ .action-btn5{
+    background: #62CD144D;   
+   border-color: #62CD14FF;
+   margin-left: 14rem;
+ }
+ .action-btn6{
+    background: #FF56A54D;   
+   border-color: #FF56A5FF;
+   margin-left: 14rem;
+ }
+
+ .btn-docs{
+    display: flex;
+    flex-direction: row;
+   gap: 90rem;
+ }
+ .action-buttons-modify{
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFFFFF;
+    background: #6D31ED;
+    border-radius: 4px;
+    width: 100px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+ .upload-pdf-box{
+    width: 1075px;
+    margin-left: 50px;
+height: 600px;
+background: #FFFFFFFF;
+border-radius: 4px;
+border-width: 1px;
+border-color: #565D6DFF;
+border-style: dashed;
+ }
+ .upload-pdf-box1{
+    width: 372px;
+height: 376px;
+background: #FFFFFFFF;
+border-radius: 6px;
+box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+position: relative;
+top: 10rem;
+padding: 20px;
+margin-left: 30rem;
+
+ }
+ .upload-file-head{
+font-family: 'Lexend';
+font-size: 24px;
+line-height: 36px;
+font-weight: 700;
+color: #171A1FFF;
+ }
+
+
+.drawing-container{
+  position: absolute;
+  top: 180%;
+  left: 49%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.save-button-docs{
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFFFFF;
+    background: #6D31ED;
+    border-radius: 4px;
+    width: 100px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+   
+}
+.save-text-button{
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFFFFF;
+    background: #6D31ED;
+    border-radius: 4px;
+    width: 100px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+   
+}
+.download-button-docs{
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    background: #62CD14FF;
+    border-radius: 4px;
+    width: 100px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+      
+}
+.draw-pdf{
+  position: relative;
+  bottom: 430px;
+}

@@ -3,7 +3,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./style.css";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
-import { sendEmail } from './email.jsx'; // Import the sendEmail function
 import axiosInstance from "../../api.jsx";
 
 const getTenantIdFromUrl = () => {
@@ -13,71 +12,100 @@ const getTenantIdFromUrl = () => {
   }
   return null; // Return null if tenant ID is not found or not in the expected place
 };
-
-const stages = [
-  'QUALIFICATION',
-  'NEEDS ANALYSIS',
-  'VALUE PROPOSITION',
-  'ID.DECISION MAKERS',
-  'PERCEPTION ANALYSIS',
-  'PROPOSAL/PRICE QUOTE',
-  'NEGOTIATION/REVIEW',
-  'CLOSED WON',
-  'CLOSED LOST'
-];
-
 const colors = [
-    "#5DADE2", "#34495E", "#D5DBDB", "#566573", "#F5CBA7",
-    "#708090", "#B0C4DE",  "#82E0AA", "#F08080" // Add more colors if needed
+  "#5DADE2", "#34495E", "#D5DBDB", "#566573", "#F5CBA7",
+  "#708090", "#B0C4DE", "#82E0AA", "#F08080" // Add more colors if needed
 ];
 
-const initialColumns = stages.reduce((acc, stage) => {
-  acc[stage] = { title: stage, cards: [] }; // No need to initialize bg here
-  return acc;
-}, {});
 
-function Kanban2() {
+const Kanban2 = () => {
   const tenantId = getTenantIdFromUrl();
-  const [columns, setColumns] = useState(initialColumns);
+  const [columns, setColumns] = useState({});
+  const [stages, setStages] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStagesAndColors = async () => {
+      try {
+        const response = await axiosInstance.get('opportunity/stage/');
+        const stagesData = response.data;
+
+        if (stagesData && stagesData.stages && Array.isArray(stagesData.stages)) {
+          const stagesWithColors = stagesData.stages.map((stage, index) => {
+            const color = colors[index % colors.length]; // Use color from the predefined array
+
+            return { ...stage, color}; // Add the color to the stage object
+          });
+          setStages(stagesWithColors);
+        } else {
+          console.error("Fetched stages data is not an array:", stagesData);
+        }
+      } catch (error) {
+        console.error("Error fetching stages and colors:", error);
+      }
+    };
+
+    fetchStagesAndColors();
+  }, []);
+
+  useEffect(() => {
+    if (stages.length === 0) return;
+
+    const fetchOpportunities = async () => {
       try {
         const response = await axiosInstance.get('/opportunities/');
         const opportunities = response.data;
 
-        const categorizedOpportunities = stages.reduce((acc, stage) => {
-          acc[stage] = [];
-          return acc;
-        }, {});
+        const categorizedOpportunities = Array.isArray(stages)
+         ? stages.reduce((acc, stage) => {
+              acc[stage.status] = [];
+              return acc;
+            }, {})
+          : {};
+
+        //...
 
         opportunities.forEach(opportunity => {
           if (categorizedOpportunities[opportunity.stage]) {
             categorizedOpportunities[opportunity.stage].push(opportunity);
           } else {
-            categorizedOpportunities['QUALIFICATION'].push(opportunity); // Default to 'QUALIFICATION' if stage is unknown
+            categorizedOpportunities['QUALIFICATION']?.push(opportunity); // Default to 'QUALIFICATION' if stage is unknown
           }
         });
 
         const updatedColumns = {};
-        stages.forEach((stage, index) => {
-          updatedColumns[stage] = {
-            title: stage,
-            cards: mapOpportunitiesToCards(categorizedOpportunities[stage]),
-            bg: colors[index] // Assign color based on index
+        stages.forEach(stage => {
+          updatedColumns[stage.status] = {
+            title: stage.status,
+            cards: mapOpportunitiesToCards(categorizedOpportunities[stage.status]),
+            bg: stage.color, // Use the stored color
           };
         });
 
         setColumns(updatedColumns);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching opportunities:", error);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchOpportunities();
+  }, [stages]);
+
+
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
 
   const mapOpportunitiesToCards = (opportunities) => {
+    if (!Array.isArray(opportunities)) {
+      console.error("Expected opportunities to be an array but received:", opportunities);
+      return [];
+    }
+
     return opportunities.map((opportunity) => ({
       id: opportunity.id.toString(),
       name: opportunity.name,
@@ -98,12 +126,12 @@ function Kanban2() {
   };
 
   const onDragEnd = async (result) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination } = result;
     if (!destination) return;
-  
+
     const startColumn = columns[source.droppableId];
     const endColumn = columns[destination.droppableId];
-  
+
     if (startColumn === endColumn) {
       const newCards = Array.from(startColumn.cards);
       newCards.splice(source.index, 1);
@@ -121,27 +149,24 @@ function Kanban2() {
         ...movedCard,
         stage: endColumn.title,
       });
-  
-     
-       
-        // Log the interaction
-        const interactionData = {
-          entity_type: "Opportunity",
-          entity_id: movedCard.id,
-          interaction_type: "Note",
-          tenant_id: tenantId, // Make sure you have tenant_id in movedCard
-          notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity amount: ${movedCard.amount}. Contact: ${movedCard.contact}.`,
-          interaction_datetime: new Date().toISOString(),
-        };
-  
-        try {
-            await axiosInstance.post('/interaction/', interactionData);
-            console.log('Interaction logged successfully');
-          } catch (error) {
-            console.error('Error logging interaction:', error);
-          }
-    
-  
+
+      // Log the interaction
+      const interactionData = {
+        entity_type: "Opportunity",
+        entity_id: movedCard.id,
+        interaction_type: "Note",
+        tenant_id: tenantId, // Make sure you have tenant_id in movedCard
+        notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity amount: ${movedCard.amount}. Contact: ${movedCard.contact}.`,
+        interaction_datetime: new Date().toISOString(),
+      };
+
+      try {
+        await axiosInstance.post('/interaction/', interactionData);
+        console.log('Interaction logged successfully');
+      } catch (error) {
+        console.error('Error logging interaction:', error);
+      }
+
       const newColumns = {
         ...columns,
         [source.droppableId]: { ...startColumn, cards: startCards },
@@ -161,8 +186,8 @@ function Kanban2() {
               const column = columns[columnId];
               return (
                 <React.Fragment key={columnId}>
-                  <div className="column" >
-                    <div className="title htext1"style={{ backgroundColor: column.bg }}>
+                  <div className="column">
+                    <div className="title htext1" style={{ backgroundColor: column.bg }}>
                       {column.title}
                     </div>
                     <Droppable droppableId={columnId}>

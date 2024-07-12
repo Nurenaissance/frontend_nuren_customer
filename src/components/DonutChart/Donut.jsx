@@ -1,20 +1,29 @@
-// import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Chart } from 'react-google-charts';
+import axiosInstance from "../../api.jsx";
 
 const DonutChart = () => {
-  const data = [
-    ['Stage', 'Count'],
-    ['Leads', 120],
-    ['Proposals', 100],
-    ['Negotiation', 60],
-    ['Contracts sent', 20],
-    ['Won', 20],
-    ['Lost', 20],
-  ];
+  const [data, setData] = useState([['Stage', 'Count']]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get('report/opportunity_stages/');
+        const stagesData = response.data;
+
+        // Assuming the data is already in the required format
+        setData(stagesData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
-      <h2 style={{textAlign:"center"}}>Opprotunity Stage</h2>
+      <h2 style={{ textAlign: "center" }}>Opportunity Stage</h2>
       <Chart
         chartType="PieChart"
         width="100%"

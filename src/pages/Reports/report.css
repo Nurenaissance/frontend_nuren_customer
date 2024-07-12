@@ -1,17 +1,45 @@
-.report-sidebar1{
-    width: 256px;
-/*height: 1188px;*/
-background: #FAFAFBFF;
-border-radius: 0px;
-border-width: 1px;
-border-color: #FFFFFFFF;
-border-style: solid;
-box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-padding: 20px;
-z-index: 5  ;
-
+/* report.css */
+.dropdown-menu {
+  display: flex !important;
+  flex-direction: column !important;
 }
-.report-page{
+
+.dropdown-item {
+  width: 100% !important;
+  text-align: left !important;
+}
+.report-sidebar{
+  margin-top: 30px;
+}
+.report-sidebar1{
+  width: 256px;
+  height: 1188px;
+  background: #FAFAFBFF;
+  border-radius: 0px;
+  border-width: 1px;
+  border-color: #FFFFFFFF;
+  border-style: solid;
+  box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+  padding: 20px;
+  z-index: 5  ;
+  
+ 
+}
+#back-inter-report{
+ 
+
+
+  font-family: "Manrope";
+  
+    
+    border: 1px solid #DDD ;
+    position: relative;
+    border-radius: 4px;
+   
+  
+    
+  }
+  .report-page{
     display: flex;
     flex-direction: row;
 
@@ -20,94 +48,16 @@ z-index: 5  ;
 .report_nav{
    position: relative;
    bottom: 5rem;
+   left: 4px;
  
 }
-.excel-dropdown-menu6-report {
-    /* Your custom styles here */
-    font-family: 'Manrope';
-    font-size: 14px;
-    font-weight: 400;
-    color: #FFFFFF;
-    background: #6D31EDFF;
-    border-radius: 4px;
-    width: 77px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 11px 9px 12px;
-    position: relative;
-    
-  }
-  .report-excel{
-    display: flex;
-    flex-direction: row;
-    margin-left: 105rem;
-    gap: 20px;
-  }
+.report-table{
+  width: 1200px;
+  height: 893px;
+  opacity: 1;
+  border-radius: 8px;
+  box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
 
-  .createreport{
-    height: 34px;
-    padding: 0 12px;
-    margin-top: 0px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 25px;
-    font-weight: 400;
-    color: #FFFFFFFF;
-    background: #62CD14FF;
-    opacity: 1;
-    border: none;
-    border-radius: 4px;
-  }
-  .report-merge-excel{
-    display: flex;
-    flex-direction: column;
-  }
-  .report-head{
-font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 800;
-color: #171A1FFF;
-margin-left: 20px;
-  }
-  .report-table{
-    width: 1200px;
-    height: 893px;
-    opacity: 1;
-    border-radius: 8px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-    position: relative;
-    left: 5rem;
-    bottom: 25rem;
-    
-
-}
-.report_head{
-  padding: 200px;
-}
   
-.chart-item{
-  position: relative;
-  bottom: 33rem;
-  left: 50rem;
-}
-.text-heading-chart{
-  position: relative;
-  left: 25rem;
-}
-.text-heading-line,.text-heading-bar,.text-heading-chart{
-  font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 600;
-color: #171A1FFF;
 
-}
-.report-sidebardata{
-  cursor: pointer;
 }
