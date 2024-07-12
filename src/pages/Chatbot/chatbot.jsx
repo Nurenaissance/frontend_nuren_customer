@@ -213,100 +213,20 @@ socket.on('node-message', (message) => {
       socket.off('newMessage');
     };
   }, []);
-    /*useEffect(() => {
-      // Firestore listener setup
-      
-      const unsubscribe = onSnapshot(doc(db, "whatsapp", "919643393874"), (doc) => {
-        fetchConversation();
-        console.log("Current data: ", doc.data());
-    });
+   
     
 
-      // Clean up listener when component unmounts
-      return () => unsubscribe();
-    }, []);*/
- /* useEffect(() => {
-    const fetchUploadedFiles = async (contactId) => {
-      try {
-        const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${contactId}`);
-        setUploadedFiles(response.data);
-        
-        
-      } catch (error) {
-        console.error("Error fetching uploaded files:", error);
-      }
-    };
-    fetchUploadedFiles();
-  }, );
-  const handleSend = () => {
-    if (!messageTemplates[selectedContact.id] || !selectedContact) {
-      console.error('Message template or contact not selected');
-      return;
-    }
+ 
   
-    const newMessage = { sender: 'user', content: messageTemplates[selectedContact.id] };
-    setMessages(prevMessages => ({
-      ...prevMessages,
-      [selectedContact.id]: [...(prevMessages[selectedContact.id] || []), newMessage]
-    }));
+    
   
-    // Clear the message template after sending
-    setMessageTemplates(prevTemplates => ({
-      ...prevTemplates,
-      [selectedContact.id]: ''  // Clear the message template for the selected contact
-    }));
-  
-    console.log('Sending message to', selectedContact.first_name, ':', messageTemplates[selectedContact.id]);
-  };
+   
   
 
-  const handleMailClick = () => {
-    console.log('Mail icon clicked');
-    // Add functionality for mail click here
-  };
+ 
 
-  const handleVoiceClick = () => {
-    console.log('Voice icon clicked');
-    // Add functionality for voice click here
-  };
 
-  const handleSearchClick = () => {
-    console.log('Search icon clicked');
-    // Add functionality for search click here
-  };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
-    contact.last_name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const handleContactSelection = async (contact) => {
-    setSelectedContact(contact);
-    if (contact && contact.id) {
-      await fetchProfileImage(contact.id);
-      if (!messages[contact.id]) {
-        setMessages(prevMessages => ({
-          ...prevMessages,
-          [contact.id]: []
-        }));
-      }
-    } else {
-      console.error('Invalid contact:', contact);
-    }
-  };
-
-  const handleToggleSmileys = () => {
-    setShowSmileys(!showSmileys);
-  };
-
-  const handleSelectSmiley = (emoji) => {
-    const newMessageTemplate = (messageTemplates[selectedContact?.id] || '') + emoji.emoji + ' ';
-    setMessageTemplates(prevTemplates => ({
-      ...prevTemplates,
-      [selectedContact?.id]: newMessageTemplate
-    }));
-  };
-  
   
 
   return (
