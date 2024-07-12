@@ -7,6 +7,7 @@ import InteractionDetailsPage from "./InteractionDetailsPage";
 import axiosInstance from "../../api";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -95,16 +96,16 @@ export const InteractionTable = () => {
                           <Dropdown.Menu>
                             <Dropdown.Item>
                               <Link to={`/bulk-import?model=${modelName}`} className="import-excel-btn5">
-                                Import Excel
+                              <FaFileExcel/>  Import Excel
                               </Link>
                             </Dropdown.Item>
                             <Dropdown.Item>
                               <button onClick={handleDownloadExcel} className="excel-download-btn1">
-                                Excel
+                              <FaFileExcel/>  Excel
                               </button>
                             </Dropdown.Item>
                             <Dropdown.Item>
-                            <button onClick={handleDownloadPdf} className="pdf-download-btn">PDF</button>
+                            <button onClick={handleDownloadPdf} className="pdf-download-btn"><FaFilePdf/>Download PDF</button>
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>

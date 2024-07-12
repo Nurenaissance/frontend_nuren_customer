@@ -89,7 +89,10 @@ import Ticket from "../pages/Ticket/TicketPage";
 import { Explore } from "@mui/icons-material";
 import ExplorePage from "../pages/ExplorePage/Explore";
 import ExploreDetails from "../pages/ExplorePage/readExplore";
+import Models from "../pages/Model/ModelTable.jsx";
+
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
+import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
@@ -110,6 +113,7 @@ export const RouteWrapper = () => {
   const tenantId = getTenantIdFromUrl();
   console.log("Tenant ID:", tenantId);
   const [reminder, setReminder] = useState([]);  
+  const [selectedModel, setSelectedModel] = useState(null);
 
   const [scheduleData, setScheduleData] = useState({
     subject:"",
@@ -254,6 +258,8 @@ export const RouteWrapper = () => {
     };
    
     console.log('*********',reminderMessage)
+
+   
   return (
     <>
     {reminders.map((reminder) => (
@@ -329,14 +335,15 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/campaign"  element= {<Campaign/>}/>
           <Route path=":tenant_id/campaignform"  element= {<Campaignform/>}/>
           <Route path=":tenant_id/campaigninfo/:id"  element= {<CampaignInfo/>}/>
-          <Route path=":tenant_id/instagramauth"  element= {<InstaAuth/>}/>
-          <Route path="/instagrampost"  element= {<InstagramPost/>}/>
+          <Route path="/instagramauth"  element= {<InstaAuth/>}/>
+          <Route path=":tenant_id/instagrampost"  element= {<InstagramPost/>}/>
           <Route path=":tenant_id/user_id" element={<Userprofile />} />
           <Route path=":tenant_id/linkedinauth"  element= {<LinkedInAuthPage/>}/>
           <Route path=":tenant_id/linkedinpost"  element= {<LinkedInPost/>}/>
           <Route path=":tenant_id/product"  element= {<Product/>}/>
           <Route path=":tenant_id/loyalty"  element= {<Loyalcard/>}/>
           <Route path=":tenant_id/CustomModel"  element= {<Custom/>}/>
+          <Route path=":tenant_id/models/:modelName"  element= {<Models/>}/>
           {/* <Route path=":tenant_id/CustomModelForm"  element= {<CustomModelForm/>}/> */}
 
           
@@ -360,6 +367,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/productinfo"  element= {<ProductInfo/>}/>
           <Route path=":tenant_id/assignLeads"  element= {<AssignLeads/>}/>
           <Route path=":tenant_id/editdocument"  element= {<IframePage/>}/>
+          <Route path=":tenant_id/editImage"  element= {<ImageEditorComponent/>}/>
     
     
         </>

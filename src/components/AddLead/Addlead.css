@@ -1,8 +1,6 @@
 /* Header Menu 2 */
 .header-menu {
-    /* position: absolute; 
-    top: 0px; 
-    left: 0px;  */
+  
     width: 355px; 
     height: 56px; 
     display: flex; 
@@ -63,7 +61,7 @@
   .header-item1{
     padding: 0 12px;
     width: 83px;
-height: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,7 +78,7 @@ height: 36px;
   .header-item2{
     padding: 0 12px;
     width: 83px;
-height: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,7 +95,7 @@ height: 36px;
   .header-item3{
     padding: 0 12px;
     width: 83px;
-height: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -106,7 +104,7 @@ height: 36px;
     line-height: 22px;
     font-weight: 400;
     color: #FFFFFFFF;
-background: #6D31EDFF;
+    background: #6D31EDFF;
     opacity: 1;
     border: none;
     border-radius: 4px;
@@ -115,7 +113,7 @@ background: #6D31EDFF;
     
     padding: 0 12px;
     width: 130px;
-height: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,7 +122,7 @@ height: 36px;
     line-height: 22px;
     font-weight: 400;
     color: #FFFFFFFF;
-background: #6D31EDFF;
+    background: #6D31EDFF;
     opacity: 1;
     border: none;
     border-radius: 4px;
@@ -146,14 +144,14 @@ background: #6D31EDFF;
   }
   .lead_form{
     width: 1096px;
-height: 844px;
-background: #F8F9FAFF;
-border-radius: 8px;
-border-width: 1px;
-border-color: #F3F4F6FF;
-border-style: solid;
-box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-margin-top: 60px;
+    height: 844px;
+    background: #F8F9FAFF;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #F3F4F6FF;
+    border-style: solid;
+    box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+    margin-top: 60px;
 
   }
 

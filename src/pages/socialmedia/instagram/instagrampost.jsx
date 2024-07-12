@@ -11,6 +11,7 @@ import { storage } from './firebase'; // Import the storage from your firebase.j
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import { useNavigate } from 'react-router-dom';
 
 const InstagramPost = () => {
   const [text, setText] = useState('');
@@ -32,14 +33,18 @@ const InstagramPost = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [accessToken, setAccessToken] = useState('');
 
+  const handleInstaAuth = () => {
+    window.location.href = 'https://www.facebook.com/v20.0/dialog/oauth?client_id=1546607802575879&redirect_uri=https://crm.nuren.ai/instagramauth/&scope=pages_show_list,instagram_basic&response_type=token';
+  };
   useEffect(() => {
-    // Get the fragment identifier (everything after the #)
-    const hash = window.location.hash;
-    // Remove the # at the beginning of the fragment identifier
-    const hashParams = new URLSearchParams(hash.slice(1));
-    // Get the access token
-    const token = hashParams.get('access_token');
-    setAccessToken(token);
+    // Check if the access token is present in local storage
+    const storedToken = localStorage.getItem('accessToken');
+    setAccessToken(storedToken);
+    if (!storedToken) {
+      // If token is not present, initiate Instagram authentication
+      handleInstaAuth();
+    }
+    // No need to set state or perform further actions here
   }, []);
 
 
@@ -71,56 +76,68 @@ const InstagramPost = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
   
+    console.log('Form submission started');
+  
     // Step 1: Upload files to Firebase
-    const uploadPromises = files.map(file => uploadFileToFirebase(file));
+    const uploadPromises = files.map(file => {
+      console.log('Uploading file:', file.name);
+      return uploadFileToFirebase(file);
+    });
+  
     try {
       const fileURLs = await Promise.all(uploadPromises);
       console.log('Uploaded file URLs:', fileURLs);
   
-      // Step 2: Set the image URL in the state and wait for it to complete
+      // Step 2: Set the image URL in the state
+      console.log('Setting image URL in state:', fileURLs[0]);
       setImageUrl(fileURLs[0]); // Assuming you are using the URL of the first uploaded file
-  
-      // Use a callback or async function to ensure state is updated before proceeding
-      await new Promise(resolve => {
-        setImageUrl(fileURLs[0], () => {
-          resolve();
-        });
-      });
     } catch (error) {
       console.error('Error uploading files:', error);
       alert('Error uploading files');
       return; // Exit early if there's an error
     }
+  };
   
-    // Step 3: Post data to backend
-    const postData = {
-      image_url: imageUrl, // Ensure this has the updated URL
-      access_token: accessToken,
-      caption: caption
+  // useEffect to handle post submission once imageUrl is updated
+  useEffect(() => {
+    if (!imageUrl) return;
+  
+    const postData = async () => {
+      const postData = {
+        image_url: imageUrl,
+        access_token: accessToken,
+        caption: caption
+      };
+  
+      console.log('Posting data to backend:', postData);
+  
+      try {
+        const response = await fetch('https://nuren-insta.vercel.app/postImage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(postData)
+        });
+  
+        if (!response.ok) {
+          throw new Error('Error posting image');
+        }
+  
+        const data = await response.json();
+        console.log('Success:', data);
+        alert('Image posted successfully!');
+        // Optionally, you can reset form fields or perform other actions after successful post
+      } catch (error) {
+        console.error('Error posting image:', error);
+        alert('Error posting image');
+      }
     };
   
-    try {
-      const response = await fetch('https://nuren-insta.vercel.app/postImage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(postData)
-      });
+    postData();
+  }, [imageUrl]);
   
-      if (!response.ok) {
-        throw new Error('Error posting image');
-      }
   
-      const data = await response.json();
-      console.log('Success:', data);
-      alert('Image posted successfully!');
-      // Optionally, you can reset form fields or perform other actions after successful post
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error posting image');
-    }
-  };
   
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -222,12 +239,26 @@ const InstagramPost = () => {
         const downloadURL = await getDownloadURL(storageRef);
         return downloadURL;
       };
+      
+  
+
+  
 
   return (
     <div className="instagram-post-page">
       <div className="sidebar-container">
         <Sidebar />
       </div>
+      {!accessToken ? (
+        <div className='Instagramauth' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <h1>Instagram Authentication</h1>
+          <button onClick={handleInstaAuth} style={{ padding: '2rem', backgroundColor: 'red', borderRadius: '8px', color: 'white', fontSize: '20px' }}>
+            Get Instagram Auth
+          </button>
+        </div>
+      ) : (
+        <></> // Optionally, render something else if authenticated
+      )}
       <div className="instagram-post-content">
         <div className="instagram-post-form">
           <h1 className="instagram-post-title">Instagram</h1>

@@ -8,12 +8,40 @@
   display: flex;
   justify-content: space-between;
 }
-
-.excel-dropdown-menu{
-  position: relative;
-
-  
+.excel-dropdown-menu1 {
+  /* Your custom styles here */
+  font-family: 'Manrope';
+  font-size: 14px;
+  font-weight: 400;
+  color: #FFFFFF;
+  background: #6D31EDFF;
+  border-radius: 4px;
+  width: 77px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px 9px 12px;
+  margin-left: 1000px;
 }
+.dropdown-menu {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown Item Styling */
+.dropdown-item {
+  display: flex;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #343a40;
+}
+
+.dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
 
 .table tbody tr:nth-child(even) {
   background-color: #f2f2f2;

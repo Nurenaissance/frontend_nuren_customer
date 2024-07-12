@@ -58,6 +58,7 @@ const Custom = () => {
             if (response.data.success) {
                 setFields([{ fieldName: '', fieldType: '' }]); // Reset fields
                 setModelName(''); // Reset model name
+                console.log('this is model', modelName);
                 alert('Custom model created successfully!');
             } else {
                 setErrorMessage(response.data.message);
@@ -82,7 +83,7 @@ const Custom = () => {
     return (
         <div className='custom-page'>
             <div className="home_left_box-loyal">
-                <Sidebar />
+            <Sidebar model={models.length > 0 ? models[0] : null} />
             </div>
             <div>
                 <div className='custom_topbar'>

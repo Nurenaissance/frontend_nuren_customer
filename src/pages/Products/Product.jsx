@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import "./product.css";
 import axiosInstance from "../../api.jsx";
 import { useNavigate } from 'react-router-dom';
+import { Dropdown } from 'react-bootstrap';
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
+
 
 const getTenantIdFromUrl = () => {
     const pathArray = window.location.pathname.split('/');
@@ -71,15 +74,30 @@ export const Product = () => {
         reader.readAsText(file);
     };
 
-    const handleExport = () => {
-        const dataStr = JSON.stringify(products, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "products.json";
-        link.click();
-    };
+    const handleDownloadExcel = () => {
+        const ws = XLSX.utils.json_to_sheet(interactions);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "interactions");
+        XLSX.writeFile(wb, "interactions.xlsx");
+      };
+    
+      const handleDownloadPdf = () => {
+        const doc = new jsPDF();
+        doc.autoTable({
+          head: [
+            ['Entity ID', 'Type', 'Interaction Type', 'Interaction Datetime', 'Notes']
+          ],
+          body: filteredInteractions.map(interaction => [
+            interaction.entity_id,
+            entityTypeNames[interaction.entity_type] || interaction.entity_type,
+            interaction.interaction_type,
+            interaction.interaction_datetime,
+            interaction.notes
+          ]),
+        });
+        doc.save('interactions.pdf');
+      };
+    
 
     return (
         <div className="product-page">
@@ -96,23 +114,31 @@ export const Product = () => {
                             className="product-search-bar"
                         />
                         <div className="product-import-export-container">
-                            <button className="product-import-export-button">Import/Export</button>
-                            <div className="product-dropdown-content">
-                                <label className="product-import-label">
-                                    Import
-                                    <input
-                                        type="file"
-                                        className="import-button"
-                                        onChange={handleImport}
-                                        accept=".json"
-                                        style={{ display: "none" }}
-                                    />
-                                </label>
-                                <button className="product-export-button" onClick={handleExport}>Export</button>
+                            
+                            <Dropdown>
+                          <Dropdown.Toggle variant="primary" id="payments-dropdown6" className="excel-dropdown-int">
+                            Excel File
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item>
+                              <button onClick={handleImport} className="import-excel-btn5">
+                              <FaFileExcel/>  Import Excel
+                              </button>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                              <button onClick={handleDownloadExcel} className="excel-download-btn1">
+                              <FaFileExcel/>  Excel
+                              </button>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                            <button onClick={handleDownloadPdf} className="pdf-download-btn"><FaFilePdf/>Download PDF</button>
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                             </div>
                         </div>
                             <button className="product-add-product-button" onClick={handleClick}>+ Create Product</button>
-                    </div>
+                    
                 </div>
                 <div className="product-filter-container">
                     <select

@@ -53,7 +53,7 @@ const BulkImport = () => {
       const response = await axios.post('https://webappbaackend.azurewebsites.net/uploadexcel/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'X-Tenant-ID': 3
+          'X-Tenant-ID': "ll"
         },
       });
 
@@ -75,7 +75,7 @@ const BulkImport = () => {
       axios.post('https://webappbaackend.azurewebsites.net/excel-column/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'X-Tenant-ID': 3 // Custom header for tenant ID
+        'X-Tenant-ID': "ll" // Custom header for tenant ID
       }
     })
       .then((response) => {

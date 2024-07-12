@@ -4,9 +4,10 @@ import { Sidebar } from "../../components/Sidebar";
 import { Dropdown,Card, ListGroup } from "react-bootstrap";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
-
+import './contactsTable.css';
 import * as XLSX from "xlsx"; // Importing xlsx library
 import jsPDF from "jspdf"; // Importing jsPDF library
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import "jspdf-autotable";
 
 const getTenantIdFromUrl = () => {
@@ -345,7 +346,7 @@ export const ContactsTable = () => {
             <div>
             <Dropdown>
               <Dropdown.Toggle variant="primary" id="payments-dropdown1" className="excel-dropdown-menu1">
-                Excel File
+               Excel File
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>
@@ -353,7 +354,7 @@ export const ContactsTable = () => {
                     to={`/${tenantId}/bulk-import/?model=${modelName}`}
                     className="import-excel-btn5"
                   >
-                    Import Excel
+                  <FaFileExcel />  Import Excel
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
@@ -361,11 +362,11 @@ export const ContactsTable = () => {
                     onClick={handleDownloadExcel}
                     className="excel-download-btn1"
                   >
-                    Excel
+                  <FaFileExcel />  Excel
                   </button>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={handleDownloadPDF}>
-                        PDF
+                <FaFilePdf />  PDF
                       </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

@@ -13,6 +13,8 @@ import LeadTable from "../../components/Kanban/LeadTable/LeadTable";
 import { useAuth } from "../../authContext";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
+
 
 
                     const getTenantIdFromUrl = () => {
@@ -114,14 +116,14 @@ export const LeadPage = () =>
             <Dropdown.Menu>
               <Dropdown.Item>
                 <Link to={`/bulk-import?model=${modelName}`} className="import-excel-btn5">
-                  Import Excel
+                <FaFileExcel/>  Import Excel
                 </Link>
               </Dropdown.Item>
               <Dropdown.Item>
-                <button onClick={handleDownloadExcel} className="excel-download-btn3">Excel</button>
+                <button onClick={handleDownloadExcel} className="excel-download-btn3"><FaFileExcel/>Excel</button>
               </Dropdown.Item>
               <Dropdown.Item>
-              <button onClick={handleDownloadPdf} className="pdf-download-btn">PDF</button>
+              <button onClick={handleDownloadPdf} className="pdf-download-btn"><FaFilePdf/>PDF</button>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

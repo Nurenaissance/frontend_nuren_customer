@@ -72,24 +72,24 @@
   width: 100%;
 }
 
-.form-group {
+.product-form-group {
   flex: 0 0 calc(50% - 20px);
   margin-right: 20px;
 }
 
-.form-group:last-child {
+.product-form-group:last-child {
   margin-right: 0;
 }
 
-.form-group.col-md-6 {
+.product-form-group.col-md-6 {
   width: 100%;
   padding-right: 10px;
   padding-left: 10px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group textarea {
+.product-form-group input[type="text"],
+.product-form-group input[type="date"],
+.product-form-group textarea {
   width: 80%;
   padding: 8px;
   margin-bottom: 10px;
@@ -98,7 +98,7 @@
   box-sizing: border-box;
 }
 
-.form-group label {
+.product-form-group label {
   font-weight: bold;
   display: inline;
   margin-bottom: 5px;

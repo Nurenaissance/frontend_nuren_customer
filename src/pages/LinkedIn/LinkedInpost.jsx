@@ -7,6 +7,7 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import './LinkedInpost.css';
 
+
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -39,7 +40,51 @@ const LinkedInPost = () => {
   const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [profilePost, setProfilePost] = useState(null);
   const [profileInfo, setProfileInfo] = useState({ name: '', profilePicture: '' });
+  const [authCode, setAuthCode] = useState('');
   
+  useEffect(() => {
+    const handleAccessToken = async () => {
+      // Get authorization code from URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const state = urlParams.get('state');
+
+      console.log('Authorization code:', code);
+      console.log('Authorization state:', state);
+
+      if (!code) {
+        console.error('Authorization code not found in URL');
+        return;
+      }
+
+      setAuthCode(code);
+
+      try {
+        // Send code to get access token
+        const response = await fetch('https://hx587qc4-3000.inc1.devtunnels.ms/getAccessToken', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code, state }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Access token response:', data);
+          setAuthenticatedUser(data.access_token);
+        } else {
+          console.error('Failed to get access token', response.status, response.statusText);
+          const errorData = await response.json();
+          console.error('Error details:', errorData);
+        }
+      } catch (error) {
+        console.error('Error fetching access token:', error);
+      }
+    };
+
+    handleAccessToken();
+  }, []);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -61,6 +106,7 @@ const LinkedInPost = () => {
   const handleImageUpload = async (e) => {
     const newFiles = Array.from(e.target.files);
     addFiles(newFiles);
+    var code='';
 
     // Iterate over each file to read it as binary data and upload to Firebase
     newFiles.forEach(file => {
@@ -79,11 +125,14 @@ const LinkedInPost = () => {
           imageURL:" imageURL",
           textBody: 'This is a sample text body.',
           title: 'Sample Title',
-          subtitle: 'Sample Subtitle'
+          subtitle: 'Sample Subtitle',
+          shareText:'this is random text',
+          code: authCode
+
         };
 
         // Make the POST request
-        const result = await postData('https://df28-139-5-197-163.ngrok-free.app/postImage', payload);
+        const result = await postData('https://hx587qc4-3000.inc1.devtunnels.ms/postImage', payload);
         console.log(result);
       };
       reader.readAsBinaryString(file);
@@ -337,47 +386,6 @@ const LinkedInPost = () => {
 
  
 
-  useEffect(() => {
-    // Function to handle getting access token after redirect
-    const handleAccessToken = async () => {
-      // Get authorization code from URL params
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      const state = urlParams.get('state');
-      console.log('Authorization code:', code);
-      console.log('Authorization state:', state);
-
-      if (!code) {
-        console.error('Authorization code not found in URL');
-        return;
-      }
-
-      try {
-        // Send code to get access token
-        const response = await fetch('https://969f71281649d6d298116a3e3ed6e6c4.serveo.net/getAccessToken', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code , state }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Access token response:', data);
-          setAuthenticatedUser(data.access_token);
-        } else {
-          console.error('Failed to get access token', response.status, response.statusText);
-          const errorData = await response.json();
-          console.error('Error details:', errorData);
-        }
-      } catch (error) {
-        console.error('Error fetching access token:', error);
-      }
-    };
-
-    handleAccessToken();
-  }, []);
 
 
   
@@ -511,7 +519,7 @@ const LinkedInPost = () => {
       </div>
       </div> 
     <div className="schedule-post-box">
-      <h2>Schedule a Post</h2>
+      <h2 onclick={handleImageUpload}>Schedule a Post</h2>
       <div className="date-time-box">
         <div className="date-picker-box">
           <label>Date:</label>

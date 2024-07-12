@@ -11,6 +11,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
+import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
+//import {getdata} from './chatfirebase';
+import axios from 'axios';
+//import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
+//import { app, db } from '../socialmedia/instagram/firebase.js';
+//import { onSnapshot } from "firebase/firestore";
+import io from 'socket.io-client';
+
+const socket = io('https://whatsappbotserver.azurewebsites.net/');
+
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -31,8 +41,19 @@ const Chatbot = () => {
   const [profileImage, setProfileImage] = useState(null); 
   const [file, setFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [conversation, setConversation] = useState(['']);
+  const [flows, setFlows] = useState([]);
+  const [selectedFlow, setSelectedFlow] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
 
- 
+
+  const openPopup = () => {
+    setShowPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+  };
 
   
   const fetchContacts = async () => {
@@ -158,6 +179,53 @@ const Chatbot = () => {
   };
 
   useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to the server');
+    });
+
+    socket.on('latestMessage', (message) => {
+      if (message) {
+        console.log('Got New Message',message.body);
+        setConversation(prevMessages => [...prevMessages, { text: message.body, sender: 'bot' }]);
+      }
+    });
+    
+
+ socket.on('new-message', (message) => {
+  if (message) {
+    
+    console.log('Got New Message',message);
+    
+    setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'user' }]);
+  }
+});
+
+socket.on('node-message', (message) => {
+  if (message) {
+    
+    console.log('Got New NOde Message',message);
+    
+    setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'bot' }]);
+  }
+});
+    return () => {
+      socket.off('latestMessage');
+      socket.off('newMessage');
+    };
+  }, []);
+    /*useEffect(() => {
+      // Firestore listener setup
+      
+      const unsubscribe = onSnapshot(doc(db, "whatsapp", "919643393874"), (doc) => {
+        fetchConversation();
+        console.log("Current data: ", doc.data());
+    });
+    
+
+      // Clean up listener when component unmounts
+      return () => unsubscribe();
+    }, []);*/
+ /* useEffect(() => {
     const fetchUploadedFiles = async (contactId) => {
       try {
         const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${contactId}`);
@@ -342,6 +410,27 @@ const Chatbot = () => {
         </div>
       </div>
       <div className="chatbot-contact-section">
+      <button className="chatbot-signupbutton" onClick={handleRedirect}>Sign Up</button>
+      <div className="content">
+      {/* Your existing content here */}
+      <button onClick={openPopup} className="open-popup-button">
+       Image Editor
+      </button>
+
+      {showPopup && (
+        <div className="editimage-popup">
+          <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
+          <div className="editimage-popup-container">
+            <div className="editimage-popup-content">
+              <ImageEditorComponent onClose={handlePopupClose} />
+            </div>
+            <button onClick={handlePopupClose} className="close-popup-button">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
         <h1 className='chatbot-details'>Contact Details</h1>
         {selectedContact && (
           <div className="chatbot-contact-details">
@@ -355,6 +444,7 @@ const Chatbot = () => {
                 <h2>{selectedContact.first_name} {selectedContact.last_name}</h2>
                 
               </div>
+              
                 <div className="chatbot-contacts-details">
                 <p className='chatbot-phone'> <CallRoundedIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.phone}</p>
                 <p className='chatbot-mail'><MailIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.email}</p>

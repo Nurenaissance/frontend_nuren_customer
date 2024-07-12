@@ -162,3 +162,33 @@
   flex-direction: row;
 
 }
+.model-sidebar-item {
+  width: 100%;
+  padding: 10px;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  position: relative; /* Ensure dropdown is positioned relative to this item */
+}
+
+.model-dropdown {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 200px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  z-index: 1000;
+}
+
+.dropdown-item-model {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.dropdown-item-model:hover {
+  background-color: #e0e0e0;
+}

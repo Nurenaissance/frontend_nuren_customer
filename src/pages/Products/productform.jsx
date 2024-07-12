@@ -165,7 +165,7 @@ const ProductForm = () => {
               <h2>Product Information</h2>
             </div>
             <div className="product-forms">
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="product_owner" className='product_anual_ownership'>Product Owner:</label>
                 <input
                   type="text"
@@ -178,7 +178,7 @@ const ProductForm = () => {
                   placeholder="Enter Account Owner"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="product_name" className='product_anual_name'>Product Name:</label>
                 <input
                   type="text"
@@ -191,7 +191,7 @@ const ProductForm = () => {
                   placeholder="Enter product name"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="product_code" className='product_code'>Product Code:</label>
                 <input
                   type="text"
@@ -204,7 +204,7 @@ const ProductForm = () => {
                   placeholder="Enter Product Code"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="vendor_name" className='vendor-name'>Vendor Name:</label>
                 <input
                   type="text"
@@ -217,7 +217,7 @@ const ProductForm = () => {
                   placeholder="Enter Vendor Name"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="productActive" className='product-active'>Product Active:</label>
                 <input
                   type="checkbox"
@@ -228,7 +228,7 @@ const ProductForm = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="manufacturer" className='manufacturer'>Manufacturer:</label>
                 <input
                   type="text"
@@ -241,7 +241,7 @@ const ProductForm = () => {
                   placeholder="Enter Manufacturer"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="product_category" className='product_category'>Product Category: </label>
                 <input
                   type="text"
@@ -254,7 +254,7 @@ const ProductForm = () => {
                   placeholder="Enter product category"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="salesStartDate" className='SalesStartDate'>Sales Start Date:</label>
                 <input
                   type="date"
@@ -266,7 +266,7 @@ const ProductForm = () => {
                   style={{ borderColor: errorFields.salesStartDate ? 'red' : '' }}
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="salesEndDate" className='SalesEndDate'>Sales End Date:</label>
                 <input
                   type="date"
@@ -278,7 +278,7 @@ const ProductForm = () => {
                   style={{ borderColor: errorFields.salesEndDate ? 'red' : '' }}
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="supportStartDate" className='supportStartDate'>Support Start Date:</label>
                 <input
                   type="date"
@@ -290,7 +290,7 @@ const ProductForm = () => {
                   style={{ borderColor: errorFields.supportStartDate ? 'red' : '' }}
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="supportEndDate" className='supportEndDate'>Support End Date:</label>
                 <input
                   type="date"
@@ -302,7 +302,7 @@ const ProductForm = () => {
                   style={{ borderColor: errorFields.supportEndDate ? 'red' : '' }}
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="unit_price" className='unit_price'>Unit Price:</label>
                 <input
                   type="text"
@@ -315,7 +315,7 @@ const ProductForm = () => {
                   placeholder="Enter Unit Price"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="tax" className='tax'>Tax:</label>
                 <input
                   type="text"
@@ -328,7 +328,7 @@ const ProductForm = () => {
                   placeholder="Enter Tax"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="commission_rate" className='commission_rate'>Commission Rate:</label>
                 <input
                   type="text"
@@ -341,7 +341,7 @@ const ProductForm = () => {
                   placeholder="Enter Commission Rate"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="usage_unit" className='usage_unit'>Usage Unit:</label>
                 <input
                   type="text"
@@ -354,7 +354,7 @@ const ProductForm = () => {
                   placeholder="Enter Usage Unit"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="quantityInStock" className='quantityInStock'>Quantity in Stock:</label>
                 <input
                   type="text"
@@ -367,7 +367,7 @@ const ProductForm = () => {
                   placeholder="Enter Quantity in Stock"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="handler" className='handler'>Handler:</label>
                 <input
                   type="text"
@@ -380,7 +380,7 @@ const ProductForm = () => {
                   placeholder="Enter Handler"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="qtyOrdered" className='qtyOrdered'>Quantity Ordered:</label>
                 <input
                   type="text"
@@ -393,7 +393,7 @@ const ProductForm = () => {
                   placeholder="Enter Quantity Ordered"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="reorderLevel" className='reorderLevel'>Reorder Level:</label>
                 <input
                   type="text"
@@ -406,7 +406,7 @@ const ProductForm = () => {
                   placeholder="Enter Reorder Level"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="quantityInDemand" className='quantityInDemand'>Quantity in Demand:</label>
                 <input
                   type="text"
@@ -419,7 +419,7 @@ const ProductForm = () => {
                   placeholder="Enter Quantity in Demand"
                 />
               </div>
-              <div className="form-group col-md-6">
+              <div className="product-form-group col-md-6">
                 <label htmlFor="description" className='description'>Description:</label>
                 <input
                   type="text"

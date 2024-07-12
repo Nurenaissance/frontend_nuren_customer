@@ -13,6 +13,7 @@ import msg from "../../assets/msg.webp";
 import "./accountsTableContent.css";
 import axiosInstance from '../../api';
 import { useAuth } from "../../authContext";
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -285,7 +286,7 @@ const renderTableRows = () => {
                                   to={`/bulk-import?model=${modelName}`}
                                   className="import-excel-btn4"
                                 >
-                                  Import Excel
+                                 <FaFileExcel/> Import Excel
                                 </Link>
                               </Dropdown.Item>
                               <Dropdown.Item>
@@ -293,11 +294,11 @@ const renderTableRows = () => {
                                   onClick={handleDownloadExcel}
                                   className="excel-download-btn1"
                                 >
-                                  Excel
+                                 <FaFileExcel/> Excel
                                 </button>
                               </Dropdown.Item>
                               <Dropdown.Item onClick={handleDownloadPdf}>
-                        PDF
+                       <FaFilePdf/> PDF
                       </Dropdown.Item>
                             </Dropdown.Menu>
                           </Dropdown>

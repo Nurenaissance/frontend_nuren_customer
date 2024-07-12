@@ -90,6 +90,9 @@ line-height: 22px;
 font-weight: 400;
 color: #565D6DFF;
 }
+
+
+
 .excel-dropdown-menu1 {
   /* Your custom styles here */
   font-family: 'Manrope';
@@ -105,11 +108,26 @@ color: #565D6DFF;
   justify-content: center;
   padding: 7px 11px 9px 12px;
   margin-left: 1000px;
-
-
-
-  
 }
+.dropdown-menu {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown Item Styling */
+.dropdown-item {
+  display: flex;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #343a40;
+}
+
+.dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+
 .meet1{
   display: flex;
 justify-content: flex-end;
@@ -2559,28 +2577,23 @@ left: 80px;
 top: -60px;
   }
   .contact_form_fill{
-    position: relative;
-
-    width: 1096px;
-    height:fit-content;
-    background: #F8F9FAFF;
+    padding: 20px;
+    background-color: #fff;
     border-radius: 8px;
-    border-width: 1px;
-    border-color: #F3F4F6FF;
-    border-style: solid;
-    box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-    margin-left: 20px;
-    margin-top: -20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 1000px; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the form */
+    border: 1px solid #ddd; /* Add a border around the box */
   }
   .info_address_info{
     font-family: 'Manrope';
-font-size: 18px;
-line-height: 28px;
-font-weight: 700;
-color: #171A1FFF;
-position: relative;
-left: -700px;
-margin-bottom: 50px;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 700;
+  color: #171A1FFF;
+  position: relative;
+  left: -700px;
+  margin-bottom: 50px;
   }
   .contact_owner_form{
     position: relative;
@@ -2592,200 +2605,10 @@ margin-bottom: 50px;
     color: #171A1FFF;
      
     }
-    .contact_first_name{
-      position: relative;
-      left: 10px;
-    }
-    .contact_last_name{
-      position: relative;
-      left: 39px;
-    }
-    .contact_email{
-      position: relative;
-      left: 44px;   
-    }
-    .contact_account{
-      position: relative;
-      left: 50px;
-    
-    }
-    .contact_phone{
-      position: relative;
-      left: 40px;
-    }
-    .other_addres{
-      font-family: 'Manrope';
-      font-size: 15px;
-      line-height: 16px;
-      font-weight: 700;
-      color: #171A1FFF;
-      position: relative;
-      left: 55px;
-      top: -70px;
-    }
-    .other_assistant{
-      position: relative;
-      left: 50px;
-      top: -60px;
-    }
-    .other_fax{
-      position: relative;
-      left: 90px;
-      top: -60px;
-    }
-    .other_asst{
-position: relative;
-top: -60px;
-left: 30px;
-    }
-    .other_secondaryemail{
-      position: relative;
+   
+  
 
-      top: -60px;
-      left: -2px;
-    }
-    .other_createdBy{
-      position: relative;
-      left: 37px;
-      top: -60px;
-    }
-    .other_currency{
-      position: relative;
-      left: 20px;
-    }
-    .other_DOB{
-      position: relative;
-      left: 1px;
-    }
-    .other_skype{
-      position: relative;
-      left: 30px;
-    }
-    .form-control-skype-id{
-      position: relative;
-      left: 60px;
-    }
-    .other_Twitter{
-      position: relative;
-      left: 40px;
-    }
-    .form-control_twitter{
-      position: relative;
-      left: 70px;
-    }
 
-    .contact_first_name ,.contact_last_name,.contact_email,.contact_account,.contact_phone,.other_phone,.other_mobile,.other_address
-    .other_description,.other_assistant,.other_currency,.other_fax,.other_DOB,.other_asst,.other_skype,.other_secondaryemail
-    ,.other_Twitter,.other_createdBy,.other_reporting {
-    
-      font-family: 'Manrope';
-      font-size: 15px;
-      line-height: 16px;
-      font-weight: 700;
-      color: #171A1FFF;
-    }
-    .other_description{
-      font-family: 'Manrope';
-      font-size: 15px;
-      line-height: 16px;
-      font-weight: 700;
-      color: #171A1FFF;
-      position: relative;
-      left: 10px;
-    }
-    .other_mobile{
-      position: relative;
-      left: 45px;
-      top: 1px;
-      
-    }
-    .form-control_mobilee{
-      position: relative;
-      left: 70px;
-      top: -70px;
-    }
-    .form-control_mobil{
-      position: relative;
-      left: 70px;
-      top: 10px;
-    }
-    .form-control-other-address{
-      position: relative;
-      left: 70px;
-      top: -70px;
-    }
-   .form-control-assistantt{
-    position: relative;
-    left: 65px;
-    top: -60px;
-   }
-   .form-control_faxx{
-    position: relative;
-    left: 100px;
-    top: -60px;
-   }
-   .form-control-Asst-phone{
-    position: relative;
-    left: 40px;
-    top: -60px;
-   }
-   .form-control-secondary_mail{
-    position: relative;
-    left: 20px;
-    top: -60px;
-   }
-   .form-control-createdBy{
-    position: relative;
-    top: -58px;
-    left: 50px;
-   }
-   .form-control_contact-owner{
-    position: relative;
-    left: 25px;
-   }
-   .form-control_last_name{
-    position: relative;
-    left: 60px;
-
-   }
-   .form-control_first_name{
-    position: relative;
-    left: 30px;
-   }
-   .form-control-email{
-position: relative;
-left: 60px;
-   }
-   .form-control-description1{
-    position: relative;
-    left: 35px;
-   }
-   .form-control-currency2{
-    position: relative;
-    left: 50px;
-   }
-   .form-control-DOBB{
-    position: relative;
-    left: 30px;
-   }
-
-    .form-control_contact-owner,.form-control_first_name,.form-control_last_name,.form-control-email,.form-control_account3
-    .form-control_phonee,.form-control_other_phone,.form-control_mobil,.form-control-other-address,.form-control-description1
-   ,.form-control-assistantt,.form-control-currency2,.form-control_faxx,.form-control-DOBB,.form-control-Asst-phone
-    ,.form-control-skype-id,.form-control-secondary_mail,.form-control_twitter,.form-control-createdBy,.form-control-reportingto{
-      width: 260px;
-      height: 36px;
-      padding-left: 12px;
-      padding-right: 12px;
-      font-family: 'Manrope';
-      font-size: 14px;
-      line-height: 22px;
-      font-weight: 400;
-      background: #F3F4F6FF;
-      border-radius: 4px;
-      border-width: 1px;
-      border-color: #DEE1E645;
-    }
     .form-control_account3{
       width: 260px;
       height: 36px;
@@ -3863,3 +3686,108 @@ margin-left: 10rem;
     top: -45px;
     left: -570px;
   }
+  .contact_form_fill .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.contact_form_fill .form-group {
+    padding: 0 10px;
+    margin-bottom: 15px;
+    flex: 1 1 50%; /* Adjust the width of form groups */
+}
+
+.contact_form_fill .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.contact_form_fill .form-group input {
+    width: 90%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.contact_form_fill .form-group input:focus {
+    border-color: #80bdff;
+    outline: none;
+}
+
+.contact_form_fill .form-group label.contact_account {
+    background-color: #F3F4F6FF;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.css-2b097c-container {
+    width: 100%;
+}
+
+.css-yk16xz-control {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+.css-1pahdxg-control {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 1px #80bdff !important;
+}
+
+.css-1n7v3ny-option {
+    color: #000;
+    background-color: #fff;
+}
+
+.css-1n7v3ny-option:hover {
+    background-color: #f3f4f6;
+}
+
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Add specific classes for each form-control */
+.form-control_contact-owner,
+.form-control_first_name,
+.form-control_last_name,
+.form-control-email,
+.form-control_account3,
+.form-control_contact-owner,
+.form-control_mobil,
+.form-control-contact-address,
+.form-control-description1,
+.form-control-assistantt,
+.form-control-currency2,
+.form-control_faxx,
+.form-control-DOBB,
+.form-control-Asst-phone,
+.form-control-skype-id,
+.form-control-secondary_mail,
+.form-control_twitter,
+.form-control-createdBy {
+    border: 1px solid #ced4da;
+    padding: 8px;
+    border-radius: 4px;
+    width: 70%;
+    box-sizing: border-box;
+    margin-bottom: 4rem;
+}

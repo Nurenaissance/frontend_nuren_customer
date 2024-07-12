@@ -5,6 +5,7 @@ import CallRoundedIcon from '@mui/icons-material/CallRounded';
 import InsertCommentRoundedIcon from '@mui/icons-material/InsertCommentRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import SearchTable from './SearchTable';
 import SearchIcon from '@mui/icons-material/Search'; 
 import Chatbot from "../Chatbot/chatbot"; 
 
@@ -28,8 +29,11 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [showAddDropdown, setShowAddDropdown] = useState(false);
   const [showMeetingForm, setShowMeetingForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showCallForm, setShowCallForm] = useState(false); // State to toggle call form
   const navigate = useNavigate();
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [tableData, setTableData] = useState([]);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -114,12 +118,49 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
     openCallForm(callFormData); // Assuming this function is passed from parent component
     setShowCallForm(false); // Close the modal after form submission
   };
-  const handleSearchChange=()=>{
-    return("dkfvmkfmv")
+  const handleSearchChange=(event)=>{
+    setSearchQuery(event.target.value);
   }
-  const handleSearchClick=()=>{
-    return("goto search")
-  }
+  
+  const handleSearchClick = async () => {
+    console.log('Search button clicked');
+    console.log('Search Query:', searchQuery);
+    try {
+      const tenant = tenantId
+      const response = await fetch('https://webappbaackend.azurewebsites.net/execute-query/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Tenant-ID': tenant,
+        },
+        body: JSON.stringify({ prompt: searchQuery }),
+        
+      });
+      console.log(searchQuery);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Response from backend:', data);
+      setTableData(data); 
+      console.log('response table', tableData);
+      setPopupVisible(true);
+      
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchClick();
+    }
+  };
+  const handleClosePopup = () => {
+    setPopupVisible(false);
+  };  
+  
   useEffect(() => {
     fetchProfileImageUrl();
     fetchNotificationCount();
@@ -137,8 +178,10 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
       className="search-bar"
       placeholder="Search..."
       onChange={handleSearchChange}
+      onKeyPress={handleKeyPress}
     />
-     <SearchIcon className="search-icon" style={{marginLeft:"-200px",marginBottom:'-4px',cursor: 'pointer',zIndex:'10000',backgroundColor:'', height:'30px',width:'30px'}} onclick={handleSearchClick}/>
+     <SearchIcon className="search-icon" onclick={handleSearchClick} style={{marginLeft:"-200px",marginBottom:'-4px',cursor: 'pointer',zIndex:'10000',backgroundColor:'', height:'30px',width:'30px'}} />
+     {popupVisible && <SearchTable data={tableData} onClose={handleClosePopup} />}
     </div>
       <div className="callround" onClick={handleDirectCallClick}>
         <CallRoundedIcon style={{ width: '24px', height: '24px' }} className='topNavbar2' />

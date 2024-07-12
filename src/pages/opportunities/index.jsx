@@ -5,7 +5,7 @@ import { OpportunitiesContent } from "../../components/OpportunitiesContent";
 import "./Form3.jsx";
 import { NavLink,Link ,useParams} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
-
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -103,15 +103,15 @@ export const Opportunities = () => {
                 <Dropdown.Menu>
                   <Dropdown.Item>
                     <Link to={`/bulk-import?model=opportunity`}>
-                      Import Excel
+                     <FaFileExcel/> Import Excel
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <button onClick={handleDownloadExcel}>Download Excel</button>
+                    <button onClick={handleDownloadExcel}><FaFileExcel/>Download Excel</button>
                   </Dropdown.Item>
                   <Dropdown.Item>
                   <button onClick={handleDownloadPdf} className="pdf-download-btn">
-                  Download PDF
+                 <FaFilePdf/> Download PDF
                 </button>
                 </Dropdown.Item>
                 </Dropdown.Menu>

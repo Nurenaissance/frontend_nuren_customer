@@ -296,7 +296,7 @@ const closeSuccessPopup = () => {
       <div className="Oppo_contain_form">
         <div className="flex-container_oppo">
           <div>
-            <h1 className="oppo_form">Create Opportunity</h1>
+            
           </div>
           <div className='btnsss_oopo'>
             <button type="cancel" onClick={handleCancel} className="btn-submit_cancel">Cancel</button>
@@ -304,7 +304,9 @@ const closeSuccessPopup = () => {
             <button type="submit" onClick={handleSubmitForm}  className="btn-submit_submit">Submit</button>
           </div>
         </div>
+        <h1 className="oppo_form">Create Opportunity</h1>
         <div className='oppo_form_contain'>
+          
           <form onSubmit={handleSubmit} className="oppo_form_fill">
             <div className="form-row">
               <div className="form-group col-md-6">
@@ -498,6 +500,19 @@ const closeSuccessPopup = () => {
                   style={{ borderColor: errorFields.closedOn ? 'red' : '' }}
                 />
               </div>
+              <div className="form-group col-md-6">
+                <label htmlFor="description" className="oppo_form_description">Description</label>
+                <input
+                  type="text"
+                  className="form-control_oopo_desc"
+                  id="description"
+                  name="description"
+                  value={oppourtunityData.description}
+                  onChange={handleInputChange}
+                  placeholder="Enter description"
+                  style={{ borderColor: errorFields.description ? 'red' : '' }}
+                />
+              </div>
               {/* <div className="form-group col-md-6">
                 <label htmlFor="stage" className="oppo_form_stage">Stage</label>
                 <input
@@ -535,19 +550,7 @@ const closeSuccessPopup = () => {
                 />
               </div> */}
              
-              <div className="form-group col-md-6">
-                <label htmlFor="description" className="oppo_form_description">description</label>
-                <input
-                  type="text"
-                  className="form-control_oopo_desc"
-                  id="description"
-                  name="description"
-                  value={oppourtunityData.description}
-                  onChange={handleInputChange}
-                  placeholder="Enter description"
-                  style={{ borderColor: errorFields.description ? 'red' : '' }}
-                />
-              </div>
+              
             </div>
 
             <div className="oppo_submit">

@@ -9,6 +9,7 @@ import axiosInstance from "../../api";
 import * as XLSX from "xlsx"; 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import io from 'socket.io-client';
 import { useAuth } from "../../authContext";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
@@ -155,17 +156,17 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
               <Dropdown.Menu>
                 <Dropdown.Item>
                   <Link to={`/bulk-import?model=${modelName}`} className="import-excel-btn5">
-                    Import Excel
+                  <FaFileExcel/>  Import Excel
                   </Link>
                 </Dropdown.Item>
                 <Dropdown.Item>
                   <button onClick={handleDownloadExcel} className="excel-download-btn1">
-                    Excel
+                  <FaFileExcel/>  Excel
                   </button>
                 </Dropdown.Item>
                 <Dropdown.Item>
                     <button onClick={handleDownloadPdf} className="pdf-download-btn1">
-                     Pdf
+                    <FaFilePdf/> Pdf
                     </button>
                     </Dropdown.Item>
               </Dropdown.Menu>

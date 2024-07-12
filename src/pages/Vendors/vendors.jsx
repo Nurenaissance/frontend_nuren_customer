@@ -3,12 +3,13 @@ import './vendors.css';
 import React, { useEffect, useState } from "react";
 import { Link,NavLink } from "react-router-dom";
 import { Sidebar } from "../../components/Sidebar";
-import { Dropdown, Card, ListGroup } from "react-bootstrap";
+import { Dropdown} from "react-bootstrap";
 import axiosInstance from "../../api";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 
 
 const getTenantIdFromUrl = () => {
@@ -112,10 +113,10 @@ const Vendors = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item>
-                <button onClick={handleDownloadExcel}>Download Excel</button>
+                <button onClick={handleDownloadExcel}><FaFileExcel/>Download Excel</button>
               </Dropdown.Item>
               <Dropdown.Item>
-              <button onClick={handleDownloadPDF}>Download PDF</button>
+              <button onClick={handleDownloadPDF}><FaFilePdf/>Download PDF</button>
             </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

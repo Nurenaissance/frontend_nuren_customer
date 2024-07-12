@@ -9,6 +9,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
+import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 
 
 import { useAuth } from "../../authContext";
@@ -273,7 +274,7 @@ const handleCreateMeeting = async (e) => {
                 to={`/bulk-import?model=${modelName}`}
                 className="import-excel-btn5"
               >
-                Import Excel
+              <FaFileExcel/>  Import Excel
               </Link>
             </Dropdown.Item>
             <Dropdown.Item>
@@ -281,12 +282,12 @@ const handleCreateMeeting = async (e) => {
                 onClick={handleDownloadExcel}
                 className="excel-download-btn1"
               >
-                Excel
+               <FaFileExcel/> Excel
               </button>
             </Dropdown.Item>
             <Dropdown.Item>
             <button onClick={handleDownloadPDF} className="pdf-download-btn">
-              Download PDF
+            <FaFilePdf/>  Download PDF
             </button>
           </Dropdown.Item>
           </Dropdown.Menu>

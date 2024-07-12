@@ -429,7 +429,7 @@ function Form2() {
             <label htmlFor="address" className="other_addres">Address:</label>
             <input
               type="text"
-              className="form-control-other-address"
+              className="form-control-address"
               id="address"
               name="address"
               value={contactData.address}

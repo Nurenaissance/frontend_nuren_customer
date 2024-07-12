@@ -375,3 +375,65 @@
   background-color: #d32f2f; /* Darker red */
 }
 
+.chatbot-signupbutton:hover {
+  background-color: #45a049;
+}
+/* style.css */
+
+/* Styles for the parent container of the overlay and popup */
+.parent-container {
+  position: relative;
+  /* Add other styles as needed */
+}
+
+.editimage-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure popup is above other content */
+}
+
+.editimage-popup-overlay {
+  position: fixed;
+  background-color: transparent; /* Clickable overlay */
+}
+
+.editimage-popup-container {
+  background-color: #fff; /* Popup background color */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+  max-width: 90%; /* Adjust popup width as needed */
+  max-height: 100%; /* Adjust popup height as needed */
+  overflow: auto; /* Enable scrolling if content overflows */
+  position: relative;
+}
+
+.editimage-popup-content {
+  padding: 20px; /* Adjust padding inside popup content */
+}
+
+.close-popup-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336; /* Red color for close button */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.open-popup-button {
+  padding: 10px 20px;
+  background-color: #4caf50; /* Green color for open button */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
