@@ -354,14 +354,24 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   };
 
   const uploadFileToFirebase = async (file) => {
-        const storageRef = ref(storage, `images/${file.name}`);
-        await uploadBytes(storageRef, file);
-        const downloadURL = await getDownloadURL(storageRef);
-        return downloadURL;
-      };
-      
-      
-
+    try {
+      console.log("Starting file upload...");
+  
+      const storageRef = ref(storage, `images/${file.name}`);
+      console.log("Storage reference created:", storageRef);
+  
+      await uploadBytes(storageRef, file);
+      console.log("File uploaded successfully.");
+  
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("Download URL retrieved:", downloadURL);
+  
+      return downloadURL;
+    } catch (error) {
+      console.error("Error during file upload:", error);
+      throw error; // Re-throw the error after logging it
+    }
+  };
   
 
   return (
