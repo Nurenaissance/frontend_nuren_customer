@@ -4,7 +4,49 @@
     padding: 20px;
     flex-wrap: wrap;
     background-color:white ;
+    overflow-x: auto;
   }
+  
+  .Kanban {
+  
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+
+
+
+.column.add-column {
+  flex: none; /* Optional: Allow the add column to be of fixed size */
+  width: 300px; /* Match the width of other columns */
+  margin-right: 10px; /* Optional: Adjust spacing */
+  display: flex;
+  align-items: center;
+}
+
+.column.add-column input[type="text"] {
+  flex: 1; /* Allow input to expand */
+  margin-right: 10px; /* Optional: Adjust spacing */
+}
+
+.card-list {
+  min-height: 100px; /* Optional: Set minimum height for card list */
+  padding: 10px; /* Optional: Add padding */
+  overflow-y: auto; /* Optional: Enable vertical scrolling for cards */
+}
+
+
+
+.delete-column-btn {
+  margin-top: 10px; /* Optional: Adjust spacing */
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-column-btn:hover {
+  background-color: #d32f2f;
+}
   
   .column {
     flex-grow: 1;
@@ -24,6 +66,9 @@
   .title{
     height: 40px;
     /* margin: -3px; */
+    padding: 10px;
+    font-weight: bold;
+    color: #333;
    
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
