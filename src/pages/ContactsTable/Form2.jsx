@@ -121,6 +121,10 @@ function Form2() {
     setPhotoColor(randomColor);
   }, []);
 
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
   const fetchAccountOptions = async () => {
     try {
       const response = await axiosInstance.get('/accounts/');
