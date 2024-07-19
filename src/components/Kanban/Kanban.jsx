@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import { sendEmail } from './email.jsx'; // Import the sendEmail function
 import axiosInstance from "../../api.jsx";
 
+
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
@@ -23,7 +24,91 @@ function Kanban({ leadCountsData }) {
   const tenantId = getTenantIdFromUrl();
   const [columns, setColumns] = useState({});
   const [stages, setStages] = useState([]);
+  const [editingColumnId, setEditingColumnId] = useState(null);
+  const [newTitle, setNewTitle] = useState('');
+  const [newStageTitle, setNewStageTitle] = useState('');
 
+  const handleDoubleClick = (columnId, currentTitle) => {
+    setEditingColumnId(columnId);
+    setNewTitle(currentTitle);
+  };
+
+  const handleTitleChange = (e) => {
+    setNewTitle(e.target.value);
+  };
+  const handleAddStage = async () => {
+    try {
+      // Determine the model_name from the URL
+      const pathArray = window.location.pathname.split('/');
+      const model_name = pathArray[pathArray.length - 1]; // Assuming last part of path is model_name
+  
+      // Make POST request to create a new stage
+      const response = await axiosInstance.post('/stage/create/', {
+        status: newStageTitle,
+        model_name: model_name
+      });
+  
+      // Log response and update UI as needed
+      console.log('New stage created:', response.data);
+  
+    // Assuming you have a function to fetch stages and update state
+    } catch (error) {
+      console.error('Error creating new stage:', error);
+    }
+  };
+  const handleDeleteStage = async (columnId) => {
+    try {
+      // Check if the stage has cards (leads)
+      const column = columns[columnId];
+      if (column.cards.length > 0) {
+        alert("Cannot delete stage with cards. Please move or delete all cards first.");
+        return;
+      }
+  
+      // Make DELETE request to delete the stage
+      await axiosInstance.delete(`/stage/delete/${columnId}/`);
+  
+      // Update the columns state to reflect the deleted stage
+      const updatedColumns = { ...columns };
+      delete updatedColumns[columnId];
+      setColumns(updatedColumns);
+  
+      // Optionally fetch stages again if needed
+      fetchStagesAndColors(); // Assuming you have a function to fetch stages and update state
+    } catch (error) {
+      console.error('Error deleting stage:', error);
+    }
+  };
+
+
+  const handleSaveClick = async (columnId) => {
+    try {
+      // Replace 'your_stage_id' with the actual stage ID you want to update
+      const response = await axiosInstance.post(`/stage/update/${columnId}/`, {
+        status: newTitle,
+      });
+
+      console.log('Response:', response.data);
+      // Update the columns state with the new title
+      // This assumes you have a function to update the columns state
+      updateColumnTitle(columnId, newTitle);
+
+      setEditingColumnId(null);
+    } catch (error) {
+      console.error('Error updating title:', error);
+    }
+  };
+
+  const updateColumnTitle = (columnId, newTitle) => {
+    // Implement this function to update the column title in your state
+    setColumns((prevColumns) => ({
+      ...prevColumns,
+      [columnId]: {
+        ...prevColumns[columnId],
+        title: newTitle,
+      },
+    }));
+  };
   useEffect(() => {
     const fetchStagesAndColors = async () => {
       try {
@@ -195,83 +280,104 @@ function Kanban({ leadCountsData }) {
 
   return (
     <>
-      <br />
-      <div className="Kanban">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="kanban-board">
-            {Object.keys(columns).map((columnId) => {
-              const column = columns[columnId];
-              return (
-                <div className="column" key={columnId}>
-                  <div
-                    className="title htext1"
-                    style={{ backgroundColor: column.bg }} // Apply the background color here
-                  >
-                    {column.title} ({column.count})
+  <br />
+  <div className="Kanban">
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="kanban-board">
+        {Object.keys(columns).map((columnId) => {
+          const column = columns[columnId];
+          return (
+            <div className="column" key={columnId}>
+              <div className="title htext1" style={{ backgroundColor: column.bg }} onDoubleClick={() => handleDoubleClick(columnId, column.title)}>
+                {editingColumnId === columnId ? (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="text"
+                      value={newTitle}
+                      onChange={handleTitleChange}
+                      style={{ marginRight: '5px',backgroundColor:column.bg }}
+                    />
+                    <button onClick={() => handleSaveClick(columnId)} style={{ fontSize: '0.8rem' }}>Save</button>
                   </div>
-                  <Droppable droppableId={columnId}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="card-list"
+                ) : (
+                  <>
+                    {column.title} ({column.count})
+                  </>
+                )}
+              </div>
+              <Droppable droppableId={columnId}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="card-list"
+                  >
+                    {column.cards.map((card, index) => (
+                      <Draggable
+                        key={card.id}
+                        draggableId={card.id}
+                        index={index}
                       >
-                        {column.cards.map((card, index) => (
-                          <Draggable
-                            key={card.id}
-                            draggableId={card.id}
-                            index={index}
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="card_"
                           >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="card_"
-                              >
-                                <div className="license">
-                                  {card.amount} licenses
-                                  <div className="status">{card.status}</div>
-                                </div>
-                                <div className="content_">
-                                  {/* Content of the card */}
-                                  {columnId === 'new' && (
-                                    <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
-                                      <div className="c1">{card.name}</div>
-                                    </NavLink>
-                                  )}
-                                  {columnId !== '0' ? (
-                                    <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
-                                      <div className="c1">{card.name}</div>
-                                    </NavLink>
-                                  ) : (
-                                    <NavLink to={`/${tenantId}/lead/${card.id}`}>
-                                      <div className="c1">{card.name}</div>
-                                    </NavLink>
-                                  )}
-                                  <div className="c2">
-                                    {card.address}
-                                  </div>
-                                  <div className="c2">
-                                    {card.email}
-                                  </div>
-                                  <div className="c2">{card.website}</div>
-                                </div>
+                            <div className="license">
+                              {card.amount} licenses
+                              <div className="status">{card.status}</div>
+                            </div>
+                            <div className="content_">
+                              {columnId === 'new' && (
+                                <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
+                                  <div className="c1">{card.name}</div>
+                                </NavLink>
+                              )}
+                              {columnId !== '0' ? (
+                                <NavLink to={`/${tenantId}/ShowLead/${card.id}`}>
+                                  <div className="c1">{card.name}</div>
+                                </NavLink>
+                              ) : (
+                                <NavLink to={`/${tenantId}/lead/${card.id}`}>
+                                  <div className="c1">{card.name}</div>
+                                </NavLink>
+                              )}
+                              <div className="c2">
+                                {card.address}
                               </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-              );
-            })}
-          </div>
-        </DragDropContext>
+                              <div className="c2">
+                                {card.email}
+                              </div>
+                              <div className="c2">{card.website}</div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+              <button onClick={() => handleDeleteStage(columnId)} className="delete-column-btn">Delete</button>
+            </div>
+          );
+        })}
+        <div className="column add-column">
+          <input
+            type="text"
+            placeholder="New Stage"
+            value={newStageTitle}
+            onChange={(e) => setNewStageTitle(e.target.value)}
+          />
+          <button onClick={handleAddStage}>+</button>
+        </div>
       </div>
-    </>
+    </DragDropContext>
+  </div>
+</>
+
   );
 }
 

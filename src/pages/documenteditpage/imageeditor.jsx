@@ -45,7 +45,7 @@ const ImageEditorComponent = ({ onUpload }) => {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
 
-
+  const secretKey = process.env.MY_KEY_FOR_AI;
   const handleGenerateImage = async () => {
     try {
       const fullPrompt = `${selectedPrompt}. ${additionalSpecifications}`;
@@ -61,7 +61,7 @@ const ImageEditorComponent = ({ onUpload }) => {
        
         {
           headers: {
-            Authorization: `Bearer `, // Replace with your actual API key
+            Authorization: `Bearer ${secretKey}`, // Replace with your actual API key
           },
         }
       );
@@ -115,7 +115,7 @@ const ImageEditorComponent = ({ onUpload }) => {
           },
           {
             headers: {
-              Authorization: `Bearer `, // Replace with your actual API key
+              Authorization: `Bearer ${secretKey}`, // Replace with your actual API key
               'Content-Type': 'application/json'
             },
           }
