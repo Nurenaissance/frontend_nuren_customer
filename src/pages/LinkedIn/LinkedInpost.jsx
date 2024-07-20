@@ -143,7 +143,7 @@ const LinkedInPost = () => {
         };
 
         // Make the POST request
-        const result = await postData('https://hx587qc4-3000.inc1.devtunnels.ms/postImage', payload);
+        const result = await postData('https://8twdg37p-3000.inc1.devtunnels.ms/postImage', payload);
         console.log(result);
       };
       reader.readAsBinaryString(file);

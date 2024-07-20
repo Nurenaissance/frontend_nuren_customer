@@ -305,7 +305,7 @@ const handleModelSelect = (modelName) => {
                   </NavLink>
                   </li>
                   <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/email")}>
+                  <NavLink className="sidebar_link" to={formatLink("/email-provider")}>
                     <span style={{ display: 'flex', alignItems: 'center' }}>
                       <EmailIcon style={{fontSize:'2rem'}}/>
                       <p className="sidebar_link_text">Email</p>

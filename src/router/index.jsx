@@ -79,7 +79,7 @@ import Ticketform from "../pages/Ticket/Ticketform";
 import TicketInfo from "../pages/Ticket/TicketInfo";
 
 import Calendar from "../pages/Calendar/Calendar";
-
+import InstagramMedia from "../pages/socialmedia/instagram/instagramMedia.jsx";
 import Calendarform from "../pages/Calendar/Calendarform";
 
 import { DashboardCustomizeSharp } from "@mui/icons-material";
@@ -89,10 +89,13 @@ import Ticket from "../pages/Ticket/TicketPage";
 import { Explore } from "@mui/icons-material";
 import ExplorePage from "../pages/ExplorePage/Explore";
 import ExploreDetails from "../pages/ExplorePage/readExplore";
+import Appa from '../components/email.jsx';
 import Models from "../pages/Model/ModelTable.jsx";
 
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
+import EmailList from "../pages/Email/Email-List.jsx";
+import EmailProviders from "../pages/Email/Email-provider.jsx";
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
@@ -353,7 +356,9 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/CustomModel"  element= {<Custom/>}/>
           <Route path=":tenant_id/models/:modelName"  element= {<Models/>}/>
           {/* <Route path=":tenant_id/CustomModelForm"  element= {<CustomModelForm/>}/> */}
-
+          <Route path=":tenant_id/emailss"  element= {<Appa/>}/>
+          <Route path=":tenant_id/email-list" element={<EmailList/>} />
+          <Route path=":tenant_id/email-provider" element={<EmailProviders/>} />
           
           <Route path=":tenant_id/loyaltyinfo"  element= {<LoyaltyInfo/>}/>
           <Route path=":tenant_id/chatbot"  element= {<Chatbot/>}/>
@@ -377,7 +382,8 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/editdocument"  element= {<IframePage/>}/>
           <Route path=":tenant_id/editImage"  element= {<ImageEditorComponent/>}/>
     
-    
+          <Route path=":tenant_id/email_setup" element={<Appa/>}/>
+          <Route path=":tenant_id/InstagramMedia"  element= {<InstagramMedia/>}/>
         </>
       )}
 

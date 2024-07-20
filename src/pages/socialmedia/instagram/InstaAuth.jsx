@@ -15,7 +15,7 @@ const InstaAuth = () => {
     if (token) {
       // Store the token in local storage
       localStorage.setItem('accessToken', token);
-
+      
       // Get tenantId from local storage
       const storedTenantId = localStorage.getItem("tenant_id");
       const tenantId = storedTenantId ? JSON.parse(storedTenantId) : null;

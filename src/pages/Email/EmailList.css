@@ -1,0 +1,27 @@
+.email-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .email-row {
+    cursor: pointer;
+  }
+
+  .email-row:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .email-details {
+    background-color: #f9f9f9;
+  }
+  
+  .email-details td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .email-details div {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  

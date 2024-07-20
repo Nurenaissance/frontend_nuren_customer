@@ -28,7 +28,7 @@ const myTheme = {
 };
 
 const samplePrompts = [
-  "Create an image depicting team collaboration for a marketing CRM with no text above the image. Show a group of diverse team members discussing strategies around a table with a whiteboard in the background. Use a professional and dynamic style with warm colors.",
+  "You are a professional graphic designer. Create the marrkekting graphics for the following request. Be very professional and donot display text unless specifically asked =>",
   "Design an image showcasing email campaign analytics   Use a sleek and modern style with green and white accents.",
   "Create an image of a modern business dashboard for a marketing CRM with no text above the image. The dashboard should display key performance indicators such as sales growth, customer acquisition, and conversion rates. Use a clean and professional design with a blue and white color scheme",
   "Generate a professional marketing image for a Sales CRM targeting medium enterprises in finance, featuring a light blue to white background, green and orange accents, dark gray text, a modern office photo with CRM icons and interface screenshots highlighting workflows and lead management, incorporating a sales performance chart, centered company logo with Roboto font",
@@ -45,7 +45,7 @@ const ImageEditorComponent = ({ onUpload }) => {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [uploadedImageUrl, setUploadedImageUrl] = useState('');
 
-
+  const secretKey = process.env.MY_KEY_FOR_AI;
   const handleGenerateImage = async () => {
     try {
       const fullPrompt = `${selectedPrompt}. ${additionalSpecifications}`;
@@ -61,7 +61,7 @@ const ImageEditorComponent = ({ onUpload }) => {
        
         {
           headers: {
-            Authorization: `Bearer `, // Replace with your actual API key
+            Authorization: `Bearer ${secretKey}`, // Replace with your actual API key
           },
         }
       );
@@ -115,7 +115,7 @@ const ImageEditorComponent = ({ onUpload }) => {
           },
           {
             headers: {
-              Authorization: `Bearer `, // Replace with your actual API key
+              Authorization: `Bearer ${secretKey}`, // Replace with your actual API key
               'Content-Type': 'application/json'
             },
           }
