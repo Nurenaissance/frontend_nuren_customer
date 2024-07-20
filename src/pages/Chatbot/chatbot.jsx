@@ -11,16 +11,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
-import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
-//import {getdata} from './chatfirebase';
-import axios from 'axios';
-//import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
-//import { app, db } from '../socialmedia/instagram/firebase.js';
-//import { onSnapshot } from "firebase/firestore";
-import io from 'socket.io-client';
-
-const socket = io('https://whatsappbotserver.azurewebsites.net/');
-
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -41,19 +31,8 @@ const Chatbot = () => {
   const [profileImage, setProfileImage] = useState(null); 
   const [file, setFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [conversation, setConversation] = useState(['']);
-  const [flows, setFlows] = useState([]);
-  const [selectedFlow, setSelectedFlow] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
 
-
-  const openPopup = () => {
-    setShowPopup(true);
-  };
-
-  const handlePopupClose = () => {
-    setShowPopup(false);
-  };
+ 
 
   
   const fetchContacts = async () => {
@@ -179,54 +158,87 @@ const Chatbot = () => {
   };
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to the server');
-    });
-
-    socket.on('latestMessage', (message) => {
-      if (message) {
-        console.log('Got New Message',message.body);
-        setConversation(prevMessages => [...prevMessages, { text: message.body, sender: 'bot' }]);
+    const fetchUploadedFiles = async (contactId) => {
+      try {
+        const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${contactId}`);
+        setUploadedFiles(response.data);
+        
+        
+      } catch (error) {
+        console.error("Error fetching uploaded files:", error);
       }
-    });
-    
-
- socket.on('new-message', (message) => {
-  if (message) {
-    
-    console.log('Got New Message',message);
-    
-    setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'user' }]);
-  }
-});
-
-socket.on('node-message', (message) => {
-  if (message) {
-    
-    console.log('Got New NOde Message',message);
-    
-    setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'bot' }]);
-  }
-});
-    return () => {
-      socket.off('latestMessage');
-      socket.off('newMessage');
     };
-  }, []);
-   
-    
-
- 
+    fetchUploadedFiles();
+  }, );
+  const handleSend = () => {
+    if (!messageTemplates[selectedContact.id] || !selectedContact) {
+      console.error('Message template or contact not selected');
+      return;
+    }
   
-    
+    const newMessage = { sender: 'user', content: messageTemplates[selectedContact.id] };
+    setMessages(prevMessages => ({
+      ...prevMessages,
+      [selectedContact.id]: [...(prevMessages[selectedContact.id] || []), newMessage]
+    }));
   
-   
+    // Clear the message template after sending
+    setMessageTemplates(prevTemplates => ({
+      ...prevTemplates,
+      [selectedContact.id]: ''  // Clear the message template for the selected contact
+    }));
+  
+    console.log('Sending message to', selectedContact.first_name, ':', messageTemplates[selectedContact.id]);
+  };
   
 
- 
+  const handleMailClick = () => {
+    console.log('Mail icon clicked');
+    // Add functionality for mail click here
+  };
 
+  const handleVoiceClick = () => {
+    console.log('Voice icon clicked');
+    // Add functionality for voice click here
+  };
 
+  const handleSearchClick = () => {
+    console.log('Search icon clicked');
+    // Add functionality for search click here
+  };
 
+  const filteredContacts = contacts.filter(contact =>
+    contact.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+    contact.last_name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const handleContactSelection = async (contact) => {
+    setSelectedContact(contact);
+    if (contact && contact.id) {
+      await fetchProfileImage(contact.id);
+      if (!messages[contact.id]) {
+        setMessages(prevMessages => ({
+          ...prevMessages,
+          [contact.id]: []
+        }));
+      }
+    } else {
+      console.error('Invalid contact:', contact);
+    }
+  };
+
+  const handleToggleSmileys = () => {
+    setShowSmileys(!showSmileys);
+  };
+
+  const handleSelectSmiley = (emoji) => {
+    const newMessageTemplate = (messageTemplates[selectedContact?.id] || '') + emoji.emoji + ' ';
+    setMessageTemplates(prevTemplates => ({
+      ...prevTemplates,
+      [selectedContact?.id]: newMessageTemplate
+    }));
+  };
+  
   
 
   return (
@@ -330,27 +342,6 @@ socket.on('node-message', (message) => {
         </div>
       </div>
       <div className="chatbot-contact-section">
-      <button className="chatbot-signupbutton" onClick={handleRedirect}>Sign Up</button>
-      <div className="content">
-      {/* Your existing content here */}
-      <button onClick={openPopup} className="open-popup-button">
-       Image Editor
-      </button>
-
-      {showPopup && (
-        <div className="editimage-popup">
-          <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
-          <div className="editimage-popup-container">
-            <div className="editimage-popup-content">
-              <ImageEditorComponent onClose={handlePopupClose}/>
-            </div>
-            <button onClick={handlePopupClose} className="close-popup-button">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
         <h1 className='chatbot-details'>Contact Details</h1>
         {selectedContact && (
           <div className="chatbot-contact-details">
@@ -364,7 +355,6 @@ socket.on('node-message', (message) => {
                 <h2>{selectedContact.first_name} {selectedContact.last_name}</h2>
                 
               </div>
-              
                 <div className="chatbot-contacts-details">
                 <p className='chatbot-phone'> <CallRoundedIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.phone}</p>
                 <p className='chatbot-mail'><MailIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.email}</p>
