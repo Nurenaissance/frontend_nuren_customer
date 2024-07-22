@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./register.css";
 import Spline from "@splinetool/react-spline";
 import { useState, useEffect } from "react";
+import registration from "../../assets/registration.jpg"
 import { 
   TextField, 
   Button, 
@@ -242,7 +243,7 @@ export const Register = () => {
       </div>
     </div>
     
-    <Spline scene="https://prod.spline.design/8skP0r1LWfUTUgMX/scene.splinecode" className="spline_scene" />
+<img style={{height:'90%'}} src={registration} alt="" />
   </div>
 
   {showNewOrgForm && (
