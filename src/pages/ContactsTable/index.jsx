@@ -9,6 +9,7 @@ import * as XLSX from "xlsx"; // Importing xlsx library
 import jsPDF from "jspdf"; // Importing jsPDF library
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -23,6 +24,7 @@ export const ContactsTable = () => {
   const [viewMode, setViewMode] = useState("table");
   const tenantId=getTenantIdFromUrl();
   const [activeContacts, setActiveContacts] = useState([]);
+  const navigate = useNavigate();
 
   const [inactiveContacts, setInactiveContacts] = useState([]);
   const [recentContacts, setRecentContacts] = useState([]); // New state for recent contacts
@@ -41,6 +43,7 @@ export const ContactsTable = () => {
   const [searchAccountTerm, setSearchAccountTerm] = useState(""); // New state for account dropdown search
   const modelName = "contacts";
   const [activeButton, setActiveButton] = useState("All Contacts");
+  const [draftContacts, setDraftContacts] = useState([]);
 
   const handleButtonClick = (status) => {
     console.log("Clicked:", status);
@@ -58,6 +61,8 @@ export const ContactsTable = () => {
       const data = response.data;
       setContacts(data);
       setFilteredContacts(data);
+      const drafts = data.filter(contact => contact.status === "Draft");
+      setDraftContacts(drafts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
     }
@@ -86,6 +91,14 @@ export const ContactsTable = () => {
       }
     } catch (error) {
       console.error("Error fetching active contacts:", error);
+    }
+  };
+
+  const handleRowClick = (contact) => {
+    if (contact.status === 'Draft') {
+      navigate(`/${tenantId}/addcontact`, { state: { contact } });
+    } else {
+      navigate(`/${tenantId}/contactinfo/${contact.id}`);
     }
   };
   
@@ -299,6 +312,25 @@ export const ContactsTable = () => {
             <td className="cont_phone">{contact.address}</td>
           </tr>
         ));
+        case "Draft":
+          return draftContacts.map((contact, index) => (
+            <tr className="contacttablerow" key={contact.id}>
+              <td>
+                {generateSmiley(generateRandomColor())}
+                <div className="cont-first_name">
+                  <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
+                    {contact.first_name}
+                  </Link>
+                </div>
+              </td>
+              <td className="contlast_name">{contact.last_name}</td>
+              <td className="cont_email">
+                <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </td>
+              <td className="cont_phone">{contact.phone}</td>
+              <td className="cont_phone">{contact.address}</td>
+            </tr>
+          ));
       case "Recent":
         return recentContacts.map((contact, index) => (
           <tr className="contacttablerow" key={contact.id}>
@@ -322,6 +354,8 @@ export const ContactsTable = () => {
         return null;
     }
   };
+
+
 
   
   return (
@@ -460,6 +494,16 @@ export const ContactsTable = () => {
             Recent
           </button>
         </div>
+        <div className="activeInactivebtn5">
+        <button
+                        className={`button ${
+                          activeButton === "Draft" ? "active" : ""
+                        }`}
+                        onClick={() => setActiveButton("Draft")}
+                      >
+                        Draft
+                      </button>
+        </div>
             
                 
       </div>
@@ -514,12 +558,11 @@ export const ContactsTable = () => {
           {activeButton === "All Accounts"
             ? contacts.map((contact, index) => (
                 <tr className="contacttablerow" key={contact.id}>
-                  <td>
+                  <td onClick={() => handleRowClick(contact)}>
                     {generateSmiley(generateRandomColor())}
                     <div className="cont-first_name">
-                      <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
                         {contact.first_name}
-                      </Link>
+                     
                     </div>
                   </td>
                   <td className="contlast_name">{contact.last_name}</td>
@@ -535,10 +578,10 @@ export const ContactsTable = () => {
                 <tr className="contacttablerow" key={contact.id}>
                   <td>
                     {generateSmiley(generateRandomColor())}
-                    <div className="cont-first_name">
-                      <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
+                    <div className="cont-first_name" onClick={handleRowClick}>
+                      
                         {contact.first_name}
-                      </Link>
+                      
                     </div>
                   </td>
                   <td className="contlast_name">{contact.last_name}</td>

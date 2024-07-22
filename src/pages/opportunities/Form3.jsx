@@ -77,6 +77,7 @@ const Form3 = () => {
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorFields, setErrorFields] = useState({});
+    const [isSavingDraft, setIsSavingDraft] = useState(false);
 
     const [oppourtunityData, setOppourtunityData] = useState({
         name: "",
@@ -168,7 +169,37 @@ const Form3 = () => {
     }, [formErrors]);
   
 
-    
+    const handleSaveAsDraft = async () => {
+      setIsSavingDraft(true);
+      try {
+        const dataToSend = {
+          ...oppourtunityData,
+          createdBy: userId,
+          tenant: tenantId,
+          status: "Draft",
+        };
+  
+        console.log('Data to send:', dataToSend);
+  
+        localStorage.setItem('opportunityDraft', JSON.stringify(dataToSend));
+  
+        await axiosInstance.post('/opportunities/', dataToSend);
+  
+        console.log("Draft saved successfully");
+  
+        navigate(`/${tenantId}/opportunities`);
+      } catch (error) {
+        console.error("Error saving draft:", error);
+  
+        if (error.response) {
+          setFormErrors(error.response.data || error.message);
+        } else {
+          setFormErrors({ networkError: 'Network Error. Please try again later.' });
+        }
+      } finally {
+        setIsSavingDraft(false);
+      }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -248,6 +279,7 @@ const handleCancel = () => {
   
 
   if (isConfirmed) {
+    localStorage.removeItem('opportunityDraft'); 
     console.log("Cancel button clicked");
    
     window.location.href = `../${tenantId}/opportunities`;
@@ -255,14 +287,10 @@ const handleCancel = () => {
 };
 
 
-const handleSaveAsDraft = () => {
-  // Implement save as draft logic here
-  console.log("Save as Draft button clicked");
 
-};
 const handleSubmitForm = (event) => {
-  event.preventDefault(); // Prevent default form submission behavior
-  // Call your submit logic here
+  event.preventDefault(); 
+  localStorage.removeItem('opportunityDraft'); 
   handleSubmit(event);
 };
 
@@ -275,6 +303,13 @@ const closeSuccessPopup = () => {
   navigate(`/${tenantId}/opportunties`);
 
 };
+
+useEffect(() => {
+  const draftData = localStorage.getItem('opportunityDraft');
+  if (draftData) {
+    setOppourtunityData(JSON.parse(draftData));
+  }
+}, []);
 
 
 
