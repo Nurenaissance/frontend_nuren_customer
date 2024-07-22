@@ -41,12 +41,26 @@ const ImageEditor = () => {
   };
   const handleIframeLoad = () => {
     const { current: iframe } = iframeRef;
+    let comment = 'h1';
 
     if (iframe) {
-      // Example: Listen to messages from Photopea
       window.addEventListener('message', (e) => {
-        console.log('Message received from Photopea:', e.data);
-        // Handle messages as needed
+        console.log(`${comment}`, e.data);
+
+        if (e.data instanceof ArrayBuffer) {
+          // Update ImageBuffer when ArrayBuffer is received
+          if(comment=='h1'){
+          setImageBuffer(event.data); }
+        else if(comment=='h2'){
+          setImageBuffer2(event.data);
+          comment='h1';
+        }
+      }else if (e.data === 'ComingStage') {
+        // Update ImageBuffer2 when 'ComingStage' message is received
+        comment='h2';
+      }else if (e.data === 'done') {
+          // Photopea has finished processing
+        }
       });
 
       // Example: Send initial script after iframe is loaded (optional)
@@ -54,21 +68,25 @@ const ImageEditor = () => {
       // iframe.contentWindow.postMessage(initialScript, '*');
     }
   };
-
-  useEffect(() => {
+  /*useEffect(() => {
     const handleMessage = (event) => {
       // Handle messages received from Photopea
       console.log('Message from Photopea:', event.data);
+      let comment = 'h1';
       // Example: Check if message is "done"
       
-  if (event.data === 'ComingStage') {
-    // Update ImageBuffer2 when 'ComingStage' message is received
-    setImageBuffer2(ImageBuffer);
-  } else if (event.data instanceof ArrayBuffer) {
+  if (event.data instanceof ArrayBuffer) {
     // Update ImageBuffer when ArrayBuffer is received
-    setImageBuffer(event.data);
+    if(comment=='h1'){
+    setImageBuffer(event.data); }
+  else if(comment=='h2'){
+    setImageBuffer2(event.data);
+    comment='h1';
   }
-  
+}else if (event.data === 'ComingStage') {
+  // Update ImageBuffer2 when 'ComingStage' message is received
+  comment='h2';
+}
       if (event.data === 'done') {
         
         // Photopea has finished processing
@@ -80,13 +98,12 @@ const ImageEditor = () => {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, []);   
+  }, []);   */
   const handleUploadToAzure = async (base64Data) => {
     try {
       console.log("Starting upload to Azure...");
       const blob = await fetch(base64Data).then(res => res.blob());
       console.log("Blob created:", blob);
-
       const uploadedUrl = await uploadToBlob(new File([blob], `${uuidv4()}.png`, { type: blob.type }), 'll');
       console.log('Image uploaded to Azure:', uploadedUrl);
 
@@ -243,7 +260,7 @@ const postToEditImages = async (base64Data1, base64Data2, prompt) => {
   }
 };
   const handleDatatobase64 = async () => {
-    if (ImageBuffer && ImageBuffer2) {
+  {
       try {
         // Convert both ArrayBuffer to base64 concurrently
         const [base64Image1, base64Image2] = await Promise.all([
@@ -256,15 +273,13 @@ const postToEditImages = async (base64Data1, base64Data2, prompt) => {
        console.log('Base64 Image 2:', base64Image2);
   
         // Call the function to post data to edit images
-        //const editedImageUrl = await postToEditImages(base64Image1, base64Image2, inpaintingText);
-        //console.log('Edited Image URL:', editedImageUrl);
+        const editedImageUrl = await postToEditImages(base64Image1, base64Image2, inpaintingText);
+        console.log('Edited Image URL:', editedImageUrl);
   
         // Proceed with any further processing using base64Image1 and base64Image2
       } catch (error) {
         console.error('Error converting ArrayBuffer to base64 or making POST request:', error);
       }
-    } else {
-      console.log("ImageBuffer or ImageBuffer2 is missing");
     }
   };
   
@@ -351,7 +366,7 @@ const handleInstaAspectRatio=async ()=>{
       <option value="whatsapp">WhatsApp</option>
       <option value="linkedin">LinkedIn</option>
     </select>
-    <button onClick={runCustomScript}>Run Custom Script</button>
+   {/*<button onClick={runCustomScript}>Run Custom Script</button>*/} 
     <button onClick={handleInstaAspectRatio}>Insta</button>
     <button onClick={handleRaarrrr}>RAAAAAAAAAAAR</button>
     <button onClick={handleDatatobase64}>   Testingg butttonn</button>
