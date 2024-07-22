@@ -12,17 +12,94 @@ const getTenantIdFromUrl = () => {
   }
   return null; // Return null if tenant ID is not found or not in the expected place
 };
+
 const colors = [
   "#5DADE2", "#34495E", "#D5DBDB", "#566573", "#F5CBA7",
   "#708090", "#B0C4DE", "#82E0AA", "#F08080" // Add more colors if needed
 ];
 
-
 const Kanban2 = () => {
   const tenantId = getTenantIdFromUrl();
   const [columns, setColumns] = useState({});
   const [stages, setStages] = useState([]);
+  const [newStageTitle, setNewStageTitle] = useState("");
+  const [editingColumnId, setEditingColumnId] = useState(null);
+  const [newTitle, setNewTitle] = useState("");
+  const handleDoubleClick = (columnId, currentTitle) => {
+    setEditingColumnId(columnId);
+    setNewTitle(currentTitle);
+  };
+  const handleAddStage = async () => {
+    try {
+      // Determine the model_name from the URL
+      
+      const model_name = "opportunity"; // Assuming last part of path is model_name
+      console.log("status", newStageTitle,"model_name", model_name);
+      // Make POST request to create a new stage
+      const response = await axiosInstance.post('/stage/create/', {
+        status: newStageTitle,
+        model_name: model_name
+      });
+  
+      // Log response and update UI as needed
+      console.log('New stage created:', response.data);
+  
+    // Assuming you have a function to fetch stages and update state
+    } catch (error) {
+      console.error('Error creating new stage:', error);
+    }
+  };
+  const handleDeleteStage = async (columnId) => {
+    try {
+      // Check if the stage has cards (leads)
+      const column = columns[columnId];
+      if (column.cards.length > 0) {
+        alert("Cannot delete stage with cards. Please move or delete all cards first.");
+        return;
+      }
+  
+      // Make DELETE request to delete the stage
+      await axiosInstance.delete(`/stage/delete/${columnId}/`);
+  
+      // Update the columns state to reflect the deleted stage
+      const updatedColumns = { ...columns };
+      delete updatedColumns[columnId];
+      setColumns(updatedColumns);
+  
+      // Optionally fetch stages again if needed
+      fetchStagesAndColors(); // Assuming you have a function to fetch stages and update state
+    } catch (error) {
+      console.error('Error deleting stage:', error);
+    }
+  };
+  const handleSaveClick = async (columnId) => {
+    try {
+      // Replace 'your_stage_id' with the actual stage ID you want to update
+      const response = await axiosInstance.post(`/stage/update/${columnId}/`, {
+        status: newTitle,
+      });
 
+      console.log('Response:', response.data);
+      // Update the columns state with the new title
+      // This assumes you have a function to update the columns state
+      updateColumnTitle(columnId, newTitle);
+
+      setEditingColumnId(null);
+    } catch (error) {
+      console.error('Error updating title:', error);
+    }
+  };
+
+  const updateColumnTitle = (columnId, newTitle) => {
+    // Implement this function to update the column title in your state
+    setColumns((prevColumns) => ({
+      ...prevColumns,
+      [columnId]: {
+        ...prevColumns[columnId],
+        title: newTitle,
+      },
+    }));
+  };
   useEffect(() => {
     const fetchStagesAndColors = async () => {
       try {
@@ -32,8 +109,7 @@ const Kanban2 = () => {
         if (stagesData && stagesData.stages && Array.isArray(stagesData.stages)) {
           const stagesWithColors = stagesData.stages.map((stage, index) => {
             const color = colors[index % colors.length]; // Use color from the predefined array
-
-            return { ...stage, color}; // Add the color to the stage object
+            return { ...stage, color }; // Add the color to the stage object
           });
           setStages(stagesWithColors);
         } else {
@@ -49,56 +125,50 @@ const Kanban2 = () => {
 
   useEffect(() => {
     if (stages.length === 0) return;
-
+  
     const fetchOpportunities = async () => {
       try {
         const response = await axiosInstance.get('/opportunities/');
         const opportunities = response.data;
-
-        const categorizedOpportunities = Array.isArray(stages)
-         ? stages.reduce((acc, stage) => {
-              acc[stage.status] = [];
-              return acc;
-            }, {})
-          : {};
-
-        //...
-
+  
+        // Initialize categorizedOpportunities object
+        const categorizedOpportunities = {};
+        stages.forEach((stage) => {
+          categorizedOpportunities[stage.id] = [];
+        });
+  
+        // Categorize opportunities into respective stages
         opportunities.forEach(opportunity => {
-          if (categorizedOpportunities[opportunity.stage]) {
-            categorizedOpportunities[opportunity.stage].push(opportunity);
+          const stageId = opportunity.stage; // Adjust based on your actual opportunity data structure
+          if (categorizedOpportunities[stageId]) {
+            categorizedOpportunities[stageId].push(opportunity);
           } else {
-            categorizedOpportunities['QUALIFICATION']?.push(opportunity); // Default to 'QUALIFICATION' if stage is unknown
+            console.error(`Unknown stage ID: ${stageId} for opportunity with ID: ${opportunity.id}`);
           }
         });
-
-        const updatedColumns = {};
-        stages.forEach(stage => {
-          updatedColumns[stage.status] = {
-            title: stage.status,
-            cards: mapOpportunitiesToCards(categorizedOpportunities[stage.status]),
-            bg: stage.color, // Use the stored color
+  
+        // Map opportunities to cards for each column
+        const columnsData = {};
+        stages.forEach((stage) => {
+          const count = categorizedOpportunities[stage.id].length || 0;
+          const cards = mapOpportunitiesToCards(categorizedOpportunities[stage.id]);
+          columnsData[stage.id] = {
+            title: stage.status, // Ensure `title` is set correctly
+            count,
+            cards,
+            bg: stage.color // Set the background color
           };
         });
-
-        setColumns(updatedColumns);
+  
+        // Set the columns state with the mapped cards and opportunity count
+        setColumns(columnsData);
       } catch (error) {
         console.error("Error fetching opportunities:", error);
       }
     };
-
+  
     fetchOpportunities();
   }, [stages]);
-
-
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
 
   const mapOpportunitiesToCards = (opportunities) => {
     if (!Array.isArray(opportunities)) {
@@ -176,21 +246,44 @@ const Kanban2 = () => {
     }
   };
 
+
+
+ 
+
+  const handleTitleChange = (e) => {
+    setNewTitle(e.target.value);
+  };
+
+
+
   return (
     <>
-      <br />
-      <div className="Kanban">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="kanban-board">
-            {Object.keys(columns).map((columnId, index) => {
-              const column = columns[columnId];
-              return (
-                <React.Fragment key={columnId}>
-                  <div className="column">
-                    <div className="title htext1" style={{ backgroundColor: column.bg }}>
-                      {column.title}
+    <br />
+    <div className="Kanban">
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="kanban-board">
+          {Object.keys(columns).map((columnId) => {
+            const column = columns[columnId];
+            return (
+              <div className="column" key={columnId}>
+                <div className="title htext1" style={{ backgroundColor: column.bg }} onDoubleClick={() => handleDoubleClick(columnId, column.title)}>
+                  {editingColumnId === columnId ? (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        value={newTitle}
+                        onChange={handleTitleChange}
+                        style={{ marginRight: '5px',backgroundColor:column.bg }}
+                      />
+                      <button onClick={() => handleSaveClick(columnId)} style={{ fontSize: '0.8rem' }}>Save</button>
                     </div>
-                    <Droppable droppableId={columnId}>
+                  ) : (
+                    <>
+                      {column.title} ({column.count})
+                    </>
+                  )}
+                </div>
+                <Droppable droppableId={columnId}>
                       {(provided) => (
                         <div
                           ref={provided.innerRef}
@@ -235,16 +328,26 @@ const Kanban2 = () => {
                         </div>
                       )}
                     </Droppable>
-                  </div>
-                  {(index + 1) % 5 === 0 && <div className="column-break" />}
-                </React.Fragment>
-              );
-            })}
+
+                <button onClick={() => handleDeleteStage(columnId)} className="delete-column-btn">Delete</button>
+              </div>
+            );
+          })}
+          <div className="column add-column">
+            <input
+              type="text"
+              placeholder="New Stage"
+              value={newStageTitle}
+              onChange={(e) => setNewStageTitle(e.target.value)}
+            />
+            <button onClick={handleAddStage}>+</button>
           </div>
-        </DragDropContext>
-      </div>
-    </>
+        </div>
+      </DragDropContext>
+    </div>
+  </>
   );
-}
+};
 
 export default Kanban2;
+

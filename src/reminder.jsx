@@ -5,32 +5,18 @@ const Reminder =()=>{
 
     const [reminders, setReminders] = useState([]);
     const [reminderMessage, setReminderMessage] = useState("");
-    const [reminder, setReminder] = useState([]);
 
-
-    useEffect(() => {
-      const fetchReminders = async () => {
-        try {
-          const response = await axiosInstance.get('/reminders/');
-          setReminder(response.data);
-        } catch (error) {
-          console.error("Error fetching reminders:", error);
-        }
-      };
-      fetchReminders();
-    }, []);
-  
     useEffect(() => {
         const storedReminders = JSON.parse(localStorage.getItem('reminders')) || [];
         setReminders(storedReminders);
       }, []);
       useEffect(() => {
-  
+
         const interval = setInterval(() => {
           const now = new Date().getTime();
           reminders.forEach((reminder) => {
-            if (reminder.time_trigger <= now) {
-              showReminder(true);
+            if (reminder.triggerTime <= now) {
+              showReminder(reminder.message);
               removeReminder(reminder.id);
             }
           });
@@ -39,7 +25,7 @@ const Reminder =()=>{
       }, [reminders]);
       const showReminder = (message) => {
         console.log("Show reminder called with message:", message);
-        setReminderMessage(`Reminder: Scheduled call '${reminder.subject}' starting soon!`);
+        setReminderMessage(`Reminder: Scheduled call '${scheduleData.subject}' starting soon!`);
         console.log("Reminder Popup: ", message);
       };
       const addReminder = (message, triggerTime) => {
