@@ -4,6 +4,7 @@ import "./style.css";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import axiosInstance from "../../api.jsx";
+import { Delete } from "@mui/icons-material";
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -49,6 +50,25 @@ const Kanban2 = () => {
       console.error('Error creating new stage:', error);
     }
   };
+
+  const handleDeleteOpportunity = async (opportunityId) => {
+    if (window.confirm("Are you sure you want to delete this opportunity?")) {
+      try {
+        await axiosInstance.delete(`/opportunities/${opportunityId}/`);
+        setColumns(prevColumns => {
+          const updatedColumns = {...prevColumns};
+          for (let columnId in updatedColumns) {
+            updatedColumns[columnId].cards = updatedColumns[columnId].cards.filter(card => card.id !== opportunityId);
+            updatedColumns[columnId].count = updatedColumns[columnId].cards.length;
+          }
+          return updatedColumns;
+        });
+      } catch (error) {
+        console.error('Error deleting opportunity:', error);
+      }
+    }
+  };
+
   const handleDeleteStage = async (columnId) => {
     try {
       // Check if the stage has cards (leads)
@@ -57,6 +77,8 @@ const Kanban2 = () => {
         alert("Cannot delete stage with cards. Please move or delete all cards first.");
         return;
       }
+
+     
   
       // Make DELETE request to delete the stage
       await axiosInstance.delete(`/stage/delete/${columnId}/`);
@@ -280,6 +302,7 @@ const Kanban2 = () => {
                   ) : (
                     <>
                       {column.title} ({column.count})
+                      <button onClick={() => handleDeleteStage(columnId)} disabled={columns[columnId].cards.length > 0} className="delete-column-btn"><Delete/></button>
                     </>
                   )}
                 </div>
@@ -306,6 +329,12 @@ const Kanban2 = () => {
                                   <div className="license">
                                     {card.amount} licenses
                                     <div className="status">{card.stage}</div>
+                                    <button 
+          onClick={() => handleDeleteOpportunity(card.id)} 
+          className="delete-lead-btn"
+        >
+          <Delete style={{fontSize:'16px'}}/>
+        </button>
                                   </div>
                                   <div className="content_">
                                     <NavLink to={`/${tenantId}/ShowOpportunity/${card.id}`}>
@@ -329,7 +358,6 @@ const Kanban2 = () => {
                       )}
                     </Droppable>
 
-                <button onClick={() => handleDeleteStage(columnId)} className="delete-column-btn">Delete</button>
               </div>
             );
           })}

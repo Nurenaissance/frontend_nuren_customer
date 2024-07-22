@@ -5,6 +5,7 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 import { sendEmail } from './email.jsx'; // Import the sendEmail function
 import axiosInstance from "../../api.jsx";
+import { Delete } from "@mui/icons-material";
 
 
 const getTenantIdFromUrl = () => {
@@ -186,6 +187,22 @@ function Kanban({ leadCountsData }) {
     }
   }, [stages]);
 
+  const handleDeleteLead = async (leadId) => {
+    try {
+      await axiosInstance.delete(`/leads/${leadId}/`);
+      // After successful deletion, update the state
+      setColumns(prevColumns => {
+        const updatedColumns = {...prevColumns};
+        for (let columnId in updatedColumns) {
+          updatedColumns[columnId].cards = updatedColumns[columnId].cards.filter(card => card.id !== leadId);
+        }
+        return updatedColumns;
+      });
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+    }
+  };
+
   const mapLeadsToCards = (leads) => {
     if (!Array.isArray(leads)) {
       console.error("Invalid leads data:", leads);
@@ -302,6 +319,7 @@ function Kanban({ leadCountsData }) {
                 ) : (
                   <>
                     {column.title} ({column.count})
+                  <button onClick={() => handleDeleteStage(columnId)}  disabled={columns[columnId].cards.length > 0} className="delete-column-btn"><Delete style={{fontSize:'18px'}}/></button>
                   </>
                 )}
               </div>
@@ -328,6 +346,12 @@ function Kanban({ leadCountsData }) {
                             <div className="license">
                               {card.amount} licenses
                               <div className="status">{card.status}</div>
+                              <button 
+          onClick={() => handleDeleteLead(card.id)} 
+          className="delete-lead-btn"
+        >
+          <Delete style={{fontSize:'16px'}}/>
+        </button>
                             </div>
                             <div className="content_">
                               {columnId === 'new' && (
@@ -360,19 +384,22 @@ function Kanban({ leadCountsData }) {
                   </div>
                 )}
               </Droppable>
-              <button onClick={() => handleDeleteStage(columnId)} className="delete-column-btn">Delete</button>
+             
             </div>
           );
         })}
-        <div className="column add-column">
-          <input
-            type="text"
-            placeholder="New Stage"
-            value={newStageTitle}
-            onChange={(e) => setNewStageTitle(e.target.value)}
-          />
-          <button onClick={handleAddStage}>+</button>
-        </div>
+       <div className="column add-column">
+  <div className="add-column-content">
+    <button onClick={handleAddStage} className="add-button">+</button>
+    <span className="add-text">Add New Stage</span>
+    <input
+      type="text"
+      placeholder="New Stage"
+      value={newStageTitle}
+      onChange={(e) => setNewStageTitle(e.target.value)}
+    />
+  </div>
+</div>
       </div>
     </DragDropContext>
   </div>
