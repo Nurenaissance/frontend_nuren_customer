@@ -3,9 +3,15 @@ import 'firebase/compat/firestore';
 import {db} from '../socialmedia/instagram/firebase'
 
 const firebaseConfig = {
-
+  apiKey: "AIzaSyBPsLD_NgSwchMrpG2U81UsH_USQGSiNZU",
+  authDomain: "nurenai.firebaseapp.com",
+  databaseURL: "https://nurenai-default-rtdb.firebaseio.com",
+  projectId: "nurenai",
+  storageBucket: "nurenai.appspot.com",
+  messagingSenderId: "667498046930",
+  appId: "1:667498046930:web:cb281b053ddc016e18940b",
+  measurementId: "G-WD8MF1MXSM"
 };
-
 
 
 // Example function to retrieve data from Firestore
