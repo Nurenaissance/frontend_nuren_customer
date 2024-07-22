@@ -275,15 +275,15 @@
     margin-top: 20px;
   }
   
-  .campaign-box {
+  .linkedin-campaign-box {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 20px;
   }
-  .campaign-box p {
+  .linkedin-campaign-box p {
     margin-bottom: 20px;
   }
-  .campaign-box hr {
+  .linkedin-campaign-box hr {
     border: none;
     border-top: 1px solid #ccc;
     margin: 20px 0;

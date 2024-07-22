@@ -206,6 +206,7 @@
   overflow-y: auto;
   position: relative;
   bottom: 85rem;
+  margin-top: 15rem;
 }
 
 .close-button {

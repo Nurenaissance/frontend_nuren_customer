@@ -45,7 +45,7 @@ export const Card = () => {
   return (
     <div className="card_wrapper">
       <div className="card_wrapper_inner">
-        <NavLink to={`/${tenantId}/report`} className="card_1 card">
+        <NavLink to={`/${tenantId}/report/`} className="card_1 card">
           <div className="card_one">
             <img src={Icon4} alt="icon" className="card_img" width={100} height={100} />
           </div>
@@ -54,7 +54,7 @@ export const Card = () => {
             <p className="card_paragraph">Total Leads</p>
           </div>
         </NavLink>
-        <NavLink to={`/${tenantId}/contacts`} className="card_2 card">
+        <NavLink to={`/${tenantId}/report/`} className="card_2 card">
           <div className="card_one">
             <img src={Icon3} alt="icon" className="card_img" width={100} height={100} />
           </div>
@@ -63,7 +63,7 @@ export const Card = () => {
             <p className="card_paragraph">Created At</p>
           </div>
         </NavLink>
-        <NavLink to={`/${tenantId}/opportunities`} className="card_3 card">
+        <NavLink to={`/${tenantId}/report/`} className="card_3 card">
           <div className="card_one">
             <img src={Icon2} alt="icon" className="card_img" width={100} height={100} />
           </div>
@@ -72,7 +72,7 @@ export const Card = () => {
             <p className="card_paragraph">Leads Amount</p>
           </div>
         </NavLink>
-        <NavLink to={`/${tenantId}/report`} className="card_4 card">
+        <NavLink to={`/${tenantId}/report/`} className="card_4 card">
           <div className="card_one">
             <img src={Icon1} alt="icon" className="card_img" width={100} height={100} />
           </div>

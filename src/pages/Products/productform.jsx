@@ -102,6 +102,53 @@ const ProductForm = () => {
     return null;
   };
 
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      const dataToSend = {
+        ...formData,
+        tenant: tenantId,
+        status: 'Draft', // Add a status field or any other relevant information for draft
+      };
+  
+      console.log('Draft data to send:', dataToSend);
+  
+      // Save draft locally
+      localStorage.setItem('productDraft', JSON.stringify(dataToSend));
+  
+      // Optionally, save draft on backend
+      await axiosInstance.post('/products/draft/', dataToSend);
+  
+      console.log('Draft saved successfully');
+  
+      // Optionally, navigate or show a success message
+      setSuccessMessage('Draft saved successfully.');
+      setShowSuccessPopup(true);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      if (error.response) {
+        setFormErrors(error.response.data || error.message);
+      } else {
+        setFormErrors({ networkError: 'Network Error. Please try again later.' });
+      }
+      setShowPopup(true);
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+  const handleCancel = () => {
+    
+    const isConfirmed = window.confirm("Are you sure you want to cancel? Any unsaved data will be lost.");
+    
+  
+    if (isConfirmed) {
+      localStorage.removeItem('productDraft'); 
+      console.log("Cancel button clicked");
+     
+      window.location.href = `../${tenantId}/tasks`;
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,6 +175,12 @@ const ProductForm = () => {
     }
   };
 
+  const handleSubmitForm = (event) => {
+    event.preventDefault(); 
+    localStorage.removeItem('productDraft'); 
+    handleSubmit(event);
+  };
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -147,9 +200,9 @@ const ProductForm = () => {
       <div className="product-form-container">
         <h1 className="product-form-heading">Create Product</h1>
         <div className="form-buttons-container">
-          <button type="submit" className="product-form-button product-form-button-submit" onClick={handleSubmit}>Submit</button>
-          <button type="button" className="product-form-button product-form-button-savedraft">Save as Draft</button>
-          <button type="button" className="product-form-button product-form-button-cancel">Cancel</button>
+          <button type="submit" className="product-form-button product-form-button-submit" onClick={handleSubmitForm}>Submit</button>
+          <button type="button" className="product-form-button product-form-button-savedraft" onClick={handleSaveAsDraft}>Save as Draft</button>
+          <button type="button" className="product-form-button product-form-button-cancel" onClick={handleCancel}>Cancel</button>
         </div>
 
         <form>

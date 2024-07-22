@@ -9,7 +9,9 @@ const IframePage = () => {
         <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
             <div><Sidebar/></div>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', marginLeft: '-100px' }}>
-                <div><TopNavbar/></div>
+            <div className="contact_nav">
+    <TopNavbar/>
+  </div>
                 <iframe
                     title="External Page"
                     src="https://mypdf-gamma.vercel.app/"  // Replace with your desired URL
