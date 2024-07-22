@@ -87,6 +87,7 @@ function AccountForm() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorFields, setErrorFields] = useState({});
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   useEffect(() => {
     setPhotoColor(generateRandomColor());
@@ -185,18 +186,48 @@ function AccountForm() {
     const isConfirmed = window.confirm("Are you sure you want to cancel? Any unsaved data will be lost.");
     
     if (isConfirmed) {
+      localStorage.removeItem('accountDraft'); 
       console.log("Cancel button clicked");
       window.location.href = `../${tenantId}/accounts`;
     }
   };
   
-  const handleSaveAsDraft = () => {
-    console.log("Save as Draft button clicked");
-    // Implement save as draft logic here
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      const dataToSend = {
+        ...accountData, // Adjust according to the form data structure
+        createdBy: userId,
+        tenant: tenantId,
+        status: "Draft",
+      };
+
+      console.log('Data to send:', dataToSend);
+
+      localStorage.setItem('accountDraft', JSON.stringify(dataToSend));
+
+      await axiosInstance.post('/accounts/', dataToSend);
+
+      console.log("Draft saved successfully");
+
+      navigate(`/${tenantId}/accounts`);
+    } catch (error) {
+      console.error("Error saving draft:", error);
+
+      if (error.response) {
+        setFormErrors(error.response.data || error.message);
+      } else {
+        setFormErrors({ networkError: 'Network Error. Please try again later.' });
+      }
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
+
 
   const handleSubmitForm = (event) => {
     event.preventDefault(); // Prevent default form submission behavior
+    localStorage.removeItem('accountDraft'); 
     handleSubmit(event);
   };
 
@@ -209,6 +240,13 @@ function AccountForm() {
     navigate(`/${tenantId}/acounts`);
 
   };
+  useEffect(() => {
+    const draftData = localStorage.getItem('accountDraft');
+    if (draftData) {
+      setAccountData(JSON.parse(draftData));
+    }
+  }, []);
+  
   
 
   return (

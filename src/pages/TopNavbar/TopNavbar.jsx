@@ -8,12 +8,14 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import SearchTable from './SearchTable';
 import SearchIcon from '@mui/icons-material/Search'; 
 import Chatbot from "../Chatbot/chatbot"; 
-
-
 import AddIcon from '@mui/icons-material/Add';
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import zIndex from "@mui/material/styles/zIndex.js";
+import io from 'socket.io-client';
+import NavbarPopup from './NavbarPopup.jsx';
+
+const socket = io('https://whatsappbotserver.azurewebsites.net/');
 
 
 const getTenantIdFromUrl = () => {
@@ -34,6 +36,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   const navigate = useNavigate();
   const [popupVisible, setPopupVisible] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [aiAnalysisData, setAiAnalysisData] = useState(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -161,15 +164,31 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
     setPopupVisible(false);
   };  
   
-  useEffect(() => {
+   useEffect(() => {
     fetchProfileImageUrl();
     fetchNotificationCount();
-  }, []);
+    socket.on('connect', () => {
+      console.log('Connected to the server');
+    });
+    socket.on('ai-analysis', (analysisData) => {
+      console.log('Received AI analysis:', analysisData);
+      setPopupVisible(true); 
+    });
 
+    return () => {
+      socket.off('ai-analysis');
+    };
+  }, []);
   TopNavbar.propTypes = {
     openMeetingForm: PropTypes.func.isRequired,
     openCallForm: PropTypes.func.isRequired,
   };
+
+  const triggerAIAnalysis = () => {
+    // Simulating data received from server
+    const mockData = "AI Analysis Data"; // Replace with actual data logic
+    setAiAnalysisData(mockData);
+};
 
   return (  
     <div className='topNavbar-head'>
@@ -250,6 +269,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
           </div>
         )}
       </Link>
+
       </div>
       {showMeetingForm && (
         <div className="modal-overlay">

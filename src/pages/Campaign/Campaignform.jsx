@@ -69,6 +69,7 @@ const Campaignform = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorFields, setErrorFields] = useState({});
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -142,6 +143,8 @@ const Campaignform = () => {
     }
   };
 
+  
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -171,6 +174,7 @@ const Campaignform = () => {
     
   
     if (isConfirmed) {
+      localStorage.removeItem('campaignDraft'); 
       console.log("Cancel button clicked");
      
       window.location.href = `../${tenantId}/campaign`;
@@ -178,14 +182,49 @@ const Campaignform = () => {
   };
   
   
-  const handleSaveAsDraft = () => {
-    // Implement save as draft logic here
-    console.log("Save as Draft button clicked");
-  
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      const dataToSend = {
+        ...campaignData,
+        createdBy: userId,
+        tenant: tenantId,
+        status: 'Draft',
+      };
+
+      console.log('Data to send:', dataToSend);
+
+      // Save draft locally (optional)
+      localStorage.setItem('campaignDraft', JSON.stringify(dataToSend));
+
+      // Save draft on backend
+      await axiosInstance.post('/campaign/', dataToSend);
+
+      console.log('Draft saved successfully');
+
+      // Navigate to campaign list or wherever appropriate
+      navigate(`/${tenantId}/campaign`);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      if (error.response) {
+        setFormErrors(error.response.data || error.message);
+      } else {
+        setFormErrors({ networkError: 'Network Error. Please try again later.' });
+      }
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
+
+  useEffect(() => {
+    const draftData = localStorage.getItem('campaignDraft');
+    if (draftData) {
+      setOppourtunityData(JSON.parse(draftData));
+    }
+  }, []);
   const handleSubmitForm = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    // Call your submit logic here
+    event.preventDefault(); 
+    localStorage.removeItem('campaignDraft'); 
     handleSubmit(event);
   };
   return (

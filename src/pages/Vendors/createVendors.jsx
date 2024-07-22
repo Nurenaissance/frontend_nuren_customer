@@ -123,6 +123,25 @@ const Vendorsform = () => {
           // Optionally, handle errors or display error message to the user
         }
       };
+      const handleSaveAsDraft = async (e) => {
+        e.preventDefault();
+        try {
+          const draftData = {
+            ...vendorData,
+            status: "Draft",
+          };
+          const response = await axiosInstance.post('/vendors', draftData);
+          console.log("Form saved as draft:", response.data);
+        } catch (error) {
+          console.error("Error saving draft:", error);
+          if (error.response) {
+            setFormErrors(error.response.data || error.message);
+          } else {
+            setFormErrors({ networkError: 'Network Error. Please try again later.' });
+          }
+          setShowPopup(true);
+        }
+      };
       const handleInputChange = (e) => {
         const { name, value } = e.target;
         const updatedErrorFields = { ...errorFields };
@@ -136,11 +155,19 @@ const Vendorsform = () => {
         
       
         if (isConfirmed) {
+          localStorage.removeItem('vendorDraft'); 
           console.log("Cancel button clicked");
          
           window.location.href = `../${tenantId}/vendors`;
         }
       };
+
+      useEffect(() => {
+        const draftData = localStorage.getItem('vendorDraft');
+        if (draftData) {
+          setOppourtunityData(JSON.parse(draftData));
+        }
+      }, []);
       const generateRandomColor = () => {
         const letters = "0123456789ABCDEF";
         let color = "#";
@@ -165,13 +192,10 @@ const Vendorsform = () => {
       );
       
       
-      const handleSaveAsDraft = () => {
-        // Implement save as draft logic here
-        console.log("Save as Draft button clicked");
       
-      };
       const handleSubmitForm = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
+        localStorage.removeItem('vendorDraft'); 
         handleSubmit(event);
       };
 

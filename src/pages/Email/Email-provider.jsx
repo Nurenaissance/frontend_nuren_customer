@@ -5,6 +5,7 @@ import ZohoLogo from '../../pages/Email/zoho-logo-512.png';
 import HostingerLogo from '../../pages/Email/Hostinger.png';
 import OutlookLogo from '../../pages/Email/OutlookLogo.png';
 import GmailLogo from '../../pages/Email/GMail.png';
+import './Emailss.css';
 
 
 const getTenantIdFromUrl = () => {
@@ -50,8 +51,8 @@ const EmailProviders = () => {
     return (
       <div className="Email-provider-page">
       <h1>Select Email Provider</h1>
-      <div className="provider-email">
-          <img src={GmailLogo} alt="Gmail" onClick={() => handleProviderSelection('gmail')} />
+      <div className="provider-emailss">
+          <img src={GmailLogo} alt="Gmail" onClick={handleGmail} />
           <img src={ZohoLogo} alt="Zoho" onClick={() => handleProviderSelection('zoho')} />
           <img src={GoDaddyLogo} alt="GoDaddy" onClick={() => handleProviderSelection('godaddy')} />
           <img src={HostingerLogo} alt="Hostinger" onClick={() => handleProviderSelection('hostinger')} />

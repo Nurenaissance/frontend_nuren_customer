@@ -65,7 +65,7 @@
     resize: vertical;
   }
   
-  button {
+  .sendemail {
     background-color: #007BFF;
     color: white;
     border: none;
@@ -75,7 +75,7 @@
     transition: background-color 0.2s;
   }
   
-  button:hover {
+  .sendemail:hover {
     background-color: #0056b3;
   }
   
@@ -96,7 +96,7 @@
   .email-list div:last-child {
     border-bottom: none;
   }
-  .provider-email {
+  .provider-emailss {
     display: flex;
     justify-content: space-evenly; /* Adjusts spacing between images */
     align-items: center; /* Centers images vertically */
@@ -106,14 +106,14 @@
     transition: transform 0.2s;
   }
   
-  .provider-email img {
+  .provider-emailss img {
     width: 120px; /* Adjust the width as needed */
     height: 120px; /* Adjust the height as needed */
     object-fit: contain; /* Ensures the image maintains aspect ratio within the specified dimensions */
     border-radius: 10%; /* Optional: Rounds the corners of each image */
     padding: 10px; /* Optional: Adds some padding around each image */ 
   }
-  .provider-email img:hover {
+  .provider-emailss img:hover {
     transform: scale(1.1);
   }
   .email-modal {

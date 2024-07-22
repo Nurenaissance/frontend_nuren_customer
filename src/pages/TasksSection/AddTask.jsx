@@ -86,6 +86,7 @@ const AddTaskForm = () => {
 
   const [accountOptions, setAccountOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
   const STATUS_CHOICES = [
     { value: 'not_started', label: 'Not Started' },
     { value: 'deferred', label: 'Deferred' },
@@ -217,6 +218,7 @@ const AddTaskForm = () => {
     
   
     if (isConfirmed) {
+      localStorage.removeItem('taskDraft'); 
       console.log("Cancel button clicked");
      
       window.location.href = `../${tenantId}/tasks`;
@@ -224,16 +226,52 @@ const AddTaskForm = () => {
   };
   
   
-  const handleSaveAsDraft = () => {
-    // Implement save as draft logic here
-    console.log("Save as Draft button clicked");
-  
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      const dataToSend = {
+        ...taskData,
+        createdBy: userId,
+        tenant: tenantId,
+        status: 'Draft', // Assuming you have a status field in taskData
+      };
+
+      console.log('Data to send:', dataToSend);
+
+      // Save draft locally
+      localStorage.setItem('taskDraft', JSON.stringify(dataToSend));
+
+      // Save draft on backend
+      await axiosInstance.post('/tasks/', dataToSend);
+
+      console.log('Draft saved successfully');
+
+      // Navigate to task list or wherever appropriate
+      navigate(`/${tenantId}/tasks`);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+
+      if (error.response) {
+        setFormErrors(error.response.data || error.message);
+      } else {
+        setFormErrors({ networkError: 'Network Error. Please try again later.' });
+      }
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
   const handleSubmitForm = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    // Call your submit logic here
+    event.preventDefault(); 
+    localStorage.removeItem('taskDraft'); 
     handleSubmit(event);
   };
+
+  useEffect(() => {
+    const draftData = localStorage.getItem('taskDraft');
+    if (draftData) {
+      setOppourtunityData(JSON.parse(draftData));
+    }
+  }, []);
   
   return (
     <div>
