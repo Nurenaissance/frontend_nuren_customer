@@ -17,7 +17,8 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.18",
-    "@mui/material": "^5.15.18",
+    "@mui/material": "^5.16.4",
+    "@mui/system": "^5.16.4",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.374",
     "@toast-ui/react-image-editor": "^3.15.2",
@@ -26,20 +27,14 @@
     "bootstrap": "^5.3.2",
     "chart.js": "^4.4.3",
     "cors": "^2.8.5",
-
     "crypto-js": "^4.2.0",
-
     "echarts": "^5.5.0",
     "echarts-for-react": "^3.0.2",
-
     "emoji-mart": "^5.6.0",
     "emoji-picker-react": "^4.9.3",
     "file-saver": "^2.0.5",
-
-    "fontkit": "^2.0.2",
-
     "firebase": "^10.12.2",
-
+    "fontkit": "^2.0.2",
     "googleapis": "^134.0.0",
     "i": "^0.3.7",
     "jspdf": "^2.5.1",
@@ -56,12 +51,9 @@
     "react-bootstrap": "^2.10.4",
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^6.9.0",
-
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
-
     "react-facebook": "^9.0.12",
-
     "react-flow-renderer": "^10.3.17",
     "react-funnel-pipeline": "^0.2.0",
     "react-google-charts": "^4.0.1",
@@ -70,11 +62,9 @@
     "react-image-crop": "^11.0.5",
     "react-measure": "^2.5.2",
     "react-modal": "^3.16.1",
-
     "react-pdf": "^9.0.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.23.0",
-
     "react-scheduler": "^0.1.0",
     "react-select": "^5.8.0",
     "react-signature-canvas": "^1.0.6",
@@ -85,7 +75,7 @@
     "react-zoom-pan-pinch": "^3.4.4",
     "reactflow": "^11.11.1",
     "rechart": "^0.0.1",
-    "recharts": "^2.12.3",
+    "recharts": "^2.12.7",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.3",

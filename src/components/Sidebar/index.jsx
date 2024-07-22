@@ -32,6 +32,7 @@ import { useAuth } from '../../authContext';
 import axiosInstance from '../../api';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const Sidebar = ({ onSelectModel }) => {
   const { authenticated, setAuthenticated } = useAuth();
@@ -121,17 +122,6 @@ export const Sidebar = ({ onSelectModel }) => {
     setClientsDropdownOpen(false);
   };
 
-  const togglemodelDropdown = () => {
-    setIsModelDropdownOpen(!isModelDropdownOpen);
-};
-
-
-const handleModelSelect = (modelName) => {
-  if (onSelectModel) {
-    onSelectModel(modelName);
-  }
-  setIsModelDropdownOpen(false);
-};
 
   const formatLink = (link) => {
     if (tenantId) {
@@ -152,12 +142,16 @@ const handleModelSelect = (modelName) => {
       return 'https://crm.nuren.ai/instagramauth'; // External URL
     }
   };
+
+  const toggleDropdown = () => {
+    setIsModelDropdownOpen(!isModelDropdownOpen);
+  };
   
 
   return (
     <div className="siadebar">
       <div className="sidebar_inner">
-        <a href="/home" className="sidebar_logo">
+        <a href={`/${tenantId}/home`} className="sidebar_logo">
           <img
             src={Logo}
             alt="logo"
@@ -405,16 +399,32 @@ const handleModelSelect = (modelName) => {
               </span>
             </NavLink>
           </li>
+          <li className="sidebar_item">
+            <NavLink className="sidebar_link" to={formatLink("/editdocument")}>
+              <span style={{ display: 'flex', alignItems:'center' }}>
+                <EditIcon style={{fontSize:'2rem'}}/>
+                <p className="sidebar_link_text">Pdf Editor</p>
+              </span>
+            </NavLink>
+          </li>
+          <li className="sidebar-item">
+      <h2 className="sidebar-heading" onClick={toggleDropdown}>
+        Model
+      </h2>
+      {isModelDropdownOpen && (
+        <ul className="dropdown">
           {models.map((model) => (
-            <li key={model.model_name} className="sidebar-item">
+            <li key={model.model_name} className="dropdown-item">
               <NavLink className="sidebar-link" to={formatLink(`/models/${model.model_name}`)}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
-                  {/* Add icon or other relevant UI elements */}
                   <p className="sidebar-link-text">{model.model_name}</p>
                 </span>
               </NavLink>
             </li>
           ))}
+        </ul>
+      )}
+    </li>
           </div>
               </div>
          
