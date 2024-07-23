@@ -13,9 +13,6 @@ const firebaseConfig = {
   measurementId: "G-WD8MF1MXSM"
 };
 
-
-
-
 // Example function to retrieve data from Firestore
 export async function getdata(dataMap) {
   try {
