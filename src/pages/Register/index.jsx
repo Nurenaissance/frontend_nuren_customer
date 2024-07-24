@@ -2,6 +2,17 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./register.css";
 import Spline from "@splinetool/react-spline";
 import { useState, useEffect } from "react";
+import { 
+  TextField, 
+  Button, 
+  Select, 
+  MenuItem, 
+  FormControl, 
+  InputLabel, 
+  Typography,
+  Container,
+  Box
+} from "@mui/material";
 
 
 const PopupCard = ({ message, onClose }) => {
@@ -29,7 +40,8 @@ export const Register = () => {
   const [newOrganisationTenantId, setNewOrganisationTenantId] = useState("");
   const [newOrganisationPassword, setNewOrganisationPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
+  const [errors, setErrors] = useState({}); 
 
   useEffect(() => {
     // Fetch organisation names from the backend when component mounts
@@ -48,8 +60,24 @@ export const Register = () => {
       .catch((error) => console.error("Error fetching organisations:", error));
   }, []);
 
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!username.trim()) newErrors.username = "Username is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+    if (!password.trim()) newErrors.password = "Password is required";
+    else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    if (!role) newErrors.role = "Role is required";
+    if (!organisation) newErrors.organisation = "Organisation is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
    const authRegister = async() => {
     event.preventDefault(); 
+    if (!validateForm()) return;
     setIsSubmitting(true);
     // Find the tenant ID associated with the selected organisation
     const selectedOrg = organisations.find((org) => org.name === organisation);

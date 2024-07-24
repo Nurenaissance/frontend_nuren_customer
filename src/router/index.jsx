@@ -105,6 +105,7 @@ const getTenantIdFromUrl = () => {
 };
 
 import PdfUploader from "../pages/PDF";
+import FlowTable from "../pages/ReactFlow/FlowTable.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -151,6 +152,8 @@ export const RouteWrapper = () => {
       }, timeDifference);
     }
   };
+
+  
   
     const dismissReminder = (id) => {
       setReminders(reminders.filter((reminder) => reminder.id !== id));
@@ -329,7 +332,8 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/loyaltyform" element ={<Loyalityform/>}/>
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
-
+          
+          <Route path=":tenant_id/flowtable" element={<FlowTable/>} />
 
           
 

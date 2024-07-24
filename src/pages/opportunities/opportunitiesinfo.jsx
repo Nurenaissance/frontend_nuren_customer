@@ -25,6 +25,10 @@ const OpportunitiesInfo = () => {
   const [timeline, setTimeline] = useState([]); // New state variable for timeline data
   const [showTimeline, setShowTimeline] = useState(false); 
 
+  const sortedTimeline = timeline.sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+
+
+
   useEffect(() => {
     fetchOpportunity();
   }, [id]);

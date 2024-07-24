@@ -1,6 +1,10 @@
 
 import { Handle, Position } from 'reactflow';
 import React, { useState, useCallback } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import './customnode.css';
 const handleStyle = { left: 0 };
 
@@ -15,6 +19,14 @@ export const CustomNode = ({ data, handleNodeDelete, onNodeClick }) => {
         padding: "0px",
       }}
     >
+       <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <IconButton onClick={() => handleCopyNode(id)} size="small">
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={() => handleDeleteNode(id)} size="small">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </div>
       <div style={{ backgroundColor: data.headbg, padding: "5px", color: 'white' }}>
         <h3>{data.heading}</h3>
       </div>
@@ -35,6 +47,14 @@ export const TextUpdaterNode = ({ data, isConnectable }) => {
 
   return (
     <div className="text-updater-node">
+      <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <IconButton onClick={() => onCopy(id)} size="small">
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={() => onDelete(id)} size="small">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </div>
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       <div style={{ backgroundColor:'pink'}}>
     <h3 style={{ backgroundColor:'#feedcf',fontSize: '18px', color: 'blue' }}>{data.heading}</h3>
@@ -53,6 +73,7 @@ export const TextUpdaterNode = ({ data, isConnectable }) => {
     </div>
   );
 };
+
 
 
 export const ButtonNode = ({ isConnectable }) => {
@@ -93,88 +114,106 @@ export const ButtonNode = ({ isConnectable }) => {
   );
 };
 
-export const SendMessage = ({ isConnectable }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+export const SendMessage = ({ isConnectable, onDelete, id }) => {
   const [contentHistory, setContentHistory] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState([]); // Array to store uploaded images
-  const [message, setMessage] = useState('');
+  const [uploadedImages, setUploadedImages] = useState([]);
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    setContentHistory((prevContent) => [...prevContent, option]);
-  };
-  const handleInputChange = (e) => {
-    setMessage(e.target.value);
-  };
-
-  const handleVariableInsertion = (variable) => {
-    setMessage((prevMessage) => prevMessage + variable);
+    setContentHistory((prevContent) => [...prevContent, { type: option, id: Date.now() }]);
   };
 
   const handleImageUpload = (event) => {
-    const imageFile = event.target.files[0];
-    const reader = new FileReader();
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedImages(prevImages => [...prevImages, { url: e.target.result, id: Date.now() }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-    reader.onload = (e) => {
-      setUploadedImages((prevImages) => [...prevImages, e.target.result]);
-    };
+  const handleDeleteImage = (id) => {
+    setUploadedImages(prevImages => prevImages.filter(image => image.id !== id));
+  };
 
-    reader.readAsDataURL(imageFile);
+  const handleDeleteContent = (id) => {
+    setContentHistory(prevContent => prevContent.filter(content => content.id !== id));
   };
 
   const renderContent = (content) => {
-    switch (content) {
+    switch (content.type) {
       case 'message':
         return (
-          <div key="message">
-            <div className="message-input">
-            <input type="text" placeholder="Enter your message..." />
-            </div>
-            <button>Send</button>
+          <div key={content.id} style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
+            <input 
+              style={{
+                height:'3rem',
+                borderRadius:'5px', 
+                width:'100%', 
+                paddingLeft:'1rem', 
+              }} 
+              type="text" 
+              placeholder="Enter your message..." 
+            />
+            <IconButton onClick={() => handleDeleteContent(content.id)}>
+              <DeleteIcon />
+            </IconButton>
           </div>
         );
-        case 'image':
-          return (
-            <div key="image">
-              <div className="file-upload-wrapper">
-                <button className="file-upload-button">Choose File</button>
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="file-upload-input" />
-              </div>
-              {uploadedImages.length > 0 && (
-                <div className="show-message-box">
-                  {uploadedImages.map((imageUrl, index) => (
-                    <img key={index} src={imageUrl} alt="Uploaded Image" className="uploaded-image" />
-                  ))}
-                </div>
-              )}
-              <input 
-                type="text" 
-                placeholder="Add a message..." 
-                value={message} 
-                onChange={handleInputChange} 
-                className="message-input" 
-              />
-            </div>
-          );
+      case 'image':
+        return (
+          <div key={content.id} style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              style={{display: 'none'}} 
+              id={`image-upload-${content.id}`}
+            />
+            <label htmlFor={`image-upload-${content.id}`} style={{
+              display: 'inline-block',
+              padding: '10px 15px',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              cursor: 'pointer',
+              borderRadius: '5px',
+            }}>
+              Upload Image
+            </label>
+            <IconButton onClick={() => handleDeleteContent(content.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        );
       case 'document':
         return (
-          <div key="document">
+          <div key={content.id} style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
             <input type="file" accept=".pdf,.docx,.xlsx" />
             <button>Upload Document</button>
+            <IconButton onClick={() => handleDeleteContent(content.id)}>
+              <DeleteIcon />
+            </IconButton>
           </div>
         );
       case 'audio':
         return (
-          <div key="audio">
+          <div key={content.id} style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
             <input type="file" accept="audio/*" />
             <button>Upload Audio</button>
+            <IconButton onClick={() => handleDeleteContent(content.id)}>
+              <DeleteIcon />
+            </IconButton>
           </div>
         );
       case 'video':
         return (
-          <div key="video">
+          <div key={content.id} style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
             <input type="file" accept="video/*" />
             <button>Upload Video</button>
+            <IconButton onClick={() => handleDeleteContent(content.id)}>
+              <DeleteIcon />
+            </IconButton>
           </div>
         );
       default:
@@ -183,8 +222,27 @@ export const SendMessage = ({ isConnectable }) => {
   };
 
   return (
-    <div>
-      <h1 style={{ backgroundColor: 'red', height: '30px', fontSize: '18px', textAlign: 'center', borderRadius: '5px' }}>
+    <div style={{border:'2px black solid', backgroundColor:'#FF7A59', borderRadius:'8px', padding:'1rem', position: 'relative' }}>
+      <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <IconButton size="small">
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={() => onDelete(id)} size="small">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </div>
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+        style={{
+          background: '#555',
+          width: '12px',
+          height: '12px',
+          border: '2px solid #fff',
+        }}
+      />
+      <h1 style={{ fontSize: '28px', color:'white', borderRadius: '5px' }}>
         Send Message
       </h1>
       <div>
@@ -205,8 +263,44 @@ export const SendMessage = ({ isConnectable }) => {
           Video
         </button>
       </div>
-      {contentHistory.map((content) => renderContent(content))}
-      <Handle type="source" position={Position.Right} id="a" style={{}} isConnectable={isConnectable} />
+      {contentHistory.map(content => renderContent(content))}
+      {uploadedImages.length > 0 && (
+        <div style={{marginTop: '10px'}}>
+          {uploadedImages.map((image) => (
+            <div key={image.id} style={{ position: 'relative', display: 'inline-block', margin: '5px' }}>
+              <img src={image.url} alt="Uploaded Image" style={{
+                maxWidth: '100%',
+                maxHeight: '200px',
+                objectFit: 'cover',
+                borderRadius: '8px'
+              }} />
+              <IconButton 
+                onClick={() => handleDeleteImage(image.id)} 
+                style={{ 
+                  position: 'absolute', 
+                  top: '5px', 
+                  right: '5px', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.7)' 
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </div>
+          ))}
+        </div>
+      )}
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        style={{ right: -5, top: '50%' ,
+          background: '#555',
+          width: '12px',
+          height: '12px',
+          border: '2px solid #fff',
+        }}
+        isConnectable={isConnectable}
+      />
     </div>
   );
 };
@@ -262,159 +356,217 @@ const AskQuestionPopup = ({ onSave, onCancel }) => {
 
 export const AskQuestion = ({ data, isConnectable }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [askbutton,setaskButtons]=useState([]);
-  const [selectedValue, setSelectedValue] = useState(data.selectedOption || ''); 
-  const [isOpen, setIsOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedQuestion, setEditedQuestion] = useState();
-  const [editedOptions, setEditedOptions] = useState()
-  const [showPopup, setShowPopup] = useState(false);
-  
+  const [askButtons, setAskButtons] = useState([]);
+  const [listItems, setListItems] = useState(['Choice 1', 'Choice 2', 'Choice 3', 'Choice 4']);
+  const [variables, setVariables] = useState([]);
+
   const handleOptionClick = (option) => {
     setSelectedOption(option);
   };
+
+  const handleButtonLabelChange = (index, newLabel) => {
+    setAskButtons(prevButtons => 
+      prevButtons.map((button, i) => i === index ? { ...button, label: newLabel } : button)
+    );
+  };
+
+  const handleDeleteButton = (index) => {
+    setAskButtons(prevButtons => prevButtons.filter((_, i) => i !== index));
+  };
+
   const handleAddButton = useCallback(() => {
-    if (askbutton.length < 3) {
-      const newButtonId = askbutton.length + 1; // Generate unique ID for the button
+    if (askButtons.length < 3) {
+      const newButtonId = askButtons.length + 1;
       const newButton = { id: newButtonId, label: `Button ${newButtonId}` };
-      setaskButtons([...askbutton, newButton]);
+      setAskButtons(prevButtons => [...prevButtons, newButton]);
     }
-  }, [askbutton]);
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-    // Update data with the selected value
-    data.selectedOption = event.target.value;
-    setIsOpen(false); 
-    if (event.target.value === "edit") {
-      setIsEditing(true); // Set isEditing to true when "Edit" is selected
-      setShowPopup(true); // Show the popup when "Edit" is selected
-    } else {
-      setShowPopup(false); // Hide the popup for other options
-    }
-  };
-  
-  const handleEditClick = () => {
-    setIsEditing(true);
+  }, [askButtons]);
+
+  const handleListItemChange = (index, newValue) => {
+    setListItems(prevItems => 
+      prevItems.map((item, i) => i === index ? newValue : item)
+    );
   };
 
-  const handleOptionChange = (index, value) => {
-    const newOptions = [...editedOptions];
-    newOptions[index] = value;
-    setEditedOptions(newOptions);
+  const handleAddListItem = () => {
+    setListItems(prevItems => [...prevItems, `New Choice ${prevItems.length + 1}`]);
   };
 
-  const addOption = () => {
-    setEditedOptions([...editedOptions, '']);
+  const handleDeleteListItem = (index) => {
+    setListItems(prevItems => prevItems.filter((_, i) => i !== index));
   };
 
-  const deleteOption = (index) => {
-    const newOptions = [...editedOptions];
-    newOptions.splice(index, 1);
-    setEditedOptions(newOptions);
+  const handleAddVariable = () => {
+    setVariables(prevVars => [...prevVars, { name: '', value: '' }]);
   };
 
-  const handleSaveQuestion = (data) => {
-    // Handle saving the question data here
-    console.log('Question:', data.question);
-    console.log('Answer Variants:', data.answerVariants);
-    // Optionally, close the popup
-    setShowPopup(false);
+  const handleVariableChange = (index, field, value) => {
+    setVariables(prevVars => 
+      prevVars.map((variable, i) => i === index ? { ...variable, [field]: value } : variable)
+    );
   };
 
-  const handleCancel = () => {
-    // Handle canceling the operation
-    setShowPopup(false);
+  const handleDeleteVariable = (index) => {
+    setVariables(prevVars => prevVars.filter((_, i) => i !== index));
   };
 
-  
+  const handleEdit = (type, index) => {
+    console.log(`Editing ${type} at index ${index}`);
+    // Implement edit functionality
+  };
 
-  return (<div>
-     <div className="dropdown" style={{ display: 'flex', alignItems:'center'}}>
-    <h1 style={{backgroundColor:'orange',height:'30px',fontSize:'18px',textAlign:'center',borderRadius:'5px'}}>Ask Question</h1>
-    <p>{data.p}</p>
-      <div className={`dropdown-toggle ${isOpen ? 'open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-        <div className="dots"></div>
-        <div className="dots"></div>
-        <div className="dots"></div>
+  const handleCopy = (type, index) => {
+    console.log(`Copying ${type} at index ${index}`);
+    // Implement copy functionality
+  };
+
+  return (
+    <div className="askQuestion-node" style={{border:'2px black solid', backgroundColor:'#FFBA49', borderRadius:'8px', padding:'1rem'}}>
+       <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <IconButton onClick={() => onCopy(id)} size="small">
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={() => onDelete(id)} size="small">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       </div>
-      {isOpen && (
-      <select value={selectedValue} onChange={handleSelectChange} >
-      <option value=""></option>
-        <option value="edit">Edit</option>
-        <option value="copy">Copy</option>
-        <option value="delete">Delete</option> 
-      </select>
-      )
-    }
-     {selectedValue === "edit" && isEditing && showPopup && (
-  <AskQuestionPopup
-    onSave={handleSaveQuestion}
-    onCancel={handleCancel}
-  />
-)}
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: '#555', width: '12px', height: '12px', border: '2px solid #fff' }}
+        isConnectable={isConnectable}
+      />
       
-      </div>
-      
+      <h1 style={{ fontSize: '28px', color:'white', borderRadius: '5px' }}>Ask Question</h1>
+
       {selectedOption === null && (
         <div>
-            <h3>Choose Type</h3>
+          <h3>Choose Type</h3>
           <button className='ask-question-button' onClick={() => handleOptionClick('buttons')}>Buttons</button>
           <button className='ask-question-button' onClick={() => handleOptionClick('lists')}>Lists</button>
           <button className='ask-question-button' onClick={() => handleOptionClick('variables')}>Variables</button>
         </div>
       )}
+
       {selectedOption === 'buttons' && (
         <div>
-          {/* Render div for buttons option */}
-          <p>Here is a space for you to ask a question</p>
-          <div>
-          {askbutton.map((button) => (
-            <div key={button.id}>
-              <button className='ask-question-option-button'>{button.label}</button>
-              <Handle type="source" position={Position.Bottom} id={`button-${button.id}`}  isConnectable={isConnectable} />
-              
+          <input style={{width:'100%', height:'4rem'}} type="text" placeholder='Here is a space for you to ask a question' />
+          {askButtons.map((button, index) => (
+            <div key={button.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', position:'relative' }}>
+              <input
+                type="text"
+                value={button.label}
+                onChange={(e) => handleButtonLabelChange(index, e.target.value)}
+                className='ask-question-option-button'
+              />
+              <IconButton onClick={() => handleEdit('button', index)}><EditIcon /></IconButton>
+              <IconButton onClick={() => handleCopy('button', index)}><ContentCopyIcon /></IconButton>
+              <IconButton onClick={() => handleDeleteButton(index)}><DeleteIcon /></IconButton>
+              <Handle 
+                type="source" 
+                position={Position.Right} 
+                id={`button-${button.id}`}  
+                style={{position: 'absolute', right: -10, top: '50%', background: 'white', width: '12px', height: '12px', border: '2px solid #fff' }}
+                isConnectable={isConnectable} 
+              />
             </div>
           ))}
-          {askbutton.length < 3 && (
-  <button onClick={handleAddButton}>+</button>
-)}
-        </div>
-          
-        </div>
-      )}
-      {selectedOption === 'lists' && (
-        <div>
-          {/* Render div for lists option */}
-          <p>Here is a space for you to ask a question</p>
-    <ul>
-    <li style={{backgroundColor: '#feedcf',borderColor: 'blue',borderWidth: '1px',borderRadius: '5px',padding: '10px',margin: '4px'}}>Choice 1</li>
-      <li style={{backgroundColor: '#feedcf',borderColor: 'blue',borderWidth: '1px',borderRadius: '5px',padding: '10px',margin: '4px'}}>Choice 2</li>
-      <li style={{backgroundColor: '#feedcf',borderColor: 'blue',borderWidth: '1px',borderRadius: '5px',padding: '10px',margin: '4px'}}>Choice 3</li>
-      <li style={{backgroundColor: '#feedcf',borderColor: 'blue',borderWidth: '1px',borderRadius: '5px',padding: '10px',margin: '4px'}}>Choice 4</li>
-    </ul>
-        </div>
-      )}
-      {selectedOption === 'variables' && (
-        <div>
-          {/* Render div for variables option */}
-          <p>Variables content</p>
+          {askButtons.length < 3 && (
+            <button onClick={handleAddButton} style={{border:'1px blue solid', borderRadius:'6px', backgroundColor:'green', padding:'1rem', color:'white'}}>Add +</button>
+          )}
         </div>
       )}
 
-   
-    </div>);
-  
+      {selectedOption === 'lists' && (
+        <div >
+          <input style={{width:'100%', height:'4rem'}} type="text" placeholder='Here is a space for you to ask a question' />
+          <ul style={{ listStyleType: 'none', padding: 0 }}>
+            {listItems.map((item, index) => (
+              <li key={index} className='question-li' style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', backgroundColor: '#feedcf', borderColor: 'blue', borderWidth: '1px', borderRadius: '5px', padding: '10px',position:'relative' }}>
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => handleListItemChange(index, e.target.value)}
+                  style={{ marginRight: '10px' }}
+                />
+                <IconButton onClick={() => handleEdit('list', index)}><EditIcon /></IconButton>
+                <IconButton onClick={() => handleCopy('list', index)}><ContentCopyIcon /></IconButton>
+                <IconButton onClick={() => handleDeleteListItem(index)}><DeleteIcon /></IconButton>
+                <Handle 
+                  type="source" 
+                  position={Position.Right} 
+                  id={`list-${index}`}  
+                  style={{position:'absolute', right: -5, top: '50%', background: '#555', width: '12px', height: '12px', border: '2px solid #fff' }}
+                  isConnectable={isConnectable} 
+                />
+              </li>
+            ))}
+          </ul>
+          <button onClick={handleAddListItem} style={{border:'1px blue solid', borderRadius:'6px', backgroundColor:'green', padding:'1rem', color:'white'}}>Add New Choice</button>
+        </div>
+      )}
+
+      {selectedOption === 'variables' && (
+        <div>
+          <input style={{width:'100%', height:'4rem'}} type="text" placeholder='Here is a space for you to ask a question' />
+          {variables.map((variable, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <input
+                type="text"
+                placeholder="Variable name"
+                value={variable.name}
+                onChange={(e) => handleVariableChange(index, 'name', e.target.value)}
+                style={{ marginRight: '10px' }}
+              />
+              <input
+                type="text"
+                placeholder="Variable value"
+                value={variable.value}
+                onChange={(e) => handleVariableChange(index, 'value', e.target.value)}
+                style={{ marginRight: '10px' }}
+              />
+              <IconButton onClick={() => handleEdit('variable', index)}><EditIcon /></IconButton>
+              <IconButton onClick={() => handleCopy('variable', index)}><ContentCopyIcon /></IconButton>
+              <IconButton onClick={() => handleDeleteVariable(index)}><DeleteIcon /></IconButton>
+              <Handle 
+                type="source" 
+                position={Position.Right} 
+                id={`variable-${index}`}  
+                style={{ right: -5, top: '50%', background: '#555', width: '12px', height: '12px', border: '2px solid #fff' }}
+                isConnectable={isConnectable} 
+              />
+            </div>
+          ))}
+          <button onClick={handleAddVariable} style={{border:'1px blue solid', borderRadius:'6px', backgroundColor:'green', padding:'1rem', color:'white'}}>Add Variable</button>
+        </div>
+      )}
+    </div>
+  );
 };
 const Popup = ({ variable1, handleVariable1Change, conditionType, handleConditionTypeChange, variable2, handleVariable2Change, handleEditSave, handleEditCancel }) => (
-  <div className="setCondition-popup">
+  <div className="setCondition-popup" style={{
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    // maxWidth: '200px',
+    width: '200%',
+    display:'flex',
+    // maxHeight: '400%',
+    overflowY: 'auto'
+  }}>
     <div className="setCondition-popup-content">
-      <div className="input-group">
-        <label htmlFor="variable1">Variable 1:</label>
-        <input id="variable1" type="text" value={variable1} onChange={handleVariable1Change} />
+      <div className="input-group" style={{ marginBottom: '15px' }}>
+        <label htmlFor="variable1" style={{ display: 'block', marginBottom: '5px' }}>Variable 1:</label>
+        <input id="variable1" type="text" value={variable1} onChange={handleVariable1Change} style={{ width:'50%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
       </div>
-      <div className="input-group">
-        <label htmlFor="conditionType">Condition Type:</label>
-        <select id="conditionType" value={conditionType} onChange={handleConditionTypeChange}>
+      <div className="input-group" style={{ marginBottom: '15px' }}>
+        <label htmlFor="conditionType" style={{ display: 'block', marginBottom: '5px' }}>Condition Type:</label>
+        <select id="conditionType" value={conditionType} onChange={handleConditionTypeChange} style={{ width:'50%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}>
           <option value="Equal to">Equal to</option>
           <option value="Not Equal To">Not Equal To</option>
           <option value="Contains">Contains</option>
@@ -425,39 +577,40 @@ const Popup = ({ variable1, handleVariable1Change, conditionType, handleConditio
           <option value="Less Than">Less Than</option>
         </select>
       </div>
-      <div className="input-group">
-        <label htmlFor="variable2">Variable 2:</label>
-        <input id="variable2" type="text" value={variable2} onChange={handleVariable2Change} />
+      <div className="input-group" style={{ marginBottom: '15px' }}>
+        <label htmlFor="variable2" style={{ display: 'block', marginBottom: '5px' }}>Variable 2:</label>
+        <input id="variable2" type="text" value={variable2} onChange={handleVariable2Change} style={{ width: '50%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
       </div>
-      <button className= " save" onClick={handleEditSave}>Save</button>
-      <button className='cancel' onClick={handleEditCancel}>Cancel</button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button className="save" onClick={handleEditSave} style={{ padding: '10px 20px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
+        <button className='cancel' onClick={handleEditCancel} style={{ padding: '10px 20px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+      </div>
     </div>
   </div>
 );
 export const SetCondition = ({ data, isConnectable }) => {
-  const [variable1, setVariable1] = useState('');
-  const [conditionType, setConditionType] = useState('');
-  const [variable2, setVariable2] = useState('');
+  const [variable1, setVariable1] = useState(data.variable1 || '');
+  const [conditionType, setConditionType] = useState(data.conditionType || '');
+  const [variable2, setVariable2] = useState(data.variable2 || '');
   const [isValid, setIsValid] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(data.selectedOption || ''); 
+  const [selectedValue, setSelectedValue] = useState(data.selectedOption || '');
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleVariable1Change = (e) => {
+  const handleVariable1Change = useCallback((e) => {
     setVariable1(e.target.value);
-  };
+  }, []);
 
-  const handleConditionTypeChange = (e) => {
+  const handleConditionTypeChange = useCallback((e) => {
     setConditionType(e.target.value);
-  };
+  }, []);
 
-  const handleVariable2Change = (e) => {
+  const handleVariable2Change = useCallback((e) => {
     setVariable2(e.target.value);
     setIsValid(validateCondition(variable1, conditionType, e.target.value));
-  };
+  }, [variable1, conditionType]);
 
-  const validateCondition = (var1, condition, var2) => {
-    // Convert variables to lowercase for case-insensitive comparison
+  const validateCondition = useCallback((var1, condition, var2) => {
     const value1 = var1.toLowerCase();
     const value2 = var2.toLowerCase();
   
@@ -468,79 +621,116 @@ export const SetCondition = ({ data, isConnectable }) => {
         return value1 !== value2;
       case 'Contains':
         return value1.includes(value2);
-      
+      case 'Does not contain':
+        return !value1.includes(value2);
+      case 'Starts With':
+        return value1.startsWith(value2);
+      case 'Does not start with':
+        return !value1.startsWith(value2);
+      case 'Greater Than':
+        return parseFloat(value1) > parseFloat(value2);
+      case 'Less Than':
+        return parseFloat(value1) < parseFloat(value2);
       default:
-        return false; 
+        return false;
     }
-  };
+  }, []);
 
-  const handleSelectChange = (event) => {
+  const handleSelectChange = useCallback((event) => {
     setSelectedValue(event.target.value);
-    // Update data with the selected value
     data.selectedOption = event.target.value;
-    setIsOpen(false); 
+    setIsOpen(false);
     if (event.target.value === "edit") {
-      handleEditClick(); 
+      handleEditClick();
     }
-    
-  };
-  const handleEditClick = () => {
+  }, [data]);
+
+  const handleEditClick = useCallback(() => {
     setIsEditing(true);
-  };
+  }, []);
 
-  const handleEditSave = () => {
+  const handleEditSave = useCallback(() => {
     setIsEditing(false);
-    // Here you can perform any action you want after saving the edited values
-  };
+    // Update the data object with new values
+    data.variable1 = variable1;
+    data.conditionType = conditionType;
+    data.variable2 = variable2;
+    setIsValid(validateCondition(variable1, conditionType, variable2));
+  }, [data, variable1, conditionType, variable2, validateCondition]);
 
-  const handleEditCancel = () => {
+  const handleEditCancel = useCallback(() => {
     setIsEditing(false);
-    // Here you can handle canceling the edit, such as resetting the values to their original state
-  };
+    // Reset to original values
+    setVariable1(data.variable1 || '');
+    setConditionType(data.conditionType || '');
+    setVariable2(data.variable2 || '');
+  }, [data]);
 
-  return (<div>
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', backgroundColor: 'rgb(103, 184, 255)' }}>
-    <h1 style={{ backgroundColor: 'rgb(103, 184, 255)', height: '30px', fontSize: '18px', textAlign: 'center', borderRadius: '5px' }}>Set Condition</h1>
-      <p>{data.p}</p>
-      <div className="dropdown">
-      <div className={`dropdown-toggle ${isOpen ? 'open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-        <div className="dots"></div>
-        <div className="dots"></div>
-        <div className="dots"></div>
+  return (
+    <div>
+      <div style={{border:'2px black solid', backgroundColor:'#49B2FF', borderRadius:'8px', padding:'1rem'}}>
+      <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+          <IconButton onClick={() => onCopy(id)} size="small">
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+          <IconButton onClick={() => onDelete(id)} size="small">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </div>
+        <h1 style={{ fontSize: '28px', color:'white', borderRadius: '5px' }}>Set Condition</h1>
+        <p>{data.p}</p>
+        <div className="dropdown">
+            <select value={selectedValue} onChange={handleSelectChange}>
+              <option value=""></option>
+              <option value="edit">Edit</option>
+              <option value="copy">Copy</option>
+              <option value="delete">Delete</option> 
+            </select>
+       
+        </div>
+        <p style={{fontSize:'18px'}}>Condition: {variable1} <span style={{color:'red'}}>{conditionType}</span>  {variable2}</p> 
+        {selectedValue === "edit" && isEditing && (
+          <Popup
+            variable1={variable1}
+            handleVariable1Change={handleVariable1Change}
+            conditionType={conditionType}
+            handleConditionTypeChange={handleConditionTypeChange}
+            variable2={variable2}
+            handleVariable2Change={handleVariable2Change}
+            handleEditSave={handleEditSave}
+            handleEditCancel={handleEditCancel}
+          />
+        )}
       </div>
-      {isOpen && (
-      <select value={selectedValue} onChange={handleSelectChange} >
-      <option value=""></option>
-        <option value="edit">Edit</option>
-        <option value="copy">Copy</option>
-        <option value="delete">Delete</option> 
-      </select>
-      )
-    }
-      </div>
+
+      <Handle 
+        type="source" 
+        position={Position.Right} 
+        id="true" 
+        isConnectable={isConnectable} 
+        style={{ backgroundColor: isValid ? 'green' : 'red', top: '25%' }} 
+      />
+      <Handle 
+        type="source" 
+        position={Position.Right} 
+        id="false" 
+        isConnectable={isConnectable} 
+        style={{ backgroundColor: isValid ? 'red' : 'green', top: '75%' }} 
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: '#555',
+            width: '12px',
+            height: '12px',
+            border: '2px solid #fff',
+         }}
+        isConnectable={isConnectable}
+      />
     </div>
-    <p>Put a Condition</p> 
-    <>
-      {selectedValue === "edit" && isEditing && (
-        <Popup
-          variable1={variable1}
-          handleVariable1Change={handleVariable1Change}
-          conditionType={conditionType}
-          handleConditionTypeChange={handleConditionTypeChange}
-          variable2={variable2}
-          handleVariable2Change={handleVariable2Change}
-          handleEditSave={handleEditSave}
-          handleEditCancel={handleEditCancel}
-        />
-      )}
-    </>
+  );
+};
 
-    
-      <Handle type="source" position={Position.Top} id={`button`} style={{ backgroundColor: isValid ? 'green' : 'red' }} />
-      <Handle type="source" position={Position.Bottom} id={`button`} style={{ backgroundColor: isValid ? 'red' : 'green' }} />
-    
-    </div>);
-}; 
 export const IceBreaker = ({ data, isConnectable }) => {
   const [iceBreakers, setIceBreakers] = useState(data.ice_breakers || []);
   const [iceBreakersbutton,seticeBreakersButtons]=useState([]);
@@ -578,58 +768,54 @@ export const IceBreaker = ({ data, isConnectable }) => {
 
   return (
     <div className='IceBreaker'>
-    <div className="IceBreaker-Node" style={{ padding: 10, border: '1px solid #ddd', borderRadius: 5, position: 'relative' }}>
-      <h3>Ice Breakers</h3>
-    </div>
-    <div className="dropdown">
-          <div className={`dropdown-toggle ${isOpen ? 'open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-            <div className="dots"></div>
-            <div className="dots"></div>
-            <div className="dots"></div>
-          </div>
-          {isOpen && (
-            <select value={selectedValue} onChange={handleSelectChange}>
-              <option value=""></option>
-              <option value="copy">Copy</option>
-              <option value="delete">Delete</option>
-            </select>
+    <div className="IceBreaker-Node" style={{ border:'2px black solid', backgroundColor:'pink', borderRadius:'8px', padding:'1rem' }}>
+      <h3 style={{ fontSize: '28px', color:'white', marginTop: '0', marginBottom: '15px' }}>Ice Breakers</h3>
+      <div>
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: '#555',
+            width: '12px',
+            height: '12px',
+            border: '2px solid #fff',
+         }}
+        isConnectable={isConnectable}
+      />
+          {iceBreakers.length === 0 && (
+            <span onClick={handleAddIceBreaker} style={{ color: 'white', cursor: 'pointer' }}>Add Ice Breaker</span>
+          )}
+          {iceBreakers.map((iceBreaker, index) => (
+            <div key={iceBreaker.id} style={{ marginBottom: 10 }}>
+              <input 
+                type="text"
+                value={iceBreaker.body}
+                onChange={(e) => handleChangeIceBreaker(index, e.target.value)}
+                style={{ width: '100%', padding: '5px', border: '1px solid white', borderRadius: '3px' }}
+              />
+            </div>
+          ))}
+        </div>
+        <div>
+          {iceBreakersbutton.map((button) => (
+            <div key={button.id} style={{ marginBottom: 5, position: 'relative' }}>
+              <button className='ice-breaker-button' style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>
+                {button.label}
+                <Handle
+                  type="source"
+                  position={Position.Right}
+                  id={`button-${button.id}`}
+                  isConnectable={isConnectable}
+                  style={{ width: '12px', height: '12px', border: '2px solid #fff', backgroundColor: '#555' }}
+                />
+              </button>
+            </div>
+          ))}
+          {iceBreakersbutton.length < 4 && (
+            <div>
+              <button onClick={handleAddButton} style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>+</button>
+            </div>
           )}
         </div>
-    <div>
-      {iceBreakers.length === 0 && (
-        <span onClick={handleAddIceBreaker} style={{ color: 'blue', cursor: 'pointer' }}>Add Ice Breaker</span>
-      )}
-      {iceBreakers.map((iceBreaker, index) => (
-        <div key={iceBreaker.id} style={{ marginBottom: 10 }}>
-          <input 
-            type="text"
-            value={iceBreaker.body}
-            onChange={(e) => handleChangeIceBreaker(index, e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-      ))}
-    </div>
-    <div>
-      {iceBreakersbutton.map((button) => (
-        <div key={button.id} style={{ marginBottom: 5, position: 'relative' }}>
-          <button className='ice-breaker-button'>
-            {button.label}
-            <Handle
-              type="source"
-              position={Position.Right}
-              id={`button-${button.id}`}
-              isConnectable={isConnectable}
-              className="button-handle"
-            />
-          </button>
-        </div>
-      ))}
-      {iceBreakersbutton.length < 4 && (
-        <div>
-          <button onClick={handleAddButton}>+</button>
-        </div>
-      )}
     </div>
     </div>
   );
@@ -664,50 +850,49 @@ export const PersistentMenu = ({data, isConnectable}) => {
 
   return (
     <div className='PersistentMenu'>
-      <div className="PersistentMenu-Node" style={{ padding: 10, border: '1px solid #ddd', borderRadius: 5, position: 'relative' }}>
-        <h3>Persistent Menu</h3>
-      </div>
-      <div className="dropdown">
-          <div className={`dropdown-toggle ${isOpen ? 'open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-            <div className="dots"></div>
-            <div className="dots"></div>
-            <div className="dots"></div>
-          </div>
-          {isOpen && (
-            <select value={selectedValue} onChange={handleSelectChange}>
-              <option value=""></option>
-              <option value="copy">Copy</option>
-              <option value="delete">Delete</option>
-            </select>
+      <div className="PersistentMenu-Node" style={{border:'2px black solid', backgroundColor:'aquamarine',position:'relative', borderRadius:'8px', padding:'1rem'}}>
+        <h3 style={{ fontSize: '28px', color:'white', marginTop: '0', marginBottom: '15px' }}>Persistent Menu</h3>
+        <div>        
+          {menuItems.length === 0 && (
+            <span onClick={handleAddMenuItem} style={{ color: 'white', cursor: 'pointer' }}>Add Menu Item</span>
           )}
+          {menuItems.map((item, index) => (
+            <div key={index} className="menu-item-container" style={{ marginBottom: 10, position: 'relative' }}>
+              <input
+                type="text"
+                value={item.body}
+                onChange={(e) => handleChangeMenuItem(index, e.target.value)}
+                style={{ width: '100%', padding: '5px', border: '1px solid white', borderRadius: '3px' }}
+              />
+              <Handle
+                type="source"
+                position={Position.Right}
+                id={`handle-${index}`}
+                isConnectable={isConnectable}
+                style={{ width: '12px', height: '12px', border: '2px solid #fff', backgroundColor: '#555', transform: 'translateY(-50%)' }}
+              />
+            </div>
+          ))}
         </div>
-      <div>
-        {menuItems.length === 0 && (
-          <span onClick={handleAddMenuItem} style={{ color: 'blue', cursor: 'pointer' }}>Add Menu Item</span>
-        )}
-        {menuItems.map((item, index) => (
-          <div key={index} className="menu-item-container" style={{ marginBottom: 10, position: 'relative' }}>
-            <input
-              type="text"
-              value={item.body}
-              onChange={(e) => handleChangeMenuItem(index, e.target.value)}
-              style={{ width: '100%' }}
-            />
-            <Handle
-              type="source"
-              position={Position.Right}
-              id={`handle-${index}`}
-              isConnectable={isConnectable}
-              style={{ transform: 'translateY(-50%)'}}
-            />
+        {menuItems.length < 13 && (
+          <div>
+            <button onClick={handleAddMenuItem} style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>+</button>
           </div>
-        ))}
+        )}
       </div>
-      {menuItems.length < 13 && (
-        <div>
-          <button onClick={handleAddMenuItem} style={{ cursor: 'pointer' }}>+</button>
-        </div>
-      )}
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+        style={{
+          background: '#555',
+          width: '12px',
+          height: '12px',
+          border: '2px solid #fff',
+          position:'absolute',
+          zIndex:'100'
+        }}
+      />
     </div>
   );
 };
@@ -739,71 +924,73 @@ export const GenericTemplate = ({ data, isConnectable }) => {
   };
   return (
     <div className="generic-template-node">
-      <h3>Generic Template</h3>
-      <div className="dropdown">
-          <div className={`dropdown-toggle ${isOpen ? 'open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
-            <div className="dots"></div>
-            <div className="dots"></div>
-            <div className="dots"></div>
-          </div>
-          {isOpen && (
-            <select value={selectedValue} onChange={handleSelectChange}>
-              <option value=""></option>
-              <option value="copy">Copy</option>
-              <option value="delete">Delete</option>
-            </select>
-          )}
-        </div>
-      <input
-        type="text"
-        placeholder="Title"
-        value={templateData.title}
-        onChange={(e) => handleChange('title', e.target.value)}
-      />
-
-      <button onClick={() => setShowSubtitleInput(!showSubtitleInput)}>
-        {showSubtitleInput ? 'Hide Subtitle' : 'Add Subtitle'}
-      </button>
-      {showSubtitleInput && (
+      <div style={{border:'2px black solid', backgroundColor:'#49B2FF', borderRadius:'8px', padding:'1rem'}}>
+        <h3 style={{ fontSize: '28px', color:'white', marginTop: '0', marginBottom: '15px' }}>Generic Template</h3>
         <input
           type="text"
-          placeholder="Subtitle"
-          value={templateData.subtitle}
-          onChange={(e) => handleChange('subtitle', e.target.value)}
+          placeholder="Title"
+          value={templateData.title}
+          onChange={(e) => handleChange('title', e.target.value)}
+          style={{ width: '100%', padding: '5px', marginBottom: '10px', border: '1px solid white', borderRadius: '3px' }}
         />
-      )}
-
-      <button onClick={() => setShowUrlInput(!showUrlInput)}>
-        {showUrlInput ? 'Hide URL' : 'Add URL'}
-      </button>
-      {showUrlInput && (
-        <input
-          type="text"
-          placeholder="URL"
-          value={templateData.url}
-          onChange={(e) => handleChange('url', e.target.value)}
-        />
-      )}
-
-      <button onClick={() => setShowImageUrlInput(!showImageUrlInput)}>
-        {showImageUrlInput ? 'Hide Image URL' : 'Add Image URL'}
-      </button>
-      {showImageUrlInput && (
-        <input
-          type="text"
-          placeholder="Image URL"
-          value={templateData.image_url}
-          onChange={(e) => handleChange('image_url', e.target.value)}
-        />
-      )}
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="a"
+<Handle
+        type="target"
+        position={Position.Left}
         isConnectable={isConnectable}
-        className="generic-handle"
+        style={{
+          background: '#555',
+          width: '12px',
+          height: '12px',
+          border: '2px solid #fff',
+        }}
       />
+        <button onClick={() => setShowSubtitleInput(!showSubtitleInput)} style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>
+          {showSubtitleInput ? 'Hide Subtitle' : 'Add Subtitle'}
+        </button>
+        {showSubtitleInput && (
+          <input
+            type="text"
+            placeholder="Subtitle"
+            value={templateData.subtitle}
+            onChange={(e) => handleChange('subtitle', e.target.value)}
+            style={{ width: '100%', padding: '5px', marginBottom: '10px', border: '1px solid white', borderRadius: '3px' }}
+          />
+        )}
+
+        <button onClick={() => setShowUrlInput(!showUrlInput)} style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>
+          {showUrlInput ? 'Hide URL' : 'Add URL'}
+        </button>
+        {showUrlInput && (
+          <input
+            type="text"
+            placeholder="URL"
+            value={templateData.url}
+            onChange={(e) => handleChange('url', e.target.value)}
+            style={{ width: '100%', padding: '5px', marginBottom: '10px', border: '1px solid white', borderRadius: '3px' }}
+          />
+        )}
+
+        <button onClick={() => setShowImageUrlInput(!showImageUrlInput)} style={{ backgroundColor: 'white', color: '#49B2FF', border: 'none', padding: '5px 10px', margin: '5px 0', borderRadius: '5px', cursor: 'pointer' }}>
+          {showImageUrlInput ? 'Hide Image URL' : 'Add Image URL'}
+        </button>
+        {showImageUrlInput && (
+          <input
+            type="text"
+            placeholder="Image URL"
+            value={templateData.image_url}
+            onChange={(e) => handleChange('image_url', e.target.value)}
+            style={{ width: '100%', padding: '5px', marginBottom: '10px', border: '1px solid white', borderRadius: '3px' }}
+          />
+        )}
+
+        <Handle
+          type="source"
+          position={Position.Right}
+          id="a"
+          isConnectable={isConnectable}
+          style={{ width: '12px', height: '12px', border: '2px solid #fff', backgroundColor: '#555' }}
+        />
+      </div>
     </div>
   );
 };
