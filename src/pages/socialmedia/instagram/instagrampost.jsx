@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-catch */
+/* eslint-disable no-undef */
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from "../../../components/Sidebar";
 import ImageEditorComponent from '../../documenteditpage/imageeditor';
@@ -12,9 +14,23 @@ import { storage } from './firebase'; // Import the storage from your firebase.j
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import logo from '../../../assets/logo.png'
 
 import { useNavigate } from 'react-router-dom';
 import LiveChat from './instachat';
+import { Delete } from '@mui/icons-material';
+import { Button, TextField } from '@mui/material';
+import axios from 'axios';
+
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import WorkIcon from '@mui/icons-material/Work';
+import BrushIcon from '@mui/icons-material/Brush';
+import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axiosInstance from '../../../api';
+
 
 
 const urlToFile = async (url, filename, mimeType) => {
@@ -31,7 +47,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const maxLetters = 2200;
-  const [caption, setCaption] = useState('');
+  // const [caption, setCaption] = useState('');
   const [letterCount, setLetterCount] = useState(0);
   const [comment, setComment] = useState('');
   const [showPicker, setShowPicker] = useState(false);
@@ -47,13 +63,297 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   const [isStory, setIsStory] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [isReel, setIsReel] = useState(true);
-  
+  const [showPreview, setShowPreview] = useState(false);
+  const [drafts, setDrafts] = useState([]);
+  const [showDrafts, setShowDrafts] = useState(false);
 
   
   const [showPopup, setShowPopup] = useState(false);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [imageurl, setimageUrl] = useState('');
   const [editorimageurl, setEditorImageUrl] = useState('');
+  const [image, setImage] = useState(null);
+  const [caption, setCaption] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [prompt, setPrompt] = useState('');
+  const [captionCategory, setCaptionCategory] = useState('');
+  const [showCustomPrompt, setShowCustomPrompt] = useState(false);
+  const [tenantId, setTenantId] = useState('');
+  const [draftImageUrl, setDraftImageUrl] = useState('');
+  const [showDraftsPopup, setShowDraftsPopup] = useState(false);
+  const categories = [
+    { name: 'Gen Z', icon: <EmojiEmotionsIcon /> },
+    { name: 'Professional', icon: <WorkIcon /> },
+    { name: 'Creative', icon: <BrushIcon /> },
+    { name: 'Meme', icon: <SentimentVerySatisfiedIcon /> },
+  ];
+
+  useEffect(() => {
+    const storedTenantId = localStorage.getItem('tenant_Id');
+    if (storedTenantId) {
+      setTenantId(storedTenantId);
+      console.log(storedTenantId)
+    } else {
+      // If no tenant ID is stored, you might want to redirect to a login page
+      // or show an error message
+    }
+  }, []);
+
+
+  const saveDraft = async (draftData) => {
+    try {
+      const response = await axiosInstance.post('drafts/', {
+        ...draftData,
+        image_urls: draftData.image_urls, // Send the array of image URLs
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  const fetchDrafts = async () => {
+    try {
+      const response = await axiosInstance.get('drafts/');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  const loadDraft = async (draftId) => {
+    try {
+      const response = await axiosInstance.get(`drafts/${draftId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  const deleteDraft = async (draftId) => {
+    try {
+      const response = await axiosInstance.delete(`drafts/${draftId}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+
+
+  const handleSaveDraft = async () => {
+    try {
+      console.log('Draft saving started');
+  
+      // Step 1: Upload files to Firebase
+      const uploadPromises = files.map(file => {
+        console.log('Uploading file for draft:', file.name);
+        return uploadFileToFirebase(file);
+      });
+  
+      const fileURLs = await Promise.all(uploadPromises);
+      console.log('Uploaded file URLs for draft:', fileURLs);
+  
+      const draftData = {
+        image_url: fileURLs, // Send the array of image URLs
+        caption: caption,
+        access_token: "EAAVZBobCt7AcBO5fHJfjy2kZBWJDcgqp45O4YQszjFBEQl53cQMKNBw8gubbWfzHIapS6y5nQ3F5kwbOZAaY0WI8SAyogA0oJXuqUK08PrIru6urrRZB96fjnK9gUK7TV9eU5TiHhVkKcIw7hKVCTdOBIwGi1e6cgPKWZBYxZANyq5K8xifmTbTkZAz4dniI7oZD",
+        timestamp: new Date().toISOString(),
+        isStory: isStory,
+        isReel: isReel,
+        scheduledDate: selectedDate.toISOString(),
+        scheduledTime: selectedTime,
+      };
+  
+      console.log('Sending draft data:', draftData);
+      const savedDraft = await saveDraft(draftData);
+      alert('Draft saved successfully!');
+      setDrafts([...drafts, savedDraft]);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      console.error('Error response:', error.response?.data);
+      alert('Error saving draft');
+    }
+  };
+
+
+
+  // const handleSaveDraft = async () => {
+  //   try {
+  //     const filePromises = files.map(file => 
+  //       new Promise((resolve, reject) => {
+  //         const reader = new FileReader();
+  //         reader.onloadend = () => resolve(reader.result);
+  //         reader.onerror = reject;
+  //         reader.readAsDataURL(file);
+  //       })
+  //     );
+  
+  //     const fileDataUrls = await Promise.all(filePromises);
+  
+  //     const draftData = {
+  //       image_url: fileDataUrls, // Send the array of data URLs
+  //       caption: caption,
+  //       access_token: "EAAVZBobCt7AcBO5fHJfjy2kZBWJDcgqp45O4YQszjFBEQl53cQMKNBw8gubbWfzHIapS6y5nQ3F5kwbOZAaY0WI8SAyogA0oJXuqUK08PrIru6urrRZB96fjnK9gUK7TV9eU5TiHhVkKcIw7hKVCTdOBIwGi1e6cgPKWZBYxZANyq5K8xifmTbTkZAz4dniI7oZD",
+  //       timestamp: new Date().toISOString(),
+  //       isStory: isStory,
+  //       isReel: isReel,
+  //       scheduledDate: selectedDate.toISOString(),
+  //       scheduledTime: selectedTime,
+  //     };
+  //     console.log('Sending draft data:', draftData);
+  //     const savedDraft = await saveDraft(draftData);
+  //     alert('Draft saved successfully!');
+  //     setDrafts([...drafts, savedDraft]);
+  //   } catch (error) {
+  //     console.error('Error saving draft:', error);
+  //     console.error('Error response:', error.response?.data);
+  //     alert('Error saving draft');
+  //   }
+  // };
+
+  const handleFetchDrafts = async () => {
+    try {
+      const fetchedDrafts = await fetchDrafts();
+      setDrafts(fetchedDrafts);
+      setShowDraftsPopup(true);
+    } catch (error) {
+      console.error('Error fetching drafts:', error);
+      alert('Error fetching drafts');
+    }
+  };
+
+  const handleLoadDraft = async (draftId) => {
+    try {
+      const loadedDraft = await loadDraft(draftId);
+      setCaption(loadedDraft.caption);
+      setIsStory(loadedDraft.isStory);
+      setIsReel(loadedDraft.isReel);
+      setSelectedDate(new Date(loadedDraft.scheduledDate));
+      setSelectedTime(loadedDraft.scheduledTime);
+      if (loadedDraft.image_urls && loadedDraft.image_urls.length > 0) {
+        const filePromises = loadedDraft.image_urls.map(url => 
+          urlToFile(url, `draftImage_${Date.now()}.jpg`, 'image/jpeg')
+        );
+        const loadedFiles = await Promise.all(filePromises);
+        setFiles(loadedFiles);
+        setImage(loadedFiles[0]); // Set the first image as the main image
+      }
+      setShowDrafts(false);
+    } catch (error) {
+      console.error('Error loading draft:', error);
+      alert('Error loading draft');
+    }
+  };
+
+  const handleDeleteDraft = async (draftId) => {
+    try {
+      await deleteDraft(draftId);
+      setDrafts(drafts.filter(draft => draft.id !== draftId));
+      alert('Draft deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting draft:', error);
+      alert('Error deleting draft');
+    }
+  };
+
+
+
+
+
+
+
+  
+  const openPopup = () => {
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+
+
+
+  useEffect(() => {
+    if (files.length > 0) {
+      setShowPreview(true);
+    } else {
+      setShowPreview(false);
+    }
+  }, [files]);
+
+
+
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+
+  const handleGenerateCaption = async () => {
+    if (!image) {
+      alert("Please upload an image first.");
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = async () => {
+        const base64Image = reader.result.split(',')[1];
+  
+        let promptText = `Generate a caption for this image.`;
+        if (captionCategory) {
+          promptText += ` The caption should be in the style of ${captionCategory}.`;
+        }
+        if (prompt) {
+          promptText += ` Additional context or requirements: ${prompt}`;
+        }
+  
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "user",
+              content: [
+                { 
+                  type: "text", 
+                  text: promptText
+                },
+                { 
+                  type: "image_url", 
+                  image_url: { 
+                    url: `data:image/jpeg;base64,${base64Image}` 
+                  } 
+                }
+              ]
+            }
+          ],
+          max_tokens: 300
+        }, {
+          headers: {
+            'Authorization': `Bearer sk-proj-XsFPegZDKVJjoJ4OjxwhT3BlbkFJUiZB2h5ZEuVN7DFPbv0Y`,
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        const generatedCaption = response.data.choices[0].message.content.trim();
+        setCaption(generatedCaption);
+      };
+    } catch (error) {
+      console.error('Error generating caption:', error);
+      setCaption('Failed to generate caption.');
+      if (error.response) {
+        console.error('API Error:', error.response.data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
 
   useEffect(() => {
@@ -229,10 +529,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     setDragging(false);
   };
 
-  const openPopup = () => {
-    setShowPopup(true);
-  };
-
+ 
   const handlePopupClose = () => {
     setShowPopup(false);
   };
@@ -264,28 +561,73 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   };
 
   const handleImageUpload = async (e) => {
-    // Assuming 'addFiles' function is defined in your component
-    
     const newFiles = Array.from(e.target.files);
-    // Add new files to the state
     addFiles(newFiles);
   
-    // Handle showing the uploaded image or image from editor here
     if (newFiles.length > 0) {
-      const file = newFiles[0]; // Assuming you want to handle only the first file here
-      const url = URL.createObjectURL(file);
-      await loadImageFromURL(url); // Replace with your function to handle this
-      uploadedImageUrl(url); // Assuming 'setUploadedImageUrl' updates state for showing uploaded image
-    } else {
-      // Handle showing the image from the editor (replace with your logic)
-       // Replace with your function to get image from editor
-       setEditorImageUrl(uploadedImageUrl); // Set state to show image from editor
+      setImage(newFiles[0]);
+      const url = URL.createObjectURL(newFiles[0]);
+      setDraftImageUrl(url); // Set the draft image URL here
+      await loadImageFromURL(url);
     }
   
-    setShowPopup(false); // Close popup or modal after handling upload
+    setShowPopup(false);
   };
   
   
+
+
+
+
+
+  const DraftsPopup = ({ drafts, onClose, onLoadDraft, onDeleteDraft }) => (
+    <div className="drafts-popup-overlay">
+      <div className="drafts-popup">
+        <h2>Your Drafts</h2>
+        <button onClick={onClose} className="close-popup-button" style={{backgroundColor:'red'}}>Close</button>
+        <div className="drafts-list">
+          {drafts.map((draft) => (
+            <div key={draft.id} className="draft-item">
+              {draft.imageUrl && <img src={draft.imageUrl} alt="Draft preview" className="draft-image" />}
+              <div className="draft-details">
+                <p><strong>Caption:</strong> {draft.caption}</p>
+                <p><strong>Created:</strong> {new Date(draft.timestamp).toLocaleString()}</p>
+                <p><strong>Type:</strong> {draft.isStory ? 'Story' : draft.isReel ? 'Reel' : 'Post'}</p>
+                {draft.scheduledDate && (
+                  <p><strong>Scheduled:</strong> {new Date(draft.scheduledDate).toLocaleDateString()} at {draft.scheduledTime}</p>
+                )}
+              </div>
+              <div className="draft-actions">
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={() => onLoadDraft(draft.id)}
+                >
+                  Load Draft
+                </Button>
+                <Button 
+                  variant="contained" 
+                  color="error" 
+                  onClick={() => onDeleteDraft(draft.id)}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+
+
+
+
+
+
+
 
 
 
@@ -314,19 +656,19 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     setMentionQuery('');
   };
 
-  const onCaptionChange = (e) => {
-    const value = e.target.value;
+  // const onCaptionChange = (e) => {
+  //   const value = e.target.value;
 
-    if (value.length <= maxLetters) {
-      setCaption(value);
-      setLetterCount(value.length);
-    }
-  };
+  //   if (value.length <= maxLetters) {
+  //     setCaption(value);
+  //     setLetterCount(value.length);
+  //   }
+  // };
 
-  const handleEmojiClick = (event, emojiObject) => {
-    setCaption(prevCaption => prevCaption + emojiObject.emoji);
-    setShowPicker(false); // Close the picker after selecting an emoji
-  };
+  // const handleEmojiClick = (event, emojiObject) => {
+  //   setCaption(prevCaption => prevCaption + emojiObject.emoji);
+  //   setShowPicker(false); // Close the picker after selecting an emoji
+  // };
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
@@ -402,7 +744,18 @@ const InstagramPost = ({ uploadedImageUrl }) => {
         ) : (
           <>
             <div className="instagram-post-form">
+              <div className="insta-top-buton" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
               <button>All Posts</button>
+              <Button 
+          variant="outlined" 
+          color="primary" 
+          onClick={handleFetchDrafts}
+          startIcon={<DraftsIcon />}
+          style={{backgroundColor:'black'}}
+          >
+          Show All Drafts
+        </Button>
+          </div>
               <h1 className="instagram-post-title">Instagram</h1>
               <div className="post-container">
                 <div className="post-content">
@@ -471,7 +824,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
                                 Your browser does not support the video tag.
                               </video>
                             )}
-                            <button onClick={() => removeFile(index)}>Remove</button>
+                            <button onClick={() => removeFile(index)}><Delete/></button>
                           </div>
                         ))}
                       </div>
@@ -479,22 +832,56 @@ const InstagramPost = ({ uploadedImageUrl }) => {
                   )}
                 </div>
                 <div className="caption-box">
-                  <textarea
-                    value={caption}
-                    onChange={onCaptionChange}
-                    placeholder="Write a caption..."
-                    className="caption-input"
-                  />
-                  <div className="caption-footer">
-                    <div className="emoji-picker-container">
-                      <button onClick={() => setShowPicker(!showPicker)}>😀</button>
-                      {showPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
-                    </div>
-                    <span>
-                      {letterCount}/{maxLetters}
-                    </span>
-                  </div>
-                </div>
+  <textarea
+    value={caption}
+    onChange={(e) => setCaption(e.target.value)}
+    placeholder="Write a caption..."
+    className="caption-input"
+  />
+  <div className="caption-footer">
+  <div className="caption-categories">
+  {categories.map((category) => (
+    <button
+      key={category.name}
+      className={`category-button ${captionCategory === category.name ? "active" : ""}`}
+      onClick={() => setCaptionCategory(category.name)}
+    >
+      <span className="category-icon">{category.icon}</span>
+      {category.name}
+    </button>
+  ))}
+  <button
+    className={`category-button customize-button ${showCustomPrompt ? "active" : ""}`}
+    onClick={() => setShowCustomPrompt(!showCustomPrompt)}
+  >
+    <span className="category-icon"><SettingsIcon /></span>
+    Customize
+  </button>
+</div>
+    {showCustomPrompt && (
+      <TextField
+        label="Custom prompt for caption"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        multiline
+        rows={3}
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        className="custom-prompt-input"
+      />
+    )}
+    <Button 
+      variant="contained" 
+      color="primary" 
+      onClick={handleGenerateCaption} 
+      disabled={loading || !image}
+      className="generate-caption-button"
+    >
+      {loading ? 'Generating...' : 'Generate Caption'}
+    </Button>
+  </div>
+</div>
               </div>
               <div className="comments-box">
                 <h2>Add a comment</h2>
@@ -516,17 +903,48 @@ const InstagramPost = ({ uploadedImageUrl }) => {
                   </button>
                 </div>
               </div>
-              <button className="post_button" onClick={handleSubmit}>
-                Post
-              </button>
+              <div className="post-buttons" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+        <button className="post_button" style={{backgroundColor:'Green'}} onClick={handleSubmit}>
+          Post
+        </button>
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          onClick={handleSaveDraft}
+          startIcon={<DraftsIcon />}
+          style={{backgroundColor:'red'}}
+        >
+          Save as Draft
+        </Button>
+      </div>
+
+      {showDraftsPopup && (
+  <DraftsPopup
+    drafts={drafts}
+    onClose={() => setShowDraftsPopup(false)}
+    onLoadDraft={handleLoadDraft}
+    onDeleteDraft={handleDeleteDraft}
+  />
+)}
             </div>
             <div className="imageeditor">
               <button onClick={openPopup} className="open-popup-button">
                 Image Editor
               </button>
-              <div className="instagram-post-preview">
+              {showPopup && (
+        <div className="overlay">
+          <div className="popup">
+            <button onClick={closePopup} className="close-popup-button">
+              Close
+            </button>
+            <ImageEditorComponent onClose={closePopup} onUpload={handleImageUpload} />
+          </div>
+        </div>
+      )}
+              {showPreview && (
+          <div className={`instagram-post-preview ${showPreview ? 'visible' : ''}`}>
                 <div className="preview-header">
-                  <img src="" alt="profile" />
+                  <img src={logo} alt="profile" />
                   <span className="preview-username">nuren.ai</span>
                 </div>
                 <div className="preview-content">
@@ -555,6 +973,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
                   </p>
                 </div>
               </div>
+                 )}
             </div>
           </>
         )}

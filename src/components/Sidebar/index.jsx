@@ -182,12 +182,17 @@ export const Sidebar = ({ onSelectModel }) => {
         <hr className="hr" />
         <ul className="sidebar_list">
           <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/home")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <DashboardIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Dashboard</p>
-              </span>
-            </NavLink>
+            <NavLink 
+  className={({ isActive }) => 
+    isActive ? "sidebar_link active" : "sidebar_link"
+  } 
+  to={formatLink("/home")}
+>
+  <span style={{ display: 'flex', alignItems:'center' }}>
+    <DashboardIcon style={{fontSize:'2rem'}}/>
+    <p className="sidebar_link_text">Dashboard</p>
+  </span>
+</NavLink>
           </li>
           <li className="sidebar_item">
             <div className="sidebar_link" onClick={toggleClientsDropdown}>

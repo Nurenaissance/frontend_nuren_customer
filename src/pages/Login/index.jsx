@@ -4,7 +4,7 @@ import Spline from "@splinetool/react-spline";
 import { useState } from "react";
 import { useAuth } from "../../authContext";
 import { useNavigate } from "react-router-dom";
-import login from '../../assets/login.jpg'
+import Loginimage from '../../assets/Loginimage.png';
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -118,7 +118,7 @@ export const Login = () => {
           </div>
         </div>
         <div className="spline_scene">
-          <img src={login} alt="" />
+          <img style={{backgroundSize:'contain'}} src={Loginimage} alt="" />
         </div>
       </div>
       {showPopup && <PopupCard message={`Login successful as ${role}`} onClose={handlePopupClose} />}

@@ -1,11 +1,46 @@
-.apexcharts-legend-text{
-
-  display: none;
+.apexcharts-legend-text {
+  color: #333 !important;
 }
-.apexcharts-legend-marker{
 
-  display: none;
+.apexcharts-legend-marker {
+  margin-right: 5px !important;
 }
-h1{
-     margin-top: 3rem;
+
+.apexcharts-xaxis-label, .apexcharts-yaxis-label {
+  fill: #555 !important;
+}
+
+.apexcharts-tooltip {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #333 !important;
+  border: none !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+  border-radius: 5px !important;
+}
+
+.apexcharts-tooltip-title {
+  background: rgba(0, 0, 0, 0.07) !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+.apexcharts-tooltip-series-group {
+  padding: 5px 10px !important;
+}
+
+.apexcharts-tooltip-marker {
+  margin-right: 8px !important;
+}
+
+.apexcharts-canvas {
+  margin: 0 auto;
+}
+
+.apexcharts-xaxis line,
+.apexcharts-yaxis line {
+  stroke: #e0e0e0;
+}
+
+.apexcharts-xaxis-tick,
+.apexcharts-yaxis-tick {
+  stroke: #e0e0e0;
 }

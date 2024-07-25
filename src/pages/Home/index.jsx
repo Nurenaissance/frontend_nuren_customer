@@ -47,7 +47,7 @@ export const Home = () => {
             <Sidebar />
           </div>
           <div className="home_right_box">
-            <Header name="Report" />
+            <h1>DASHBOARD</h1>
             <div className="home_right_box_inner">
               <Card />
            

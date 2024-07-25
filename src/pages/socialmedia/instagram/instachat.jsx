@@ -57,7 +57,7 @@ const LiveChat = () => {
   useEffect(() => {
     const fetchInstagramContacts = async () => {
       try {
-        const response = await fetch('https://hx587qc4-5173.inc1.devtunnels.ms/instagram-conversations', {
+        const response = await fetch('https://nuren-insta.vercel.app/instagram-conversations', {
           method: 'GET',
         
         });
@@ -85,7 +85,7 @@ const LiveChat = () => {
   // Function to fetch conversation data for a given contact
   const fetchConversation = async (conversationId, accessToken) => {
     try {
-      const response = await fetch('https://hx587qc4-5173.inc1.devtunnels.ms/fetch-conversation', {
+      const response = await fetch('https://nuren-insta.vercel.app/fetch-conversation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
