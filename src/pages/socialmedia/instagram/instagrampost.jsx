@@ -157,7 +157,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
       const draftData = {
         image_url: fileURLs, // Send the array of image URLs
         caption: caption,
-        access_token: "EAAVZBobCt7AcBO5fHJfjy2kZBWJDcgqp45O4YQszjFBEQl53cQMKNBw8gubbWfzHIapS6y5nQ3F5kwbOZAaY0WI8SAyogA0oJXuqUK08PrIru6urrRZB96fjnK9gUK7TV9eU5TiHhVkKcIw7hKVCTdOBIwGi1e6cgPKWZBYxZANyq5K8xifmTbTkZAz4dniI7oZD",
+        access_token: "enter axis token",
         timestamp: new Date().toISOString(),
         isStory: isStory,
         isReel: isReel,
@@ -176,41 +176,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     }
   };
 
-
-
-  // const handleSaveDraft = async () => {
-  //   try {
-  //     const filePromises = files.map(file => 
-  //       new Promise((resolve, reject) => {
-  //         const reader = new FileReader();
-  //         reader.onloadend = () => resolve(reader.result);
-  //         reader.onerror = reject;
-  //         reader.readAsDataURL(file);
-  //       })
-  //     );
-  
-  //     const fileDataUrls = await Promise.all(filePromises);
-  
-  //     const draftData = {
-  //       image_url: fileDataUrls, // Send the array of data URLs
-  //       caption: caption,
-  //       access_token: "EAAVZBobCt7AcBO5fHJfjy2kZBWJDcgqp45O4YQszjFBEQl53cQMKNBw8gubbWfzHIapS6y5nQ3F5kwbOZAaY0WI8SAyogA0oJXuqUK08PrIru6urrRZB96fjnK9gUK7TV9eU5TiHhVkKcIw7hKVCTdOBIwGi1e6cgPKWZBYxZANyq5K8xifmTbTkZAz4dniI7oZD",
-  //       timestamp: new Date().toISOString(),
-  //       isStory: isStory,
-  //       isReel: isReel,
-  //       scheduledDate: selectedDate.toISOString(),
-  //       scheduledTime: selectedTime,
-  //     };
-  //     console.log('Sending draft data:', draftData);
-  //     const savedDraft = await saveDraft(draftData);
-  //     alert('Draft saved successfully!');
-  //     setDrafts([...drafts, savedDraft]);
-  //   } catch (error) {
-  //     console.error('Error saving draft:', error);
-  //     console.error('Error response:', error.response?.data);
-  //     alert('Error saving draft');
-  //   }
-  // };
 
   const handleFetchDrafts = async () => {
     try {
@@ -257,12 +222,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     }
   };
 
-
-
-
-
-
-
   
   const openPopup = () => {
     setShowPopup(true);
@@ -272,9 +231,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     setShowPopup(false);
   };
 
-
-
-
   useEffect(() => {
     if (files.length > 0) {
       setShowPreview(true);
@@ -282,8 +238,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
       setShowPreview(false);
     }
   }, [files]);
-
-
 
 
   const handleImageChange = (e) => {
@@ -334,7 +288,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
           max_tokens: 300
         }, {
           headers: {
-            'Authorization': `Bearer sk-proj-XsFPegZDKVJjoJ4OjxwhT3BlbkFJUiZB2h5ZEuVN7DFPbv0Y`,
+            'Authorization': `Bearer api-key`,
             'Content-Type': 'application/json'
           }
         });
@@ -375,7 +329,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
       // If token is not present, initiate Instagram authentication
       //handleInstaAuth();
     }
-    // No need to set state or perform further actions here
+
   }, []);
 
   const handleSubmit = async (event) => {
@@ -574,10 +528,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     setShowPopup(false);
   };
   
-  
-
-
-
 
 
   const DraftsPopup = ({ drafts, onClose, onLoadDraft, onDeleteDraft }) => (
@@ -627,10 +577,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
 
 
 
-
-
-
-
   const removeFile = (index) => {
     const updatedFiles = files.filter((_, i) => i !== index);
     setFiles(updatedFiles);
@@ -655,20 +601,6 @@ const InstagramPost = ({ uploadedImageUrl }) => {
     setShowSuggestions(false);
     setMentionQuery('');
   };
-
-  // const onCaptionChange = (e) => {
-  //   const value = e.target.value;
-
-  //   if (value.length <= maxLetters) {
-  //     setCaption(value);
-  //     setLetterCount(value.length);
-  //   }
-  // };
-
-  // const handleEmojiClick = (event, emojiObject) => {
-  //   setCaption(prevCaption => prevCaption + emojiObject.emoji);
-  //   setShowPicker(false); // Close the picker after selecting an emoji
-  // };
 
   const handleCommentChange = (e) => {
     setComment(e.target.value);
