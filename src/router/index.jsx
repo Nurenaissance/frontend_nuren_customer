@@ -91,6 +91,7 @@ import ExplorePage from "../pages/ExplorePage/Explore";
 import ExploreDetails from "../pages/ExplorePage/readExplore";
 import Appa from '../components/email.jsx';
 import Models from "../pages/Model/ModelTable.jsx";
+import CoinStatsPage from '../pages/CoinStats/CoinStatsPage';
 
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
@@ -295,7 +296,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/Vendorsinfo/:id" element={<VendorInfo/>}/>
           <Route path=":tenant_id/topNavbar" element={<TopNavbar/>}/>
           <Route path=":tenant_id/custom" element={<Custom/>}/>
-
+          <Route path="/:tenantId/coins" element={<CoinStatsPage />} />
 
 
 

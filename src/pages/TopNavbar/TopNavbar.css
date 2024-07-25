@@ -1,283 +1,333 @@
 .topNavbar-head {
-  width: 100vw;
-  height: 76px;
+  width: 100%;
+  height: 60px;
   background: #FFFFFF;
-  border-radius: 0px;
-  box-shadow: 0px 0px 1px #ddd, 0px 0px 2px #ccc;
-  margin-left: -20rem;
-  margin-top: 5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: static;
+  top: 0;
+  right: 0;
   display: flex;
-  flex-direction: row;
-
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
 }
 
-.search-icon {
-  position: absolute;
-  right: 5px; /* Position the icon inside the input field */
-  
-  width: 20px; /* Adjust as needed */
-  height:30px;/* Adjust as needed */
-  fill: #323743FF; /* Adjust as needed */
+body {
+  padding-top: 60px; /* Add padding to body to account for fixed navbar */
 }
-.search-bar{
-  margin-left: -700px;
-  margin-top: 10px;
-  width:500px;
-  height:30px;
-  border-radius: 5px;
-}
+
 .topNavbar1 {
-  margin-left: 125rem;
-  margin-top: 20px;
-}
-
-.topNavbar2 {
-  margin-top: 20px; 
-  margin-left: 10px; /* Add 7px gap */
-}
-
-.notification-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-grow: 1;
   position: relative;
-  display: inline-block;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  border: 2px solid #E0E0E0;
+  padding: 0 45px 0 20px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus {
+  border-color: #6d31ed;
+  box-shadow: 0 0 10px rgba(109, 49, 237, 0.2);
+  outline: none;
+}
+
+.search-icon-container {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  margin-top: 10px;
+  background-color: #6d31ed;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.search-icon-header {
+  color: white;
+  font-size: 22px;
+  transition: all 0.3s ease;
+}
+
+.search-icon-container:hover {
+  background-color: #5620c5;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.search-icon-container:hover .search-icon-header {
+  transform: scale(1.1);
+}
+
+.search-bar:focus + .search-icon-container {
+  background-color: #5620c5;
+}
+
+.navbar-icon-group {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-icon {
+  margin: 0 15px;
+  height: 30px !important;
+  width: 30px !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #323743;
+}
+
+.navbar-icon:hover {
+  color: #9618eb;
+  transform: scale(1.1);
+}
+
+.notification-icon-container,
+.add-icon-container {
+  position: relative;
 }
 
 .notification-count {
   position: absolute;
-  top: 10px;
-  left: 25px;
-  background-color: red;
+  top: -5px;
+  right: -5px;
+  background-color: #FF4081;
   color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
 }
 
-.notification-dropdown {
-  position: absolute;
-  top: 36px; /* Adjust based on the height of your notification icon */
-  right: 0;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 250px; /* Adjust based on your design */
-  z-index: 1000;
-}
-
-.notification-item {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.notification-item:last-child {
-  border-bottom: none;
-}
-
-/* New styles for "+" dropdown */
-.add-icon-container {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  margin-top: 10px;
-  margin-left: 10px; /* Adjust as needed */
-}
-
+.notification-dropdown,
 .add-dropdown {
   position: absolute;
-  top: 42px; /* Adjust based on the height of your "+" icon */
+  top: 60px;
   right: 0;
   background-color: white;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 150px; /* Adjust based on your design */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 200px;
   z-index: 1000;
+  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
+.notification-item,
 .dropdown-item {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
-  cursor: pointer;
+  padding: 10px 15px;
+  border-bottom: 1px solid #E0E0E0;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  color: #333;
 }
 
-.dropdown-item:hover {
-  background-color: #f1f1f1;
-}
-
+.notification-item:last-child,
 .dropdown-item:last-child {
   border-bottom: none;
 }
 
-.AccountCircle {
-  margin-top: 10px;
+.notification-item:hover,
+.dropdown-item:hover {
+  background-color: #F5F5F5;
 }
 
-.callround {
-  margin-top: 10px;
+.profile-image {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.insertcommon {
-  margin-top: 10px;
+.profile-image:hover {
+  box-shadow: 0 0 0 2px #4CAF50;
 }
 
-/* TopNavbar.css */
-.blur {
-  filter: blur(5px);
-  transition: filter 0.3s;
-}
-
+/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1001;
 }
+
+.modal-content_meet,
 .modal-content_call {
   background: white;
-  padding: 20px;
   border-radius: 8px;
-  z-index: 1001; /* Ensure it's above the overlay */
-  width: 400px; /* Adjust width as needed */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
-}
-
-
-.modal-content_meet
- {
-  background: white;
   padding: 20px;
-  border-radius: 8px;
-  z-index: 1001; /* Ensure it's above the overlay */
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-/* Ensure other elements are beneath the modal overlay */
-body.modal-open {
-  overflow: hidden;
+.form-group {
+  margin-bottom: 15px;
 }
 
-.topNavlog {
-  display: flex;
-  flex-direction: row;
-  padding: 50px;
-  margin-top: 20px;
-}
 .form-label {
-  font-family: 'Manrope';
-  font-size: 16px;
-  line-height: 26px;
-  font-weight: 700;
-  color: #171A1F;
-  margin-bottom: 8px;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
 }
 
-.form-label-call_to,
-.form-label-call_type,
-.form-label-start_time,
-.form-label-to_time1,
-.form-label-related_to1,
-.form-label-outgoing_status {
-  font-family: 'Manrope';
-  font-size: 16px;
-  line-height: 26px;
-  font-weight: 700;
-  color: #171A1F;
-}
-
-.form-input-call_to,
-.form-input-call_type,
-.form-input-start_time,
-.form-input-outgoing_status,
-.form-input-related_to1,
-.form-input-to_time {
-  width: 160px;
-  height: 26px;
-  padding-left: 12px;
-  padding-right: 12px;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  background: #F3F4F6;
-  border-radius: 4px;
-  border-width: 1px;
-  border-color: #DEE1E6;
-  outline: none;
-  margin-left: 10px;
-}
-
-.form-input-call_to,
-.form-input-call_type,
-.form-label-call_type,
-.form-input-to_time,
-.form-label-start_time,
-.form-label-related_to1,
-.form-input-related_to1,
-.form-input-start_time,
-.form-input-outgoing_status,
-.form-label-outgoing_status {
-  margin-top: 20px;
-}
 .form-input {
   width: 100%;
-  height: 36px;
-  padding: 8px;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  background: #F3F4F6;
+  padding: 8px 12px;
+  border: 1px solid #E0E0E0;
   border-radius: 4px;
-  border: 1px solid #DEE1E6;
-  outline: none;
-  margin-bottom: 16px;
-  box-sizing: border-box;
+  font-size: 14px;
 }
-/* Button Styles */
-.form-button-container1 {
+
+.form-button-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 20px;
 }
 
 .form-button {
-  padding: 10px 20px;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 700;
-  border-radius: 4px;
+  padding: 8px 16px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
 }
 
-.cancel-button1 {
-  background-color: #ff4d4d; /* Red color */
+.cancel-button {
+  background-color: #F44336;
   color: white;
-  margin-right: 10px; /* Add some spacing between buttons */
-
 }
 
-.cancel-button1:hover {
-  background-color: #ff3333; /* Darker red on hover */
+.cancel-button:hover {
+  background-color: #D32F2F;
 }
 
 .submit-button1 {
-  background-color: #4CAF50; /* Green color */
+  background-color: #4CAF50;
   color: white;
 }
 
 .submit-button1:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #45A049;
 }
+
+
+.coin-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 10px;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.coin-icon {
+  font-size: 24px !important;
+  color: gold;
+  filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
+}
+
+.coin-count {
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.coin-shine {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .topNavbar-head {
+    width: calc(100% - 60px);
+  }
+  
+
+  
+  .search-bar {
+    width: 300px;
+  }
+  
+  .search-bar:focus {
+    width: 350px;
+  }
+  
+  .search-icon-header {
+    right: calc(50% - 150px);
+  }
+}
+
+@media (max-width: 768px) {
+  .topNavbar-head {
+    padding: 0 10px;
+  }
+  
+  .search-bar {
+    width: 200px;
+  }
+  
+  .search-bar:focus {
+    width: 250px;
+  }
+  
+  .navbar-icon {
+    margin: 0 10px;
+  }
+  
+  .search-icon-header {
+    right: calc(50% - 100px);
+  }
+}
+

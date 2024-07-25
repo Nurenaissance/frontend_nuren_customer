@@ -3,20 +3,20 @@
 
 .siadebar {
   
-  width: 280px;
+  width: 270px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   transition: width 0.3s ease;
   z-index: 999;
 }
 
 .siadebar:hover {
-  width: 300px;
+  width: 290px;
 }
 
 .sidebar_inner {
@@ -180,7 +180,7 @@
   width: 200px;
   background-color: #fff;
   border: 1px solid #ddd;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .dropdown-item-model {
@@ -204,7 +204,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .overlay-content {

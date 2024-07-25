@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import uploadToBlob from "../../azureUpload.jsx";
+import './imageeditor.css';
 const secretKey = import.meta.env.VITE_MY_KEY_FOR_AI;
 const samplePrompts = [
   "You are a professional graphic designer. Create the marketing graphics for the following request. Be very professional and do not display text unless specifically asked =>",
@@ -328,63 +329,81 @@ const handleInstaAspectRatio=async ()=>{
 };
 
  
-
-  return (
-    <div style={{ width: '100vh', height: '100vh' }}>
-    <h2>Photopea Integration</h2>
-    <select
-      value={selectedPrompt}
-      onChange={(e) => setSelectedPrompt(e.target.value)}
-    >
-      {samplePrompts.map((prompt, index) => (
-        <option key={index} value={prompt}>
-          {prompt}
-        </option>
-      ))}
-    </select>
-    <textarea
-      value={additionalSpecifications}
-      onChange={(e) => setAdditionalSpecifications(e.target.value)}
-      placeholder="Additional specifications"
-    />
-    <button onClick={handleGenerateImage} disabled={loading}>
-      {loading ? "Generating Image..." : "Generate Image"}
-    </button>
-    <input
-        type="text"
-        value={inpaintingText}
-        onChange={(e) => setInpaintingText(e.target.value)}
-      />
-    <button onClick={handleInpainting} >
-      Inpainting
-    </button>
-    <button onClick={handleInpainting1} >
-      Start Inpainting
-    </button>
-    <select value={aspectRatio} onChange={handleAspectRatioChange} disabled={!base64Data || loading}>
-      <option value="instagram">Instagram</option>
-      <option value="whatsapp">WhatsApp</option>
-      <option value="linkedin">LinkedIn</option>
-    </select>
-   {/*<button onClick={runCustomScript}>Run Custom Script</button>*/} 
-    <button onClick={handleInstaAspectRatio}>Insta</button>
-    <button onClick={handleRaarrrr}>RAAAAAAAAAAAR</button>
-    <button onClick={handleDatatobase64}>   Testingg butttonn</button>
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-    {photopeaUrl && (
-      <>
-        
-        <iframe
-        title="Photopea"
-        ref={iframeRef}
-        src={photopeaUrl}
-        style={{ width: '800px', height: '500px', border: 'none' }}
-        onLoad={handleIframeLoad}
-      />
-      </>
-    )}
+return (
+  <div className="image-editor-container">
+    <h2>AI-Powered Image Editor</h2>
+    <div className="editor-content">
+      <div className="control-panel">
+        <div className="prompt-section">
+          <select
+            className="prompt-select"
+            value={selectedPrompt}
+            onChange={(e) => setSelectedPrompt(e.target.value)}
+          >
+            {samplePrompts.map((prompt, index) => (
+              <option key={index} value={prompt}>
+                {prompt}
+              </option>
+            ))}
+          </select>
+          <textarea
+            className="additional-specs"
+            value={additionalSpecifications}
+            onChange={(e) => setAdditionalSpecifications(e.target.value)}
+            placeholder="Additional specifications"
+          />
+        </div>
+        <div className="button-group">
+          <button className="primary-button" onClick={handleGenerateImage} disabled={loading}>
+            {loading ? "Generating Image..." : "Generate Image"}
+          </button>
+          <select 
+            className="aspect-ratio-select"
+            value={aspectRatio} 
+            onChange={handleAspectRatioChange} 
+            disabled={!base64Data || loading}
+          >
+            <option value="instagram">Instagram</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="linkedin">LinkedIn</option>
+          </select>
+        </div>
+        <div className="inpainting-section">
+          <input
+            type="text"
+            className="inpainting-input"
+            value={inpaintingText}
+            onChange={(e) => setInpaintingText(e.target.value)}
+            placeholder="Inpainting text"
+          />
+          <button className="secondary-button" onClick={handleInpainting1}>
+            Start Inpainting
+          </button>
+          <button className="secondary-button" onClick={handleInpainting}>
+            Apply Inpainting
+          </button>
+        </div>
+        <div className="action-buttons">
+          <button className="action-button" onClick={handleInstaAspectRatio}>Instagram Aspect</button>
+          <button className="action-button" onClick={handleRaarrrr}>Resize Image</button>
+          <button className="action-button" onClick={handleDatatobase64}>Process Image</button>
+        </div>
+        {error && <p className="error-message">{error}</p>}
+      </div>
+      {photopeaUrl && (
+        <div className="photopea-container">
+          <iframe
+            title="Photopea"
+            ref={iframeRef}
+            src={photopeaUrl}
+            className="photopea-iframe"
+            onLoad={handleIframeLoad}
+          />
+        </div>
+      )}
+    </div>
   </div>
-  );
+);
 };
 
 export default ImageEditor;
