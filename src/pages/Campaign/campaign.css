@@ -55,7 +55,9 @@ position: absolute;
     
   }
   .campaign_filter_btn{
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position:absolute;
   bottom: 43%;
   margin-left: 40px;
@@ -129,9 +131,10 @@ padding: 20px;
     width:250px;  
     position: relative;
     display: flex;
-    flex-direction: row;
-    gap: 40px;
-   
+    align-items: center;
+    justify-content: center;
+    /* flex-direction: row; */
+    gap: 40px; 
 font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
@@ -139,15 +142,21 @@ font-weight: 400;
 background: #F3F4F6FF;
 opacity: 1;
 border-radius: 4px;
-
 height: 40px;
 box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+margin-right: 5rem;
   }
+
+.flow-button{
+  background: green;
+  padding: 1rem;
+  border-radius: 5px;
+  color: white;
+  box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+}
+
   .campanign_btn1{
-    width: 47.34px;
-     height: 36px; 
     display: flex;
-    flex: 1 1 0;
     align-items: center;
     justify-content: center;
     font-family: 'Manrope';
@@ -472,346 +481,171 @@ position: absolute;
 top: 8rem;
   }
 
-  .campaign_forms{
-    width: 1196px;
-  height: 600px;
-  background:  #FAFAFBFF;
+  .campaign-form-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.campaign-form-heading {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.campaign-form {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  border-width: 1px;
-  border-color: #F3F4F6FF;
-  border-style: solid;
-  margin-left: -56px;
+}
 
-   }
-   .campaign_name,.campaign_owner,.campaign_start_date,.campaign_end_date,.campaign_expected_revenue,.campaign_message{
-    font-family: 'Manrope';
-    font-size: 16px;
-    line-height: 26px;
-    font-weight: 700;
-    color: #171A1FFF;
-   }
-   .campaign_name,.campaign_owner{
-  margin-left: 130px;
-   }
-   
-   .form-campaign_name,.form-campaign_owner,.form-campaign_start_date,.form-campaign_end_date,.form-campaign_expected_revenue
-   {
-    width: 260px;
-height: 36px;
-padding-left: 12px;
-padding-right: 12px;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-background: #F3F4F6FF;
-border-radius: 4px;
-border-width: 1px;
-border-color: #DEE1E645;
-outline: none;
-   }
-   .form-campaign_message{
-    width: 763px;
-    height: 95px;
-    padding-left: 12px;
-    padding-right: 12px;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #BDC1CAFF;
-    background: #F3F4F6FF;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: #9095A11C;
-    outline: none;
-    position: relative;
-    left: -430px;
-    top: 130px;
-    margin-left: 130px;
-   }
-   .form-campaign_name{
-    position: relative;
-    margin-left: 20px;
-   }
-   .campaign_owner{
-    position: relative;
-    top: 50px;
-    left: -600px;
-   }
-   .form-campaign_owner{
-    position: relative;
-    top: 60px;
-    left: -600px;
-    margin-left: 20px;
-   }
-   .campaign_start_date{
-position: relative;
-top: 45px;
-margin-left: 157px;
-
-   }
-   .form-campaign_start_date{
-    position: relative;
-    top: 50px;
-    margin-left: 20px;
-
-   }
-   .campaign_end_date{
-    position: relative;
-    top:115px;
-    left: -570px;
-    margin-left: 170px;
-    
-       }
-       .form-campaign_end_date{
-        position: relative;
-top: 115px;
-left: -600px;
-margin-left: 50px;
-       }
-
-       .campaign_expected_revenue{
-        position: relative;
-        top: 100px;
-        margin-left: 130px;
-        
-       }
-       .form-campaign_expected_revenue{
-        position: relative;
-        top: 100px;
-        margin-left:20px ;
-    
-       }
-       .campaign_message{
-position: relative;
-top: 170px;
-left: -600px;
-margin-left: 130px;
-       }
-       .create_campaign{
-        font-family: 'Manrope';
-font-size: 16px;
-line-height: 26px;
-font-weight: 700;
-color: #171A1FFF;
-margin-left: 60px;
-       }
-       .audience_campaign{
-        font-family: 'Manrope';
-        font-size: 16px;
-        line-height: 26px;
-        font-weight: 700;
-        color: #171A1FFF;
-        margin-left: 60px;
-        position: relative;
-        top: -380px;
-        left: 800px;       }
-  .roundicon{
- width: 28px;
-height: 28px;
-background: #6D31EDFF;
-border-radius: 14px;
-color: #ffffff;
-padding-left: 5px;
-position: relative;
-top: -410px;
-left: 800px;
-
-
-  } 
-  .roundicon1{
-    width: 28px;
-   height: 28px;
-   background: #6D31EDFF;
-   border-radius: 14px;
-   color: #ffffff;
-   padding-left: 5px;
-   position: relative;
-  top: -25px;
-  left: 10px;
-   
-   
-     } 
-     .expected_response{
-      font-family: 'Manrope';
-      font-size: 16px;
-      line-height: 26px;
-      font-weight: 700;
-      color: #171A1FFF;
-      position: relative;
-      top: -360px;  
-      left: 780px;
-
-     }
-     .form-campaign_expected_count{
-      width: 240px;
-      height: 36px;
-      padding-left: 12px;
-      padding-right: 12px;
-      font-family: 'Manrope';
-      font-size: 14px;
-      line-height: 22px;
-      font-weight: 400;
-      background: #F3F4F6FF;
-      border-radius: 4px;
-      border-width: 1px;
-      border-color: #DEE1E645;
-      outline: none;
-      position: relative;
-      top: -360px;
-      left: 794px;
-     }
-     .campanign_btn_form{
-      width: 48px;
-      height: 36px; 
-      display: flex;
-      flex: 1 1 0;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Manrope';
-      font-size: 14px;
-      line-height: 22px;
-      font-weight: 400;
-      color: #323743FF;
-      background: #0090FFFF;
-      opacity: 1;
-      border-radius: 4px 0px 0px 4px;
-      cursor: pointer;
-    }
-    .campanign_btn_form2{
-      width: 47.34px;
-  /* height: 36px; */
+.social-buttons {
   display: flex;
-  flex: 1 1 0;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.capaign_form_section{
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  color: #323743FF;
-  background: #F3F4F6FF;
-  opacity: 1;
-  border-radius: 4px 0px 0px 4px;
-  cursor: pointer;
-    }
-    .campanign_btn_form3{
-      width: 47.34px;
-  /* height: 36px; */
+}
+
+.campanign_btn_form {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background-color: #f0f0f0;
   display: flex;
-  flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  color: #323743FF;
-  background: #F3F4F6FF;
-  opacity: 1;
-  border-radius: 4px 0px 0px 4px;
   cursor: pointer;
-    }
-    .campanign_btn_form4{
-      width: 47.34px;
-  /* height: 36px; */
+  transition: all 0.3s ease;
+  margin: 0 5px;
+}
+
+.campanign_btn_form svg {
+  width: 15px;
+  height: 15px;
+  transition: all 0.3s ease;
+}
+
+.campanign_btn_form:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.campanign_btn_form:hover svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Facebook */
+.campanign_btn_form:nth-child(1) {
+  background-color: #1877f2;
+}
+
+.campanign_btn_form:nth-child(1) svg {
+  color: white;
+}
+
+/* Instagram */
+.campanign_btn_form:nth-child(2) {
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+
+.campanign_btn_form:nth-child(2) svg {
+  color: white;
+}
+
+/* WhatsApp */
+.campanign_btn_form:nth-child(3) {
+  background-color: #25d366;
+}
+
+.campanign_btn_form:nth-child(3) svg {
+  color: white;
+}
+
+/* Email */
+.campanign_btn_form:nth-child(4) {
+  background-color: #ea4335;
+}
+
+.campanign_btn_form:nth-child(4) svg {
+  color: white;
+}
+
+/* Message */
+.campanign_btn_form:nth-child(5) {
+  background-color: #0084ff;
+}
+
+.campanign_btn_form:nth-child(5) svg {
+  color: white;
+}
+
+/* Active state */
+.campanign_btn_form.active {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.campanign_btn_form.active svg {
+  width: 35px;
+  height: 35px;
+}
+.campaign_type{
   display: flex;
-  flex: 1 1 0;
   align-items: center;
-  justify-content: center;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  color: #323743FF;
-  background: #F3F4F6FF;
-  opacity: 1;
-  border-radius: 4px 0px 0px 4px;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-    }
-    .campanign_btn_form5{
-      width: 47.34px;
-  /* height: 36px; */
-  display: flex;
-  flex: 1 1 0;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Manrope';
-  font-size: 14px;
-  line-height: 22px;
-  font-weight: 400;
-  color: #323743FF;
-  background: #F3F4F6FF;
-  opacity: 1;
-  border-radius: 4px 0px 0px 4px;
-  cursor: pointer;
-    }
-    .capaign_form_section{
-      width: 150px;
-      gap: 15px;
-      
-      position: relative;
-      top: -325px;
-      left: 350px;
-      display: flex;
-align-items: center;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px;
-box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-    }
-    .campaign_type{
-      font-family: 'Manrope';
-      font-size: 16px;
-      line-height: 26px;
-      font-weight: 700;
-      color: #171A1FFF;
-      position: relative;
-      top: -300px;
-      left: 280px;
-    }
-    .campaign_expected_response{
-      font-family: 'Manrope';
-    font-size: 16px;
-    line-height: 26px;
-    font-weight: 700;
-    color: #171A1FFF;
-    position: relative;
-    left: 750px;
-    top: -300px;
-    }
-    .form-campaign_expected_response{
-      width: 260px;
-      height: 36px;
-      padding-left: 12px;
-      padding-right: 12px;
-      font-family: 'Manrope';
-      font-size: 14px;
-      line-height: 22px;
-      font-weight: 400;
-      background: #F3F4F6FF;
-      border-radius: 4px;
-      border-width: 1px;
-      border-color: #DEE1E645;
-      outline: none;
-      position: relative;
-      top: -300px;
-      left: 760px;
-    }
-    .campaign_expected_count{
-      font-family: 'Manrope';
-      font-size: 16px;
-      line-height: 26px;
-      font-weight: 700;
-      color: #171A1FFF;
-      position: relative;
-      left: 770px;
-      position: relative;
-      top: -360px;
-     
-    }
+}
+
+.btn-cancel { background-color: #f44336; color: white; }
+.btn-draft { background-color: #2196f3; color: white; }
+.btn-submit { background-color: #4caf50; color: white; }

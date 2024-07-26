@@ -1,0 +1,46 @@
+.coin-stats-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .coin-summary {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .coin-details {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .recent-transactions, .spending-breakdown {
+    width: 48%;
+  }
+  
+  .recent-transactions ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .recent-transactions li {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .coin-details {
+      flex-direction: column;
+    }
+  
+    .recent-transactions, .spending-breakdown {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }

@@ -124,7 +124,9 @@ const Campaign = () => {
   const handleLinkedInClick = () => {
     navigate(`/${tenantId}/linkedinpost`)
   };
-  
+  const handleFlowButtonClick = () => {
+    navigate(`/${tenantId}/flow`)
+  };
 
 
   return (
@@ -173,7 +175,7 @@ const Campaign = () => {
               </div>
               <div>
               <NavLink to={`/${tenantId}/campaignform`} id="btn11">
-                      +CreateCampaign
+                      + Create Campaign
                     </NavLink>
               </div>
       </div>
@@ -209,6 +211,11 @@ const Campaign = () => {
                     </button>
                     <button   className="campaign_btn4"       onClick={handleEmailClick}>
                       <EmailIcon />
+                    </button>
+              </div>
+              <div className="flow-button">
+              <button  className="campaign_flow_btn"      onClick={handleFlowButtonClick}>
+                      Create Flow
                     </button>
               </div>
               <div className='filter_campaign'>

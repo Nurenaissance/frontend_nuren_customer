@@ -362,24 +362,24 @@ const Campaignform = () => {
                 </div>
        
         
-<h1 className='campaign_type'>Type :</h1>
 <div className='capaign_form_section'>
+<p className='campaign_type'>Type
           <button className={`campanign_btn_form ${campaignData.type === 'Facebook' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Facebook')}>
             <FacebookIcon />
           </button>
-          <button className={`campaign_btn_form2 ${campaignData.type === 'Instagram' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Instagram')}>
+          <button className={`campanign_btn_form ${campaignData.type === 'Instagram' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Instagram')}>
             <InstagramIcon />
           </button>
-          <button className={`campaign_btn_form3 ${campaignData.type === 'WhatsApp' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('WhatsApp')}>
+          <button className={`campanign_btn_form ${campaignData.type === 'WhatsApp' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('WhatsApp')}>
             <WhatsAppIcon />
           </button>
-          <button className={`campaign_btn_form4 ${campaignData.type === 'Email' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Email')}>
+          <button className={`campanign_btn_form ${campaignData.type === 'Email' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Email')}>
             <EmailIcon />
           </button>
-          <button className={`campaign_btn_form5 ${campaignData.type === 'Message' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Message')}>
+          <button className={`campanign_btn_form ${campaignData.type === 'Message' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Message')}>
             <ChatBubbleOutlineIcon />
           </button>
-        </div>
+          </p>
         <div className="form-group col-md-6">
                   <label htmlFor="expected_response" className='campaign_expected_response'>Expected Response :</label>
                   <input
@@ -393,6 +393,7 @@ const Campaignform = () => {
                     style={{ borderColor: errorFields.expected_response ? 'red' : '' }}
                   />
                 </div>
+        </div>
 
        
        

@@ -32,7 +32,13 @@ import { useAuth } from '../../authContext';
 import axiosInstance from '../../api';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+
+import LockIcon from '@mui/icons-material/Lock';
+import CloseIcon from '@mui/icons-material/Close';
+
+
 import EditIcon from '@mui/icons-material/Edit';
+
 
 export const Sidebar = ({ onSelectModel }) => {
   const { authenticated, setAuthenticated } = useAuth();
@@ -50,7 +56,8 @@ export const Sidebar = ({ onSelectModel }) => {
   const navigate = useNavigate();
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
- 
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [lockedFeature, setLockedFeature] = useState('');
 
 
   const [clientsDropdownOpen, setClientsDropdownOpen] = useState(false);
@@ -77,6 +84,17 @@ export const Sidebar = ({ onSelectModel }) => {
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const handleLockedFeatureClick = (e, feature) => {
+    e.preventDefault();
+    setLockedFeature(feature);
+    setShowOverlay(true);
+  };
+  const handleBuyClick = () => {
+    // Implement your buy logic here
+    console.log("User wants to buy Plus membership");
+    setShowOverlay(false);
   };
 
   useEffect(() => {
@@ -164,12 +182,17 @@ export const Sidebar = ({ onSelectModel }) => {
         <hr className="hr" />
         <ul className="sidebar_list">
           <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/home")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <DashboardIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Dashboard</p>
-              </span>
-            </NavLink>
+            <NavLink 
+  className={({ isActive }) => 
+    isActive ? "sidebar_link active" : "sidebar_link"
+  } 
+  to={formatLink("/home")}
+>
+  <span style={{ display: 'flex', alignItems:'center' }}>
+    <DashboardIcon style={{fontSize:'2rem'}}/>
+    <p className="sidebar_link_text">Dashboard</p>
+  </span>
+</NavLink>
           </li>
           <li className="sidebar_item">
             <div className="sidebar_link" onClick={toggleClientsDropdown}>
@@ -348,12 +371,13 @@ export const Sidebar = ({ onSelectModel }) => {
                 </NavLink>
               </li>
               <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/loyalty")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <LoyaltyIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Loyalty Program</p>
-              </span>
-            </NavLink>
+              <NavLink className="sidebar_link" to={formatLink("/loyalty")} onClick={(e) => handleLockedFeatureClick(e, "loyalty")}>
+    <span style={{ display: 'flex', alignItems:'center' }}>
+      <LoyaltyIcon style={{fontSize:'2rem'}}/>
+      <p className="sidebar_link_text">Loyalty Program</p>
+      <LockIcon style={{fontSize:'1.5rem', marginLeft: 'auto'}} />
+    </span>
+  </NavLink>
           </li>
           <li className="sidebar_item">
             <NavLink className="sidebar_link" to={formatLink("/report")}>
@@ -444,6 +468,19 @@ export const Sidebar = ({ onSelectModel }) => {
         <div className="logout_btn">
         <button className="logout_btn" onClick={handleLogout}>Logout</button>
       </div>
+      {showOverlay && (
+  <div className="feature-lock-overlay">
+    <div className="overlay-content">
+      <CloseIcon 
+        className="close-icon" 
+        onClick={() => setShowOverlay(false)}
+      />
+      <h2>Unlock {lockedFeature.charAt(0).toUpperCase() + lockedFeature.slice(1)} Feature</h2>
+      <p>To use this feature, you need to upgrade to our Plus membership.</p>
+      <button onClick={handleBuyClick}>I'll Buy Plus Membership</button>
+    </div>
+  </div>
+)}
     </div>
   );
 };

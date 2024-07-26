@@ -257,23 +257,19 @@
 }
 
 .PersistentMenu-Node {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  position: relative;
-  background-color: aquamarine; 
-  border: 2px solid #ddd; 
-  border-radius: 5px; 
-  padding: 10px; 
-  width: 200px; 
+  /* padding: 10px; */
+  /* border: 1px solid #ddd; */
+  /* border-radius: 5px; */
+  /* position: relative; */
+  /* background-color: aquamarine;  */
+  /* border: 2px solid #ddd;  */
+  /* border-radius: 5px;  */
+  /* padding: 10px;  */
+  /* width: 200px;  */
   text-align: center; 
   z-index: 100;
 }
 
-.PersistentMenu h3 {
-  margin-top: 0;
-  font-size: 2rem;
-}
 
 .PersistentMenu input {
   width: calc(100% - 20px); 
@@ -285,23 +281,17 @@
   
 }
 .menu-item-container {
-  margin-bottom: 10px;
   position: relative;
-  border: 1px solid #ddd; 
-  padding: 5px; 
   border-radius: 3px; 
   display: flex;
   align-items: center;
-  margin-top: 1rem;
-  background-color: #1abc9c;
+  
 }
 
 .generic-template-node {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 5px;
   border-radius: 5px;
-  background-color: cornflowerblue;
-  width: 200px;
+  width: 30rem;
 }
 
 .generic-template-node h3 {
@@ -311,38 +301,27 @@
   text-align: center;
 }
 
-.generic-template-node input {
-  width: calc(100% - 20px);
-  margin: 5px 0;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
 
-.generic-handle {
-  width: 10px;
-  height: 10px;
-}
 .generic-template-node button {
   display: inline-block;
   padding: 8px 16px;
   margin-bottom: 10px;
   border: none;
   border-radius: 4px;
-  background-color: #007bff;
+  /* background-color: #007bff; */
   color: white;
   cursor: pointer;
   font-size: 14px;
 }
 
-.generic-template-node button:hover {
+/* .generic-template-node button:hover {
   background-color: #0056b3;
-}
+} */
 
-.generic-template-node button:focus {
+/* .generic-template-node button:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
+} */
 /* SendMessage.css */
 
 /* SendMessage.css */

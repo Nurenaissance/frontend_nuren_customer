@@ -1,116 +1,108 @@
-.sidebar{
+.sidebar-flow {
     animation: openSideBar 200ms ease-in;
-    background: linear-gradient(to left, #b3b3b3, #fff);
-    /* width: 20rem; */
+    background: linear-gradient(to left, #f0f0f0, #e0e0e0);
     height: 100vh;
     padding: 1rem;
     position: fixed;
     left: 0;
-    width: 20rem;
+    width: 25rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transition: width 200ms ease-in-out;
 }
-.removeSidebar{
-    background: linear-gradient(to left, #b3b3b3, #fff);
-    /* width: 20rem; */
+
+.removeSidebar-flow {
+    background: linear-gradient(to left, #f0f0f0, #e0e0e0);
     height: 100vh;
     padding: 1rem;
     position: fixed;
     left: 0;
-    width: 20rem;
+    width: 25rem;
     animation: removeSideBar 300ms ease-in;
+    overflow-y: auto;
+    transition: width 300ms ease-in-out;
 }
-.sidebar_cover{
-    position: relative;
-}
-.sidebar_header{
+
+.sidebar_header-flow {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 }
-/* h1{
-    font-size: 32px;
-    color: rgb(54, 54, 54);
+
+.sidebar_header-flow h1 {
+    font-size: 24px;
+    color: #363636;
     margin: 0;
-} */
-/* ul{
-    padding: 0;
-} */
-/* li{
-    list-style: none;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-    color: #828282;
-    background-color: #b5cffb;
-    margin-top: 0.5rem;
-    border-radius: 5px;
-} */
-/* li.active{
-    background-color: #367bee;
-    color: white;
 }
-li:hover{
-    background-color: #367bee;
+
+.Send-Message-Node-flow,
+.Ask-Question-Node-flow,
+.Condition-Node-flow {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: white;
-} */
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.Send-Message-Node-flow {
+    background-color: #FF7A59; /* Orange background */
+}
+
+.Ask-Question-Node-flow {
+    background-color: #FFBA49; 
+}
+
+.Condition-Node-flow {
+    background-color: #49B2FF; /* Blue background */
+}
+
+.Send-Message-Node-flow:hover,
+.Ask-Question-Node-flow:hover,
+.Condition-Node-flow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.Send-Message-Node-flow .icon,
+.Ask-Question-Node-flow .icon,
+.Condition-Node-flow .icon {
+    font-size: 40px;
+    margin: 10px 0;
+}
 
 @keyframes openSideBar {
-    0%{
+    0% {
         width: 0rem;
     }
-    100%{
+    100% {
         width: 20rem;
     }
 }
+
 @keyframes removeSideBar {
-    0%{
+    0% {
         width: 20rem;
     }
-    100%{
+    100% {
         width: 0rem;
     }
 }
-.Send-Message-Node {
-    /* Your CSS styles for the Send Message Node */
-    width: 200px;
-    height:80px;
-    padding: 10px;
-    border: 2px solid #4CAF50; /* Green border */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: rgb(255, 0, 89);
-  }
-  
-.Send-Message-Node:hover {
-    /* Additional styles for when the mouse hovers over the Send Message Node */
-    background-color: #E8F5E9; /* Light green background */
-  }
-.Ask-Question-Node {
-    /* Your CSS styles for the Send Message Node */
-    width: 200px;
-    height:90px;
-    padding: 10px;
-    border: 2px solid #4CAF50; /* Green border */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: rgb(234, 250, 64);
-  }
-  
-.Ask-Question-Node:hover {
-    /* Additional styles for when the mouse hovers over the Send Message Node */
-    background-color: #E8F5E9; /* Light green background */
-  }
-.Condition-Node {
-    /* Your CSS styles for the Send Message Node */
-    width: 200px;
-    height:80px;
-    padding: 10px;
-    border: 2px solid #4CAF50; /* Green border */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: rgb(103, 184, 255);
-  }
-  
-.Condition-Node:hover {
-    /* Additional styles for when the mouse hovers over the Send Message Node */
-    background-color: #E8F5E9; /* Light green background */
-  }
+
+@media (max-width: 768px) {
+    .sidebar-flow {
+        width: 15rem;
+    }
+
+    .removeSidebar-flow {
+        width: 15rem;
+    }
+}

@@ -4,14 +4,14 @@ import Spline from "@splinetool/react-spline";
 import { useState } from "react";
 import { useAuth } from "../../authContext";
 import { useNavigate } from "react-router-dom";
+import Loginimage from '../../assets/Loginimage.png';
 
-// Extract tenant_id from the URL dynamically within handleSubmit
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
-    return pathArray[1]; // Assumes tenant_id is the first part of the path
+    return pathArray[1];
   }
-  return null; // Return null if tenant ID is not found or not in the expected place
+  return null;
 };
 
 const PopupCard = ({ message, onClose }) => {
@@ -29,27 +29,24 @@ export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { authenticated, login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [showPopup, setShowPopup] = useState(false); // State to control the popup visibility
-  const [role, setRole] = useState(""); // State to store the role of the user
-  const [tenantId, setTenantId] = useState(""); // State to store the tenant ID
+  const [showPopup, setShowPopup] = useState(false);
+  const [role, setRole] = useState("");
+  const [tenantId, setTenantId] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
 
     setIsSubmitting(true);
-    setError(""); // Clear previous errors
+    setError("");
 
     const data = {
       username: username,
       password: password,
     };
-
-
-
 
     fetch('https://webappbaackend.azurewebsites.net/login/', {
       method: 'POST',
@@ -65,9 +62,9 @@ export const Login = () => {
       return response.json();
     })
     .then(data => {
-      setRole(data.role); // Set the role
-      setTenantId(data.tenant_id); // Set the tenant ID
-      setShowPopup(true); // Show the popup card
+      setRole(data.role);
+      setTenantId(data.tenant_id);
+      setShowPopup(true);
       login(data.user_id, data.tenant_id, data.role); 
     })
     .catch(error => {
@@ -82,45 +79,47 @@ export const Login = () => {
   };
 
   return (
-    <div className="login" style={{display:'flex',flexDirection:'row'}}>
-      <div className="container" style={{width:'30%'}}>
-        <div className="login_inner">
-          <h2 className="login_paragraph">Login</h2>
-          {error && <div className="error-message">{error}</div>}
-          <form className="login_form" onSubmit={handleSubmit}>
-            <label htmlFor="username" className="login_label">
-              <input
-                className="login_input"
-                type="text"
-                placeholder="👤 Username"
-                id="username"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </label>
-            <label htmlFor="password" className="login_label">
-              <input
-                className="login_input"
-                type="password"
-                placeholder="🔑 Password"
-                id="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-            <NavLink className="login_navigate" to="/">
-              register?
-            </NavLink>
-            <button className="login_btn" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Logging in...' : 'Login'}
-            </button>
-          </form>
+    <div className="auth">
+      <div className="auth_wrapper">
+        <div className="form_container">
+          <div className="auth_inner">
+            <h2 className="auth_paragraph">Login</h2>
+            {error && <div className="error-message">{error}</div>}
+            <form className="auth_form" onSubmit={handleSubmit}>
+              <label htmlFor="username" className="auth_label">
+                <input
+                  className="auth_input"
+                  type="text"
+                  placeholder="👤 Username"
+                  id="username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </label>
+              <label htmlFor="password" className="auth_label">
+                <input
+                  className="auth_input"
+                  type="password"
+                  placeholder="🔑 Password"
+                  id="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </label>
+              <NavLink className="auth_login" to="/">
+                Register?
+              </NavLink>
+              <button className="auth_btn" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-      <div style={{width:'70%'}}>
-        <Spline scene="https://prod.spline.design/OmqPiSVCUCyBiIZa/scene.splinecode" />
+        <div className="spline_scene">
+          <img style={{backgroundSize:'contain'}} src={Loginimage} alt="" />
+        </div>
       </div>
       {showPopup && <PopupCard message={`Login successful as ${role}`} onClose={handlePopupClose} />}
     </div>

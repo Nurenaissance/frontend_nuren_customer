@@ -1,514 +1,706 @@
-/* .Insta_post {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-.sidebar_container_for_insta{
-    display: flex;
-    margin-right: 2rem;
-    
-}
-
-
-.home_left_box {
-    flex-basis: 200px; 
-    flex-shrink: 0;
-}
-
-
-.Insta-header {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; 
-    width: 100%;
-}
-
-  
-  
-  .suggestions {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    z-index: 1000;
-  }
-  
-  .suggestions li {
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .suggestions li:hover {
-    background-color: #f0f0f0;
-  }
-
-
-.post-container {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .Instapost_content {
-    width: 100%;
-    max-width: 500px; 
-    margin-bottom: 20px; 
-  }
-  
-  .Instapost_content textarea {
-    width: 100%;
-    height: 50px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .upload-media-container {
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
-  
-  .upload-media-heading {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .upload-media-description {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .upload-media-box {
-    padding: 20px;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    transition: background-color 0.3s;
-    text-align: center;
-  }
-  
-  .upload-media-box.dragging {
-    background-color: #e6f7ff;
-  }
-  
-  .upload-media-box p {
-    margin: 10px 0;
-  }
-  
-  .upload-actions {
-    margin-top: 10px;
-  }
-  
-  .upload-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .upload-button input {
-    display: none;
-  }
-  
-  .upload-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .caption-box {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    box-sizing: border-box; 
-  }
-  .caption-box textarea {
-    width: 100%;
-    height: 150px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  .caption-options {
-    display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-  }
-  
-  .emoji-picker-component {
-    position: relative;
-  }
-  
-  .emoji-icon {
-    cursor: pointer;
-    font-size: 20px;
-  }
-  
-  .emoji-picker-dropdown {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    z-index: 1000;
-    border: 1px solid #ccc;
-    background: #fff;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .letter-count {
-    text-align: right;
-    margin-top: 5px;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .letter-count.exceeded {
-    color: red;
-  }
-  .upload-options-dropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .upload-options-dropdown li {
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .upload-options-dropdown li:hover {
-    background-color: #f0f0f0;
-  }
-  .toggle-comment-visibility {
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  
-  .comment-input textarea {
-    width: 100%;
-    height: 80px;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-.first-comment-box {
-    width: 100%;
-    max-width: 500px;
-    margin-top: 2rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden; 
-  }
-  
-  .comment-heading {
-    background-color: #f9f9f9;
-    padding: 10px;
-    font-weight: bold;
-  }
-  
-  .comment-input textarea {
-    width: 100%;
-    height: 50px;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-top: 1px solid #ccc; 
-    resize: none;
-  }
-  .insta-campaign {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px; 
-    margin-bottom: 20px; 
-  }
-  .insta-campaign h2{
-    margin-top: 20px;
-  }
-  
-  .campaign-box {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 20px;
-  }
-  .campaign-box p {
-    margin-bottom: 20px;
-  }
-  .campaign-box hr {
-    border: none;
-    border-top: 1px solid #ccc;
-    margin: 20px 0;
-  }
-  .promote-option-box {
-    width: 100%;
-    max-width: 500px;
-    margin-top: 2rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden; 
-    padding: 10px;
-    font-size: 16px;
-    border-top: 1px solid #ccc; 
-  }
-  
-  .promote-heading {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .toggle-promote-visibility {
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .promote-content {
-    margin-top: 10px;
-    border-top: 1px solid #ccc; 
-    padding-top: 10px; 
-  }
-  
-  .promote-content p {
-    margin-bottom: 10px;
-  }
-  
-  .connect-ad-manager-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .connect-ad-manager-button:hover {
-    background-color: #005
-  }  
-  .schedule-post-box {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    width: 500px; 
-  }
-  
-  .date-time-box {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .date-picker-box,
-  .time-picker-box {
-    flex: 1;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  .show-modal-button {
-    padding: 10px 20px;
-    background-color: #4267B2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .show-modal-button:hover {
-    background-color: #365899;
-  }
-   */
-
-
-.post_button{
-  margin-left: 3rem;
-  margin-top: 2rem;
-  padding: 1rem;
-  border: 2px solid blue;
-  background-color: blue;
-  color: white;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-}
-.post_button:hover {
-  background-color: darkblue;
-}
-
-  .instagram-post-page {
+.instagram-post-page {
   display: flex;
-
+  background-color: #fafafa;
+  min-height: 100vh;
 }
 
 .sidebar-container {
   width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #dbdbdb;
 }
 
 .instagram-post-content {
   display: flex;
   flex: 1;
-  padding: 20px;
+  padding: 40px;
+  gap: 40px;
 }
 
 .instagram-post-form {
+  flex: 2;
+  max-width: 800px;
+}
+
+.instagram-post-preview {
   flex: 1;
-  margin-right: 20px;
+  max-width: 400px;
+  position: sticky;
+  top: 40px;
 }
 
 .instagram-post-title {
-  font-size: 30px;
-  margin-bottom: 20px;
-  margin-left: 4rem;
+  font-size: 28px;
   font-weight: 700;
+  color: #262626;
+  margin-bottom: 24px;
 }
 
-.post-container {
+.post-container, .comments-box, .promote-box, .schedule-box {
   background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 20px;
-  margin-bottom: 20px;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.post-content .username-input {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+.upload-media-box {
+  border: 2px dashed #dbdbdb;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.post-content textarea {
+.upload-media-box:hover {
+  background-color: #f8f8f8;
+}
+
+.instagram-post-form .upload-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0095f6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.instagram-post-form .upload-button:hover {
+  background-color: #0081d6;
+}
+
+.instagram-post-form textarea {
   width: 100%;
-  height: 100px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
+  padding: 12px;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.caption-box {
+  position: relative;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.emoji-picker-container button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .caption-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 5px;
-}
-
-.emoji-picker-container {
-  position: relative;
-}
-
-.upload-media-container {
-  margin-top: 20px;
-}
-
-.upload-media-heading {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.upload-media-description {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.upload-media-box {
-  border: 2px dashed #ddd;
-  border-radius: 5px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.upload-media-box.dragging {
-  background-color: #f0f0f0;
-}
-
-.comments-box {
-  margin-top: 20px;
-}
-
-.promote-box {
-  margin-top: 20px;
-}
-
-.schedule-box {
-  margin-top: 20px;
-}
-
-.preview-head{
-  text-align: center;
-  
-}
-
-.instagram-post-preview {
-  flex: 1;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-picture {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.preview-content {
-  text-align: left;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #8e8e8e;
 }
 
 .preview-header {
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
-  margin-bottom: 20px;
+  padding: 12px;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.preview-header img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 12px;
 }
 
 .preview-username {
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.preview-media img {
-  max-width: 100%;
-  max-height: 300px;
-  margin-bottom: 10px;
+.preview-media img, .preview-media video {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.insta-icons {
+  display: flex;
+  padding: 12px 0;
+}
+
+.insta-icons svg {
+  margin-right: 16px;
+  cursor: pointer;
 }
 
 .preview-caption {
+  padding: 12px;
   font-size: 14px;
-  color: #333;
+  line-height: 1.4;
 }
 
-.insta-icons{
-  font-size: 2rem;
+.instagram-post-form button {
+  padding: 10px 20px;
+  background-color: #0095f6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
+
+.instagram-post-form button:hover {
+  background-color: #0081d6;
+}
+
+.post_button {
+  background-color: #0095f6;
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.post_button:hover {
+  background-color: #0081d6;
+}
+
+.schedule-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.react-datepicker-wrapper, .react-time-picker {
+  width: 100%;
+}
+
+.react-time-picker__wrapper {
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.media-item {
+  position: relative;
+}
+
+.media-item img, .media-item video {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.media-item button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.open-popup-button {
+  position: relative;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  background-size: 400% 400%;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.open-popup-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+  pointer-events: none;
+  transition: all 0.5s ease;
+  opacity: 0;
+}
+
+.open-popup-button:hover {
+  background-position: 100% 100%;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.open-popup-button:hover::before {
+  animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -50%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+}
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+
+@keyframes shake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.caption-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.category-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  background-color: rgba(240, 240, 240, 0.6);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.category-button:hover {
+  opacity: 0.9;
+}
+
+.category-button.active {
+  color: #fff;
+  opacity: 1;
+}
+
+.category-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.category-button.active .category-icon {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Gen Z button */
+.category-button:nth-child(1) {
+  background-color: rgba(255, 64, 129, 0.6);
+}
+.category-button:nth-child(1).active {
+  background-color: rgb(255, 64, 129);
+}
+
+/* Professional button */
+.category-button:nth-child(2) {
+  background-color: rgba(33, 150, 243, 0.6);
+}
+.category-button:nth-child(2).active {
+  background-color: rgb(33, 150, 243);
+}
+
+/* Creative button */
+.category-button:nth-child(3) {
+  background-color: rgba(76, 175, 80, 0.6);
+}
+.category-button:nth-child(3).active {
+  background-color: rgb(76, 175, 80);
+}
+
+/* Meme button */
+.category-button:nth-child(4) {
+  background-color: rgba(255, 193, 7, 0.6);
+}
+.category-button:nth-child(4).active {
+  background-color: rgb(255, 193, 7);
+}
+
+/* Customize button */
+.category-button.customize-button {
+  background-color: rgba(156, 39, 176, 0.6);
+}
+.category-button.customize-button.active {
+  background-color: rgb(156, 39, 176);
+}
+
+.custom-prompt-input {
+  margin-top: 16px !important;
+}
+
+.generate-caption-button {
+  align-self: flex-end;
+  margin-top: 16px !important;
+  background-color: #0095f6 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 8px 16px !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s !important;
+}
+
+.generate-caption-button:hover {
+  background-color: #0081d6 !important;
+}
+
+.generate-caption-button:disabled {
+  background-color: #b2dffc !important;
+  cursor: not-allowed;
+}
+
+.popup {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 95%;
+  max-width: 1400px;
+  height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-popup-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.image-editor-button-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.open-popup-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.open-popup-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Add this to your existing CSS file */
+
+.instagram-post-page {
+  display: flex;
+  background-color: #fafafa;
+  min-height: 100vh;
+}
+
+.instagram-post-content {
+  display: flex;
+  flex: 1;
+  padding: 40px;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.instagram-post-form {
+  flex: 1;
+  max-width: 100%;
+}
+
+.instagram-post-preview {
+  flex: 0.5;
+  max-width: 400px;
+  position: sticky;
+  top: 40px;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(50px);
+  pointer-events: none;
+}
+
+.instagram-post-preview.visible {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.instagram-post-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #262626;
+  margin-bottom: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.post-container, .comments-box, .promote-box, .schedule-box {
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.post-container:hover, .comments-box:hover, .promote-box:hover, .schedule-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.upload-media-box {
+  border: 3px dashed #dbdbdb;
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f8f8f8;
+}
+
+.upload-media-box:hover {
+  background-color: #f0f0f0;
+  border-color: #b2b2b2;
+}
+
+.upload-media-box p {
+  font-size: 18px;
+  color: #8e8e8e;
+  margin-bottom: 16px;
+}
+
+.instagram-post-form .upload-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #0095f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.instagram-post-form .upload-button:hover {
+  background-color: #0081d6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
+}
+
+.instagram-post-form textarea {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #dbdbdb;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.instagram-post-form textarea:focus {
+  border-color: #0095f6;
+  box-shadow: 0 0 0 2px rgba(0, 149, 246, 0.2);
+}
+
+.caption-box {
+  position: relative;
+  margin-top: 32px;
+}
+
+.caption-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #8e8e8e;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #dbdbdb;
+  background-color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.preview-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  object-fit: cover;
+}
+
+.preview-username {
+  font-weight: 600;
+  font-size: 16px;
+  color: #262626;
+}
+
+.preview-media img, .preview-media video {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.insta-icons {
+  display: flex;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.insta-icons svg {
+  margin-right: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.insta-icons svg:hover {
+  transform: scale(1.1);
+}
+
+.preview-caption {
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #fff;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+
+.drafts-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.drafts-popup {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.drafts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.draft-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.draft-image {
+  max-width: 160%;
+  height: auto;
+}
+
+.draft-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+

@@ -12,9 +12,8 @@ import "reactflow/dist/style.css";
 import { CustomNode, TextUpdaterNode,ButtonNode,SendMessage,AskQuestion,SetCondition } from './TextUpdaterNode';
 import axios from 'axios';
 import './dnd.css';
-import e from 'cors';
 import { useParams, useNavigate } from "react-router-dom"; 
-
+import { useNodeActions } from './UseNodeActions';
 import { useMemo } from 'react';
 
 const lastNode = initialNodes[initialNodes.length - 1];
@@ -54,6 +53,7 @@ const DnDFlow = () => {
   const [selectNodeId, setSelectedNodeId] = useState();
   const [showSetCondition, setShowSetCondition] = useState(false);
   const [selectedValueOption, setSelectedValueOption]=useState();
+  const { handleCopyNode, handleDeleteNode } = useNodeActions(setNodes, setEdges);
 
 
   const nodeTypes = useMemo(() => ({ 
@@ -74,30 +74,22 @@ const DnDFlow = () => {
     setId(val.id);
     
   };
-  const onNodeClick = (e, val) => {
-    
-    setSelectedNodeId(val.type);
-    setSelectedValueOption(val.data.selectedOption); 
-    let action = val.data.selectedOption;
-   console.log(val.data.selectedOption); 
-    console.log(val.type);
-   
-  
-    if (action == 'edit') {
+  const onNodeClick = (e, node) => {
+    setSelectedNodeId(node.id);
+    setSelectedValueOption(node.data.selectedOption); 
+    let action = node.data.selectedOption;
+
+    if (action === 'edit') {
       handleEdit();
-    } else if (action == 'delete') {
-      handleNodeDelete(val.id);
-    } else if (action == 'copy') {
-      handleCopyNode();
+    } else if (action === 'delete') {
+      handleDeleteNode(node.id);
+    } else if (action === 'copy') {
+      handleCopyNode(node.id);
     } else {
       console.log('No action selected');
     }
-
-    
-    console.log(val.data.selectedOption);
-    console.log(val.type);
-    console.log(nodes);
   };
+
   const handleChange = (e) => {
     e.preventDefault();
     setEditValue(e.target.value);
@@ -156,50 +148,53 @@ const DnDFlow = () => {
   }, []);
 
   const onDrop = useCallback(
-  (event) => {
-    event.preventDefault();
-
-    const type = event.dataTransfer.getData("application/reactflow");
-
-    // check if the dropped element is valid
-    if (typeof type === "undefined" || !type) {
-      return;
-    }
-
-    const position = reactFlowInstance.screenToFlowPosition({
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    let newData;
-    if (type === "customNode") {
-      newData = {
-        heading: "Custom Node Title", // Set the title for custom nodes
-        content: "Custom Node Content", // Set the content for custom nodes
+    (event) => {
+      event.preventDefault();
+  
+      const type = event.dataTransfer.getData("application/reactflow");
+  
+      if (typeof type === "undefined" || !type) {
+        return;
+      }
+  
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+  
+      let newData;
+      if (type === "customNode") {
+        newData = {
+          heading: "Custom Node Title",
+          content: "Custom Node Content",
+        };
+      } 
+      else if (type === "textUpdater") {
+        newData = {
+          heading: "Title",
+          content: "Content",
+        };
+      } else {
+        newData = {
+          label: `${type} node`,
+        };
+      }
+  
+      const newNode = {
+        id: getId(),
+        type,
+        position,
+        data: newData,
       };
-    } 
-    else if (type === "textUpdater") {
-      newData = {
-        heading: "Title", // Set the title for custom nodes
-        content: "tent", // Set the content for custom nodes
-      };
-    } else {
-      newData = {
-        label: `${type} node`,
-      };
-    }
+  
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [reactFlowInstance]
+  );
 
-    const newNode = {
-      id: getId(),
-      type,
-      position,
-      data: newData,
-    };
 
-    setNodes((nds) => nds.concat(newNode));
-  },
-  [reactFlowInstance]
-);
+
+  
 
 const sendDataToBackend = () => {
   const formattedNodes = nodes.map((node) => ({
@@ -256,37 +251,25 @@ const sendDataToBackend = () => {
   console.log('Edges:', edges);
   
   const handleNodeDelete = (nodeId) => {
-    // Filter out the node with the given nodeId
-    const updatedNodes = nodes.filter((node) => node.id !== nodeId);
-  
-    // Filter out the edges associated with the deleted node
-    const updatedEdges = edges.filter(
-      (edge) => edge.source !== nodeId && edge.target !== nodeId
-    );
-  
-    // Update the nodes and edges state
-    setNodes(updatedNodes);
-    setEdges(updatedEdges);
-  }
-
-
-  const handleCopyNode = () => {
-    const selectedNode = nodes.find((node) => node.id === selectNodeId); 
-    console.log("Selected Node ID:", selectNodeId);
-    console.log("Nodes:", nodes);
-    if (selectedNode) {
-      const copiedNode = {
-        ...selectedNode,
-        id: generateUniqueId(), // Ensure a unique ID for the copied node
-        position: {
-          x: selectedNode.position.x + 100,
-          y: selectedNode.position.y + 100
-        }
-      };
-      setNodes(prevNodes => [...prevNodes, copiedNode]);
-    }
+    setNodes(prevNodes => prevNodes.filter(node => node.id !== nodeId));
+    setEdges(prevEdges => prevEdges.filter(edge => edge.source !== nodeId && edge.target !== nodeId));
   };
-  
+
+
+  // const handleCopyNode = (nodeId) => {
+  //   const selectedNode = nodes.find((node) => node.id === nodeId);
+  //   if (selectedNode) {
+  //     const copiedNode = {
+  //       ...selectedNode,
+  //       id: getId(), // Use your existing getId function
+  //       position: {
+  //         x: selectedNode.position.x + 100,
+  //         y: selectedNode.position.y + 100
+  //       }
+  //     };
+  //     setNodes(prevNodes => [...prevNodes, copiedNode]);
+  //   }
+  // };  
 
 
 
@@ -300,22 +283,21 @@ const sendDataToBackend = () => {
       <button class="send-button" onClick={sendDataToBackend}>Send Data to Backend</button>
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            elementsSelectable={true}
-            onNodeDoubleClick={(e, val) => onNodedoubleClick(e, val)}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodesDelete={handleNodeDelete}
-            fitView
-          >
+        <ReactFlow
+  nodes={nodes}
+  edges={edges}
+  nodeTypes={nodeTypes}
+  onNodesChange={onNodesChange}
+  onEdgesChange={onEdgesChange}
+  onConnect={onConnect}
+  onInit={setReactFlowInstance}
+  onDrop={onDrop}
+  onDragOver={onDragOver}
+  elementsSelectable={true}
+  onNodeDoubleClick={onNodedoubleClick}
+  onNodeClick={onNodeClick}
+  fitView
+>
             <Controls />
             <MiniMap />
             <Background />

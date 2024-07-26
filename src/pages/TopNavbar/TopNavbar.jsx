@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import zIndex from "@mui/material/styles/zIndex.js";
 import io from 'socket.io-client';
 import NavbarPopup from './NavbarPopup.jsx';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const socket = io('https://whatsappbotserver.azurewebsites.net/');
 
@@ -37,7 +38,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [aiAnalysisData, setAiAnalysisData] = useState(null);
-
+  const [coinCount, setCoinCount] = useState(0);
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -67,6 +68,16 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
       ...callFormData,
       [e.target.name]: e.target.value,
     });
+  };
+
+
+  const fetchCoinCount = async () => {
+    try {
+      const response = await axiosInstance.get(`/user/coins`);
+      setCoinCount(response.data.coinCount);
+    } catch (error) {
+      console.error('Error fetching coin count:', error);
+    }
   };
 
 
@@ -137,9 +148,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
           'X-Tenant-ID': tenant,
         },
         body: JSON.stringify({ prompt: searchQuery }),
-        
       });
-      console.log(searchQuery);
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -147,10 +156,8 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
 
       const data = await response.json();
       console.log('Response from backend:', data);
-      setTableData(data); 
-      console.log('response table', tableData);
+      setTableData(data);
       setPopupVisible(true);
-      
     } catch (error) {
       console.error('Error:', error);
     }
@@ -162,11 +169,17 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   };
   const handleClosePopup = () => {
     setPopupVisible(false);
-  };  
+  };
+
+  const handleCoinClick = () => {
+    navigate(`/${tenantId}/coins`);
+  };
+ 
   
    useEffect(() => {
     fetchProfileImageUrl();
     fetchNotificationCount();
+    fetchCoinCount();
     socket.on('connect', () => {
       console.log('Connected to the server');
     });
@@ -190,28 +203,31 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
     setAiAnalysisData(mockData);
 };
 
-  return (  
-    <div className='topNavbar-head'>
-      <div className="topNavbar1">   <input
+return (
+  <div className='topNavbar-head'>
+    <div className="topNavbar1">
+  <div className="search-container">
+    <input
       type="text"
       className="search-bar"
       placeholder="Search..."
       onChange={handleSearchChange}
       onKeyPress={handleKeyPress}
     />
-     <SearchIcon className="search-icon" onclick={handleSearchClick} style={{marginLeft:"-200px",marginBottom:'-4px',cursor: 'pointer',zIndex:'10000',backgroundColor:'', height:'30px',width:'30px'}} />
-     {popupVisible && <SearchTable data={tableData} onClose={handleClosePopup} />}
+    <div className="search-icon-container" onClick={handleSearchClick}>
+      <SearchIcon className="search-icon-header" />
     </div>
-      <div className="callround" onClick={handleDirectCallClick}>
-        <CallRoundedIcon style={{ width: '24px', height: '24px' }} className='topNavbar2' />
-      </div>
-      <div className="insertcommon">
-        <Link to={`/${tenantId}/chatbot`}>
-          <InsertCommentRoundedIcon style={{ width: '24px', height: '24px' }} className='topNavbar2' />
-        </Link>
-      </div>
+  </div>
+</div>
+    
+    <div className="navbar-icon-group">
+      <CallRoundedIcon className='navbar-icon' onClick={handleDirectCallClick} />
+      <Link to={`/${tenantId}/chatbot`}>
+        <InsertCommentRoundedIcon className='navbar-icon' />
+      </Link>
+      
       <div className='notification-icon-container' onClick={handleNotificationClick}>
-        <NotificationsNoneRoundedIcon style={{ width: '24px', height: '24px', fill: '#323743FF' }} className='topNavbar2' />
+        <NotificationsNoneRoundedIcon className='navbar-icon' />
         {notificationCount > 0 && (
           <div className='notification-count'>{notificationCount}</div>
         )}
@@ -225,8 +241,9 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
           </div>
         )}
       </div>
+      
       <div className='add-icon-container' onClick={handleAddClick}>
-        <AddIcon style={{ width: '24px', height: '24px' }} className='topNavbar2' />
+        <AddIcon className='navbar-icon' />
         {showAddDropdown && (
           <div className='add-dropdown'>
             <div className='dropdown-item' onClick={handleCallClick}>
@@ -258,19 +275,25 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
             </div>
           </div>
         )}
-      </div>
-      <div>
-      <Link to={`/${tenantId}/user_id`} className='topNavbar2'>
-        {profileImageUrl ? (
-          <img src={profileImageUrl} style={{ width: '36px', height: '36px', borderRadius: '50%',maxWidth:"100rem" }} />
-        ) : (
-          <div className="AccountCircle">
-            <AccountCircleRoundedIcon style={{ width: '36px', height: '36px', fill: '#D3C1FAFF' }} />
-          </div>
-        )}
-      </Link>
+        </div>
+        
+        <div className="coin-container" onClick={handleCoinClick}>
+  <div className="coin-shine"></div>
+  <MonetizationOnIcon className="coin-icon" />
+  <span className="coin-count">{coinCount}</span>
+</div>
+
+<Link to={`/${tenantId}/user_id`}>
+  {profileImageUrl ? (
+    <img src={profileImageUrl} className="profile-image" alt="Profile" />
+  ) : (
+    <AccountCircleRoundedIcon className='navbar-icon' />
+  )}
+</Link>
+
 
       </div>
+
       {showMeetingForm && (
         <div className="modal-overlay">
           <div className="modal-content_meet">
@@ -437,6 +460,9 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
             </form>
           </div>
         </div>
+      )}
+      {popupVisible && (
+        <NavbarPopup data={tableData} onClose={handleClosePopup} />
       )}
     </div>
   );

@@ -7,6 +7,14 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
 import './LinkedInpost.css';
+import { Button, TextField } from '@mui/material';
+import WorkIcon from '@mui/icons-material/Work';
+import BrushIcon from '@mui/icons-material/Brush';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DescriptionIcon from '@mui/icons-material/Description';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import axios from 'axios';
+import axiosInstance from '../../api.jsx';
 
 
 const getTenantIdFromUrl = () => {
@@ -43,8 +51,82 @@ const LinkedInPost = () => {
   const [profileInfo, setProfileInfo] = useState({ name: '', profilePicture: '' });
   const [authCode, setAuthCode] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
+const [prompt, setPrompt] = useState('');
+const [captionCategory, setCaptionCategory] = useState('');
+const [showCustomPrompt, setShowCustomPrompt] = useState(false);
+const categories = [
+  { name: 'Professional', icon: <WorkIcon /> },
+  { name: 'Creative', icon: <BrushIcon /> },
+  { name: 'Article', icon: <DescriptionIcon /> },
+  { name: 'Job Posting', icon: <BusinessCenterIcon /> },
+];
 
   
+
+const handleGenerateCaption = async () => {
+  if (!files.length) {
+    alert("Please upload an image first.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onload = async () => {
+      const base64Image = reader.result.split(',')[1];
+
+      let promptText = `Generate a LinkedIn post caption for this image.`;
+      if (captionCategory) {
+        promptText += ` The caption should be in the style of a ${captionCategory} post.`;
+      }
+      if (prompt) {
+        promptText += ` Additional context or requirements: ${prompt}`;
+      }
+
+      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { 
+                type: "text", 
+                text: promptText
+              },
+              { 
+                type: "image_url", 
+                image_url: { 
+                  url: `data:image/jpeg;base64,${base64Image}` 
+                } 
+              }
+            ]
+          }
+        ],
+        max_tokens: 300
+      }, {
+        headers: {
+          'Authorization': `Bearer sk-proj-XsFPegZDKVJjoJ4OjxwhT3BlbkFJUiZB2h5ZEuVN7DFPbv0Y`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const generatedCaption = response.data.choices[0].message.content.trim();
+        setCaption(generatedCaption);
+      };
+    } catch (error) {
+      console.error('Error generating caption:', error);
+      setCaption('Failed to generate caption.');
+      if (error.response) {
+        console.error('API Error:', error.response.data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   useEffect(() => {
     const handleAccessToken = async () => {
       // Get authorization code from URL params
@@ -480,36 +562,57 @@ const LinkedInPost = () => {
         </div>
       )}
     </div>
-            <div className="caption-box">
-      <textarea
-        value={caption}
-        onChange={onCaptionChange}
-        placeholder="Type your caption here..."
-      />
-      <div className="caption-options">
-        <div className="emoji-picker-component">
-          <span className="emoji-icon" onClick={() => setShowPicker(!showPicker)}>😊</span>
-          {showPicker && (
-            <div className="emoji-picker-dropdown">
-              <EmojiPicker onEmojiClick={(event, emojiObject) => handleEmojiClick(emojiObject)} />
-            </div>
-          )}
-        </div>
-        <div className="upload-option-component">
-          <span className="upload-camera-option" onClick={() => setShowUploadOptions(!showUploadOptions)}>📷</span>
-          {showUploadOptions && (
-            <ul className="upload-options-dropdown">
-              {['Upload Image(s)', 'Upload Video', 'Bynder', 'Design on Canva', 'Dropbox', 'Google Drive', 'Shared Media', 'Asset Library'].map(option => (
-                <li key={option} onClick={() => handleUploadOptionClick(option)}>{option}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className={`letter-count ${letterCount > maxLetters ? 'exceeded' : ''}`}>
-          {letterCount} / {maxLetters}
-        </div>
-      </div>
+    <div className="caption-box">
+  <textarea
+    value={caption}
+    onChange={(e) => setCaption(e.target.value)}
+    placeholder="Write your post content..."
+    className="caption-input"
+  />
+  <div className="caption-footer">
+    <div className="caption-categories">
+      {categories.map((category) => (
+        <button
+          key={category.name}
+          className={`category-button ${captionCategory === category.name ? "active" : ""}`}
+          onClick={() => setCaptionCategory(category.name)}
+        >
+          <span className="category-icon">{category.icon}</span>
+          {category.name}
+        </button>
+      ))}
+      <button
+        className={`category-button customize-button ${showCustomPrompt ? "active" : ""}`}
+        onClick={() => setShowCustomPrompt(!showCustomPrompt)}
+      >
+        <span className="category-icon"><SettingsIcon /></span>
+        Customize
+      </button>
     </div>
+    {showCustomPrompt && (
+      <TextField
+        label="Custom prompt for post"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        multiline
+        rows={3}
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        className="custom-prompt-input"
+      />
+    )}
+    <Button 
+      variant="contained" 
+      color="primary" 
+      onClick={handleGenerateCaption} 
+      disabled={loading || !files.length}
+      className="generate-caption-button"
+    >
+      {loading ? 'Generating...' : 'Generate Post Content'}
+    </Button>
+  </div>
+</div>
     </div>  
           </div>  
           <div className="LinkedIn-option-box">
