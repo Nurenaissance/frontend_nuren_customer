@@ -29,7 +29,7 @@ const ImageEditor = () => {
     const { current: iframe } = iframeRef;
   
     if (iframe) {
-      // Example: Run the first script to open an image
+      // Example: Run the first script to open an ima   
       const openImageScript = 'app.open("https://www.photopea.com/api/img2/pug.png", null, true);';
       iframe.contentWindow.postMessage(openImageScript, '*');
   

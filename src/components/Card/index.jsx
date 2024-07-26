@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import axiosInstance from "../../api.jsx";
+
+import Icon1 from "../../assets/image1dp.png";
+import Icon2 from "../../assets/image2dp.png";
+import Icon3 from "../../assets/image3dp.png";
+import Icon4 from "../../assets/image4dp.png";
 import "./card.css";
 
 const getTenantIdFromUrl = () => {
@@ -38,7 +43,6 @@ export const Card = () => {
   return (
     <div className="card_wrapper">
       <div className="card_wrapper_inner">
-<<<<<<< HEAD
         <NavLink to={{
           pathname: `/${tenantId}/report`,
           state: { reportId: 'total_leads' }
@@ -47,16 +51,10 @@ export const Card = () => {
             <img src={Icon4} alt="icon" className="card_img" width={100} height={100} />
           </div>
           <div className="card_two">
-=======
-        <NavLink to={`/${tenantId}/report`} className="card_1 card">
-          <div className="card_content">
-            <i className="fas fa-users card_icon"></i>
->>>>>>> be7a37f281ffc63e1faf96ffdae63d999b249d74
             <p className="card_text_1">{totalLeads}</p>
             <p className="card_paragraph">Total Leads</p>
           </div>
         </NavLink>
-<<<<<<< HEAD
         <NavLink to={{
           pathname: `/${tenantId}/report`,
           state: { reportId: 'this_month_leads' }
@@ -65,16 +63,10 @@ export const Card = () => {
             <img src={Icon3} alt="icon" className="card_img" width={100} height={100} />
           </div>
           <div className="card_two">
-=======
-        <NavLink to={`/${tenantId}/contacts`} className="card_2 card">
-          <div className="card_content">
-            <i className="fas fa-calendar-alt card_icon"></i>
->>>>>>> be7a37f281ffc63e1faf96ffdae63d999b249d74
             <p className="card_text_2">{new Date(createdAt).toLocaleDateString()}</p>
             <p className="card_paragraph">Created At</p>
           </div>
         </NavLink>
-<<<<<<< HEAD
         <NavLink to={{
           pathname: `/${tenantId}/report`,
           state: { reportId: 'today_sales' }
@@ -83,16 +75,10 @@ export const Card = () => {
             <img src={Icon2} alt="icon" className="card_img" width={100} height={100} />
           </div>
           <div className="card_two">
-=======
-        <NavLink to={`/${tenantId}/opportunities`} className="card_3 card">
-          <div className="card_content">
-            <i className="fas fa-dollar-sign card_icon"></i>
->>>>>>> be7a37f281ffc63e1faf96ffdae63d999b249d74
             <p className="card_text_3">${parseFloat(leadsAmount).toLocaleString()}</p>
             <p className="card_paragraph">Leads Amount</p>
           </div>
         </NavLink>
-<<<<<<< HEAD
         <NavLink to={{
           pathname: `/${tenantId}/report`,
           state: { reportId: 'sales_this_month' }
@@ -101,11 +87,6 @@ export const Card = () => {
             <img src={Icon1} alt="icon" className="card_img" width={100} height={100} />
           </div>
           <div className="card_two">
-=======
-        <NavLink to={`/${tenantId}/report`} className="card_4 card">
-          <div className="card_content">
-            <i className="fas fa-chart-line card_icon"></i>
->>>>>>> be7a37f281ffc63e1faf96ffdae63d999b249d74
             <p className="card_text_4">${parseFloat(revenue).toLocaleString()}</p>
             <p className="card_paragraph">Revenue</p>
           </div>
