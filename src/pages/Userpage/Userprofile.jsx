@@ -32,12 +32,13 @@ const UserProfile = () => {
   const [profileImageUrl, setProfileImageUrl] = useState(null); 
   const [tasks, setTasks] = useState([]); // New state for tasks
   const [showTasks, setShowTasks] = useState(false); // Add state for showing tasks
+  const tenantId=getTenantIdFromUrl();
 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axiosInstance.get(`/get-user/ll`);
+        const response = await axiosInstance.get(`/get-user/${tenantId}`);
         setUser(response.data);
         setEditedUser(response.data);
         setIsLoading(false);
@@ -68,7 +69,7 @@ const UserProfile = () => {
       if (profileImageFile) {
         const formData = new FormData();
         formData.append('file', profileImageFile);
-        const response = await axiosInstance.post('YOUR_UPLOAD_ENDPOINT', formData, {
+        const response = await axiosInstance.post('', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -77,7 +78,7 @@ const UserProfile = () => {
         updatedUser.profile_image = response.data.url; 
       }
       
-      await axiosInstance.put(`/get-user/ee/`, updatedUser); // Update user data endpoint
+      await axiosInstance.put(`/get-user/ll/`, updatedUser); // Update user data endpoint
       
       setEditedUser(updatedUser);
       

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from "../../components/Sidebar";
 import axios from 'axios';
-
+import './Campaignform.css';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -230,7 +230,7 @@ const Campaignform = () => {
   return (
     <div>
       <div className='campaign_form_head'>
-       <div className="home_left_box1">
+       <div className="campaign-home_left_box1">
         <Sidebar />
       </div>
       <div>

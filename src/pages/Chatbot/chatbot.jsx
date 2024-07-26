@@ -36,6 +36,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
 //import {getdata} from './chatfirebase';
 import axios from 'axios';
@@ -74,8 +78,45 @@ const Chatbot = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [previousContact, setPreviousContact] = useState(null);
   const [newMessages, setNewMessages] = useState(['']);
- 
+  const [showSelectFlow, setShowSelectFlow] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (action) => {
+    setAnchorEl(null);
+    switch (action) {
+      case 'createFlow':
+        handleCreateFlow();
+        break;
+      case 'selectFlow':
+        <select value={selectedFlow} onChange={handleFlowChange}>
+        <option value="" disabled>Select a flow</option>
+        {flows.map(flow => (
+          <option key={flow.id} value={flow.id}>
+            {flow.name}
+          </option>
+        ))}
+      </select>
+        break;
+      case 'sendFlowData':
+        handleSendFlowData();
+        break;
+      case 'imageEditor':
+        openPopup();
+        break;
+      default:
+        break;
+    }
+  };
+  
+
 
 
   const openPopup = () => {
@@ -729,11 +770,17 @@ fetchConversation(selectedContact.phone);*/
       </div>
       <div className="chatbot-contact-section">
       <button className="chatbot-signupbutton" onClick={handleRedirect}>Sign Up</button>
+      <IconButton edge="end" color="inherit" aria-label="menu" onClick={handleMenuClick} sx={{ width: '48px', height: '48px' }} >
+      <MenuIcon sx={{ fontSize: '32px' }} />
+        </IconButton>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+          <MenuItem onClick={() => handleMenuItemClick('createFlow')}>Create Flow</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('selectFlow')}>Select Flow</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('sendFlowData')}>Send Flow Data</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('imageEditor')}>Image Editor</MenuItem>
+        </Menu>
       <div className="content">
       {/* Your existing content here */}
-      <button onClick={openPopup} className="open-popup-button">
-       Image Editor
-      </button>
 
       {showPopup && (
         <div className="editimage-popup">
@@ -750,18 +797,7 @@ fetchConversation(selectedContact.phone);*/
       )}
     </div>
         <h1 className='chatbot-details'>Contact Details</h1>
-        <div>
-          <button onClick={handleCreateFlow}>Create Flow</button>
-          <select value={selectedFlow} onChange={handleFlowChange}>
-              <option value="" disabled>Select a flow</option>
-              {flows.map(flow => (
-                <option key={flow.id} value={flow.id}>
-                  {flow.name}
-                </option>
-              ))}
-            </select>
-            <button onClick={handleSendFlowData}>Send Flow Data</button>
-          </div>
+       
         {selectedContact && (
           <div className="chatbot-contact-details">
             <div className="profile-info">

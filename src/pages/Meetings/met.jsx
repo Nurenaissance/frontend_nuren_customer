@@ -325,7 +325,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
             <option value="">View!</option>
             <option value="table">Table View</option>
             <option value="tile">Tile View</option>
-            <option value="list">List View</option>
           </select>
         </div>
         {viewMode === 'table' && (
@@ -386,26 +385,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
           </div>
         </div>
         )}
-{viewMode==='list' &&(
-          <div>
-          <h2>List View</h2>
-          <div className="meeting-list-container">
-            <ListGroup>
-              {meetings.map((meeting, index) => (
-                <ListGroup.Item key={meeting.id} className="accounts-list-item">
-                  <Link to={`/${tenantId}/meetings/${meeting.id}`}>{meeting.title}</Link>
-                  <p>From: {meeting.from_time}</p>
-                  <p>To: {meeting.to_time}</p>
-                  <p>Related To: {meeting.related_to}</p>
-                  <p>Host Name: {meeting.host}</p>
-                  <p>Contact Name: {meeting.contact_name}</p>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </div>
-        </div>
-        )}
-        
       </div>
     </div>
    </div>

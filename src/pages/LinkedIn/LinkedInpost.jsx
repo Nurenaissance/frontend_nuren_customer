@@ -633,7 +633,7 @@ const handleGenerateCaption = async () => {
           </div>
           <div className="LinkedIn-campaign">
         <h2>Add Campaign</h2>
-       <div className="campaign-box">
+       <div className="linkedin-campaign-box">
           <p>Track and report on your social marketing campaigns with the Campaign Planner, notes and more.</p>
           <hr />
           <button onClick={handleAddCampaign} className="add-campaign-button">Add a campaign</button>

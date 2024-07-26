@@ -5,6 +5,7 @@ import { Card, ListGroup , Dropdown } from "react-bootstrap";
 import './InteractionPage.css';
 import InteractionDetailsPage from "./InteractionDetailsPage";  
 import axiosInstance from "../../api";
+import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
@@ -79,6 +80,10 @@ export const InteractionTable = () => {
 <div className="home_left_box1" style={{"top":"0rem"}}>
         <Sidebar />
       </div>
+      <div>
+      <div className="call_nav">
+    <TopNavbar/>
+  </div>
       <div className="interection_head">
             <div className="int_heading">
               <div>
@@ -151,6 +156,7 @@ export const InteractionTable = () => {
         )}
       </div>
       {selectedInteraction && <InteractionDetailsPage />}
+    </div>
     </div>
     </div>
   );

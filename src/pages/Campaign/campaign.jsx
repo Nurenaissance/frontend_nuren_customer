@@ -119,7 +119,7 @@ const Campaign = () => {
     navigate(`/${tenantId}/chatbot`)
   };
   const handleEmailClick = () => {
-    navigate(`/${tenantId}/email`)
+    navigate(`/${tenantId}/email-provider`)
   };
   const handleLinkedInClick = () => {
     navigate(`/${tenantId}/linkedinpost`)
