@@ -15,6 +15,8 @@ import zIndex from "@mui/material/styles/zIndex.js";
 import io from 'socket.io-client';
 import NavbarPopup from './NavbarPopup.jsx';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import { ref, uploadBytes, getDownloadURL,listAll } from "firebase/storage";
+import { storage, firestore } from '../../pages/Userpage/profilefirebase.jsx';
 
 const socket = io('https://whatsappbotserver.azurewebsites.net/');
 
@@ -24,9 +26,8 @@ const getTenantIdFromUrl = () => {
   return pathArray.length >= 2 ? pathArray[1] : null;
 };
 
-const TopNavbar = ({ openMeetingForm, openCallForm }) => {
+const TopNavbar = ({ openMeetingForm, openCallForm}) => {
   const tenantId = getTenantIdFromUrl();
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
@@ -39,6 +40,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   const [tableData, setTableData] = useState([]);
   const [aiAnalysisData, setAiAnalysisData] = useState(null);
   const [coinCount, setCoinCount] = useState(0);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -81,14 +83,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   };
 
 
-  const fetchProfileImageUrl = async () => {
-    try {
-      const response = await axiosInstance.get(`/documents/`);
-      setProfileImageUrl(response.data[20].file_url);
-    } catch (error) {
-      console.error('Error fetching file URL:', error);
-    }
-  };
+
 
   const fetchNotificationCount = async () => {
     try {
@@ -135,6 +130,42 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
   const handleSearchChange=(event)=>{
     setSearchQuery(event.target.value);
   }
+
+  useEffect(() => {
+
+
+    const fetchProfileImage = async () => {
+      try {
+       
+        const imagesRef = ref(storage, `profileImage/${tenantId}/`);
+        const result = await listAll(imagesRef);
+    
+        if (result.items.length > 0) {
+          const sortedItems = result.items.sort((a, b) => {
+            return b.name.localeCompare(a.name); 
+          });
+    
+          
+          const latestFileRef = sortedItems[0];
+          const url = await getDownloadURL(latestFileRef);
+    
+          
+          setProfileImageUrl(url);
+          console.log(profileImageUrl)
+        } else {
+          console.log("No profile images found.");
+        }
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+       
+        setProfileImageUrl(null);
+      }
+    };
+
+
+    fetchProfileImage();
+  }, [tenantId]);
+  
   
   const handleSearchClick = async () => {
     console.log('Search button clicked');
@@ -177,7 +208,6 @@ const TopNavbar = ({ openMeetingForm, openCallForm }) => {
  
   
    useEffect(() => {
-    fetchProfileImageUrl();
     fetchNotificationCount();
     fetchCoinCount();
     socket.on('connect', () => {
@@ -285,7 +315,7 @@ return (
 
 <Link to={`/${tenantId}/user_id`}>
   {profileImageUrl ? (
-    <img src={profileImageUrl} className="profile-image" alt="Profile" />
+    <img src={profileImageUrl} className="navbar-icon" alt="Profile" />
   ) : (
     <AccountCircleRoundedIcon className='navbar-icon' />
   )}
