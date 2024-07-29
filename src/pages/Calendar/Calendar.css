@@ -95,11 +95,13 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
 }
 
 .close-button {

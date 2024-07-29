@@ -97,6 +97,8 @@ import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 import EmailList from "../pages/Email/Email-List.jsx";
 import EmailProviders from "../pages/Email/Email-provider.jsx";
+
+
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
@@ -122,7 +124,6 @@ export const RouteWrapper = () => {
   console.log("Tenant ID:", tenantId);
   const [reminder, setReminder] = useState([]);  
   const [selectedModel, setSelectedModel] = useState(null);
-
   const [scheduleData, setScheduleData] = useState({
     subject:"",
     event_date_time:"",
@@ -133,6 +134,8 @@ export const RouteWrapper = () => {
     is_triggered: false,
     created_at: "2024-06-25T08:21:33.075616Z",
   });
+
+  
   const Reminder = ({ message, onClose }) => {
     return (
       <div className="reminder-modal">

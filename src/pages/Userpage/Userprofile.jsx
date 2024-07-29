@@ -11,6 +11,8 @@ import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import "./Userprofile.css";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; 
 import uploadToBlob from "../../azureUpload.jsx";
+import { storage, firestore } from "./profilefirebase.jsx";
+import { ref, uploadBytes, getDownloadURL,listAll } from "firebase/storage";
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -22,7 +24,7 @@ const getTenantIdFromUrl = () => {
 };
 
 const UserProfile = () => {
-  const { userId } = useAuth(); // Assuming userId is available from authentication context
+  const { userId } = 3; // Assuming userId is available from authentication context
   const { id } = useParams(); // Assuming the user ID is obtained from URL parameters
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,12 +34,13 @@ const UserProfile = () => {
   const [profileImageUrl, setProfileImageUrl] = useState(null); 
   const [tasks, setTasks] = useState([]); // New state for tasks
   const [showTasks, setShowTasks] = useState(false); // Add state for showing tasks
+  const tenantId=getTenantIdFromUrl();
 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axiosInstance.get(`/get-user/ll`);
+        const response = await axiosInstance.get(`/get-user/${tenantId}`);
         setUser(response.data);
         setEditedUser(response.data);
         setIsLoading(false);
@@ -49,16 +52,45 @@ const UserProfile = () => {
 
     const fetchUserTasks = async () => {
       try {
-        const response = await axiosInstance.get(`/user/7/tasks/`); // Endpoint to fetch user tasks
+        const response = await axiosInstance.get(`/user/7/tasks/`);
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching user tasks:", error);
       }
     };
 
+    const fetchProfileImage = async (id) => {
+      try {
+       
+        const imagesRef = ref(storage, `profileImage/${tenantId}/${userId}/`);
+        const result = await listAll(imagesRef);
+    
+        if (result.items.length > 0) {
+          const sortedItems = result.items.sort((a, b) => {
+            return b.name.localeCompare(a.name); 
+          });
+    
+          
+          const latestFileRef = sortedItems[0];
+          const url = await getDownloadURL(latestFileRef);
+    
+          
+          setProfileImageUrl(url);
+        } else {
+          console.log("No profile images found.");
+        }
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+       
+        setProfileImageUrl(null);
+      }
+    };
+
     fetchUserData();
-    fetchUserTasks(); // Fetch user tasks when component mounts
-  }, [id]);
+    fetchUserTasks();
+    fetchProfileImage();
+  }, [id, tenantId]);
+  
 
   const handleSaveChanges = async () => {
     try {
@@ -68,7 +100,7 @@ const UserProfile = () => {
       if (profileImageFile) {
         const formData = new FormData();
         formData.append('file', profileImageFile);
-        const response = await axiosInstance.post('YOUR_UPLOAD_ENDPOINT', formData, {
+        const response = await axiosInstance.post(`/get-user/${tenantId}/`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -77,7 +109,7 @@ const UserProfile = () => {
         updatedUser.profile_image = response.data.url; 
       }
       
-      await axiosInstance.put(`/get-user/ee/`, updatedUser); // Update user data endpoint
+      await axiosInstance.put(`/get-user/${tenantId}/`, updatedUser); 
       
       setEditedUser(updatedUser);
       
@@ -97,23 +129,47 @@ const UserProfile = () => {
     }));
   };
 
-  const handleProfileImageUpload = (e) => {
+ 
+
+  const handleProfileImageUpload = async (e, id) => {
     const file = e.target.files[0];
-    setProfileImageFile(file);
-    const imageUrl = URL.createObjectURL(file);
-    setProfileImageUrl(imageUrl);
+    if (file) {
+      console.log("Selected file:", file);
+      try {
+        // Create a reference to the user's profile image directory in Firebase Storage
+        const profileImageRef = ref(storage, `profileImage/${tenantId}/${file.name}`);
+        console.log("Uploading to:", profileImageRef.fullPath);
+  
+        // Upload the file to Firebase Storage
+        const uploadResult = await uploadBytes(profileImageRef, file);
+        console.log("Upload result:", uploadResult);
+  
+        // Get the download URL for the uploaded file
+        const url = await getDownloadURL(profileImageRef);
+        console.log("File available at:", url);
+  
+        // Update the profile image URL state
+        setProfileImageUrl(url);
+      } catch (error) {
+        console.error("Error uploading profile image:", error);
+      }
+    } else {
+      console.error("No file selected");
+    }
   };
+  
+  
 
   const toggleTasksVisibility = () => {
     setShowTasks(prevShowTasks => !prevShowTasks);
 };
   return (
     <div className="user-profile-container">
-      <div className="home_left_box1" style={{ top: "0rem" }}>
+      <div className="home_left_box1" style={{marginTop:"7rem" }}>
         <Sidebar />
       </div>
       <div>
-        <div className="right_div" style={{ marginLeft: '-80px' }}>
+        <div className="right_div">
           <TopNavbar profileImageUrl={profileImageUrl} />
         </div>
         <div>
@@ -131,7 +187,7 @@ const UserProfile = () => {
                   <div className='semi-half-circle3'></div>
                   <div className='semi-half-circle4'></div>
                 </div> 
-                <label htmlFor="profile-image" className="avatar" onClick={() => document.getElementById("profile-image").click()}>
+                <label htmlFor="profile-image" className="avatar" onClick={() => document.getElementById("profile-image")}>
                   {profileImageUrl && <img src={profileImageUrl} alt="Profile" />}
                   <span className=' profile-user'>Profile</span>
                 </label>

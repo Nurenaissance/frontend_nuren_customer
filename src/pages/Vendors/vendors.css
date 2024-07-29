@@ -75,6 +75,7 @@
   background-color: #52ad10;
 }
 
+
 /* Table styles */
 .table_vendor {
   background-color: white;
@@ -83,6 +84,8 @@
   overflow: hidden;
   margin-top: 20px;
 }
+
+
 
 .table_vendor table {
   width: 100%;

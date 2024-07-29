@@ -22,6 +22,8 @@ const Calendarform = ({ isOpen, onRequestClose, fetchEvents }) => {
   const [description, setDescription] = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
   const [createdBy, setCreatedBy] = useState('7');
   const [participant1, setParticipant1] = useState('');
+  const tenantId=getTenantIdFromUrl();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const Calendarform = ({ isOpen, onRequestClose, fetchEvents }) => {
         to_time: `${date}T${to_time}:00Z`,
         description,
         createdBy: parseInt(createdBy),
-        tenant: parseInt(getTenantIdFromUrl()),
+        tenant: tenantId,
         color,
       };
   

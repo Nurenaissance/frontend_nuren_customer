@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from "../../components/Sidebar";
 import axios from 'axios';
-
+import './Campaignform.css';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -284,9 +284,11 @@ const Campaignform = () => {
     handleSubmit(event);
   };
   return (
+
     <div className="cf-container">
     <div className='cf-header'>
       <div className="cf-sidebar">
+
         <Sidebar />
       </div>
       <h1 className="cf-title">Create Campaigns</h1>

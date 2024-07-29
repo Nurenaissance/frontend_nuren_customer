@@ -320,25 +320,6 @@ export const ContactsTable = () => {
             <td className="cont_phone">{contact.address}</td>
           </tr>
         ));
-        case "Draft":
-          return draftContacts.map((contact, index) => (
-            <tr className="contacttablerow" key={contact.id}>
-              <td>
-                {generateSmiley(generateRandomColor())}
-                <div className="cont-first_name">
-                  <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
-                    {contact.first_name}
-                  </Link>
-                </div>
-              </td>
-              <td className="contlast_name">{contact.last_name}</td>
-              <td className="cont_email">
-                <a href={`mailto:${contact.email}`}>{contact.email}</a>
-              </td>
-              <td className="cont_phone">{contact.phone}</td>
-              <td className="cont_phone">{contact.address}</td>
-            </tr>
-          ));
       case "Recent":
         return recentContacts.map((contact, index) => (
           <tr className="contacttablerow" key={contact.id}>
@@ -363,6 +344,7 @@ export const ContactsTable = () => {
     }
   };
 
+  
 
 
   
@@ -437,32 +419,18 @@ export const ContactsTable = () => {
 
         <div className="contact-boxes">
         <div className="contact-bigboxes">
-              <h1 className="newcontact">New contacts this Week</h1>
-              <Link to={`/${tenantId}/contactinfo/${contacts[0]?.id}`} className="firstcontact-box">
-               <h1 className="heading1">{contacts.length > 0 && contacts[0].first_name}</h1>
-                <p className="paragraph1">{contacts.length > 0 && contacts[0].description}</p>
-                {/* Smiley */}
-                <div className="smiley1">
-                  {generateSmiley1(generateRandomColor())}
-                </div>
-              </Link>
-              <Link to={`/${tenantId}/contactinfo/${contacts[1]?.id}`} className="secondcontact-box">
-                <h1 className="heading2">{contacts.length > 1 && contacts[1].first_name}</h1>
-                <p className="paragraph2">{contacts.length > 1 && contacts[1].description}</p>
-                {/* Smiley */}
-                <div className="smiley2">
-                  {generateSmiley1(generateRandomColor())}
-                </div>
-              </Link>
-              <Link to={`/${tenantId}/contactinfo/${contacts[2]?.id}`} className="thirdcontact-box">
-                <h1 className="heading3">{contacts.length > 2 && contacts[2].first_name}</h1>
-                <p className="paragraph3">{contacts.length > 2 && contacts[2].description}</p>
-                {/* Smiley */}
-                <div className="smiley3">
-                  {generateSmiley1(generateRandomColor())}
-                </div>
-              </Link>
-          </div>
+  <h1 className="newcontact">New contacts this Week</h1>
+  {recentContacts.slice(0, 3).map((contact, index) => (
+    <Link key={contact.id} to={`/${tenantId}/contactinfo/${contact.id}`} className={`contact-box contact-box${index + 1}`}>
+      <h1 className={`heading${index + 1}`}>{contact.first_name}</h1>
+      <p className={`paragraph${index + 1}`}>{contact.description}</p>
+      {/* Smiley */}
+      <div className={`smiley${index + 1}`}>
+        {generateSmiley1(generateRandomColor())}
+      </div>
+    </Link>
+  ))}
+</div>
 
         </div>
    <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
@@ -502,16 +470,6 @@ export const ContactsTable = () => {
           >
             Recent
           </button>
-        </div>
-        <div className="activeInactivebtn5">
-        <button
-                        className={`button ${
-                          activeButton === "Draft" ? "active" : ""
-                        }`}
-                        onClick={() => setActiveButton("Draft")}
-                      >
-                        Draft
-                      </button>
         </div>
             
                 
