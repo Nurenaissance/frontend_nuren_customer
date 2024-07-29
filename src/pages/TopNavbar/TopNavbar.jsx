@@ -24,7 +24,7 @@ const getTenantIdFromUrl = () => {
   return pathArray.length >= 2 ? pathArray[1] : null;
 };
 
-const TopNavbar = ({ openMeetingForm, openCallForm }) => {
+const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
   const tenantId = getTenantIdFromUrl();
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -280,7 +280,7 @@ return (
         <div className="coin-container" onClick={handleCoinClick}>
   <div className="coin-shine"></div>
   <MonetizationOnIcon className="coin-icon" />
-  <span className="coin-count">{coinCount}</span>
+  <span className="coin-count1">{totalCoins}</span>
 </div>
 
 <Link to={`/${tenantId}/user_id`}>

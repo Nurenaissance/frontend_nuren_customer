@@ -20,6 +20,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.lead-head{
+  margin-left: 280px;
+}
+
 /* Dropdown Item Styling */
 .dropdown-item {
   display: flex;
@@ -141,10 +145,10 @@
   font-family: Arial, sans-serif;
 }
 
-h1 {
+/* h1 {
   text-align: center;
   color: #333;
-}
+} */
 
 .lead-info, .no-lead {
   margin-bottom: 20px;

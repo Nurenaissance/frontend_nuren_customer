@@ -2,11 +2,10 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-}
-.sidebar_container_for_LinkedIn{
+  }
+  .sidebar_container_for_LinkedIn{
+    margin-left: 250px;
     display: flex;
-    margin-right: 2rem;
-    
 }
 
 
@@ -497,4 +496,6 @@
   .LinkedINauth button:hover {
     background-color: #005d91;
   }
+  
+
   

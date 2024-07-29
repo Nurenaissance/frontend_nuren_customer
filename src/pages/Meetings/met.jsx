@@ -177,6 +177,19 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
             <button id="openModal" onClick={() => setModalOpen(true)}>+Client Meetings</button>
 
             </div>
+                          <div className="record5" style={{marginTop:'2rem'}}>
+                            
+                            <select
+                              value={viewMode}
+                              onChange={(e) => handleViewModeChange(e.target.value)}
+                              className="view-mode-select-meet"
+                            >
+                              <option value="">View!</option>
+                              <option value="table">Table View</option>
+                              <option value="tile">Tile View</option>
+                              <option value="list">List View</option>
+                            </select>
+                          </div>
 
           </div>
 </div>
@@ -314,19 +327,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
               </div>
             )}
           </div>
-        </div>
-        <div className="record5">
-          
-          <select
-            value={viewMode}
-            onChange={(e) => handleViewModeChange(e.target.value)}
-            className="view-mode-select-meet"
-          >
-            <option value="">View!</option>
-            <option value="table">Table View</option>
-            <option value="tile">Tile View</option>
-            <option value="list">List View</option>
-          </select>
         </div>
         {viewMode === 'table' && (
   <div className="table10">

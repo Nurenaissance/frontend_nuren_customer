@@ -8,7 +8,7 @@ import ReactFlow, {
   Background,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import initialNodes from "./nodes.jsx";
+// import initialNodes from "./nodes.jsx";
 import initialEdges from "./edges.jsx";
 import { ClassNames } from "@emotion/react";
 import DnDFlow from "./Dnd.jsx";

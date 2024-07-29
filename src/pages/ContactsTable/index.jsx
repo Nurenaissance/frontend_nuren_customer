@@ -10,6 +10,7 @@ import jsPDF from "jspdf"; // Importing jsPDF library
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Loader/Loader.jsx";
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -23,6 +24,7 @@ export const ContactsTable = () => {
   const [contacts, setContacts] = useState([]);
   const [viewMode, setViewMode] = useState("table");
   const tenantId=getTenantIdFromUrl();
+  const [isLoading, setIsLoading] = useState(true);
   const [activeContacts, setActiveContacts] = useState([]);
   const navigate = useNavigate();
 
@@ -56,6 +58,7 @@ export const ContactsTable = () => {
  
 
   const fetchContacts = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get('/contacts/');
       const data = response.data;
@@ -65,10 +68,13 @@ export const ContactsTable = () => {
       setDraftContacts(drafts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchActiveContacts = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get('/active_contacts/');
       const data = response.data.most_active_contacts;
@@ -91,6 +97,8 @@ export const ContactsTable = () => {
       }
     } catch (error) {
       console.error("Error fetching active contacts:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -363,6 +371,7 @@ export const ContactsTable = () => {
      <div className="contact_nav">
     <TopNavbar/>
   </div>
+  <Loader isLoading={isLoading}>
   <div className="Contacts_main_page">
     <div className="home_left_box1">
       <Sidebar />
@@ -456,7 +465,7 @@ export const ContactsTable = () => {
           </div>
 
         </div>
-  <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+   <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
     <div className="activeInactivebtn">
               <div className="activeInactivebtn1">
                 <button
@@ -542,7 +551,7 @@ export const ContactsTable = () => {
         <div className="bugs10">
 
         {viewMode === "table" && (
-  <div>
+   <div>
     <div className="table4">
       <table className="contacttable">
         <thead>
@@ -592,24 +601,6 @@ export const ContactsTable = () => {
                   <td className="cont_phone">{contact.address}</td>
                 </tr>
               ))
-//   : inactiveContacts.map((contact, index) => (
-//       <tr className="contacttablerow" key={contact.id}>
-//     <td>
-//     {generateSmiley(generateRandomColor())}
-//     <div className="cont-first_name">
-//       <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
-//         {contact.first_name}
-//       </Link>
-//     </div>
-//   </td>
-//   <td className="contlast_name">{contact.last_name}</td>
-//   <td className="cont_email">
-//     <a href={`mailto:${contact.email}`}>{contact.email}</a>
-//   </td>
-//   <td className="cont_phone">{contact.phone}</td>
-//   <td className="cont_phone">{contact.address}</td>
-// </tr>
-//        ))
 
 
             : contacts.map((contact, index) => (
@@ -708,6 +699,7 @@ export const ContactsTable = () => {
         
         
       </div>
+      </Loader>
  </div>
 
      );

@@ -107,6 +107,7 @@ const getTenantIdFromUrl = () => {
 
 import PdfUploader from "../pages/PDF";
 import FlowTable from "../pages/ReactFlow/FlowTable.jsx";
+import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -336,7 +337,7 @@ export const RouteWrapper = () => {
           
           <Route path=":tenant_id/flowtable" element={<FlowTable/>} />
 
-          
+          <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
 
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>
           <Route path=":tenant_id/bulk-import" element={<BulkImport/>}/>

@@ -3,6 +3,7 @@ import "./register.css";
 import Spline from "@splinetool/react-spline";
 import { useState, useEffect } from "react";
 import registration from "../../assets/registration.jpg"
+import logo from "../../assets/logo.png"
 import { 
   TextField, 
   Button, 
@@ -160,6 +161,12 @@ export const Register = () => {
     <div className="auth">
   <div className="auth_wrapper">
     <div className="form_container">
+    <div className="navbar2">
+      <div className="nav-logo-container">
+        <img src={logo} alt="Logo" className="nav-logo" />
+        <span className="nav-logo-title">Nuren AI</span>
+      </div>
+      </div>
       <div className="auth_inner">
         <h2 className="auth_paragraph">Register</h2>
         <form className="auth_form" onSubmit={authRegister}>

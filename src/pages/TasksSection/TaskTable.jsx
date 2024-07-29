@@ -90,19 +90,13 @@ export const TaskTable = () => {
 
 
   return (
-   <div>
-   
-    <div className="tasks_main_component">
-      
+  
+    <div className="tasks_main_component" style={{marginTop:'-60px'}}>
         <div className="home_left_box1" style={{"top":"0rem"}}>
-
           <Sidebar />
         </div>
-      
-         <div className="contain1" style={{width:"100%"}}>
-         <div className="task__data" style={{marginTop:'-5rem'}}>
+         <div className="contain1" style={{marginLeft:'0px'}} >
       <TopNavbar/>
-     </div>
           <div className="meet1" >
          
             <div>
@@ -240,7 +234,6 @@ export const TaskTable = () => {
     </div>
   </div>
 </div>
-   </div>
   );
 };
 export default TaskTable;

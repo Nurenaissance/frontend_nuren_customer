@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { Header } from "../../components/Header";
 import Select from "react-select";
 import axiosInstance from "../../api.jsx";
-import './vendors.css';
+import './createVendors.css';
 import './vendors.jsx';
 import { useAuth } from "../../authContext.jsx";
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded'; // Importing the icon
@@ -217,7 +217,7 @@ const Vendorsform = () => {
       <div className="vendor_form_page">
        
       <div className="relatedvendor_back">
-             <Link className='task_back' to={`/${tenantId}/vendors`}>Back</Link>
+      <Link className='task_back' to={-1}>Back</Link>
            </div>
           
          

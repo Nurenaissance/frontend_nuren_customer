@@ -1,0 +1,161 @@
+/* VendorInfo.css */
+
+.vendorinfo-page {
+    display: flex;
+    min-height: 100vh;
+    margin-top: -60px;
+  }
+  
+  .vendorinfo-left-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+  }
+  
+  .vendorinfo-right-content {
+    flex-grow: 1;
+    padding: 0px 0px 20px 0px;
+    margin-left: 30px;
+    width: 80vw;
+    overflow-x: hidden;
+  }
+  
+  .vendorinfo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .vendorinfo-title {
+    font-family: 'Lexend', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #171a1f;
+    margin-left: 10px;
+  }
+  
+  .vendorinfo-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .vendorinfo-dropdown {
+    background-color: #6d31ed;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .vendorinfo-dropdown:hover {
+    background-color: #5b28c7;
+  }
+  
+  .vendorinfo-add-btn {
+    background-color: #62cd14;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+  }
+  
+  .vendorinfo-add-btn:hover {
+    background-color: #52ad10;
+  }
+  
+  .vendorinfo-details {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .vendorinfo-section {
+    margin-bottom: 30px;
+  }
+  
+  .vendorinfo-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #171a1f;
+    margin-bottom: 15px;
+  }
+  
+  .vendorinfo-field {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .vendorinfo-field-label {
+    width: 150px;
+    font-weight: 500;
+    color: #565d6d;
+  }
+  
+  .vendorinfo-field-value {
+    color: #171a1f;
+  }
+  
+  .vendorinfo-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .vendorinfo-button {
+    background-color: #6d31ed;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .vendorinfo-button:hover {
+    background-color: #5b28c7;
+  }
+  
+  @media (max-width: 1024px) {
+    .vendorinfo-page {
+      flex-direction: column;
+    }
+  
+    .vendorinfo-left-sidebar {
+      width: 100%;
+      height: auto;
+    }
+  
+    .vendorinfo-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .vendorinfo-actions {
+      margin-top: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .vendorinfo-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .vendorinfo-add-btn {
+      margin-top: 10px;
+    }
+  }
