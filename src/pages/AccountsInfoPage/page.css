@@ -1057,7 +1057,7 @@ margin-left: 20px;
 button.edit-button {
   background-color: #4CAF50; /* Green */
   color: white;
-  padding: 10px 15px;
+  padding: 0px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;

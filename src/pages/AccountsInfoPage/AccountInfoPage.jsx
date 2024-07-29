@@ -41,6 +41,7 @@ const AccountsPage = () => {
   const [showTimeline, setShowTimeline] = useState(false); 
   const [profileImage, setProfileImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [contactPersons,setContactPersons]=useState([]);
 
 
   const handleMoreClick = () => {
@@ -148,6 +149,8 @@ const AccountsPage = () => {
       try {
         const response = await axiosInstance.get(`/accounts/${id}`);
         setAccount(response.data);
+        const contactto = await axiosInstance.get(`/contacts_of_account/${id}/`);
+        setContactPersons(contactto.data);
         // console.log(response.data[0].name);  // Adjusted to correctly access the name
       } catch (error) {
         console.error("Error fetching account data:", error);
@@ -235,34 +238,7 @@ const AccountsPage = () => {
     }
   };
 
-  const contactPersons = [
-    {
-      name: "Jane Smith",
-      position: "Manager",
-      email: "jane@example.com",
-      phone: "+1 234-567-8901",
-    },
-    {
-      name: "Mike Johnson",
-      position: "Sales Rep",
-      email: "mike@example.com",
-      phone: "+1 345-678-9012",
-    },
-    {
-      name: "Mike Johnson2",
-      position: "Sales Repes",
-      email: "mike@example.com",
-      phone: "+1 345-678-3456",
-    },
-    {
-      name: "joyes Kofil",
-      position: "Sales Repes",
-      email: "mike@example.com",
-      phone: "+1 345-888-3456",
-    },
-    // Add more contact persons as needed
-  ];
-  const accountInfo = {
+  /*const accountInfo = {
     accountNumber: "ACC123456789",
     accountType: "Premium",
     startDate: "01/01/2022",
@@ -275,7 +251,7 @@ const AccountsPage = () => {
     state: "CA",
     zip: "12345",
     country: "USA",
-  };
+  };*/
 
   const handleFileUpload = (event) => {
     const files = event.target.files;
@@ -535,18 +511,18 @@ const AccountsPage = () => {
 
             <div className="contacts" id="Contacts">
               <ul className="list-group">
-                <h2 className="contactheading">Contacts</h2>
-                {contactPersons.map((contact, index) => (
-                  <li key={index} className="list-group-item">
-                    <strong>Name:</strong> {contact.name}
-                    <br />
-                    <strong>Position:</strong> {contact.position}
-                    <br />
-                    <strong>Email:</strong> {contact.email}
-                    <br />
-                    <strong>Phone:</strong> {contact.phone}
-                  </li>
-                ))}
+                <h2 className="contactheading" style={{marginTop:'10px'}}>Contacts</h2>
+                  {contactPersons?contactPersons.map((contact, index) => (
+                    <li key={index} className="list-group-item">
+                      <strong>Name:</strong> {contact.name}
+                      <br />
+                      <strong>Position:</strong> {contact.position}
+                      <br />
+                      <strong>Email:</strong> {contact.email}
+                      <br />
+                      <strong>Phone:</strong> {contact.phone}
+                    </li>
+                  )):<h2>No contacts in this account</h2>}
               </ul>
             </div>
             <div className="account-info" id="Account Information">
@@ -568,7 +544,7 @@ const AccountsPage = () => {
               type="text"
               id="accountNumber"
               name="accountNumber"
-              value={isEditing ? editedValues.accountNumber : accountInfo.accountNumber}
+              value={isEditing ? editedValues.accountNumber : account.id}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -579,7 +555,7 @@ const AccountsPage = () => {
               type="text"
               id="accountType"
               name="accountType"
-              value={isEditing ? editedValues.accountType : accountInfo.accountType}
+              value={isEditing ? editedValues.accountType : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -592,7 +568,7 @@ const AccountsPage = () => {
               type="text"
               id="startDate"
               name="startDate"
-              value={isEditing ? editedValues.startDate : accountInfo.startDate}
+              value={isEditing ? editedValues.startDate :account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -603,7 +579,7 @@ const AccountsPage = () => {
               type="text"
               id="renewalDate"
               name="renewalDate"
-              value={isEditing ? editedValues.renewalDate : accountInfo.renewalDate}
+              value={isEditing ? editedValues.renewalDate : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -631,7 +607,7 @@ const AccountsPage = () => {
               type="text"
               id="street"
               name="street"
-              value={isEditing ? editedValues.street : addressInfo.street}
+              value={isEditing ? editedValues.street : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -642,7 +618,7 @@ const AccountsPage = () => {
               type="text"
               id="city"
               name="city"
-              value={isEditing ? editedValues.city : addressInfo.city}
+              value={isEditing ? editedValues.city :account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -655,7 +631,7 @@ const AccountsPage = () => {
               type="text"
               id="state"
               name="state"
-              value={isEditing ? editedValues.state : addressInfo.state}
+              value={isEditing ? editedValues.state : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -666,7 +642,7 @@ const AccountsPage = () => {
               type="text"
               id="zip"
               name="zip"
-              value={isEditing ? editedValues.zip : addressInfo.zip}
+              value={isEditing ? editedValues.zip : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
@@ -679,7 +655,7 @@ const AccountsPage = () => {
               type="text"
               id="country"
               name="country"
-              value={isEditing ? editedValues.country : addressInfo.country}
+              value={isEditing ? editedValues.country : account.name}
               onChange={handleChange}
               readOnly={!isEditing}
             />
