@@ -1,651 +1,260 @@
-.campaign_heading{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 800;
-color: #171A1FFF;
-margin-left: 20px;
-margin-top: 50px;
-/* padding-top: 40px; */
-position: absolute;
-}
-.cap_head{
-  position: relative;
-  bottom:5rem;
-}
+/* General styles */
 
-.campaign_page{
-    display: flex;
-    flex-direction: row;
-    
-}
-#btn11{
-    padding: 7px 11px 9px 12px;
-  gap: 0px;
-  border-radius: 4px 4px 4px 4px;
-  width: 120px;
-  align-items: center;
-  
-
-  color: white;
-  background: #FFFFFFFF;
-  background: #4CA110FF;
-  font-weight: 400;
-  font-family: 'Manrope';
-  font-size: 14px;
-  
-}
-.excel-dropdown-menu3 {
-    /* Your custom styles here */
-    font-family: 'Manrope';
-    font-size: 14px;
-    font-weight: 400;
-    color: #FFFFFF;
-    background: #6D31EDFF;
-    border-radius: 4px;
-    width: 77px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 11px 9px 12px;
-    position: relative;
-    top: -5px;
-   
-    
-  }
-  .campaign_filter_btn{
+.campaign_page {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position:absolute;
-  bottom: 43%;
-  margin-left: 40px;
-  }
-  .campaign_excelbtn{
-display: flex;
-margin-top: 10px;
-gap: 20px;
-justify-content: flex-end;
-margin-left: 20px;
-margin-top: 70px;
-
-  }
-  .campaign_firstbox{
-    width: 237px;
-    height: 122px;
-    background: #D3FFB2FF;
-    border-radius: 4px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-   
-  }
-  .campaign_secondbox{
-    width: 239px;
-    height: 122px;
-    background: #6D31ED42;
-    border-radius: 4px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-  }
-  .campaign_thirdbox{
-    width: 239px;
-    height: 122px;
-    background: #FFD31724;
-    border-radius: 4px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-  }
-  .campaign_fourthbox{
-    width: 239px;
-    height: 122px;
-    background: #FF56A530;
-    border-radius: 4px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-  }
-  .campaign_boxes{
-width: 400px;
-height: 300px;
-color: aqua;
-  }
-  .campaign-boxes{
-  width: 1200px;
-  height: 400px;
-  background: #ffffff;
-  border-radius: 4px;
-  position: relative;
-  position: relative;
-  bottom: 5rem;
-  left: 20px;
-  
-  }
-  .campaign-bigboxes{
-display: inline-flex;
-gap: 30px;
-padding: 20px;
-  }
-  .campaign_btn_social{
-  
-    position: relative;
-    display: flex;
-    flex-direction: row;
-  }
-  .social_btn{
-    width:250px;  
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* flex-direction: row; */
-    gap: 40px; 
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px;
-height: 40px;
-box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-margin-right: 5rem;
-  }
-
-.flow-button{
-  background: green;
-  padding: 1rem;
-  border-radius: 5px;
-  color: white;
-  box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
-}
-
-  .campanign_btn1{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #323743FF;
-    background: #F3F4F6FF;
-    opacity: 1;
-    border-radius: 4px 0px 0px 4px;
-    cursor: pointer;
-  }
-  .campaign_btn1 :hover{
-    color: #323743FF;
-background: #CFD2DAFF;
-  }
-  .campanign_btn2{
-    width: 47.34px;
-/* height: 36px; */
-display: flex;
-flex: 1 1 0;
-align-items: center;
-justify-content: center;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-color: #323743FF;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px 0px 0px 4px;
-cursor: pointer;
-  }
-  .campanign_btn3{
-    width: 47.34px;
-/* height: 36px; */
-display: flex;
-flex: 1 1 0;
-align-items: center;
-justify-content: center;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-color: #323743FF;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px 0px 0px 4px;
-cursor: pointer;
-  }
-  .campanign_btn4{
-    width: 47.34px;
-/* height: 36px; */
-display: flex;
-flex: 1 1 0;
-align-items: center;
-justify-content: center;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-color: #323743FF;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px 0px 0px 4px;
-cursor: pointer;
-  }
-  .campanign_btn5{
-    width: 47.34px;
-/* height: 36px; */
-display: flex;
-flex: 1 1 0;
-align-items: center;
-justify-content: center;
-font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-color: #323743FF;
-background: #F3F4F6FF;
-opacity: 1;
-border-radius: 4px 0px 0px 4px;
-cursor: pointer;
-  }
-  .table_camp{
-    width: 1070px;
-height: 893px;
-opacity: 1;
-border-radius: 8px;
-box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-position: absolute;
-margin-left: 40px;
-top: 65%;
-  }
-  .Campaign_table_name,.Campaign_table_owner,.Campaign_table_channel,.Campaign_table_created,.Campaign_table_status,.Campaign_table_est{
-           
-        font-family: 'Lexend';
-        font-size: 14px;
-        line-height: 22px;
-        font-weight: 600;
-        color: #565D6DFF;
-        
-  }
-  .campaign_table_row{
-    border: 1px solid #ddd;
-  }
-  .view-mode-select_campaign{
-    width: 161px;
-    height: 36px;
-    padding-left: 12px;
-    padding-right: 34px;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #171A1FFF;
-    background: #F3F4F6FF;
-    border-radius: 4px;
-    border-width: 0px;
-    outline: none;
-    position: absolute;
-    margin-left: 83rem;
-    top: 2px;
-  }
-  /*  form css */
-  .campaign_form_head{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-
-  }
-  .campaign_form_heading{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 800;
-color: #171A1FFF;
-position: relative;
-left:-900px;
-top: 60px;
-}
-.btnsss10{
-  display: flex;
-  gap: 20px;
-  padding-left: 960px;
-  position: relative;
-  top: -700px;
-
-  
-   }
-   .campaign_nav{
-    margin-left: 20rem;
-    position: relative;
-    bottom: 6rem;
-  }
-   
-   .btn-submit40{
-    width: 140px;
-    height: 36px;
-    padding: 0 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #FFFFFFFF;
-    background: #62CD14FF;
-    opacity: 1;
-    border: none;
-    border-radius: 4px;
-    position: relative;
-    
-   }
-   .btn-submit50{
-    width: 140px;
-    height: 36px;
-    padding: 0 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #FFFFFFFF;
-    background: #DE3B40FF;
-    opacity: 1;
-    border: none;
-    border-radius: 4px;
-    position: relative;
-    
-   }
-   .btn-submit60{
-    width: 140px;
-    height: 36px;
-    padding: 0 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Manrope';
-    font-size: 14px;
-    line-height: 22px;
-    font-weight: 400;
-    color: #FFFFFFFF;
-    background: #6D31EDFF;
-    opacity: 1;
-    border: none;
-    border-radius: 4px;
-    position: relative;
-   }
-   .capaign_form_container{
-    width: 1053px;
-height: 469px;
-background: #FAFAFBFF;
-border-radius: 4px;
-border-width: 1px;
-border-color: #F3F4F6FF;
-border-style: solid;
-position: relative;
-top: -600px;
-left: 340px;
-
-   }
-  .campaign_data_name{
-    width: 1021.98px;
-height: 893px;
-opacity: 1;
-border-radius: 8px;
-font-family: 'Manrope';
-box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-  }
-  td{
-    font-family: 'Lexend';
-  }
-  .campaign_data_status{
-font-family: 'Lexend';
-color:cadetblue
-;
-  }
-  .cont_email{
-    color: Red;
-  }
-  .total_campaign{
-    font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 700;
-color: #323743FF;
-position: relative;
-left: 20px;
-  }
-  .total_send{
-    font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 700;
-color: #323743FF;
-position: relative;
-left: 20px;
-  }
-  .total_clicks{
-    font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 700;
-color: #323743FF;
-position: relative;
-left: 20px;
-  }
-  .Total_revenue{
-    font-family: 'Manrope';
-font-size: 14px;
-line-height: 22px;
-font-weight: 700;
-color: #323743FF;
-position: relative;
-left: 20px;
-  }
-  .total_campaign1{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 600;
-color: #323743FF;
-/* padding-left: 30px; */
-position: absolute;
-top: 8rem;
-margin-left: 35px;
-  }
-  .total_sended1{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 600;
-color: #323743FF;
-margin-left: 22px;
-position: absolute;
-top: 8rem;
-
-
-  }
-  .total_clicks1{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 600;
-color: #323743FF;
-margin-left: 22px;
-position: absolute;
-top: 8rem;
-  }
-  .total_revenue1{
-    font-family: 'Lexend';
-font-size: 32px;
-line-height: 48px;
-font-weight: 600;
-color: #323743FF;
-margin-left: 22px;
-position: absolute;
-top: 8rem;
-  }
-
-  .campaign-form-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 30px;
 }
 
-.campaign-form-heading {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+.campaign_nav{
+  margin-top: -60px;
 }
 
-.campaign-form {
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  padding: 2rem;
-}
-
-.form-section {
-  margin-bottom: 2rem;
-}
-
-.section-heading {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-}
-
-.form-group {
+/* Header styles */
+.cap_head {
   display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  margin-bottom: 0.5rem;
-}
-
-.form-group input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.social-buttons {
-  display: flex;
-  gap: 1rem;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.capaign_form_section{
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+  margin-bottom: 40px;
+  /* color: black; */
+  /* background: linear-gradient(135deg, #6e8efb, #a777e3); */
+  padding: 30px;
+  border-radius: 7px;
+  /* box-shadow: 0 10px 20px rgba(0,0,0,0.1); */
 }
 
-.campanign_btn_form {
-  width: 30px;
-  height: 30px;
+.campaign_heading {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  color: rgb(0, 0, 0);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.campaign_excelbtn {
+  display: flex;
+  gap: 15px;
+}
+
+.excel-dropdown-menu3, #btn11 {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.excel-dropdown-menu3 {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#btn11 {
+  background-color: #3498db;
+  color: white;
+}
+
+.excel-dropdown-menu3:hover, #btn11:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+/* Statistics boxes */
+.campaign-boxes {
+  margin-bottom: 40px;
+}
+
+.campaign-bigboxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.campaign_firstbox,
+.campaign_secondbox,
+.campaign_thirdbox,
+.campaign_fourthbox {
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.campaign_firstbox { background: linear-gradient(135deg, #FF9966, #FF5E62); }
+.campaign_secondbox { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
+.campaign_thirdbox { background: linear-gradient(135deg, #FFCF00, #FFB003); }
+.campaign_fourthbox { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+.campaign_firstbox:hover,
+.campaign_secondbox:hover,
+.campaign_thirdbox:hover,
+.campaign_fourthbox:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.total_campaign,
+.total_send,
+.total_clicks,
+.Total_revenue {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: rgba(255,255,255,0.9);
+  text-transform: uppercase;
+}
+
+.total_campaign1,
+.total_sended1,
+.total_clicks1,
+.total_revenue1 {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+  color: white;
+}
+
+/* Filter and social media buttons */
+.campaign_filter_btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.social_btn {
+  display: flex;
+  gap: 15px;
+}
+
+.campanign_btn1,
+.campaign_btn2,
+.campaign_btn3,
+.campaign_btn4 {
+  width: 50px;
+  height: 50px;
   border: none;
   border-radius: 50%;
-  background-color: #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 0 5px;
+  font-size: 20px;
 }
 
-.campanign_btn_form svg {
-  width: 15px;
-  height: 15px;
+.campanign_btn1 { background-color: #0077B5; color: white; }
+.campaign_btn2 { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); color: white; }
+.campaign_btn3 { background-color: #25D366; color: white; }
+.campaign_btn4 { background-color: #EA4335; color: white; }
+
+.campanign_btn1:hover,
+.campaign_btn2:hover,
+.campaign_btn3:hover,
+.campaign_btn4:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.flow-button button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.flow-button button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.view-mode-select_campaign {
+  padding: 12px;
+  border-radius: 9px;
+  border: 2px solid #e2e8f0;
+  background-color: white;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
-.campanign_btn_form:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.view-mode-select_campaign:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
 
-.campanign_btn_form:hover svg {
-  width: 20px;
-  height: 20px;
+/* Table styles */
+.table_camp {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
-/* Facebook */
-.campanign_btn_form:nth-child(1) {
-  background-color: #1877f2;
+.campaign_table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.campanign_btn_form:nth-child(1) svg {
-  color: white;
+.campaign_table th,
+.campaign_table td {
+  padding: 20px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-/* Instagram */
-.campanign_btn_form:nth-child(2) {
-  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+.campaign_table th {
+  background-color: #f7fafc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #4a5568;
 }
 
-.campanign_btn_form:nth-child(2) svg {
-  color: white;
+.campaign_table tr:hover {
+  background-color: #f0f4f8;
 }
 
-/* WhatsApp */
-.campanign_btn_form:nth-child(3) {
-  background-color: #25d366;
-}
-
-.campanign_btn_form:nth-child(3) svg {
-  color: white;
-}
-
-/* Email */
-.campanign_btn_form:nth-child(4) {
-  background-color: #ea4335;
-}
-
-.campanign_btn_form:nth-child(4) svg {
-  color: white;
-}
-
-/* Message */
-.campanign_btn_form:nth-child(5) {
-  background-color: #0084ff;
-}
-
-.campanign_btn_form:nth-child(5) svg {
-  color: white;
-}
-
-/* Active state */
-.campanign_btn_form.active {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.campanign_btn_form.active svg {
-  width: 35px;
-  height: 35px;
-}
-.campaign_type{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
+.campaign_table a {
+  color: #4299e1;
+  text-decoration: none;
   font-weight: 600;
+  transition: color 0.3s ease;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.campaign_table a:hover {
+  color: #2b6cb0;
 }
 
-.btn-cancel { background-color: #f44336; color: white; }
-.btn-draft { background-color: #2196f3; color: white; }
-.btn-submit { background-color: #4caf50; color: white; }
+/* Add some animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.campaign-bigboxes > div,
+.campaign_filter_btn,
+.table_camp {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.campaign-bigboxes > div:nth-child(1) { animation-delay: 0.1s; }
+.campaign-bigboxes > div:nth-child(2) { animation-delay: 0.2s; }
+.campaign-bigboxes > div:nth-child(3) { animation-delay: 0.3s; }
+.campaign-bigboxes > div:nth-child(4) { animation-delay: 0.4s; }

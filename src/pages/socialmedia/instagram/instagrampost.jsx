@@ -30,6 +30,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axiosInstance from '../../../api';
+import TopNavbar from '../../TopNavbar/TopNavbar';
 
 
 
@@ -654,6 +655,9 @@ const InstagramPost = ({ uploadedImageUrl }) => {
       <Sidebar />
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <div className="insta-top-navbar">
+        <TopNavbar/>
+      </div>
       {accessToken ? (
         <div className="Instagramauth" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <h1>Instagram Authentication</h1>
@@ -662,15 +666,32 @@ const InstagramPost = ({ uploadedImageUrl }) => {
           </button>
         </div>
       ) : (
-        <>
-          <button style={{ backgroundColor: 'Red' }} onClick={() => setShowLiveChat(!showLiveChat)}>
+        <div style={{
+          padding: '2rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          // background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+          // borderRadius: '12px'
+        }}>
+          <button style={{  backgroundColor: 'white',
+      color: 'white',
+      border: 'none',
+      borderRadius: '8px',
+      padding: '12px 24px',
+      fontSize: '16px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+       background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.3s ease' }} onClick={() => setShowLiveChat(!showLiveChat)}>
             {showLiveChat ? 'Send Post' : 'Instagram Chat'}
           </button>
-        </>
+        </div>
       )}
       <div className="instagram-post-content">
         {showLiveChat ? (
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100vw' }}>
             <LiveChat />
           </div>
         ) : (

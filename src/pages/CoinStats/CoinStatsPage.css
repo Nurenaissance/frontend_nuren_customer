@@ -1,24 +1,67 @@
+.coin-main-container{
+    display: flex;
+}
+
 .coin-stats-container {
-    max-width: 800px;
+    width: 80vw;
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .page-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.5em;
   }
   
   .coin-summary {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
     text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+  }
+  
+  .coin-summary:hover {
+    transform: translateY(-5px);
+  }
+  
+  .coin-summary h2 {
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .coin-count {
+    font-size: 3em;
+    font-weight: bold;
+    color: #4ECDC4;
   }
   
   .coin-details {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 30px;
   }
   
   .recent-transactions, .spending-breakdown {
     width: 48%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .recent-transactions h3, .spending-breakdown h3, .coin-history h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5em;
   }
   
   .recent-transactions ul {
@@ -28,12 +71,271 @@
   
   .recent-transactions li {
     background-color: #f9f9f9;
+    border-left: 5px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .recent-transactions li:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recent-transactions li.positive {
+    border-left-color: #4ECDC4;
+  }
+  
+  .recent-transactions li.negative {
+    border-left-color: #FF6B6B;
+  }
+  
+  .transaction-description {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .transaction-amount {
+    font-weight: bold;
+  }
+  
+  .transaction-date {
+    font-size: 0.8em;
+    color: #888;
+  }
+  
+  .coin-history {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+
+  .add-coins-btn, .show-all-btn {
+    background-color: #6235ea;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .add-coins-btn:hover, .show-all-btn:hover {
+    background-color: #7b4fff;
+  }
+  
+  .add-coins-modal, .all-transactions-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .add-coins-modal input, .all-transactions-modal select, .all-transactions-modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 10px;
+  }
+  
+  .add-coins-modal p {
+    color: #666;
+    font-size: 14px;
     margin-bottom: 10px;
   }
   
+  .add-coins-modal button, .all-transactions-modal button {
+    background-color: #6235ea;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .all-transactions-modal ul {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .transaction-category {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 10px;
+  }
+
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .add-coins-modal, .all-transactions-modal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .add-coins-modal h3, .all-transactions-modal h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .add-coins-modal input, .all-transactions-modal select, .all-transactions-modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .add-coins-modal p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .modal-buttons button, .close-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .modal-buttons button:first-child, .close-button {
+    background-color: #6235ea;
+    color: white;
+  }
+  
+  .modal-buttons button:last-child {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .modal-buttons button:hover, .close-button:hover {
+    opacity: 0.9;
+  }
+  
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  .filter-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .transactions-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  
+  .transactions-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .transactions-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .transactions-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .transaction-description {
+    flex: 2;
+  }
+  
+  .transaction-amount {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  .transaction-date, .transaction-category {
+    flex: 1;
+    text-align: right;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .positive {
+    color: #4CAF50;
+  }
+  
+  .negative {
+    color: #f44336;
+  }
+
+
   @media (max-width: 768px) {
     .coin-details {
       flex-direction: column;
@@ -43,4 +345,18 @@
       width: 100%;
       margin-bottom: 20px;
     }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .coin-stats-container {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .recent-transactions li, .spending-breakdown, .coin-history {
+    animation: fadeIn 0.5s ease-out;
   }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuth } from "../../authContext";
 import { useNavigate } from "react-router-dom";
 import Loginimage from '../../assets/Loginimage.png';
+import logo from "../../assets/logo.png"
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -82,6 +83,12 @@ export const Login = () => {
     <div className="auth">
       <div className="auth_wrapper">
         <div className="form_container">
+        <div className="navbar2">
+      <div className="nav-logo-container">
+        <img src={logo} alt="Logo" className="nav-logo" />
+        <span className="nav-logo-title">Nuren AI</span>
+      </div>
+      </div>
           <div className="auth_inner">
             <h2 className="auth_paragraph">Login</h2>
             {error && <div className="error-message">{error}</div>}

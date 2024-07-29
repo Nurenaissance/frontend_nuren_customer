@@ -1,9 +1,10 @@
 .edit-docspage {
     display: flex;
     flex-direction: row;
-}
-
-.side-editdocs {
+  
+  }
+  
+  .side-editdocs {
     width: 256px;
     height: 100vh;
     background: #FAFAFB;

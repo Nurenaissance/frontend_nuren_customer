@@ -6,7 +6,7 @@ import TopNavbar from '../TopNavbar/TopNavbar';
 import { Dropdown } from 'react-bootstrap';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, Line, BarChart, Bar, LabelList, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../../authContext';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -27,6 +27,8 @@ const Report = () => {
   const [donutChartData, setDonutChartData] = useState([]);
   const [selectedHeading, setSelectedHeading] = useState('Total Leads'); // Default heading
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#d94a49', '#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const navigate = useNavigate();
+
 
   const reportHeadings = {
     total_leads: 'Total Leads',
@@ -51,6 +53,9 @@ const Report = () => {
   };
 
   
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -366,66 +371,49 @@ const Report = () => {
 
 
   return (
-    <div className="report">
-      <div className="contact_nav">
-    <TopNavbar/>
-  </div>
-      <div className="report-container">
-        <div className="row">
-          <div className="col-md-8">
-            <h1 className="report-text-center">Report Page</h1>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : (
-                <>
-                <Dropdown onSelect={handleReportChange} className="mb-3">
-                  <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                    Select Report
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item eventKey="total_leads">Total Leads</Dropdown.Item>
-                    <Dropdown.Item eventKey="this_month_leads">This Month Leads</Dropdown.Item>
-                    <Dropdown.Item eventKey="converted_leads">Converted Leads</Dropdown.Item>
-                    <Dropdown.Item eventKey="lead_source">Lead Source</Dropdown.Item>
-                    <Dropdown.Item eventKey="total_calls">Total Calls</Dropdown.Item>
-                    <Dropdown.Item eventKey="total_opportunities">Total Opportunities</Dropdown.Item>
-                    <Dropdown.Item eventKey="total_meetings">Total Meetings</Dropdown.Item>
-                    <Dropdown.Item eventKey="top_users">Top Users</Dropdown.Item>
-                    <Dropdown.Item eventKey="Contact_mailing_list">Contact Mailing List</Dropdown.Item>
-                    <Dropdown.Item eventKey="call_email">Call Email</Dropdown.Item>
-                    <Dropdown.Item eventKey="total_campaign">Total Campaign</Dropdown.Item>
-                    <Dropdown.Item eventKey="total_interaction">Total Interaction</Dropdown.Item>
-                    <Dropdown.Item eventKey="today_lead">Total Lead</Dropdown.Item>
-                    <Dropdown.Item eventKey="leads_account_name">Leads Account Name</Dropdown.Item>
-                    <Dropdown.Item eventKey="campaign_status">Campaign Status</Dropdown.Item>
-                    <Dropdown.Item eventKey="today_sales">Today Sales</Dropdown.Item>
-                    <Dropdown.Item eventKey="lead_by_source">Lead By Source</Dropdown.Item>
-                    <Dropdown.Item eventKey="sales_this_month">Sales This Month</Dropdown.Item>
-                    <Dropdown.Item eventKey="vendor_owner">Vendor Owner</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-
-
-                <div className="graphPage">
-                  <GraphPage
-                    chartData={chartData}
-                    barChartData={barChartData}
-                    donutChartData={donutChartData}
-                    COLORS={COLORS}
-                    userRole={userRole}
-                  />
-                </div>
-
-                <div className="table-responsive">
-                  <table className="table table-bordered table-striped">
-                    <thead className="thead-dark">{renderTableHeadings()}
-                    <tbody>{renderReportRows()}</tbody>
-                    </thead>
-                  </table>
-                </div>
-              </>
-            )}
+    <div className="report-page">
+      <div className="report-page__container">
+        <div className="report-page__sidebar">
+          <button onClick={handleBackClick} className="report-page__back-btn">
+            &larr; Back
+          </button>
+          <h2 className="report-page__sidebar-title">Reports</h2>
+          <input type="text" placeholder="Search reports..." className="report-page__search-input" />
+          <ul className="report-page__report-list">
+            {Object.entries(reportHeadings).map(([key, value]) => (
+              <li key={key} className={reportId === key ? 'report-page__report-item--active' : 'report-page__report-item'}>
+                <button onClick={() => handleReportChange(key)}>{value}</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="report-page__main-content">
+          <TopNavbar />
+          <div className="report-page__breadcrumb">
+            <span>Reports</span> &gt; <span>{reportHeadings[reportId]}</span>
           </div>
+          <h1 className="report-page__title">{reportHeadings[reportId]}</h1>
+          {isLoading ? (
+            <div className="report-page__loading">Loading...</div>
+          ) : (
+            <>
+              <div className="report-page__graph-container">
+                <GraphPage
+                  chartData={chartData}
+                  barChartData={barChartData}
+                  donutChartData={donutChartData}
+                  COLORS={COLORS}
+                  userRole={userRole}
+                />
+              </div>
+              <div className="report-page__table-container">
+                <table className="report-page__table">
+                  <thead>{renderTableHeadings()}</thead>
+                  <tbody>{renderReportRows()}</tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

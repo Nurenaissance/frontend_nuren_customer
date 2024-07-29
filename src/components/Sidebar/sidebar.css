@@ -1,233 +1,212 @@
-
-
-
-.siadebar {
-  
+.nuren-sidebar {
   width: 270px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
+  padding: 20px;
   transition: width 0.3s ease;
   z-index: 999;
+  overflow: visible;
 }
 
-.siadebar:hover {
+
+.nuren-sidebar__top {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.nuren-sidebar__content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nuren-sidebar__content::-webkit-scrollbar {
+  display: none;
+}
+
+.nuren-sidebar:hover {
   width: 290px;
 }
 
-.sidebar_inner {
+.nuren-sidebar__inner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  height: 100%;
 }
 
-.sidebar_logo {
+.nuren-sidebar__logo {
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-.sidebar_img {
-  margin-right: 10px;
+.nuren-sidebar__logo:hover {
+  background-color: #f0f0f0;
 }
 
-.sidebar_logo_text {
-  font-size: 24px;
-  color: #333;
+.nuren-sidebar__logo-img {
+  margin-right: 15px;
+}
+
+.nuren-sidebar__logo-text {
+  font-size: 20px;
   font-weight: 600;
+  line-height: 1.2;
 }
 
-.hr {
+.nuren-sidebar__divider {
   width: 100%;
   height: 1px;
   background-color: #e0e0e0;
   margin: 20px 0;
+  border: none;
 }
 
-.sidebar_list {
+.nuren-sidebar__nav {
+  flex-grow: 1;
+}
+
+.nuren-sidebar__list {
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%;
-  margin-top:-10px;
 }
 
-.sidebar_item {
-  width: 100%;
-  margin-bottom: 10px;
+.nuren-sidebar__item {
+  margin-bottom: 5px;
 }
 
-.sidebar_link {
+.nuren-sidebar__link,
+.nuren-sidebar__dropdown-toggle {
   display: flex;
   align-items: center;
-  padding: 10px;
-  font-weight: 600;
+  padding: 12px 15px;
+  font-weight: 500;
   text-decoration: none;
   color: #333;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.sidebar_link:hover {
+.nuren-sidebar__link:hover,
+.nuren-sidebar__link--active,
+.nuren-sidebar__dropdown-toggle:hover {
   color: white;
-  text-decoration: none;
-  background-color: #6d31edff;
+  background-color: #6d31ed;
 }
 
-
-.sidebar_link_text {
-  margin-left: 10px;
+.nuren-sidebar__link-text {
+  margin-left: 15px;
   font-size: 16px;
 }
 
-.dropdown_list {
+.nuren-sidebar__dropdown-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nuren-sidebar__dropdown-menu {
   list-style: none;
   padding-left: 30px;
-  margin: 0;
-  
-
-
 }
 
-.dropdown_item a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+.nuren-sidebar__more-dropdown {
+  position: relative;
 }
 
-.dropdown_item a:hover {
-  background-color: #6d31edff;
-}
-
-
-.logout_btn button {
-  margin-bottom: 2rem;
-  width: 100%;
-  padding: 10px;
-  background-color: #333;
+.nuren-sidebar__logout {
+  padding: 12px;
+  background-color: #000000;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
-.logout_btn button:hover {
-  background-color: #555;
+.nuren-sidebar__logout:hover {
+  background-color: #000000;
 }
 
-.dropdown_menu {
-  position: absolute;
- bottom: 2rem;
-  left: 27rem;
+/* New styles for the nested dropdowns */
+.nuren-sidebar__more-content,
+.nuren-sidebar__model-content {
+  position: fixed;
+  top: 0;
+  left: 270px;
+  width: 180px;
+  height: 100vh;
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1; /* Ensure dropdown is above other content */
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  transform: translateX(100%);
+  z-index: 1000;
 }
-.dropdown_menu ul {
+.nuren-sidebar__more-content.active,
+.nuren-sidebar__model-content.active {
+  transform: translateX(0);
+}
+
+
+
+.nuren-sidebar__model-content {
+  left: 450px;
+}
+
+.nuren-sidebar__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 998;
+  display: none;
+}
+
+.nuren-sidebar__backdrop.active {
+  display: block;
+}
+
+.nuren-sidebar__more-list,
+.nuren-sidebar__model-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-.dropdown_item {
-  /*padding: 10px;*/  
-  cursor: pointer;
-  transition: background-color 0.3s;
+.nuren-sidebar__more-list .nuren-sidebar__item,
+.nuren-sidebar__model-list .nuren-sidebar__item {
+  margin-bottom: 10px;
 }
 
-.dropdown_item:hover {
-  background-color: #f0f0f0;
-}
-.dropdown_button{
-  position: relative;
-  bottom: 17rem;
-  left: 1rem;
-}
-.dropdown_container{
-  position: relative;
-  
-}
-.dropdown_list-data{
-  display: flex;
-  flex-direction: row;
-
-}
-.model-sidebar-item {
-  width: 100%;
+.nuren-sidebar__more-list .nuren-sidebar__link,
+.nuren-sidebar__model-list .nuren-sidebar__link {
   padding: 10px;
-  background-color: #fff;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  border-bottom: 1px solid #ddd;
-  position: relative; /* Ensure dropdown is positioned relative to this item */
 }
 
-.model-dropdown {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  width: 200px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  z-index: 999;
-}
-
-.dropdown-item-model {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-}
-
-.dropdown-item-model:hover {
-  background-color: #e0e0e0;
-}
-
-
-.feature-lock-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.overlay-content {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.overlay-content h2 {
-  margin-bottom: 1rem;
-}
-
-.overlay-content button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.overlay-content button:hover {
-  background-color: #0056b3;
+.nuren-sidebar__model-content {
+  /* left: 490px; */
 }

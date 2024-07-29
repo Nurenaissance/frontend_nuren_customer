@@ -1,0 +1,202 @@
+/* vendors-form.css */
+
+
+
+.vendor_form_page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.relatedvendor_back {
+    margin-bottom: 20px;
+}
+
+.task_back {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6d31ed;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.task_back:hover {
+    background-color: #5b28c7;
+}
+
+.create_form_vendor {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #6d31ed;
+    padding-bottom: 10px;
+}
+
+.photo100 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.colored-circle31 {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.pic_btn1 {
+    display: flex;
+    align-items: center;
+}
+
+.upload_icon133 {
+    margin-right: 10px;
+    color: #6d31ed;
+}
+
+.upload_button1 {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.upload_button1:hover {
+    background-color: #e0e0e0;
+}
+
+.btnsss_vendor {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.btn-submit_cancel_vendor,
+.btn-submit_save_vendor,
+.btn-submit_submit_vendor {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit_cancel_vendor {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-submit_save_vendor {
+    background-color: #62cd14;
+    color: #fff;
+}
+
+.btn-submit_submit_vendor {
+    background-color: #6d31ed;
+    color: #fff;
+}
+
+.btn-submit_cancel_vendor:hover { background-color: #e0e0e0; }
+.btn-submit_save_vendor:hover { background-color: #52ad10; }
+.btn-submit_submit_vendor:hover { background-color: #5b28c7; }
+
+.form-vendor {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.ad-vendor_ad, .ad-vendor {
+    font-size: 22px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.front_section-vendor {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.left-section-vendor, .right-section-vendor {
+    flex: 1;
+}
+
+.vendor_sub {
+    display: block;
+    margin-bottom: 8px;
+    color: #565d6d;
+    font-weight: 500;
+}
+
+.form-control-vendor,
+.form-control-remind {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.form-vend-desc {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    min-height: 100px;
+}
+
+.tanent-vendor {
+    margin-top: 20px;
+}
+
+.submit-vendor {
+    background-color: #6d31ed;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.toppp{
+    margin-top: -60px;
+}
+
+.submit-vendor:hover {
+    background-color: #5b28c7;
+}
+
+@media (max-width: 768px) {
+    .front_section-vendor {
+        flex-direction: column;
+    }
+    
+    .btnsss_vendor {
+        flex-direction: column;
+    }
+    
+    .btn-submit_cancel_vendor,
+    .btn-submit_save_vendor,
+    .btn-submit_submit_vendor {
+        width: 100%;
+    }
+}
