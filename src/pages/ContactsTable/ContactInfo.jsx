@@ -265,18 +265,20 @@ const [selectedFile, setSelectedFile] = useState(null);
     }
   };
 
+  const fetchUploadedFiles = async () => {
+    try {
+      const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${id}&tenant=${tenantId}&userId=3`);
+      setUploadedFiles(response.data);
+    } catch (error) {
+      console.error("Error fetching uploaded files:", error);
+    }
+  };
+  
+  // Assuming fetchUploadedFiles is called within a useEffect hook
   useEffect(() => {
-    const fetchUploadedFiles = async () => {
-      try {
-        const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${id}`);
-        setUploadedFiles(response.data);
-        
-      } catch (error) {
-        console.error("Error fetching uploaded files:", error);
-      }
-    };
     fetchUploadedFiles();
-  }, [id, tenantId, ]);
+  }, [id, tenantId]);
+  
 
   const relatedListItems = [
     "Notes",
@@ -302,12 +304,12 @@ const [selectedFile, setSelectedFile] = useState(null);
     if (selectedFile) {
       setFile(selectedFile);
       console.log('File state set:', selectedFile);
-
+  
       try {
         console.log('Uploading file to Azure Blob Storage...');
         const fileUrl = await uploadToBlob(selectedFile);
         console.log('File uploaded to Azure, URL:', fileUrl);
-
+  
         console.log('Sending POST request to backend...');
         const response = await axiosInstance.post('/documents/', {
           name: selectedFile.name,
@@ -317,9 +319,10 @@ const [selectedFile, setSelectedFile] = useState(null);
           entity_type: 1,
           entity_id: id,
           tenant: tenantId,
+          userId: 3,  // hardcoded user ID
         });
         console.log('POST request successful, response:', response.data);
-
+  
         setUploadedFiles(prevFiles => [...prevFiles, { name: selectedFile.name, url: fileUrl }]);
         console.log('File uploaded successfully:', response.data);
       } catch (error) {
@@ -329,6 +332,7 @@ const [selectedFile, setSelectedFile] = useState(null);
       console.log('No file selected');
     }
   };
+  
   
   
 

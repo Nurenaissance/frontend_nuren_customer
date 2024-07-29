@@ -187,11 +187,10 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
           <div className="create">
             {modalOpen && (
               <div className="modal-overlay">
-                <div className="modal-content_meet">
-                  <div className="meeting-form-container">
+                <div className="modal-content_meeting">
                     <form onSubmit={handleScheduleMeeting}>
-                      <fieldset className="form-fieldset">
-                        <legend className="form-legend">Create A meeting</legend>
+                      <fieldset className="meeting-form-fieldset">
+                        <legend className="meeting-form-legend">Create A meeting</legend>
                         <label className="form-label-title" htmlFor="title">
                           Title:
                         </label>
@@ -311,7 +310,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
                     </form>
                   </div>
                 </div>
-              </div>
             )}
           </div>
         </div>
