@@ -81,10 +81,12 @@ const Custom = () => {
     }
 
     return (
-        <div className='custom-page'>
-            <div className="home_left_box-loyal">
-            <Sidebar model={models.length > 0 ? models[0] : null} />
-            </div>
+        <div style={{display:'flex',flexDirection:'row'}}>
+        <div>
+        <Sidebar model={models.length > 0 ? models[0] : null} />
+        </div>
+        <div className='custom-page' style={{ flex: 1 }}>
+         
             <div>
                 <div className='custom_topbar'>
                     <TopNavbar />
@@ -139,6 +141,7 @@ const Custom = () => {
                     </form>
                 </div>
             </div>
+        </div>
         </div>
     );
 }

@@ -314,7 +314,7 @@ color: #171A1FFF;
   
   position: relative;
   bottom: 5rem;
-  left: 20rem;
+ /* left: 20rem;*/
 }
 .view-mode-select_task{
   float: right;

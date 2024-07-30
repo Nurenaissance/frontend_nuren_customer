@@ -934,19 +934,7 @@ const [selectedFile, setSelectedFile] = useState(null);
          <strong className="contactdetails-para10">Modified By: </strong>
          <div className="contactinfo_modifiedBy">{contactinfo.ModifiedBy}</div>
        </p>
-       <p>
-         <strong className="contactdetails-para11">Currency: </strong>
-         <div className="contactinfo_Currency1">{contactinfo.Currency1}</div>
-       </p>
-       <p>
-         <strong className="contactdetails-para12">Account: </strong>
-         <div className="contactinfo_Account">{contactinfo.account}</div>
-       </p>
-       <p>
-         <strong className="contactdetails-para13">Fax: </strong>
-         <div className="contactinfo_Fax">{contactinfo.Fax}</div>
-       </p>
-    
+      
 
        </>
    )}
@@ -983,33 +971,8 @@ const [selectedFile, setSelectedFile] = useState(null);
            className="contactinfo_leadSource1"
          />
        </p>
-       <p>
-         <strong className="contactdetails-para17"> Skype ID :</strong>
-         <input
-           type="text"
-           value={contactinfo.SkypeId}
-           onChange={(e) => handleChange(e, 'SkypeID')}
-           className="contactinfo_leadSource1"
-         />
-       </p>
-       <p>
-         <strong className="contactdetails-para18">Secondary Email:</strong>
-         <input
-           type="text"
-           value={contactinfo.secondaryEmail}
-           onChange={(e) => handleChange(e, 'SecondaryEmail')}
-           className="contactinfo_leadSource1"
-         />
-       </p>
-       <p>
-         <strong className="contactdetails-para19"> Twitter :</strong>
-         <input
-           type="text"
-           value={contactinfo.Twitter}
-           onChange={(e) => handleChange(e, 'Twitter')}
-           className="contactinfo_leadSource1"
-         />
-       </p>
+  
+       
      
       
      </>
@@ -1027,18 +990,8 @@ const [selectedFile, setSelectedFile] = useState(null);
          <strong className="contactdetails-para16"> Email Opt Out: </strong>
          <div className="contactinfo_emailopt">{contactinfo.emailOptOut ? "Yes" : "No"}</div>
        </p>
-       <p>
-         <strong className="contactdetails-para17">Skype ID: </strong>
-         <div className="contactinfo_SkypeID">{contactinfo.SkypeId}</div>
-       </p>
-       <p>
-         <strong className="contactdetails-para18">Secondary Email:</strong>
-         <div className="contactinfo_Secondaryemail">{contactinfo.secondaryEmail}</div>
-       </p>
-       <p>
-         <strong className="contactdetails-para19">Twitter: </strong>
-         <div className="contactinfo_Twitter">{contactinfo.Twitter}</div>
-       </p>
+   
+     
        </>
    )}
       
@@ -1274,39 +1227,7 @@ const [selectedFile, setSelectedFile] = useState(null);
       )}
           </div>
         </div>
-        <div className="info_cadence" id='Cadences'>
-          <h2 className="cadence"> Cadences </h2>
-          
-          <div>
-            <div className="addcadencebtn">
-            <button onClick={() => setModalOpen1(true)}>+Add Cadence</button>
-
-            </div>
-
-            <div className="Cadence_table">
-              <table className="table10--">
-                <thead>
-                  <tr>
-                    <th className="table_cadence-row">Cadence Name</th>
-                    <th className="table_cadence-row"> Modules </th>
-                    <th className="table_cadence-row">Created Date</th>
-                    <th className="table_cadence-row">Created By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {meetings.map((meeting) => (
-                    <tr className="table_cadence_table">
-                      <td className="table_cadence-data">{meeting.CadenceName}</td>
-                      <td className="table_cadence-data">{meeting.Modules}</td>
-                      <td className="table_cadence-data">{meeting.CreatedDate}</td>
-                      <td className="table_cadence-data">{meeting.createdBy}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        
 
         <div className="info_Attach" id="Attachments">
       <div className="info1">
@@ -1425,100 +1346,10 @@ const [selectedFile, setSelectedFile] = useState(null);
             <button>+Add Products</button>
           </div>
         </div>
-        <div className="info_cases" id='Cases'>
-          <h2 className="cases">Cases</h2>
-          <div className="Assignnew">
-            <div className="assign1">
-              {" "}
-              <button>Assign</button>
-            </div>
-            <div className="assign2">
-              {" "}
-              <button>New</button>
-            </div>
-          </div>
-        </div>
-        <div className="info_Quotes" id='Quotes'>
-          <h2 className="info-quto">Quotes</h2>
-          <div className="Assignnew">
-            <div className="assign1">
-              {" "}
-              <button>Assign</button>
-            </div>
-            <div className="assign2">
-              {" "}
-              <button>New</button>
-            </div>
-          </div>
-        </div>
-        <div className="info_sales" id='Sales Orders'>
-          <h2 className="info-sale">Sales Order</h2>
-          <div className="Assignnew">
-            <div className="assign1">
-              {" "}
-              <button>Assign</button>
-            </div>
-            <div className="assign2">
-              {" "}
-              <button>New</button>
-            </div>
-          </div>
-        </div>
-        <div className="info_purchase" id='Purchase Orders'>
-          <h2 className="purchase">Purchase Order</h2>
-          <div className="Assignnew">
-            <div className="assign1">
-              {" "}
-              <button>Assign</button>
-            </div>
-            <div className="assign2">
-              {" "}
-              <button>New</button>
-            </div>
-          </div>
-        </div>
-        <div className="info_invoice" id='Invoices'>
-          <h2 className="invoice">Invoices</h2>
-          <div className="Assignnew">
-            <div className="assign1">
-              {" "}
-              <button>Assign</button>
-            </div>
-            <div className="assign2">
-              {" "}
-              <button>New</button>
-            </div>
-          </div>
-        </div>
-      
+       
+    
+    
 
-
-     <div className="info_purchase" id='Purchase Orders'>
-       <h2 className="purchase">Purchase Order</h2>
-       <div className="Assignnew">
-         <div className="assign1">
-           {" "}
-           <button>Assign</button>
-         </div>
-         <div className="assign2">
-           {" "}
-           <button>New</button>
-         </div>
-       </div>
-     </div>
-     <div className="info_invoice" id='Invoices'>
-       <h2 className="invoice">Invoices</h2>
-       <div className="Assignnew">
-         <div className="assign1">
-           {" "}
-           <button>Assign</button>
-         </div>
-         <div className="assign2">
-           {" "}
-           <button>New</button>
-         </div>
-       </div>
-     </div>
    
      <div className="info_cop">
        <h2 className="infi-campi">campaigns</h2>
@@ -1540,15 +1371,6 @@ const [selectedFile, setSelectedFile] = useState(null);
 </div>
 </div>
 
-     <div className="infi_conts">
-       <h2 className="infi-campi">Reporting Contacts</h2>
-       <div className="Assignnew">
-         <div className="productsbtn1">
-           {" "}
-           <button>New</button>
-         </div>
-       </div>
-     </div>
     </div>
  )}
     {showTimeline && timeline.length > 0 && (

@@ -11,10 +11,10 @@
   bottom: 13rem;
   }
   .model_nav{
-    margin-left: 20rem;
+    width:100%;
     position: relative;
     bottom: 6rem;
-    width: fit-content;
+    
   }
   .model_table {
     flex: 1 1 auto;

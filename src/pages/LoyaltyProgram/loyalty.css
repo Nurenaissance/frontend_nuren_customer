@@ -11,10 +11,11 @@
 }
 .loyal_topbar {
   position: relative;
-  bottom: 4.5rem;
-  right: 10rem;
+  bottom: 5.0rem;
+  right: 0rem;
 }
 .loyal-head {
+  margin-top: 20px;
   font-family: "Lexend";
   font-size: 34px;
   line-height: 48px;
@@ -22,7 +23,7 @@
   color: #171a1fff;
   padding: auto;
   align-items: center;
-  margin-left: 40rem;
+  margin-left: 0rem;
 }
 .loyalprogram {
   font-family: "Manrope";

@@ -215,10 +215,10 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     fetchNotificationCount();
     fetchCoinCount();
     socket.on('connect', () => {
-      console.log('Connected to the server');
+      
     });
     socket.on('ai-analysis', (analysisData) => {
-      console.log('Received AI analysis:', analysisData);
+     
       setPopupVisible(true); 
     });
 

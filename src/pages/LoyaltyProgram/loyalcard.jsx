@@ -23,7 +23,7 @@ const Loyalcard = () => {
             <div className="home_left_box-loyal">
                 <Sidebar />
             </div>
-            <div>
+            <div style={{marginLeft:'300px'}}>
                 <div className='loyal_topbar'>
                     <TopNavbar />
                 </div>
