@@ -110,13 +110,25 @@ export const ContactsTable = () => {
     }
   };
   
-  
+  const fetchRecentData = async () => {
+    try {
+      const response = await axiosInstance.get('/recent_request/contacts/');
+      setRecentContacts(response.data);
+
+      console.log("*##########",response.data);
+
+    } catch (error) {
+      console.error("Error fetching recent contacts:", error);
+    }
+  };
+ 
   
 
 
   useEffect(() => {
     fetchContacts();
     fetchActiveContacts();
+    fetchRecentData();
 
   }, []);
   const handleInputChange = (event) => {
@@ -245,16 +257,7 @@ export const ContactsTable = () => {
   );
  
 
-  const fetchRecentData = async () => {
-    try {
-      const response = await axiosInstance.get('/recent_request/contacts/');
-      setContacts(response.data);
-      console.log("*##########",response);
-
-    } catch (error) {
-      console.error("Error fetching recent contacts:", error);
-    }
-  };
+ 
   const handleRecentButtonClick = () => {
     fetchRecentData();
   }; 
@@ -370,7 +373,7 @@ export const ContactsTable = () => {
   
             <div>
             <Dropdown>
-              <Dropdown.Toggle variant="primary" id="payments-dropdown1" className="excel-dropdown-menu1">
+              <Dropdown.Toggle variant="primary" id="payments-dropdown1" className="excel-dropdown-menu33">
                Excel File
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -420,16 +423,17 @@ export const ContactsTable = () => {
         <div className="contact-boxes">
         <div className="contact-bigboxes">
   <h1 className="newcontact">New contacts this Week</h1>
-  {recentContacts.slice(0, 3).map((contact, index) => (
-    <Link key={contact.id} to={`/${tenantId}/contactinfo/${contact.id}`} className={`contact-box contact-box${index + 1}`}>
-      <h1 className={`heading${index + 1}`}>{contact.first_name}</h1>
-      <p className={`paragraph${index + 1}`}>{contact.description}</p>
-      {/* Smiley */}
-      <div className={`smiley${index + 1}`}>
+  <div className="recent-contacts-container">
+  {recentContacts.slice(-3).reverse().map(contact => (
+    <Link key={contact.id} to={`/${tenantId}/contactinfo/${contact.id}`} className="firstcontact-box">
+      <div className="smiley">
         {generateSmiley1(generateRandomColor())}
       </div>
+      <h1 className="heading">{contact.first_name}</h1>
+      <p className="paragraph">{contact.description}</p>
     </Link>
   ))}
+</div>
 </div>
 
         </div>

@@ -24,7 +24,7 @@ const getTenantIdFromUrl = () => {
 };
 
 const UserProfile = () => {
-  const  userId  = 3; 
+  const  [userId, setUserId]= useState();
   const { id } = useParams(); 
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,8 +42,11 @@ const UserProfile = () => {
       try {
         const response = await axiosInstance.get(`/get-user/${tenantId}`);
         setUser(response.data);
+        console.log("user data", response.data);
         setEditedUser(response.data);
         setIsLoading(false);
+        setUserId(response.data.id);
+        console.log(userId);
       } catch (error) {
         console.error("Error fetching user data:", error);
         setIsLoading(false);
