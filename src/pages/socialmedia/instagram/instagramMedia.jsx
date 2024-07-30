@@ -27,7 +27,7 @@ const InstagramMedia = () => {
             setMediaIds(response.data.media.data);
         } catch (error) {
             setError('Failed to fetch media IDs');
-            console.error(error);
+            
         } finally {
             setLoading(false);
         }
@@ -44,7 +44,7 @@ const InstagramMedia = () => {
             setSelectedMedia(response.data);
         } catch (error) {
             setError('Failed to fetch media details');
-            console.error(error);
+           
         } finally {
             setLoading(false);
         }

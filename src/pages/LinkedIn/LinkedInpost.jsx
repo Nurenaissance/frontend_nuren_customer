@@ -125,6 +125,13 @@ const handleGenerateCaption = async () => {
     }
   };
 
+  const openPopup = () => {
+    setShowPopup(true);
+  };
+  
+  const handlePopupClose = () => {
+    setShowPopup(false);
+  };
 
 
   useEffect(() => {
@@ -176,13 +183,7 @@ const handleGenerateCaption = async () => {
     setDragging(true);
   };
 
-  const openPopup = () => {
-    setShowPopup(true);
-  };
 
-  const handlePopupClose = () => {
-    setShowPopup(false);
-  };
 
   const handleDragLeave = (event) => {
     event.preventDefault();
@@ -528,25 +529,24 @@ const handleGenerateCaption = async () => {
       </div>
 
       <div className="content">
-      {/* Your existing content here */}
-      <button onClick={openPopup} className="open-popup-button">
-       Image Editor
-      </button>
+  <button onClick={openPopup} className="open-popup-button">
+    Image Editor
+  </button>
 
-      {showPopup && (
-        <div className="editimage-popup">
-          <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
-          <div className="editimage-popup-container">
-            <div className="editimage-popup-content">
-              <ImageEditorComponent onClose={handlePopupClose}/>
-            </div>
-            <button onClick={handlePopupClose} className="close-popup-button">
-              Close
-            </button>
-          </div>
+  {showPopup && (
+    <div className="editimage-popup">
+      <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
+      <div className="editimage-popup-container">
+        <div className="editimage-popup-content">
+          <ImageEditorComponent onClose={handlePopupClose} onUpload={handleImageUpload} />
         </div>
-      )}
+        <button onClick={handlePopupClose} className="close-popup-button">
+          Close
+        </button>
+      </div>
     </div>
+  )}
+</div>
 
       {files.length > 0 && (
         <div className="attached-media">
@@ -633,7 +633,7 @@ const handleGenerateCaption = async () => {
           </div>
           <div className="LinkedIn-campaign">
         <h2>Add Campaign</h2>
-       <div className="campaign-box">
+       <div className="linkedin-campaign-box">
           <p>Track and report on your social marketing campaigns with the Campaign Planner, notes and more.</p>
           <hr />
           <button onClick={handleAddCampaign} className="add-campaign-button">Add a campaign</button>

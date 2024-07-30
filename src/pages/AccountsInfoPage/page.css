@@ -134,7 +134,7 @@
       margin-top: 30px;
     }
     
-    .overview, .account-info, .address-info, .attachment-section{
+    .company-overview, .account-info, .address-info, .attachment-section{
       margin-bottom: 100px;
       background-color: white;
       padding: 20px;
@@ -145,18 +145,17 @@
       height: fit-content;
     }
     
-    .overview{
+    .company-overview{
      
       
       /* width: 1088px; */
-      height: 400px;
+      height: fit-content;
       background: #F8F9FAFF;
       border-radius: 8px;
       border-width: 1px;
       border-color: #F3F4F6FF;
       border-style: solid;
       box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
-      margin-top: -24px;
 
     }
    .account-para{
@@ -542,11 +541,7 @@ padding-left: 10px;
 
 
 .contactheading {
-  position: absolute;
-  top: 580px; /* Adjust the top position to create space from the top */
-  left: 60%;
-
-  transform: translateX(-50%);
+  left: 90%;
   font-family: 'Manrope';
   font-size: 18px;
   line-height: 125px;
@@ -664,6 +659,7 @@ padding-left: 10px;
       .addresssinformation {
         position: relative;
         margin-top: 50px;
+        
         margin-left: 50px;
         
       
@@ -680,7 +676,7 @@ padding-left: 10px;
       }
 
       .address-info{
-        height: 400px;
+        height: fit-content;
       background: #F8F9FAFF;
       border-radius: 8px;
       border-width: 1px;

@@ -14,6 +14,7 @@ import { useAuth } from "../../authContext";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
+import Loader from "../../components/Loader/Loader.jsx";
 
 
 
@@ -31,22 +32,26 @@ export const LeadPage = () =>
         const tenantId=getTenantIdFromUrl();
         const {userId}=useAuth();
         const modelName = "leads";
+        const [isLoading, setIsLoading] = useState(true);
         const [leadData, setLeadData] = useState([]);
         const [viewMode, setViewMode] = useState("kanban"); // Add a state for the view mode
 
 
-                      useEffect(() => {
-                        const fetchLeadData = async () => {
-                          try {
-                            const response = await axiosInstance.get('/leads/');
-                            setLeadData(response.data);
-                          } catch (error) {
-                            console.error("Error fetching lead data:", error);
-                          }
-                        };
-
-                        fetchLeadData();
-                      }, []);
+        useEffect(() => {
+          const fetchLeadData = async () => {
+            setIsLoading(true);
+            try {
+              const response = await axiosInstance.get('/leads/');
+              setLeadData(response.data);
+            } catch (error) {
+              console.error("Error fetching lead data:", error);
+            } finally {
+              setIsLoading(false);
+            }
+          };
+        
+          fetchLeadData();
+        }, []);
 
   const handleDownloadExcel = () => {
     const wb = XLSX.utils.book_new();
@@ -83,6 +88,7 @@ export const LeadPage = () =>
 
                 
   return (
+    <Loader isLoading={isLoading}>
    <div>
      <div className="lead_nav">
     <TopNavbar/>
@@ -91,14 +97,9 @@ export const LeadPage = () =>
     <div className="pay_left_box">
       <Sidebar />
     </div>
-    <div className="head">
-  { /*   <div className="icon">
-        <div className="upper"><img className="phone-icon" alt="phone icon" /></div>
-        <div className="upper"><img className="message-icon" alt="message icon" /></div>
-        <div className="upper"><img className="bell-icon"  alt="bell icon" /></div>
-        <div className="upper"><img className="person-icon"  alt="person icon" /></div>
-      </div> */}
+    <div className="lead-head">
       <Header name="Leads" />
+      <h1 className="leads=heading">Leads</h1>
      
       <div className="lead_add_btn">
         <div className="navlinks">
@@ -134,7 +135,7 @@ export const LeadPage = () =>
   </div>
    </div>
   
-    
+    </Loader>
 
     
   

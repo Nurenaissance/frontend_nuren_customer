@@ -422,7 +422,7 @@ const AccountsPage = () => {
            {!showTimeline && (
 
            <div>
-            <div className="overview" id='Company Overview'>
+            <div className="company-overview" id='Company Overview'>
       <h2 className="accountinfos">Company Overview</h2>
       <div className="accounts-button">
         <button className="edit-button" onClick={handleEdit1} disabled={isEditing}>Edit</button>
@@ -510,6 +510,7 @@ const AccountsPage = () => {
       </div>
 
             <div className="contacts" id="Contacts">
+            <h2 className="contactheading">Contacts</h2>
               <ul className="list-group">
                 <h2 className="contactheading" style={{marginTop:'10px'}}>Contacts</h2>
                   {contactPersons?contactPersons.map((contact, index) => (

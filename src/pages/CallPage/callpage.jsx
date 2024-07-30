@@ -259,7 +259,7 @@ const handleCreateMeeting = async (e) => {
         <Sidebar />
       </div>
      
-      <div className="contain1">
+      <div className="containtemp" style={{marginLeft:'-45px',width:'100%'}}>
      
         <div className="meet1" style={{display:'flex',flexDirection:'row'}}>
         <h1 className="call_head"> Calls </h1>
@@ -490,7 +490,6 @@ const handleCreateMeeting = async (e) => {
               <option value="">View!</option>
               <option value="table">Table View</option>
               <option value="tile">Tile View</option>
-              <option value="list">List View</option>
             </select>
         </div>
             {/* <select onChange={handleCreateMeeting}>
@@ -560,25 +559,6 @@ const handleCreateMeeting = async (e) => {
                   </Card.Body>
                 </Card>
               ))}
-            </div>
-          </div>
-        )}
-        {viewMode === "list" && (
-          <div>
-            <h2>List View</h2>
-            <div className="accounts-list-container">
-              <ListGroup>
-                {calls.map((call, index) => (
-                  <ListGroup.Item key={call.id} className="accounts-list-item">
-                    <Link to={`/${tenantId}/calls/${call.id}`}>{call.Name}</Link>
-                    <p>Call Type: {call.call_type}</p>
-                    <p>Start Time: {call.start_time}</p>
-                    <p>Call Duration: {call.call_duration}</p>
-                    <p>Related To: {call.related_to}</p>
-                    <p>Location: {call.location}</p>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
             </div>
           </div>
         )}

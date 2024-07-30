@@ -97,6 +97,7 @@ body {
   width: 30px !important;
   cursor: pointer;
   transition: all 0.3s ease;
+  border-radius: 50%;
   color: #323743;
 }
 
@@ -160,12 +161,12 @@ body {
 }
 
 .profile-image {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
   transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  
 }
 
 .profile-image:hover {
@@ -269,7 +270,7 @@ body {
   filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.7));
 }
 
-.coin-count {
+.coin-count1 {
   background-color: #f0f0f0;
   border-radius: 12px;
   padding: 2px 6px;

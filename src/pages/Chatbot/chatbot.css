@@ -162,17 +162,24 @@
   margin-bottom: 20px;
 }
 
-.chatbot-contacts {
-  font-family: 'Manrope';
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 400;
-  color: #171A1FFF;
-  cursor: pointer;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 10px;
+.scrollable-contacts {
+  max-height: 100vh; /* Ensures the contacts list doesn't exceed the viewport height */
+  overflow-y: auto; /* Adds a scrollbar if content exceeds the container's height */
+  padding: 10px; /* Optional: Add some padding for better aesthetics */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a slight shadow for better visual separation */
+  border-radius: 8px; /* Optional: Adds rounded corners */
 }
+
+.chatbot-contacts {
+  padding: 10px; /* Ensure each contact has padding for better readability */
+  border-bottom: 1px solid #ccc; /* Optional: Adds a bottom border to separate contacts */
+}
+
+.chatbot-msg {
+  padding: 10px; /* Optional: Add some padding for the message header */
+  margin-bottom: 10px; /* Optional: Add some margin to separate the header from the contacts */
+}
+
 
 .chatbot-contact-section {
   flex: 0 0 30%;

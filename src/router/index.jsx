@@ -97,6 +97,8 @@ import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 import EmailList from "../pages/Email/Email-List.jsx";
 import EmailProviders from "../pages/Email/Email-provider.jsx";
+
+
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
   if (pathArray.length >= 2) {
@@ -107,6 +109,7 @@ const getTenantIdFromUrl = () => {
 
 import PdfUploader from "../pages/PDF";
 import FlowTable from "../pages/ReactFlow/FlowTable.jsx";
+import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -121,7 +124,6 @@ export const RouteWrapper = () => {
   console.log("Tenant ID:", tenantId);
   const [reminder, setReminder] = useState([]);  
   const [selectedModel, setSelectedModel] = useState(null);
-
   const [scheduleData, setScheduleData] = useState({
     subject:"",
     event_date_time:"",
@@ -132,6 +134,8 @@ export const RouteWrapper = () => {
     is_triggered: false,
     created_at: "2024-06-25T08:21:33.075616Z",
   });
+
+  
   const Reminder = ({ message, onClose }) => {
     return (
       <div className="reminder-modal">
@@ -336,7 +340,7 @@ export const RouteWrapper = () => {
           
           <Route path=":tenant_id/flowtable" element={<FlowTable/>} />
 
-          
+          <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
 
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>
           <Route path=":tenant_id/bulk-import" element={<BulkImport/>}/>

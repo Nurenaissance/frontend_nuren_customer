@@ -1,4 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -11,23 +13,36 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { CustomNode, TextUpdaterNode,ButtonNode,SendMessage,AskQuestion,SetCondition } from './TextUpdaterNode';
 import axios from 'axios';
-import './dnd.css';
-import { useParams, useNavigate } from "react-router-dom"; 
+import './dnd.css'; 
 import { useNodeActions } from './UseNodeActions';
 import { useMemo } from 'react';
 
-const lastNode = initialNodes[initialNodes.length - 1];
+// const lastNode = initialNodes[initialNodes.length - 1];
 import Sidebar from "./Sidebar";
 
 import "./dnd.css";
-import initialNodes from "./nodes.jsx";
+// import initialNodes from "./nodes.jsx";
 
-import initialEdges from "./edges.jsx";
+// import initialEdges from "./edges.jsx";
 import axiosInstance from "../../api.jsx";
 
 // Extract the id property from the last node
-let id = parseInt(lastNode.id) +1;
+// let id = parseInt(lastNode.id) +1;
 //let id = 10+1;
+
+
+const initialNodes = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Input Node' },
+    position: { x: 250, y: 25 },
+  },
+];
+
+const initialEdges = [];
+
+let id = 2;
 
 const getId = () => `${id++}`;
 
@@ -47,14 +62,15 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const [editValue, setEditValue] = useState(nodes.data);
-  const [title, setTitle] = useState(nodes.data);
+  const [editValue, setEditValue] = useState('');
+  const [title, setTitle] = useState('');
   const [id, setId] = useState();
   const [selectNodeId, setSelectedNodeId] = useState();
-  const [showSetCondition, setShowSetCondition] = useState(false);
-  const [selectedValueOption, setSelectedValueOption]=useState();
+  // const [showSetCondition, setShowSetCondition] = useState(false);
+  // const [selectedValueOption, setSelectedValueOption]=useState();
   const { handleCopyNode, handleDeleteNode } = useNodeActions(setNodes, setEdges);
-
+  const { templateId } = useParams();
+  const location = useLocation();
 
   const nodeTypes = useMemo(() => ({ 
     textUpdater: TextUpdaterNode,
@@ -65,14 +81,59 @@ const DnDFlow = () => {
     setCondition: SetCondition
   }), []);
 
+
+
+  const handleTemplateSelect = (templateId) => {
+    navigate(`/${tenantId}/flow/${templateId}`);
+  };
+
+  useEffect(() => {
+    if (templateId) {
+      fetchTemplate(templateId);
+    }
+  }, [templateId]);
+
+  const fetchTemplate = async (id) => {
+    try {
+      const response = await axiosInstance.get(`/node-templates/${id}/`);
+      console.log('Template response:', response.data);
+      const template = response.data;
+      if (template && template.node_data) {
+        const { nodes: templateNodes, adjacencyList } = template.node_data;
+        
+        // Transform nodes to ReactFlow format
+        const transformedNodes = templateNodes.map(node => ({
+          id: node.id.toString(),
+          type: node.type,
+          data: node.data,
+          position: node.position || { x: Math.random() * 500, y: Math.random() * 500 },
+        }));
   
+        // Transform adjacencyList to edges
+        const transformedEdges = [];
+        adjacencyList.forEach((targets, sourceIndex) => {
+          targets.forEach(target => {
+            transformedEdges.push({
+              id: `e${sourceIndex}-${target}`,
+              source: sourceIndex.toString(),
+              target: target.toString(),
+            });
+          });
+        });
+
+        setNodes(transformedNodes);
+        setEdges(transformedEdges);
+      }
+    } catch (error) {
+      console.error("Error fetching template:", error);
+    }
+  };
 
 
   const onNodedoubleClick = (e, val) => {
-    setTitle(val.data.heading);
-    setEditValue(val.data.content);
+    setTitle(val.data?.heading || '');
+    setEditValue(val.data?.content || '');
     setId(val.id);
-    
   };
   const onNodeClick = (e, node) => {
     setSelectedNodeId(node.id);
@@ -105,14 +166,8 @@ const DnDFlow = () => {
           ...item,
           data: {
             ...item.data,
-            p: {
-              ...item.data.p,
-              content: {
-                variable1: variable1,
-                conditionType: conditionType,
-                variable2: variable2
-              }
-            }
+            content: editValue,
+            heading: title,
           }
         };
       }
@@ -120,10 +175,11 @@ const DnDFlow = () => {
     });
     setNodes(res);
     
-    setVariable1("");
-    SetCondition("");
-    setVariable2("");
+    setEditValue("");
+    setTitle("");
   };
+
+
   const handleTitleEdit = () => {
     const res = nodes.map((item) => {
       if (item.id === id) {
@@ -196,6 +252,58 @@ const DnDFlow = () => {
 
   
 
+// const sendDataToBackend = () => {
+//   const formattedNodes = nodes.map((node) => ({
+//     id: parseInt(node.id),
+//     type: node.type,
+//     data: node.data,
+//   }));
+
+//   const adjacencyList = edges.reduce((adjList, edge) => {
+//     const { source, target } = edge;
+//     if (!adjList[source]) {
+//       adjList[parseInt(source)] = [];
+//     }
+//     adjList[parseInt(source)].push(parseInt(target));
+//     return adjList;
+//   }, {});
+
+//   const adjacencyListAsList = Object.values(adjacencyList).map((targets) => [
+//     ...targets,
+//   ]);
+
+//   const headers = {
+//     "Content-Type": "application/json",
+//     "Access-Control-Allow-Origin": "*",
+//     "Access-Control-Allow-Methods": 'GET,PUT,POST,DELETE,OPTIONS',
+//     'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept'
+//   };
+
+//   axiosInstance
+//     .post(
+//       "https://webappbaackend.azurewebsites.net/node-templates/",
+//       {
+//         name: "Flow Template Name",
+//         description: "Description of the flow template",
+//         category: "Category",
+//         createdBy: 1, // Replace with the actual user ID if needed
+//         node_data: {
+//           nodes: formattedNodes,
+//           adjacencyList: adjacencyListAsList,
+//         },
+//       },
+//       { headers }
+//     )
+//     .then((response) => {
+//       console.log('this is flow response',response.data);
+//       navigate(`/${tenantId}/chatbot`)
+//     })
+//     .catch((error) => {
+//       console.error("Error sending data to backend:", error);
+//     });
+// };
+
+
 const sendDataToBackend = () => {
   const formattedNodes = nodes.map((node) => ({
     id: parseInt(node.id),
@@ -216,37 +324,34 @@ const sendDataToBackend = () => {
     ...targets,
   ]);
 
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": 'GET,PUT,POST,DELETE,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept'
+  const data = {
+    name: "Flow Template Name",
+    description: "Description of the flow template",
+    category: "Category",
+    createdBy: 1, // Replace with the actual user ID if needed
+    node_data: {
+      nodes: formattedNodes,
+      adjacencyList: adjacencyListAsList,
+    },
   };
 
-  axiosInstance
-    .post(
-      "https://webappbaackend.azurewebsites.net/node-templates/",
-      {
-        name: "Flow Template Name",
-        description: "Description of the flow template",
-        category: "Category",
-        createdBy: 1, // Replace with the actual user ID if needed
-        node_data: {
-          nodes: formattedNodes,
-          adjacencyList: adjacencyListAsList,
-        },
-      },
-      { headers }
-    )
+  const url = templateId 
+    ? `https://webappbaackend.azurewebsites.net/node-templates/${templateId}/`
+    : "https://webappbaackend.azurewebsites.net/node-templates/";
+
+  const method = templateId ? 'put' : 'post';
+
+  axiosInstance[method](url, data)
     .then((response) => {
-      console.log('this is flow response',response.data);
-      navigate(`/${tenantId}/chatbot`)
+      console.log('Flow response:', response.data);
+      navigate(`/${tenantId}/chatbot`);
     })
     .catch((error) => {
       console.error("Error sending data to backend:", error);
     });
 };
-  
+
+
   console.log('Nodes:', nodes); // Log nodes
   console.log('Edges:', edges);
   
@@ -293,7 +398,6 @@ const sendDataToBackend = () => {
   onInit={setReactFlowInstance}
   onDrop={onDrop}
   onDragOver={onDragOver}
-  elementsSelectable={true}
   onNodeDoubleClick={onNodedoubleClick}
   onNodeClick={onNodeClick}
   fitView

@@ -31,6 +31,10 @@ const Campaign = () => {
   const modelName = "campaigns";
   const [campaign, setCampaigns] = useState([]);
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+  const [showFlows, setShowFlows] = useState(false);
+  const [flows, setFlows] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const [newCampaign, setNewCampaign] = useState({
     id:"",
@@ -49,7 +53,54 @@ const Campaign = () => {
   });
   useEffect(() => {
     fetchCampaigns();
+    fetchTemplates();
   }, []);
+
+
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await axiosInstance.get('/node-templates/');
+      setTemplates(response.data);
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+    }
+  };
+
+
+
+  const loadTemplate = (template) => {
+    if (template && template.node_data) {
+      const { nodes: templateNodes, adjacencyList } = template.node_data;
+      
+      // Transform nodes to ReactFlow format
+      const transformedNodes = templateNodes.map(node => ({
+        id: node.id.toString(),
+        type: node.type,
+        data: node.data,
+        position: node.position || { x: 0, y: 0 }, // You might need to add position data to your backend
+      }));
+  
+      // Transform adjacencyList to edges
+      const transformedEdges = adjacencyList.flatMap((targets, sourceIndex) => 
+        targets.map(target => ({
+          id: `e${sourceIndex}-${target}`,
+          source: sourceIndex.toString(),
+          target: target.toString(),
+        }))
+      );
+  
+      // You'll need to decide how to use these transformed nodes and edges
+      // For now, we'll just log them
+      console.log('Transformed Nodes:', transformedNodes);
+      console.log('Transformed Edges:', transformedEdges);
+  
+      setSelectedTemplate(template);
+    }
+  };
+
+
+
   const fetchCampaigns = async () => {
     try {
       const response = await axiosInstance.get('/campaign/');
@@ -70,6 +121,29 @@ const Campaign = () => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Campaigns");
     XLSX.writeFile(wb, "campaigns.xlsx");
+  };
+
+  useEffect(() => {
+    fetchCampaigns();
+    fetchFlows();
+  }, []);
+
+  const fetchFlows = async () => {
+    try {
+      const response = await axiosInstance.get('/flows/');
+      const data = await response.data;
+      setFlows(data);
+    } catch (error) {
+      console.log("Error fetching flows:", error);
+    }
+  };
+
+  const handleFlowsButtonClick = () => {
+    setShowFlows(!showFlows);
+  };
+
+  const handleTemplateSelect = (templateId) => {
+    navigate(`/${tenantId}/flow`, { state: { templateId } });
   };
 
   const handleDownloadPDF = () => {
@@ -119,7 +193,7 @@ const Campaign = () => {
     navigate(`/${tenantId}/chatbot`)
   };
   const handleEmailClick = () => {
-    navigate(`/${tenantId}/email`)
+    navigate(`/${tenantId}/email-provider`)
   };
   const handleLinkedInClick = () => {
     navigate(`/${tenantId}/linkedinpost`)
@@ -173,11 +247,20 @@ const Campaign = () => {
                       </Dropdown.Menu>
                     </Dropdown>
               </div>
-              <div>
-              <NavLink to={`/${tenantId}/campaignform`} id="btn11">
-                      + Create Campaign
-                    </NavLink>
-              </div>
+
+             
+  <div>
+  <NavLink to={`/${tenantId}/campaignform`} id="btn11">
+    + Create Campaign
+  </NavLink>
+  {selectedTemplate && (
+    <button onClick={() => navigate(`/${tenantId}/campaignform`, { state: { template: selectedTemplate } })}>
+      Create Campaign from Template
+    </button>
+  )}
+</div>
+
+    
       </div>
    </div>
 
@@ -214,10 +297,10 @@ const Campaign = () => {
                     </button>
               </div>
               <div className="flow-button">
-              <button  className="campaign_flow_btn"      onClick={handleFlowButtonClick}>
-                      Create Flow
-                    </button>
-              </div>
+  <button className="campaign_flow_btn" onClick={handleFlowsButtonClick}>
+    {showFlows ? "Show Campaigns" : "Show Flows"}
+  </button>
+</div>
               <div className='filter_campaign'>
               <select className="view-mode-select_campaign" onChange={handleRecords3}>
                     <option value="">Filter by:Type</option>
@@ -229,46 +312,64 @@ const Campaign = () => {
               </div>
         </div>
       <div>
-              <div className="table_camp">
-                  <table className="campaign_table">
-                     <thead>
-                       <tr>
-                          <th className="Campaign_table_name">Campaign Name</th>
-                          <th className="Campaign_table_owner">Campaign Owner</th>
-                          <th className="Campaign_table_channel">Channel</th>
-                          <th className="Campaign_table_created">Created On</th>
-                          <th className="Campaign_table_status">Status</th>
-                          <th className="Campaign_table_est">Est. Revenue</th>
-
-
-
-                        </tr>
-                      </thead>
-             
-                     <tbody>
-                      {filteredCampaigns?.map &&
-                        filteredCampaigns.map((campaign) => (
-                          <tr className="campaign_table_row" key={campaign.id}>
-                            <td classname='campaign_data_name'>
-                            <Link to={`/${tenantId}/campaigninfo/${campaign.id}`}>
-                            {campaign.campaign_name}
-                            </Link>
-                            </td>
-                            <td className="campaign_data_owner">
-                              
-                              {campaign.campaign_owner}
-                              </td>
-                            <td className="cont_email">
-                            {campaign.type}
-                            </td>
-                            <td className="campaign_data_cost">{campaign.start_date}</td>
-                            <td className="campaign_data_status">{campaign.status}</td>
-                            <td className='campaign_data_revenue'>{campaign.expected_revenue}</td>
-                          </tr>
-                        ))}
-                  </tbody>
-              </table>
-          </div>
+      <div className="table_camp">
+  <table className="campaign_table">
+    <thead>
+      <tr>
+        {showFlows ? (
+          <>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Created By</th>
+            <th>Date Created</th>
+            <th>Actions</th>
+          </>
+        ) : (
+          <>
+            <th className="Campaign_table_name">Campaign Name</th>
+            <th className="Campaign_table_owner">Campaign Owner</th>
+            <th className="Campaign_table_channel">Channel</th>
+            <th className="Campaign_table_created">Created On</th>
+            <th className="Campaign_table_status">Status</th>
+            <th className="Campaign_table_est">Est. Revenue</th>
+          </>
+        )}
+      </tr>
+    </thead>
+    <tbody>
+      {showFlows
+        ? templates.map((template) => (
+            <tr key={template.id}>
+              <td>{template.name}</td>
+              <td>{template.description}</td>
+              <td>{template.category}</td>
+              <td>{template.createdBy}</td>
+              <td>{new Date(template.date_created).toLocaleDateString()}</td>
+              <td>
+                <button style={{border:"1px red solid", padding:'10px', borderRadius:'8px'}} onClick={() => handleTemplateSelect(template.id)}>
+                  Open Flow
+                </button>
+              </td>
+            </tr>
+          ))
+        : filteredCampaigns.map((campaign) => (
+            <tr className="campaign_table_row" key={campaign.id}>
+              <td className='campaign_data_name'>
+                <Link to={`/${tenantId}/campaigninfo/${campaign.id}`}>
+                  {campaign.campaign_name}
+                </Link>
+              </td>
+              <td className="campaign_data_owner">{campaign.campaign_owner}</td>
+              <td className="cont_email">{campaign.type}</td>
+              <td className="campaign_data_cost">{campaign.start_date}</td>
+              <td className="campaign_data_status">{campaign.status}</td>
+              <td className='campaign_data_revenue'>{campaign.expected_revenue}</td>
+            </tr>
+          ))}
+    </tbody>
+  </table>
+</div>
         </div>
       </div>
     </div>

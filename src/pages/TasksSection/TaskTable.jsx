@@ -90,19 +90,13 @@ export const TaskTable = () => {
 
 
   return (
-   <div>
-   
-    <div className="tasks_main_component">
-      
+  
+    <div className="tasks_main_component" style={{marginTop:'-60px'}}>
         <div className="home_left_box1" style={{"top":"0rem"}}>
-
           <Sidebar />
         </div>
-      
-         <div className="contain1" style={{width:"100%"}}>
-         <div className="task__data" style={{marginTop:'-5rem'}}>
+         <div className="contain" style={{width:'100%',marginLeft:'4px'}} >
       <TopNavbar/>
-     </div>
           <div className="meet1" >
          
             <div>
@@ -152,7 +146,6 @@ export const TaskTable = () => {
         >
           <option value="table">Table View</option>
           <option value="tile">Tile View</option>
-          <option value="list">List View</option>
         </select>
 
       </div>
@@ -218,29 +211,10 @@ export const TaskTable = () => {
           </div>
         </div>
       )}
-      {viewMode === "list" && (
-        <div>
-          <h2>List View</h2>
-          <div className="accounts-list-container">
-            <ListGroup>
-              {tasks.map((task, index) => (
-                <ListGroup.Item key={task.id} className="accounts-list-item">
-                  <Link to={`/${tenantId}/tasks/${task.id}`}>{task.subject}</Link>
-                  <p>Status: {task.status}</p>
-                  <p>Due Date: {task.due_date}</p>
-                  <p>Description: {task.description}</p>
-                  <p>Priority: {task.priority}</p>
-                  <p>Contact: {task.contact}</p>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </div>
-        </div>
-      )}
+     
     </div>
   </div>
 </div>
-   </div>
   );
 };
 export default TaskTable;

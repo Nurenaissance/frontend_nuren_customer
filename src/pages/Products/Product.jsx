@@ -173,9 +173,13 @@ export const Product = () => {
                         <tbody>
                             {filteredProducts.map((product, index) => (
                                  <tr key={product.id}>
-                                  <Link to={`/${tenantId}/productinfo/${product.id}`}>{product.product_name}</Link>
+                                  <Link to={`/${tenantId}/productinfo/${product.id}`} >{product.product_name}</Link>
                                  <td>{product.product_code}</td>
-                                 <td>{product.productActive ? "Yes" : "No"}</td>
+                                 <td>
+  <span className={`status-${product.productActive ? 'active' : 'inactive'}`}>
+    {product.productActive ? 'Active' : 'Inactive'}
+  </span>
+</td>
                                  <td>{product.product_owner}</td>
                                </tr>
                             ))}

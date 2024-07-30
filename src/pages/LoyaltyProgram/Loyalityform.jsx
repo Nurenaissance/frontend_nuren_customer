@@ -66,6 +66,8 @@ const Loyalityform = () => {
                 <Sidebar />
             </div>
             <div>
+                <div className="home_right_box-loyal">
+
                 <div className='loyal_topbar'>
                     <TopNavbar />
                 </div>
@@ -323,6 +325,7 @@ const Loyalityform = () => {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

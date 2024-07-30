@@ -5,7 +5,36 @@
   justify-content: center;
   height: 100vh;
   background: linear-gradient(135deg, #6e8efb, #a777e3);
+  margin-top: -60px;
 }
+
+
+.navbar2 {
+  display: flex;
+  position: absolute;
+  top: 10%;
+  left: 18%;
+  background: none;
+}
+
+.nav-logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  width: 7rem;
+  height: 7rem;
+  
+}
+
+.nav-logo-title {
+  margin-left: 1rem;
+  font-size: 3rem;
+  font-weight: bold;
+  color: black;
+}
+
 
 .auth_wrapper {
   display: flex;
@@ -23,6 +52,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   padding: 2rem;
   background: #f9f9f9;
 }
