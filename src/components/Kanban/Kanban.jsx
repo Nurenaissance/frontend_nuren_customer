@@ -299,6 +299,17 @@ function Kanban({ leadCountsData }) {
     <>
   <br />
   <div className="Kanban">
+  <div className="leaad_column add_leaad-column">
+  <div className="add-column-content">
+    <button onClick={handleAddStage} className="add-button">+</button>
+    <input
+      type="text"
+      placeholder="New Stage"
+      value={newStageTitle}
+      onChange={(e) => setNewStageTitle(e.target.value)}
+    />
+  </div>
+</div>
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-board">
         {Object.keys(columns).map((columnId) => {
@@ -388,18 +399,7 @@ function Kanban({ leadCountsData }) {
             </div>
           );
         })}
-       <div className="column add-column">
-  <div className="add-column-content">
-    <button onClick={handleAddStage} className="add-button">+</button>
-    <span className="add-text">Add New Stage</span>
-    <input
-      type="text"
-      placeholder="New Stage"
-      value={newStageTitle}
-      onChange={(e) => setNewStageTitle(e.target.value)}
-    />
-  </div>
-</div>
+       
       </div>
     </DragDropContext>
   </div>
