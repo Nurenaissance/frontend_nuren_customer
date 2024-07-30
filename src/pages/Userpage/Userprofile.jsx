@@ -24,8 +24,8 @@ const getTenantIdFromUrl = () => {
 };
 
 const UserProfile = () => {
-  const { userId } = 3; // Assuming userId is available from authentication context
-  const { id } = useParams(); // Assuming the user ID is obtained from URL parameters
+  const  userId  = 3; 
+  const { id } = useParams(); 
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -59,7 +59,7 @@ const UserProfile = () => {
       }
     };
 
-    const fetchProfileImage = async (id) => {
+    const fetchProfileImage = async () => {
       try {
        
         const imagesRef = ref(storage, `profileImage/${tenantId}/${userId}/`);
@@ -137,7 +137,7 @@ const UserProfile = () => {
       console.log("Selected file:", file);
       try {
         // Create a reference to the user's profile image directory in Firebase Storage
-        const profileImageRef = ref(storage, `profileImage/${tenantId}/${file.name}`);
+        const profileImageRef = ref(storage, `profileImage/${tenantId}/${userId}/${file.name}`);
         console.log("Uploading to:", profileImageRef.fullPath);
   
         // Upload the file to Firebase Storage

@@ -29,6 +29,7 @@ const getTenantIdFromUrl = () => {
 const TopNavbar = ({ openMeetingForm, openCallForm}) => {
   const tenantId = getTenantIdFromUrl();
   const [notificationCount, setNotificationCount] = useState(0);
+  const userId  = 3;
   const [notifications, setNotifications] = useState([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [showAddDropdown, setShowAddDropdown] = useState(false);
@@ -134,10 +135,10 @@ const TopNavbar = ({ openMeetingForm, openCallForm}) => {
   useEffect(() => {
 
 
-    const fetchProfileImage = async () => {
+    const fetchProfileImage = async (id) => {
       try {
        
-        const imagesRef = ref(storage, `profileImage/${tenantId}/`);
+        const imagesRef = ref(storage, `profileImage/${tenantId}/${userId}/`);
         const result = await listAll(imagesRef);
     
         if (result.items.length > 0) {
@@ -151,7 +152,6 @@ const TopNavbar = ({ openMeetingForm, openCallForm}) => {
     
           
           setProfileImageUrl(url);
-          console.log(profileImageUrl)
         } else {
           console.log("No profile images found.");
         }
