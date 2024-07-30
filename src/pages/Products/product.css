@@ -1,38 +1,59 @@
 .product-page {
     display: flex;
+    margin-top: -60px;
+    margin-left: 280px;
+    background-color: #f5f7fa;
+    min-height: 100vh;
 }
+
 .product-sidebar {
     flex: 1;
-  }
+}
+
 .product-content {
     flex-grow: 3;
-    padding: 20px;
+    padding: 40px;
+    /* max-width: 1200px; */
+    margin: 0 auto;
 }
-.product-header{
+
+.product-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .product-content h1 {
-    margin-top: 5rem;
-    font-size: 2em;
+    margin-top: 0;
+    font-size: 2.5em;
     font-weight: bold;
+    color: #333;
 }
 
 .product-header-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .product-search-bar {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 2rem;
-    width: 20rem;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    width: 300px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.product-search-bar:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(109, 49, 237, 0.2);
+    border-color: #6D31ED;
 }
 
 .product-import-export-container {
@@ -40,126 +61,239 @@
     display: inline-block;
 }
 
-.product-import-export-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    background-color:#6D31EDFF;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-left: 2rem;
-}
-
-.product-import-export-button:hover {
-    background-color: #0056b3;
-}
-
-.product-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    padding: 10px;
-    border-radius: 4px;
-    width: 100px;
-}
-
-.product-import-export-container:hover .dropdown-content {
-    display: block;
-}
-
-.product-import-label {
-    display: block;
-    padding: 5px 10px;
-    background-color: #6D31EDFF;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 5px;
-}
-
-.product-import-label:hover {
-    background-color: #0056b3;
-}
-
-.product-export-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #6D31EDFF;
-    color: white;
-    cursor: pointer;
-}
-
-.product-export-button:hover {
-    background-color: #0056b3;
-}
-
-
-.product-add-product-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    color: #fff;
-    background-color:#62CD14FF;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 2rem;
-}
-.product-add-product-button:hover {
-    background-color: #4CA110FF;
-}
-.product-filter-container {
-    margin-bottom: 15px;
-  }
-  
-  .product-filter-select,
-  .product-filter-input {
-    margin-right: 10px;
-    padding: 5px;
-  }
-  .product-table-container {
-    position: relative;
-    width: 1267;
-    height: fit-content;
-    border-radius: 8px;
-    box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-    padding: 20px;
-    background-color: white; /* Add a background color to the box */
-  }
-  .excel-dropdown-int {
-    /* Your custom styles here */
-    font-family: 'Manrope';
+.excel-dropdown-int {
+    font-family: 'Manrope', sans-serif;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 600;
     color: #FFFFFF;
-    background: #6D31EDFF;
-    border-radius: 4px;
-    width: 77px;
-    height: 36px;
+    background: #6D31ED;
+    border-radius: 25px;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.excel-dropdown-int:hover {
+    background: #5721c2;
+}
+
+.dropdown-menu {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+.dropdown-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 7px 11px 9px 12px;
-    
-  }
-  .dropdown-menu {
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Dropdown Item Styling */
-  .dropdown-item {
-    display: flex;
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 14px;
-    color: #343a40;
-  }
-  
-  .dropdown-item:hover {
-    background-color: #e9ecef;
-  }
-  
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-item button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-add-product-button {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #62CD14;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-add-product-button:hover {
+    background-color: #4CA110;
+    transform: translateY(-2px);
+}
+
+.product-filter-container {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.product-filter-select,
+.product-filter-input {
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.product-filter-select:focus,
+.product-filter-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(109, 49, 237, 0.2);
+    border-color: #6D31ED;
+}
+
+.product-table-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    overflow-x: auto;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.product-table th {
+    background-color: #f5f7fa;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.product-table td {
+    padding: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.product-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.product-table a {
+    color: #6D31ED;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.product-table a:hover {
+    color: #5721c2;
+}
+
+
+.product-table-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    overflow-x: auto;
+    margin-top: 30px;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: 'Manrope', sans-serif;
+}
+
+.product-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-align: left;
+    padding: 16px 20px;
+    border-bottom: 2px solid #e9ecef;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.product-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+    font-size: 14px;
+}
+
+.product-table tr:last-child td {
+    border-bottom: none;
+}
+
+.product-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.product-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.product-table a {
+    color: #6D31ED;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.product-table a:hover {
+    color: #5721c2;
+    text-decoration: underline;
+}
+
+.product-table td:first-child,
+.product-table th:first-child {
+    border-left: 1px solid #e9ecef;
+}
+
+.product-table td:last-child,
+.product-table th:last-child {
+    border-right: 1px solid #e9ecef;
+}
+
+.product-table thead tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.product-table thead tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.product-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.product-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.product-table .status-active,
+.product-table .status-inactive {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.product-table .status-active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.product-table .status-inactive {
+    background-color: #ffebee;
+    color: #c62828;
+}

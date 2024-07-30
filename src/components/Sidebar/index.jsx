@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../assets/logo.png';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
@@ -40,6 +40,38 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 
 
+
+const NurenSidebarItem = ({ to, icon, text, onClick }) => (
+  <li className="nuren-sidebar__item">
+    <NavLink 
+      to={to}
+      className={({ isActive }) => 
+        `nuren-sidebar__link ${isActive ? 'nuren-sidebar__link--active' : ''}`
+      }
+      onClick={onClick}
+    >
+      {icon}
+      <span className="nuren-sidebar__link-text">{text}</span>
+    </NavLink>
+  </li>
+);
+
+const NurenSidebarDropdown = ({ text, icon, isOpen, toggleDropdown, children, className = '' }) => (
+  <li className={`nuren-sidebar__item ${className}`}>
+    <button className="nuren-sidebar__dropdown-toggle" onClick={toggleDropdown}>
+      {icon}
+      <span className="nuren-sidebar__link-text">{text}</span>
+      <i className={`bx ${isOpen ? 'bx-chevron-up' : 'bx-chevron-down'}`}></i>
+    </button>
+    {isOpen && (
+      <ul className="nuren-sidebar__dropdown-menu">
+        {children}
+      </ul>
+    )}
+  </li>
+);
+
+
 export const Sidebar = ({ onSelectModel }) => {
   const { authenticated, setAuthenticated } = useAuth();
   const { pathname } = useLocation();
@@ -58,6 +90,8 @@ export const Sidebar = ({ onSelectModel }) => {
   const [loading, setLoading] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
   const [lockedFeature, setLockedFeature] = useState('');
+  const [activeMoreItem, setActiveMoreItem] = useState(null);
+  const [isModelListVisible, setIsModelListVisible] = useState(false);
 
 
   const [clientsDropdownOpen, setClientsDropdownOpen] = useState(false);
@@ -65,6 +99,8 @@ export const Sidebar = ({ onSelectModel }) => {
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false); 
   const [socialDropdownOpen, setSocialDropdownOpen] = useState(false);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
+  const [showBackdrop, setShowBackdrop] = useState(false);
+  const sidebarRef = useRef(null);
 
   const [accessToken, setAccessToken] = useState('');
   useEffect(() => {
@@ -85,6 +121,55 @@ export const Sidebar = ({ onSelectModel }) => {
       console.error("Logout error:", error);
     }
   };
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        closeAllDropdowns();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    closeAllDropdowns();
+  }, [pathname]);
+
+  const closeAllDropdowns = () => {
+    setClientsDropdownOpen(false);
+    setTaskDropdownOpen(false);
+    setMoreDropdownOpen(false);
+    setSocialDropdownOpen(false);
+    setIsModelDropdownOpen(false);
+    setIsModelListVisible(false);
+    setShowBackdrop(false);
+  };
+
+  const toggleMoreDropdown = () => {
+    setMoreDropdownOpen(!moreDropdownOpen);
+    setIsModelListVisible(false);
+    setShowBackdrop(!moreDropdownOpen);
+    // Close other dropdowns
+    setClientsDropdownOpen(false);
+    setTaskDropdownOpen(false);
+    setSocialDropdownOpen(false);
+  };
+
+  const handleMoreItemClick = (item) => {
+    if (item === 'Model') {
+      setIsModelListVisible(!isModelListVisible);
+    } else {
+      setIsModelListVisible(false);
+    }
+  };
+
+
 
   const handleLockedFeatureClick = (e, feature) => {
     e.preventDefault();
@@ -126,13 +211,7 @@ export const Sidebar = ({ onSelectModel }) => {
     setMoreDropdownOpen(false);
     setSocialDropdownOpen(false);
   };
-  const toggleMoreDropdown = () => {
-    setMoreDropdownOpen(!moreDropdownOpen);
-    // Close other dropdowns if open
-    setClientsDropdownOpen(false);
-    setTaskDropdownOpen(false);
-    setSocialDropdownOpen(false);
-  };
+  
   const toggleSocialDropdown = () => {
     setSocialDropdownOpen(!socialDropdownOpen);
     setTaskDropdownOpen(false);
@@ -161,327 +240,202 @@ export const Sidebar = ({ onSelectModel }) => {
     }
   };
 
-  const toggleDropdown = () => {
-    setIsModelDropdownOpen(!isModelDropdownOpen);
+ 
+  const toggleDropdown = (setter) => () => {
+    setter(prev => !prev);
+    // Close other dropdowns
+    [setClientsDropdownOpen, setTaskDropdownOpen, setMoreDropdownOpen, setSocialDropdownOpen, setIsModelDropdownOpen]
+      .filter(set => set !== setter)
+      .forEach(set => set(false));
   };
   
 
   return (
-    <div className="siadebar">
-      <div className="sidebar_inner">
-        <a href={`/${tenantId}/home`} className="sidebar_logo">
-          <img
-            src={Logo}
-            alt="logo"
-            className="sidebar_img"
-            width={48}
-            height={48}
-          />
-          <p className="sidebar_logo_text"> <b>Nuren AI</b> <br /> CRM</p>
-        </a>
-        <hr className="hr" />
-        <ul className="sidebar_list">
-          <li className="sidebar_item">
-            <NavLink 
-  className={({ isActive }) => 
-    isActive ? "sidebar_link active" : "sidebar_link"
-  } 
-  to={formatLink("/home")}
->
-  <span style={{ display: 'flex', alignItems:'center' }}>
-    <DashboardIcon style={{fontSize:'2rem'}}/>
-    <p className="sidebar_link_text">Dashboard</p>
-  </span>
-</NavLink>
-          </li>
-          <li className="sidebar_item">
-            <div className="sidebar_link" onClick={toggleClientsDropdown}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <PeopleIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Clients</p>
-                <i className={`bx ${clientsDropdownOpen ? 'bx-chevron-up' : 'bx-chevron-down'}`} style={{ fontSize: '1.5rem', marginLeft: 'auto' }}></i>
-              </span>
-            </div>
-            {clientsDropdownOpen && (
-              <ul className="dropdown_list">
-                <li className="dropdown_item">
-                  <NavLink className="sidebar_link" to={formatLink("/contacts")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <ContactPhoneRoundedIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Contacts</p>
-                    </span>
-                  </NavLink>
-                </li>
-                <li className="dropdown_item">
-                  <NavLink className="sidebar_link" to={formatLink("/accounts")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <GroupAddRoundedIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Accounts</p>
-                    </span>
-                  </NavLink>
-                </li>
-              </ul>
-            )}
-          </li> 
-          <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/lead")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <RocketLaunchIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Leads</p>
-              </span>
-            </NavLink>
-          </li>
-           <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/opportunities")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <EmojiObjectsIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Opportunities</p>
-              </span>
-            </NavLink>
-          </li> 
-          <li className="dropdown_item">
-                <NavLink className="sidebar_link" to={formatLink("/tasks")}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <AssignmentIcon style={{fontSize:'2rem'}}/>
-                    <p className="sidebar_link_text">Tasks</p>
-                  </span>
-                </NavLink>
-              </li>
-          
-          <li className="sidebar_item">
-            <div className="sidebar_link" onClick={toggleTaskDropdown}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <ListAltIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Task Management</p>
-                <i className={`bx ${taskDropdownOpen ? 'bx-chevron-up' : 'bx-chevron-down'}`} style={{ fontSize: '1.5rem', marginLeft: 'auto' }}></i>
-              </span>
-            </div>
-            {taskDropdownOpen && (
-              <ul className="dropdown_list">
-                <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/meetings")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <MeetingRoomIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Meetings</p>
-                    </span>
-                  </NavLink>
-                  </li>
-                <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/callpage")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <CallIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">CallPage</p>
-                    </span>
-                  </NavLink>
-                </li>
-                
-                
-              </ul>
-            )}
-          </li>
-          <li className="sidebar_item">
-            <div className="sidebar_link" onClick={toggleSocialDropdown}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FormatListNumberedIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Social</p>
-                <i className={`bx ${socialDropdownOpen ? 'bx-chevron-up' : 'bx-chevron-down'}`} style={{ fontSize: '1.5rem', marginLeft: 'auto' }}></i>
-              </span>
-            </div>
-            {socialDropdownOpen && (
-              <ul className="dropdown_list">
-                <li className="sidebar_item">
-                <NavLink className="sidebar_link" to={formatmewLink(accessToken)}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <InstagramIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Instagram</p>
-                    </span>
-                  </NavLink>
-                  </li>
-                  <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/chatbot")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <WhatsAppIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Chatbot</p>
-                    </span>
-                  </NavLink>
-                  </li>
-                  <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/email-provider")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <EmailIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">Email</p>
-                    </span>
-                  </NavLink>
-                  </li>
-                <li className="sidebar_item">
-                  <NavLink className="sidebar_link" to={formatLink("/linkedinauth")}>
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                      <LinkedInIcon style={{fontSize:'2rem'}}/>
-                      <p className="sidebar_link_text">LinkedIn</p>
-                    </span>
-                  </NavLink>
-                </li>
-                
-              </ul>
-            )}
-          </li>
-          <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/calendar")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <CalendarMonthRoundedIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Calendar</p>
-              </span>
-            </NavLink>
-          </li>
-          
-        
-          
-        
-        <li className="sidebar_item">
-        <div className="dropdown_container" onClick={toggleMoreDropdown}>
-        <button className="sidebar_link">
-          <MoreHorizRoundedIcon style={{fontSize:'2rem'}}/>
-          <p className="sidebar_link_text">More</p>
-          <i className={`bx ${moreDropdownOpen ? 'bx-chevron-left' : 'bx-chevron-right'}`} style={{ fontSize: '1.5rem', marginLeft: 'auto' }}></i>
-        </button>
-                      
-        
-          {moreDropdownOpen && (
-
-          <div className="dropdown_menu">
-            <ul className="dropdown_list">
-              <div className="dropdown_list-data">
-              <div>
-          
-           
-              <li className="dropdown_item">
-                <NavLink className="sidebar_link" to={formatLink("/vendors")}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <BusinessIcon style={{fontSize:'2rem'}}/>
-                    <p className="sidebar_link_text">Vendors</p>
-                  </span>
-                </NavLink>
-              </li>
-              <li className="dropdown_item">
-                <NavLink className="sidebar_link" to={formatLink("/product")}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <ShoppingBagIcon style={{fontSize:'2rem'}}/>
-                    <p className="sidebar_link_text">Products</p>
-                  </span>
-                </NavLink>
-              </li>
-              <li className="sidebar_item">
-              <NavLink className="sidebar_link" to={formatLink("/loyalty")} onClick={(e) => handleLockedFeatureClick(e, "loyalty")}>
-    <span style={{ display: 'flex', alignItems:'center' }}>
-      <LoyaltyIcon style={{fontSize:'2rem'}}/>
-      <p className="sidebar_link_text">Loyalty Program</p>
-      <LockIcon style={{fontSize:'1.5rem', marginLeft: 'auto'}} />
-    </span>
-  </NavLink>
-          </li>
-          <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/report")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <BarChartIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Reports</p>
-              </span>
-            </NavLink>
-          </li>
-             
-          </div>
-          <div>
-         
-              <li className="dropdown_item">
-                <NavLink className="sidebar_link" to={formatLink("/interaction")}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <HandshakeIcon style={{fontSize:'2rem'}}/>
-                    <p className="sidebar_link_text">Interaction</p>
-                  </span>
-                </NavLink>
-              </li>
-              <li className="dropdown_item">
-                <NavLink className="sidebar_link" to={formatLink("/campaign")}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <CampaignRoundedIcon style={{fontSize:'2rem'}}/>
-                    <p className="sidebar_link_text">Campaigns</p>
-                  </span>
-                </NavLink>
-              </li>
-              <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/reminder")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <AlarmIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Reminder</p>
-              </span>
-            </NavLink>
-          </li>
-          <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/ticket")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <CardMembershipIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Tickets</p>
-              </span>
-            </NavLink>
-          </li>
-          <li className="sidebar_item">
-            <NavLink className="sidebar_link" to={formatLink("/editdocument")}>
-              <span style={{ display: 'flex', alignItems:'center' }}>
-                <EditIcon style={{fontSize:'2rem'}}/>
-                <p className="sidebar_link_text">Pdf Editor</p>
-              </span>
-            </NavLink>
-          </li>
-          <li className="sidebar-item">
-      <h2 className="sidebar-heading" onClick={toggleDropdown}>
-        Model
-      </h2>
-      {isModelDropdownOpen && (
-        <ul className="dropdown">
+    <div className="nuren-sidebar" ref={sidebarRef}>
+    <div className="nuren-sidebar__top">
+      <NavLink to={formatLink("/home")} className="nuren-sidebar__logo">
+        <img src={Logo} alt="Nuren AI Logo" className="nuren-sidebar__logo-img" width={48} height={48} />
+        <p className="nuren-sidebar__logo-text">
+          <b>Nuren AI</b> <br /> CRM
+        </p>
+      </NavLink>
+      {/* <button className="nuren-sidebar__logout" onClick={handleLogout}>Logout</button> */}
+      <hr className="nuren-sidebar__divider" />
+    </div>
+    <div className="nuren-sidebar__content">
+        <nav className="nuren-sidebar__nav">
+          <ul className="nuren-sidebar__list">
+            <NurenSidebarItem
+              to={formatLink("/home")}
+              icon={<DashboardIcon />}
+              text="Dashboard"
+            />
+            <NurenSidebarDropdown
+              text="Clients"
+              icon={<PeopleIcon />}
+              isOpen={clientsDropdownOpen}
+              toggleDropdown={toggleDropdown(setClientsDropdownOpen)}
+            >
+              <NurenSidebarItem
+                to={formatLink("/contacts")}
+                icon={<ContactPhoneRoundedIcon />}
+                text="Contacts"
+              />
+              <NurenSidebarItem
+                to={formatLink("/accounts")}
+                icon={<GroupAddRoundedIcon />}
+                text="Accounts"
+              />
+            </NurenSidebarDropdown>
+            <NurenSidebarItem
+              to={formatLink("/lead")}
+              icon={<RocketLaunchIcon />}
+              text="Leads"
+            />
+            <NurenSidebarItem
+              to={formatLink("/opportunities")}
+              icon={<EmojiObjectsIcon />}
+              text="Opportunities"
+            />
+            <NurenSidebarItem
+              to={formatLink("/tasks")}
+              icon={<AssignmentIcon />}
+              text="Tasks"
+            />
+            <NurenSidebarDropdown
+              text="Task Management"
+              icon={<ListAltIcon />}
+              isOpen={taskDropdownOpen}
+              toggleDropdown={toggleDropdown(setTaskDropdownOpen)}
+            >
+              <NurenSidebarItem
+                to={formatLink("/meetings")}
+                icon={<MeetingRoomIcon />}
+                text="Meetings"
+              />
+              <NurenSidebarItem
+                to={formatLink("/callpage")}
+                icon={<CallIcon />}
+                text="CallPage"
+              />
+            </NurenSidebarDropdown>
+            <NurenSidebarDropdown
+              text="Social"
+              icon={<FormatListNumberedIcon />}
+              isOpen={socialDropdownOpen}
+              toggleDropdown={toggleDropdown(setSocialDropdownOpen)}
+            >
+              <NurenSidebarItem
+                to={formatmewLink(accessToken)}
+                icon={<InstagramIcon />}
+                text="Instagram"
+              />
+              <NurenSidebarItem
+                to={formatLink("/chatbot")}
+                icon={<WhatsAppIcon />}
+                text="Chatbot"
+              />
+              <NurenSidebarItem
+                to={formatLink("/email-provider")}
+                icon={<EmailIcon />}
+                text="Email"
+              />
+              <NurenSidebarItem
+                to={formatLink("/linkedinauth")}
+                icon={<LinkedInIcon />}
+                text="LinkedIn"
+              />
+            </NurenSidebarDropdown>
+            <NurenSidebarItem
+              to={formatLink("/calendar")}
+              icon={<CalendarMonthRoundedIcon />}
+              text="Calendar"
+            />
+            <NurenSidebarDropdown
+              text="More"
+              icon={<MoreHorizRoundedIcon />}
+              isOpen={moreDropdownOpen}
+              toggleDropdown={toggleDropdown(setMoreDropdownOpen)}
+              className="nuren-sidebar__more-dropdown"
+            >
+            </NurenSidebarDropdown>
+            
+            </ul>
+          </nav>
+        </div>
+        {moreDropdownOpen && (
+        <div className={`nuren-sidebar__more-content ${moreDropdownOpen ? 'active' : ''}`}>
+          <ul className="nuren-sidebar__more-list">
+            <NurenSidebarItem
+              to={formatLink("/vendors")}
+              icon={<BusinessIcon />}
+              text="Vendors"
+              onClick={() => handleMoreItemClick('Vendors')}
+            />
+             <NurenSidebarItem
+                to={formatLink("/product")}
+                icon={<ShoppingBagIcon />}
+                text="Products"
+              />
+              <NurenSidebarItem
+                to={formatLink("/loyalty")}
+                icon={<LoyaltyIcon />}
+                text="Loyalty Program"
+              />
+              <NurenSidebarItem
+                to={formatLink("/report")}
+                icon={<BarChartIcon />}
+                text="Reports"
+              />
+              <NurenSidebarItem
+                to={formatLink("/interaction")}
+                icon={<HandshakeIcon />}
+                text="Interaction"
+              />
+              <NurenSidebarItem
+                to={formatLink("/campaign")}
+                icon={<CampaignRoundedIcon />}
+                text="Campaigns"
+              />
+              <NurenSidebarItem
+                to={formatLink("/reminder")}
+                icon={<AlarmIcon />}
+                text="Reminder"
+              />
+              <NurenSidebarItem
+                to={formatLink("/ticket")}
+                icon={<CardMembershipIcon />}
+                text="Tickets"
+              />
+              <NurenSidebarItem
+                to={formatLink("/editdocument")}
+                icon={<EditIcon />}
+                text="PDF Editor"
+              />
+                <NurenSidebarItem
+              icon={<LayersIcon />}
+              text="Model"
+              onClick={() => handleMoreItemClick('Model')}
+            />
+            </ul>
+      </div>
+        )}
+         {isModelListVisible && (
+        <div className={`nuren-sidebar__model-content ${isModelListVisible ? 'active' : ''}`}>
+        <ul className="nuren-sidebar__model-list">
           {models.map((model) => (
-            <li key={model.model_name} className="dropdown-item">
-              <NavLink className="sidebar-link" to={formatLink(`/models/${model.model_name}`)}>
-                <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <p className="sidebar-link-text">{model.model_name}</p>
-                </span>
-              </NavLink>
-            </li>
+            <NurenSidebarItem
+              key={model.model_name}
+              to={formatLink(`/models/${model.model_name}`)}
+              text={model.model_name}
+            />
           ))}
         </ul>
+      </div>
       )}
-    </li>
-          </div>
-              </div>
-         
-            </ul>
-          </div>
-                )}
-        </div>
-          
-        </li>
-     
-         
-        
-        </ul>
-      </div>
-   
-        
-        <div className="logout_btn">
-        <button className="logout_btn" onClick={handleLogout}>Logout</button>
-      </div>
-      {showOverlay && (
-  <div className="feature-lock-overlay">
-    <div className="overlay-content">
-      <CloseIcon 
-        className="close-icon" 
-        onClick={() => setShowOverlay(false)}
-      />
-      <h2>Unlock {lockedFeature.charAt(0).toUpperCase() + lockedFeature.slice(1)} Feature</h2>
-      <p>To use this feature, you need to upgrade to our Plus membership.</p>
-      <button onClick={handleBuyClick}>I'll Buy Plus Membership</button>
+        <div className={`nuren-sidebar__backdrop ${showBackdrop ? 'active' : ''}`} onClick={closeAllDropdowns}></div>
     </div>
-  </div>
-)}
-    </div>
+
   );
 };
 

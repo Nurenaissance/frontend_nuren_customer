@@ -11,6 +11,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from "../../api";
 import { useAuth } from "../../authContext";
 import { useNavigate } from "react-router-dom";
+import './campaignform.css'
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -50,26 +51,31 @@ const Campaignform = () => {
   const tenantId = getTenantIdFromUrl();
   const {userId}=useAuth();
   const [campaignData, setCampaignData] = useState({
-    
     campaign_name: "",
     start_date: "",
     end_date: "",
     expected_revenue: "",
     actual_cost: "",
-    numbers_sent:"" ,
+    numbers_sent: "",
     type: "",
     status: "",
     budgeted_cost: "",
     expected_response: "",
     description: "",
-    campaign_owner: ""
+    campaign_owner: "",
+    message: "",
+    expected_count: ""
   });
   const [formErrors, setFormErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorFields, setErrorFields] = useState({});
+  const [flows, setFlows] = useState([]);
+  const [selectedFlow, setSelectedFlow] = useState('');
+  const [newFlowName, setNewFlowName] = useState('');
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+ 
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -143,6 +149,54 @@ const Campaignform = () => {
     }
   };
 
+
+
+  useEffect(() => {
+    fetchFlows();
+  }, []);
+
+  const fetchFlows = async () => {
+    try {
+      const response = await axiosInstance.get('/flows/');
+      setFlows(response.data);
+    } catch (error) {
+      console.error('Error fetching flows:', error);
+      // Set flows to an empty array or some default value
+      setFlows([]);
+    }
+  };
+  const handleFlowChange = (event) => {
+    setSelectedFlow(event.target.value);
+    if (event.target.value !== 'create_new') {
+      const selectedFlowData = flows.find(flow => flow.id === event.target.value);
+      setCampaignData(prevState => ({
+        ...prevState,
+        flow: selectedFlowData,
+      }));
+    }
+  };
+
+  const handleCreateNewFlow = async () => {
+    if (!newFlowName.trim()) {
+      alert('Please enter a name for the new flow');
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post('/flows/', { name: newFlowName });
+      const newFlow = response.data;
+      setFlows(prevFlows => [...prevFlows, newFlow]);
+      setSelectedFlow(newFlow.id);
+      setCampaignData(prevState => ({
+        ...prevState,
+        flow: newFlow,
+      }));
+      setNewFlowName('');
+    } catch (error) {
+      console.error('Error creating new flow:', error);
+      alert('Failed to create new flow. Please try again.');
+    }
+  };
   
 
   const closePopup = () => {
@@ -180,7 +234,9 @@ const Campaignform = () => {
       window.location.href = `../${tenantId}/campaign`;
     }
   };
-  
+
+
+ 
   
   const handleSaveAsDraft = async () => {
     setIsSavingDraft(true);
@@ -219,7 +275,7 @@ const Campaignform = () => {
   useEffect(() => {
     const draftData = localStorage.getItem('campaignDraft');
     if (draftData) {
-      setOppourtunityData(JSON.parse(draftData));
+      setCampaignData(JSON.parse(draftData));
     }
   }, []);
   const handleSubmitForm = (event) => {
@@ -228,52 +284,35 @@ const Campaignform = () => {
     handleSubmit(event);
   };
   return (
-    <div>
-      <div className='campaign_form_head'>
-       <div className="campaign-home_left_box1">
+
+    <div className="cf-container">
+    <div className='cf-header'>
+      <div className="cf-sidebar">
+
         <Sidebar />
       </div>
-      <div>
-        <h1 className="campaign_form_heading"> Create Campaigns</h1>
-      </div>
-
+      <h1 className="cf-title">Create Campaigns</h1>
     </div>
-    <div className='btnsss10'>
-   <button type="cancel"  onClick={handleCancel} className="btn-submit50">Cancel</button>
-
-   <button type="save"  onClick={handleSaveAsDraft} className="btn-submit40">Save as Draft</button>
-
-
-   <button type="submit"  onClick={handleSubmitForm} className="btn-submit60" >Submit</button>
-
-   </div>
-   <div className='capaign_form_container'>
-   <form onSubmit={handleSubmit}>
-      <div className='campaign_forms'>
-      <div className="form-row">
-        <h1 className='create_campaign'>
-          Create a campaign
-        </h1>
-        <div className='roundicon1'>
-        <CreateRoundedIcon />
-
-        </div>
-
-  <div className='campaign-box'>
-  <div className="form-group col-md-6 ">
-          <label htmlFor="text" className='campaign_name'>Campaign Name :</label>
-          <input
-            type="text"
-            className="form-campaign_name"
-            id="name"
-            name="campaign_name"
-            value={campaignData.campaign_name}
-            onChange={handleChange}
-            placeholder="Enter Campaign Name"
-            style={{ borderColor: errorFields.campaign_name ? 'red' : '' }}
-          />
-        </div>
-        <div className="form-group col-md-6">
+    <div className='cf-button-group'>
+      <button type="button" onClick={handleCancel} className="cf-btn cf-btn-cancel">Cancel</button>
+      <button type="button" onClick={handleSaveAsDraft} className="cf-btn cf-btn-draft">Save as Draft</button>
+      <button type="submit" onClick={handleSubmitForm} className="cf-btn cf-btn-submit">Submit</button>
+    </div>
+    <form onSubmit={handleSubmit} className="cf-form">
+      <div className="cf-form-group">
+        <label htmlFor="campaign_name" className="cf-label">Campaign Name:</label>
+        <input
+          type="text"
+          id="campaign_name"
+          name="campaign_name"
+          value={campaignData.campaign_name}
+          onChange={handleChange}
+          placeholder="Enter Campaign Name"
+          className="cf-input"
+          style={{ borderColor: errorFields.campaign_name ? 'red' : '' }}
+        />
+      </div>
+      <div className="form-group col-md-6">
           <label htmlFor="text" className='campaign_owner'>Campaign Owner :</label>
           <input
             type="text"
@@ -316,7 +355,7 @@ const Campaignform = () => {
         <div className="form-group col-md-6">
                   <label htmlFor="expected_revenue" className='campaign_expected_revenue'>Expected Revenue :</label>
                   <input
-                    type="text"
+                  type="text"
                     className="form-campaign_expected_revenue"
                     id="expected_revenue"
                     name="expected_revenue"
@@ -326,7 +365,52 @@ const Campaignform = () => {
                     style={{ borderColor: errorFields.expected_revenue ? 'red' : '' }}
                   />
                 </div>
+                <div className="cf-form-group">
+        <label htmlFor="flow" className="cf-label">Select Flow:</label>
+        <select
+          id="flow"
+          className="cf-flow-select"
+          value={selectedFlow}
+          onChange={handleFlowChange}
+        >
+          <option value="">Select a flow</option>
+          {flows.map(flow => (
+            <option key={flow.id} value={flow.id}>{flow.name}</option>
+          ))}
+          <option value="create_new">Create New Flow</option>
+        </select>
+      </div>
 
+      {selectedFlow === 'create_new' && (
+        <div className="cf-form-group">
+          <input
+            type="text"
+            placeholder="Enter new flow name"
+            value={newFlowName}
+            onChange={(e) => setNewFlowName(e.target.value)}
+            className="cf-input"
+          />
+          <button type="button" onClick={handleCreateNewFlow} className="cf-btn cf-btn-draft">
+            Create New Flow
+          </button>
+        </div>
+      )}
+
+      {selectedFlow && selectedFlow !== 'create_new' && (
+        <div className="cf-form-group">
+          <h3>Selected Flow: {flows.find(flow => flow.id === selectedFlow)?.name}</h3>
+          {/* Add flow editing components here */}
+          {/* For example: */}
+          <textarea
+            value={JSON.stringify(campaignData.flow, null, 2)}
+            onChange={(e) => setCampaignData(prevState => ({
+              ...prevState,
+              flow: JSON.parse(e.target.value),
+            }))}
+            className="cf-flow-editor"
+          />
+        </div>
+      )}
          <div className="form-group col-md-6">
                   <label htmlFor="message" className='campaign_message'>Message :</label>
                   <input
@@ -340,7 +424,7 @@ const Campaignform = () => {
                     style={{ borderColor: errorFields.message ? 'red' : '' }}
                   />
                 </div>
-        <div>
+        {/* <div> */}
        
         <h1 className='audience_campaign'>Audience</h1>
         <div className='roundicon'>
@@ -362,69 +446,35 @@ const Campaignform = () => {
                 </div>
        
         
-<div className='capaign_form_section'>
-<p className='campaign_type'>Type
-          <button className={`campanign_btn_form ${campaignData.type === 'Facebook' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Facebook')}>
+                <div className="cf-form-group">
+          <p className='cf-campaign-type'>Type</p>
+          <button 
+            className={`cf-social-btn ${campaignData.type === 'Facebook' ? 'active' : ''}`} 
+            onClick={() => handleSocialButtonClick('Facebook')}
+          >
             <FacebookIcon />
           </button>
-          <button className={`campanign_btn_form ${campaignData.type === 'Instagram' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Instagram')}>
+          <button 
+            className={`cf-social-btn ${campaignData.type === 'Instagram' ? 'active' : ''}`}
+            onClick={() => handleSocialButtonClick('Instagram')}
+          >
             <InstagramIcon />
           </button>
-          <button className={`campanign_btn_form ${campaignData.type === 'WhatsApp' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('WhatsApp')}>
+          <button className={`cf-social-btn ${campaignData.type === 'WhatsApp' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('WhatsApp')}>
             <WhatsAppIcon />
           </button>
-          <button className={`campanign_btn_form ${campaignData.type === 'Email' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Email')}>
+          <button className={`cf-social-btn ${campaignData.type === 'Email' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Email')}>
             <EmailIcon />
           </button>
-          <button className={`campanign_btn_form ${campaignData.type === 'Message' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Message')}>
+          <button className={`cf-social-btn ${campaignData.type === 'Message' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Message')}>
             <ChatBubbleOutlineIcon />
           </button>
-          </p>
-        <div className="form-group col-md-6">
-                  <label htmlFor="expected_response" className='campaign_expected_response'>Expected Response :</label>
-                  <input
-                    type="text"
-                    className="form-campaign_expected_response"
-                    id="expected_response"
-                    name="expected_response"
-                    value={campaignData.expected_response}
-                    onChange={handleChange}
-                    placeholder="Enter expected response"
-                    style={{ borderColor: errorFields.expected_response ? 'red' : '' }}
-                  />
-                </div>
-        </div>
-
-       
-       
-
-        </div>
-
-  </div>
-     
-</div>
-
-
-
-      </div>
-   
-
-     
-
-        
-        
-
-
-
-  
-        
- </form> 
-   </div>
-   {showPopup && <Popup errors={formErrors} onClose={closePopup} />}
+          </div>
+      </form>
+      {showPopup && <Popup errors={formErrors} onClose={closePopup} />}
       {showSuccessPopup && <SuccessPopup message={successMessage} onClose={closeSuccessPopup} />}
     </div>
-    
-  )
+  );
 }
 
 export default Campaignform

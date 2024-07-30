@@ -1,6 +1,13 @@
 .loyal_page {
   display: flex;
   flex-direction: row;
+  margin-left: 280px;
+
+}
+
+
+.home_right_box-loyal{
+  margin-left: 280px;
 }
 .loyal_topbar {
   position: relative;

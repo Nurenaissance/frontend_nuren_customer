@@ -13,7 +13,7 @@
     flex-direction: row;
     margin-right: 40rem;
     gap: 20px;
-    
+    margin-left: 280px;
 }
 
 .excel-dropdown-menu6-remind {
@@ -124,7 +124,7 @@ font-family: 'Lexend';
 font-size: 14px;
 line-height: 22px;
 font-weight: 600;
-color: #565D6DFF;
+color: rgb(255, 255, 255);
                 }
 .remind-data{
     font-family: 'Manrope';

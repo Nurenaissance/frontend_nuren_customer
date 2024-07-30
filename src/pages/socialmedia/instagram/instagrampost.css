@@ -474,6 +474,7 @@
   display: flex;
   background-color: #fafafa;
   min-height: 100vh;
+  margin-top: -60px;
 }
 
 .instagram-post-content {

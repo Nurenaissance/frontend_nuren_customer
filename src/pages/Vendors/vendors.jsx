@@ -97,7 +97,7 @@ const Vendors = () => {
       </div>
     
       <div>
-      <div className="right_div" style={{marginLeft:'-80px'}}>
+      <div className="right_div_vdono" >
         <TopNavbar/>
         </div>
       <div className="vendor-merge">

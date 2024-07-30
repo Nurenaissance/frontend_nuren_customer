@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './TicketPage.css';
 import { Sidebar } from "../../components/Sidebar";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx";
-import { MdCheckCircle, MdClose, MdArchive } from 'react-icons/md';
+import { MdCheckCircle, MdClose, MdArchive, MdSearch } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../../api.jsx";
 
@@ -99,128 +99,129 @@ const Ticket = () => {
 
     return (
         <div className="ticket-page">
-            <div className="ticket_nav">
-                <TopNavbar />
-            </div>
-            <div className="ticket-display">
-                <div className="ticket_sidebar">
+            <TopNavbar />
+            <div className="ticket-content">
+                <div className="ticket-sidebar">
                     <Sidebar />
                 </div>
-                <div className="ticket_main_content">
-                    <div className="ticket-show">
+                <div className="ticket-main">
+                    <div className="ticket-header">
                         <h1>Generated Tickets</h1>
-                        <div className="ticket_toolbar">
-                            <span className="search_icon">🔍</span> <input type="text" placeholder="Search..." className="ticket-search_input" />
-                            <select className="filter_dropdown" onChange={(e) => setSelectedOption(e.target.value)}>
+                        <div className="ticket-toolbar">
+                            <div className="ticket-search">
+                                <MdSearch className="ticket-search__icon" />
+                                <input type="text" placeholder="Search..." className="ticket-search__input" />
+                            </div>
+                            <select className="ticket-filter" onChange={(e) => setSelectedOption(e.target.value)}>
                                 <option value="all">Filter by</option>
                                 <option value="notSolved">Not Solved</option>
                                 <option value="solved">Solved</option>
                                 <option value="archived">Archived</option>
                             </select>
-                            <button className="ticket-create_button" onClick={handleClick}>
+                            <button className="ticket-create-btn" onClick={handleClick}>
                                + Create New
                             </button>
-                            <div className="ticket-dropdown">
-                                <button className="dropbtn" onClick={toggleDropdown}>⋮</button>
+                            <div className="ticket-options">
+                                <button className="ticket-options__btn" onClick={toggleDropdown}>⋮</button>
                                 {dropdownOpen && (
-                                    <div className="ticket-dropdown_content">
-                                        <a href="#">Option 1</a>
-                                        <a href="#">Option 2</a>
-                                        <a href="#">Option 3</a>
+                                    <div className="ticket-options__menu">
+                                        <a href="#" className="ticket-options__item">Option 1</a>
+                                        <a href="#" className="ticket-options__item">Option 2</a>
+                                        <a href="#" className="ticket-options__item">Option 3</a>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
-                    <div className="ticket_heading">
-                        <button onClick={() => setSelectedOption('all')}>
-                            All Tickets <span className="ticket_count_badge">{filteredTickets.length}</span>
+                    <div className="ticket-tabs">
+                        <button className="ticket-tab" onClick={() => setSelectedOption('all')}>
+                            All Tickets <span className="ticket-tab__badge">{filteredTickets.length}</span>
                         </button>
-                        <button onClick={() => setSelectedOption('notSolved')}>
-                            Not Solved <span className="ticket_count_badge">{filteredTickets.filter(ticket => ticket.status === 'notSolved').length}</span>
+                        <button className="ticket-tab" onClick={() => setSelectedOption('notSolved')}>
+                            Not Solved <span className="ticket-tab__badge">{filteredTickets.filter(ticket => ticket.status === 'notSolved').length}</span>
                         </button>
-                        <button onClick={() => setSelectedOption('solved')}>
-                            Solved <span className="ticket_count_badge">{filteredTickets.filter(ticket => ticket.status === 'solved').length}</span>
+                        <button className="ticket-tab" onClick={() => setSelectedOption('solved')}>
+                            Solved <span className="ticket-tab__badge">{filteredTickets.filter(ticket => ticket.status === 'solved').length}</span>
                         </button>
-                        <button onClick={() => setSelectedOption('archived')}>
-                            Archived <span className="ticket_count_badge">{filteredTickets.filter(ticket => ticket.status === 'archived').length}</span>
+                        <button className="ticket-tab" onClick={() => setSelectedOption('archived')}>
+                            Archived <span className="ticket-tab__badge">{filteredTickets.filter(ticket => ticket.status === 'archived').length}</span>
                         </button>
                     </div>
-                    <div className="ticket_list">
+                    <div className="ticket-list">
                         {filteredTickets.map(ticket => (
                             <div 
                                 key={ticket.id} 
-                                className="ticket_item"
+                                className="ticket-item"
                                 draggable
                                 onDragStart={(e) => handleDragStart(e, ticket)}
                                 onDragOver={handleDragOver}
                                 onDrop={(e) => handleDrop(e, selectedOption)}
                                 onClick={() => setSelectedTicket(ticket)}
                             >
-                                <div className="ticket_heading_number">
-                                    <span>{ticket.case_reason}</span>
-                                    <span className="ticket-id-number">#{ticket.casenumber}</span>
+                                <div className="ticket-item__header">
+                                    <span className="ticket-item__title">{ticket.case_reason}</span>
+                                    <span className="ticket-item__id">#{ticket.casenumber}</span>
                                 </div>
-                                <div className="ticket_description">
+                                <div className="ticket-item__description">
                                     {ticket.description}
                                 </div>
-                                <button className="view_attachment_button">View Attachment</button>
-                                <div className="ticket_hover_actions">
+                                <button className="ticket-item__attachment">View Attachment</button>
+                                <div className="ticket-item__actions">
                                     {ticket.status === 'solved' && (
                                         <>
                                             <button 
-                                                className="action_button green"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
                                             >
-                                                <MdClose style={{ color: '#62CD14FF' }} />
+                                                <MdClose style={{ color: '#62CD14' }} />
                                             </button>
                                             <button 
-                                                className="action_button yellow"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleArchive(ticket); }}
                                             >
-                                                <MdArchive style={{ color: '#EFB034FF' }} />
+                                                <MdArchive style={{ color: '#EFB034' }} />
                                             </button>
                                         </>
                                     )}
                                     {ticket.status === 'notSolved' && (
                                         <>
                                             <button 
-                                                className="action_button green"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleMarkAsSolved(ticket); }}
                                             >
-                                                <MdCheckCircle style={{ color: '#62CD14FF' }} />
+                                                <MdCheckCircle style={{ color: '#62CD14' }} />
                                             </button>
                                             <button 
-                                                className="action_button yellow"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleArchive(ticket); }}
                                             >
-                                                <MdArchive style={{ color: '#EFB034FF' }} />
+                                                <MdArchive style={{ color: '#EFB034' }} />
                                             </button>
                                         </>
                                     )}
                                     {ticket.status === 'archived' && (
                                         <>
                                             <button 
-                                                className="action_button green"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleMarkAsSolved(ticket); }}
                                             >
-                                                <MdCheckCircle style={{ color: '#62CD14FF' }} />
+                                                <MdCheckCircle style={{ color: '#62CD14' }} />
                                             </button>
                                             <button 
-                                                className="action_button red"
+                                                className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
                                             >
-                                                <MdClose style={{ color: '#DE3B40FF' }} />
+                                                <MdClose style={{ color: '#DE3B40' }} />
                                             </button>
                                         </>
                                     )}
-                                     <Link to={`/${tenantId}/ticketinfo/${ticket.id}`} onClick={(e) => e.stopPropagation()}>View Ticket Info</Link>
+                                    <Link to={`/${tenantId}/ticketinfo/${ticket.id}`} onClick={(e) => e.stopPropagation()}>View Ticket Info</Link>
                                 </div>
                             </div>
                         ))}
                     </div>
                     {selectedTicket && (
-                        <div className="ticket_details">
+                        <div className="ticket-details">
                             <h2>{selectedTicket.case_reason}</h2>
                             <p>{selectedTicket.description}</p>
                             <button onClick={() => handleMarkAsSolved(selectedTicket)}><MdCheckCircle /> Mark as Solved</button>
