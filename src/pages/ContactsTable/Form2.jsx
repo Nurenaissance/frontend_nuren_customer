@@ -245,6 +245,11 @@ function Form2() {
       setShowPopup(true);
     }
   };
+  const closeSuccessPopup = () => {
+    setShowSuccessPopup(false);
+    navigate(`/${tenantId}/contacts`);
+  
+  };
 
   const generateRandomColor = () => {
     const letters = "0123456789ABCDEF";
