@@ -58,7 +58,7 @@ const Campaignform = () => {
     actual_cost: "",
     numbers_sent: "",
     type: "",
-    status: "None",
+    status: "",
     budgeted_cost: "",
     expected_response: "",
     description: "",
@@ -100,7 +100,13 @@ const Campaignform = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axiosInstance.post('/campaign/', campaignData);
+      const dataToSend2 = {
+        ...campaignData,
+        createdBy: userId,
+        tenant: tenantId,
+        status: 'None',
+      };
+      const response = await axiosInstance.post('/campaign/', dataToSend2);
       const campaignId = response.data.id;
       setSuccessMessage(response.data.message);
       setShowSuccessPopup(true);

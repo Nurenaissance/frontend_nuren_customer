@@ -35,6 +35,12 @@ const Campaign = () => {
   const [flows, setFlows] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [campaignStats, setCampaignStats] = useState({
+    total_campaigns: 0,
+    total_revenue: "0.00",
+    total_actual_cost: "0.00"
+});
+
 
   const [newCampaign, setNewCampaign] = useState({
     id:"",
@@ -56,6 +62,19 @@ const Campaign = () => {
     fetchTemplates();
   }, []);
 
+
+  useEffect(() => {
+    const fetchCampaignStats = async () => {
+        try {
+            const response = await axiosInstance.get('/campaign/stats/');
+            setCampaignStats(response.data); // Use response.data directly
+        } catch (error) {
+            console.error('Error fetching campaign stats:', error);
+        }
+    };
+
+    fetchCampaignStats();
+}, []);
 
 
   const fetchTemplates = async () => {
@@ -266,21 +285,27 @@ const Campaign = () => {
 
 
 
-        <div className="campaign-boxes">
-                <div className="campaign-bigboxes">
-                            <div className='campaign_firstbox'>
-                              <h1 className='total_campaign'> Total Campaigns</h1>
-                              <p className='total_campaign1'>20</p>
-                            </div>
-                            <div className='campaign_secondbox'><h1 className='total_send'>Total Sent</h1>
-                            <p className='total_sended1'>2340</p></div>
-                            <div className='campaign_thirdbox'><h1 className='total_clicks'>Total Clicks</h1>
-                            <p className='total_clicks1'>243340</p></div>
-                            <div className='campaign_fourthbox'><h1 className='Total_revenue'>Total Revenue</h1>
-                            <p className='total_revenue1'>$2,3430</p></div>
-                </div>
+          <div className="campaign-boxes">
+          <div className="campaign-bigboxes">
+              <div className='campaign_firstbox'>
+                  <h1 className='total_campaign'>Total Campaigns</h1>
+                  <p className='total_campaign1'>{campaignStats.total_campaigns}</p>
+              </div>
+              <div className='campaign_secondbox'>
+                  <h1 className='total_send'>Total Sent</h1>
+                  <p className='total_sended1'>2340</p> {/* Replace with actual data if available */}
+              </div>
+              <div className='campaign_thirdbox'>
+                  <h1 className='total_clicks'>Total Cost</h1>
+                  <p className='total_clicks1'>${campaignStats.total_actual_cost}</p> {/* Replace with actual data if available */}
+              </div>
+              <div className='campaign_fourthbox'>
+                  <h1 className='Total_revenue'>Total Revenue</h1>
+                  <p className='total_revenue1'>${campaignStats.total_revenue}</p>
+              </div>
+          </div>
 
-        </div>
+          </div>
         <div className='campaign_filter_btn'>
                <div className='social_btn'> 
                     <button className="campanign_btn1"   onClick={handleLinkedInClick}>
