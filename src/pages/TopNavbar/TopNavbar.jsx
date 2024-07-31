@@ -75,13 +75,15 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     });
   };
 
+  const userId = 3;
+
 
   const fetchCoinCount = async () => {
     try {
-      const response = await axiosInstance.get(`/user/coins`);
-      setCoinCount(response.data.coinCount);
+      const response = await axiosInstance.get(`wallet/balance?user_id=${userId}`);
+      setCoinCount(prevStats => ({ ...prevStats, totalCoins: response.data.balance }));
     } catch (error) {
-      console.error('Error fetching coin count:', error);
+      console.error('Error fetching wallet balance:', error);
     }
   };
 
@@ -213,10 +215,10 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     fetchNotificationCount();
     fetchCoinCount();
     socket.on('connect', () => {
-      console.log('Connected to the server');
+      
     });
     socket.on('ai-analysis', (analysisData) => {
-      console.log('Received AI analysis:', analysisData);
+     
       setPopupVisible(true); 
     });
 

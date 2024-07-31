@@ -110,82 +110,85 @@ const Models = () => {
     
 
     return(
-        <div className="model-page">
-        <div className="model_nav">
-            <TopNavbar />
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div className="model_sidebar" style={{ width: '300px' }}> {/* Adjust width as necessary */}
+          <Sidebar models={models} onSelectModel={handleModelSelect} />
         </div>
-        <h1>{modelName}</h1>
-        <div className="model-display">
-            <div className="model_sidebar">
-            <Sidebar models={models} onSelectModel={handleModelSelect} />
+        <div style={{ flex: 1 }}> {/* This will take the remaining width */}
+          <div className="model-page">
+            <div className="model_nav">
+              <TopNavbar />
             </div>
-            
-            <div className="model_table">
-    {loading ? (
-        <div>Loading...</div>
-    ) : modelData && modelData.length > 0 ? (
-        <table>
-            <thead>
-                <tr>
-                    {Object.keys(modelData[0]).map((key, index) => (
-                        <th key={index}>{key}</th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {modelData.map((item, index) => (
-                    <tr key={index} onClick={() => handleEntryClick(item)}>
-                        {Object.keys(item).map((key, index) => (
-                            <td key={index}>{item[key]}</td>
+            <h1>{modelName}</h1>
+            <div className="model-display">
+              <div className="model_table">
+                {loading ? (
+                  <div>Loading...</div>
+                ) : modelData && modelData.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        {Object.keys(modelData[0]).map((key, index) => (
+                          <th key={index}>{key}</th>
                         ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    ) : (
-        <div>Add Data to Modal</div>
-    )}
-</div>
-
-                <div className="add-model-popup">
-            <button className="edit-model" onClick={() => setShowModal(true)}>Edit Model</button>
-            {showModal && (
-                <div className="modal-popup">
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {modelData.map((item, index) => (
+                        <tr key={index} onClick={() => handleEntryClick(item)}>
+                          {Object.keys(item).map((key, index) => (
+                            <td key={index}>{item[key]}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div>Add Data to Modal</div>
+                )}
+              </div>
+      
+              <div className="add-model-popup">
+                <button className="edit-model" onClick={() => setShowModal(true)}>Add Data</button>
+                {showModal && (
+                  <div className="modal-popup">
                     <div className="modal-content-popup">
-                        <span className="close-button" onClick={() => setShowModal(false)}>×</span>
-                        <form onSubmit={handleSubmit}>
-                            {modelData && modelData.length > 0 && Object.keys(modelData[0]).map((key) => (
-                                <label key={key}>
-                                    {key}:
-                                    <input
-                                        type="text"
-                                        name={key}
-                                        value={formValues[key] || ''}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </label>
-                            ))}
-                            <button type="submit">Submit</button>
-                        </form>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
+                      <span className="close-button" onClick={() => setShowModal(false)}>×</span>
+                      <form onSubmit={handleSubmit}>
+                        {modelData && modelData.length > 0 && Object.keys(modelData[0]).map((key) => (
+                          <label key={key}>
+                            {key}:
+                            <input
+                              type="text"
+                              name={key}
+                              value={formValues[key] || ''}
+                              onChange={handleChange}
+                              required
+                            />
+                          </label>
+                        ))}
+                        <button type="submit">Submit</button>
+                      </form>
+                      {errorMessage && <p className="error">{errorMessage}</p>}
                     </div>
-                </div>
-            )}
-            </div>
+                  </div>
+                )}
+              </div>
             </div>
             {showInfoModal && selectedEntry && (
-                <div className="info-modal-popup">
-                    <div className="info-modal-content-popup">
-                        <span className="info-close-button" onClick={() => setShowInfoModal(false)}>×</span>
-                        <h2>Model Details</h2>
-                        {Object.keys(selectedEntry).map((key) => (
-                            <p key={key}><strong>{key}:</strong> {selectedEntry[key]}</p>
-                        ))}
-                    </div>
+              <div className="info-modal-popup">
+                <div className="info-modal-content-popup">
+                  <span className="info-close-button" onClick={() => setShowInfoModal(false)}>×</span>
+                  <h2>Model Details</h2>
+                  {Object.keys(selectedEntry).map((key) => (
+                    <p key={key}><strong>{key}:</strong> {selectedEntry[key]}</p>
+                  ))}
                 </div>
+              </div>
             )}
-            </div>
+          </div>
+        </div>
+      </div>
     );
 }
 

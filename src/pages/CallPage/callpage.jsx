@@ -259,7 +259,7 @@ const handleCreateMeeting = async (e) => {
         <Sidebar />
       </div>
      
-      <div className="contain1">
+      <div className="containtemp" style={{marginLeft:'-45px',width:'100%'}}>
      
         <div className="meet1" style={{display:'flex',flexDirection:'row'}}>
         <h1 className="call_head"> Calls </h1>

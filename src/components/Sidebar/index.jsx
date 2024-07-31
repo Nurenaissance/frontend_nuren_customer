@@ -420,19 +420,24 @@ export const Sidebar = ({ onSelectModel }) => {
             </ul>
       </div>
         )}
-         {isModelListVisible && (
-        <div className={`nuren-sidebar__model-content ${isModelListVisible ? 'active' : ''}`}>
-        <ul className="nuren-sidebar__model-list">
-          {models.map((model) => (
-            <NurenSidebarItem
-              key={model.model_name}
-              to={formatLink(`/models/${model.model_name}`)}
-              text={model.model_name}
-            />
-          ))}
-        </ul>
-      </div>
-      )}
+        {isModelListVisible && (
+  <div className={`nuren-sidebar__model-content ${isModelListVisible ? 'active' : ''}`}>
+    <ul className="nuren-sidebar__model-list">
+      {models.map((model) => (
+        <NurenSidebarItem
+          key={model.model_name} // Ensure model_name is unique
+          to={formatLink(`/models/${model.model_name}`)}
+          text={model.model_name}
+        />
+      ))}
+      <NurenSidebarItem
+        key="customModel" // Use a unique string as key for the custom model item
+        to={formatLink(`/CustomModel`)}
+        text={'Add New Model +'}
+      />
+    </ul>
+  </div>
+)}
         <div className={`nuren-sidebar__backdrop ${showBackdrop ? 'active' : ''}`} onClick={closeAllDropdowns}></div>
     </div>
 
