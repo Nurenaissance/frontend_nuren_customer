@@ -6,7 +6,7 @@
   }
   
   .table-container {
-    width: 300px;
+    /* width: 300px; */
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
@@ -16,8 +16,8 @@
   }
   
   table {
-    width: 100%;
-    border-collapse: collapse;
+    /* width: 100%; */
+    /* border-collapse: collapse; */
     /* border: 1px solid black; */
     
   }

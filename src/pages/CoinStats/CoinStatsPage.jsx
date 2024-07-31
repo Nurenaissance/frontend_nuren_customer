@@ -4,33 +4,15 @@ import './CoinStatsPage.css';
 import TopNavbar from '../TopNavbar/TopNavbar';
 import { Sidebar } from '../../components/Sidebar';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import axiosInstance from '../../api';
 
 const CoinStatsPage = () => {
-    const navigate = useNavigate();
   const [coinStats, setCoinStats] = useState({
-    totalCoins: 1500,
-    recentTransactions: [
-      { id: 1, description: "Purchased premium avatar", amount: -100, date: "2024-07-20", category: "Avatars" },
-      { id: 2, description: "Completed weekly challenge", amount: 50, date: "2024-07-19", category: "Rewards" },
-      { id: 3, description: "Referred a friend", amount: 200, date: "2024-07-18", category: "Referral" },
-      { id: 4, description: "Bought power-up bundle", amount: -75, date: "2024-07-17", category: "Power-ups" },
-      { id: 5, description: "Daily login bonus", amount: 10, date: "2024-07-16", category: "Rewards" },
-    ],
-    spendingCategories: [
-      { category: "Avatars", value: 300 },
-      { category: "Power-ups", value: 250 },
-      { category: "Exclusive Content", value: 400 },
-      { category: "Gifts", value: 150 },
-      { category: "Others", value: 100 },
-    ],
-    coinHistory: [
-      { date: '2024-07-15', coins: 1000 },
-      { date: '2024-07-16', coins: 1100 },
-      { date: '2024-07-17', coins: 1050 },
-      { date: '2024-07-18', coins: 1300 },
-      { date: '2024-07-19', coins: 1450 },
-      { date: '2024-07-20', coins: 1500 },
-    ]
+    totalCoins: 0,
+    recentTransactions: [],
+    spendingCategories: [],
+    coinHistory: []
   });
 
   const [showAddCoins, setShowAddCoins] = useState(false);
@@ -42,23 +24,86 @@ const CoinStatsPage = () => {
 
   const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
 
+  const userId = 3;
 
+  useEffect(() => {
+    fetchWalletBalance();
+    fetchTransactions();
+  }, []);
+
+  const fetchWalletBalance = async () => {
+    try {
+      const response = await axiosInstance.get(`wallet/balance?user_id=${userId}`);
+      setCoinStats(prevStats => ({ ...prevStats, totalCoins: response.data.balance }));
+    } catch (error) {
+      console.error('Error fetching wallet balance:', error);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await axiosInstance.get(`wallet/transactions?user_id=${userId}&n=10`);
+      const transactions = response.data.transactions.map(transaction => ({
+        id: transaction.id,
+        description: transaction.description,
+        amount: parseFloat(transaction.amount),
+        date: new Date(transaction.timestamp).toISOString().split('T')[0],
+        category: transaction.amount >= 0 ? transaction.transaction_type : 'Purchase'
+      }));
+      setCoinStats(prevStats => ({ 
+        ...prevStats, 
+        recentTransactions: transactions 
+      }));
+      updateSpendingCategories(transactions);
+      updateCoinHistory(transactions);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
   
 
-  const handleAddCoins = () => {
-    if (parseInt(coinAmount) >= 200) {
-      setCoinStats(prevStats => ({
-        ...prevStats,
-        totalCoins: prevStats.totalCoins + parseInt(coinAmount),
-        recentTransactions: [
-          { id: Date.now(), description: "Added coins", amount: parseInt(coinAmount), date: new Date().toISOString().split('T')[0], category: "Recharge" },
-          ...prevStats.recentTransactions
-        ]
-      }));
-      setShowAddCoins(false);
-      setCoinAmount('');
+
+  const updateSpendingCategories = (transactions) => {
+    const categories = {};
+    transactions.forEach(transaction => {
+      if (transaction.amount < 0) {
+        const category = transaction.category === 'Purchase' ? transaction.description : transaction.category;
+        categories[category] = (categories[category] || 0) + Math.abs(transaction.amount);
+      }
+    });
+    const spendingCategories = Object.entries(categories).map(([category, value]) => ({ category, value }));
+    setCoinStats(prevStats => ({ ...prevStats, spendingCategories }));
+  };
+  
+  const updateCoinHistory = (transactions) => {
+    const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+    let balance = coinStats.totalCoins;
+    const coinHistory = sortedTransactions.map(transaction => {
+      balance += transaction.amount;
+      return { date: transaction.date, coins: balance };
+    });
+    setCoinStats(prevStats => ({ ...prevStats, coinHistory }));
+  };
+  
+
+  const handleAddCoins = async () => {
+    if (parseInt(coinAmount) >= 100) {
+      try {
+        await axiosInstance.post('wallet/recharge/', {
+          amount: parseFloat(coinAmount),
+          description: "Added coins",
+          user_id: userId
+        });
+        fetchWalletBalance();
+        fetchTransactions();
+        setShowAddCoins(false);
+        setCoinAmount('');
+      } catch (error) {
+        console.error('Error adding coins:', error);
+        alert('Failed to add coins. Please try again.');
+      }
     } else {
-      alert("Minimum recharge amount is 200 coins");
+      alert("Minimum recharge amount is 100 coins");
     }
   };
 
@@ -96,7 +141,7 @@ const CoinStatsPage = () => {
                   onChange={(e) => setCoinAmount(e.target.value)} 
                   placeholder="Enter coin amount"
                 />
-                <p>Minimum recharge amount is 200 coins</p>
+                <p>Minimum recharge amount is 100 coins</p>
                 <div className="modal-buttons">
                   <button onClick={handleAddCoins}>Confirm</button>
                   <button onClick={() => setShowAddCoins(false)}>Cancel</button>
@@ -123,28 +168,28 @@ const CoinStatsPage = () => {
             <div className="spending-breakdown">
               <h3>Spending Breakdown</h3>
               <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={coinStats.spendingCategories}
-                    dataKey="value"
-                    nameKey="category"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    label
-                    labelLine={false}
-                    animationBegin={0}
-                    animationDuration={1500}
-                  >
-                    {coinStats.spendingCategories.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+  <PieChart>
+    <Pie
+      data={coinStats.spendingCategories}
+      dataKey="value"
+      nameKey="category"
+      cx="50%"
+      cy="50%"
+      outerRadius={100}
+      fill="#8884d8"
+      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+      labelLine={true}
+      animationBegin={0}
+      animationDuration={1500}
+    >
+      {coinStats.spendingCategories.map((entry, index) => (
+        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+      ))}
+    </Pie>
+    <Tooltip />
+    <Legend layout="vertical" align="right" verticalAlign="middle" />
+  </PieChart>
+</ResponsiveContainer>
             </div>
           </div>
 
@@ -169,13 +214,12 @@ const CoinStatsPage = () => {
                   <div className="filter-group">
                     <label>Category:</label>
                     <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                      <option value="All">All Categories</option>
-                      <option value="Avatars">Avatars</option>
-                      <option value="Power-ups">Power-ups</option>
-                      <option value="Rewards">Rewards</option>
-                      <option value="Referral">Referral</option>
-                      <option value="Recharge">Recharge</option>
-                    </select>
+  <option value="All">All Categories</option>
+  <option value="Recharge">Recharge</option>
+  <option value="Purchase">Purchase</option>
+  <option value="Reward">Reward</option>
+  <option value="Referral">Referral</option>
+</select>
                   </div>
                   <div className="filter-group">
                     <label>From:</label>
@@ -197,12 +241,14 @@ const CoinStatsPage = () => {
                 <div className="transactions-list">
                   <ul>
                     {filteredTransactions.map((transaction) => (
-                      <li key={transaction.id} className={transaction.amount > 0 ? 'positive' : 'negative'}>
-                        <span className="transaction-description">{transaction.description}</span>
-                        <span className="transaction-amount">{transaction.amount} coins</span>
-                        <span className="transaction-date">{transaction.date}</span>
-                        <span className="transaction-category">{transaction.category}</span>
-                      </li>
+                      <li key={transaction.id} className={transaction.amount >= 0 ? 'positive' : 'negative'}>
+                      <span className="transaction-description">{transaction.description}</span>
+                      <span className="transaction-amount">
+                        {transaction.amount >= 0 ? '+' : '-'}{Math.abs(transaction.amount)} coins
+                      </span>
+                      <span className="transaction-date">{transaction.date}</span>
+                      <span className="transaction-category">{transaction.category}</span>
+                    </li>
                     ))}
                   </ul>
                 </div>

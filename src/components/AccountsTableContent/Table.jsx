@@ -27,6 +27,7 @@ const AccountsTable1 = () => {
 
   const [accounts, setAccounts] = useState([]);
   const [viewMode, setViewMode] = useState("table");
+  const [recentAccounts, setRecentAccounts] = useState([]);
   const [activeButton, setActiveButton] = useState("All Accounts");
   const [activeAccounts, setActiveAccounts] = useState([]);
 
@@ -80,6 +81,7 @@ const AccountsTable1 = () => {
   useEffect(() => {
     fetchAccounts();
     fetchActiveAccounts();
+    fetchRecentData();
   }, []);
   
 
@@ -156,7 +158,7 @@ const AccountsTable1 = () => {
   const fetchRecentData = async () => {
     try {
       const response = await axiosInstance.get(`/recent_request/accounts/`);
-      setAccounts(response.data);
+      setRecentAccounts(response.data);
       
       console.log("*##########",response);
     } catch (error) {
@@ -242,7 +244,7 @@ const renderTableRows = () => {
       </tr>
       ));
     case "Recent":
-      return accounts.map((account, index) => (
+      return recentAccounts.map((account, index) => (
       
         <tr className="tablerows" key={account.id}>
           <td>
@@ -312,30 +314,19 @@ const renderTableRows = () => {
     <div className="account-boxes">
         <div className="account-bigboxes">
                 <h1 className="newcontact">New Accounts this Week</h1>
-                <Link to={`/${tenantId}/accounts/${accounts[0]?.id}`} className="firstaccount-box">
-                    <h1 className="heading1">{accounts.length > 0 && accounts[0].Name}</h1>
-                    <p className="paragraph1">{accounts.length > 0 && accounts[0].description}</p>
-                    {/* Smiley */}
+                <div className="new-accounts-container">
+                  {recentAccounts.slice(-3).reverse().map(accounts =>(
+                    <Link key={accounts.id} to={`/${tenantId}/accounts/${accounts.id}`} className="firstaccount-box">
+                    <div className="account-details">
+                      <h1 className="heading1">{accounts.Name}</h1>
+                      <p className="paragraph1">{accounts.description}</p>
+                    </div>
                     <div className="smiley1">
                       {generateSmiley2(generateRandomColor())}
                     </div>
-                 </Link>
-              <Link to={`/${tenantId}/accounts/${accounts[1]?.id}`} className="secondaccount-box">
-                    <h1 className="heading2">{accounts.length > 1 && accounts[1].Name}</h1>
-                    <p className="paragraph2">{accounts.length > 1 && accounts[1].description}</p>
-                    {/* Smiley */}
-                    <div className="smiley2">
-                      {generateSmiley2(generateRandomColor())}
-                    </div>
-              </Link>{/** */}
-              <Link to={`/${tenantId}/accounts/${accounts[2]?.id}`} className="thirdaccount-box">
-                    <h1 className="heading3">{accounts.length > 2 && accounts[2].Name}</h1>
-                    <p className="paragraph3">{accounts.length > 2 && accounts[2].description}</p>
-                    {/* Smiley */}
-                    <div className="smiley3">
-                      {generateSmiley2(generateRandomColor())}
-                    </div>
-              </Link>
+                  </Link>
+                ))}
+                </div>
              
         </div>
       </div>

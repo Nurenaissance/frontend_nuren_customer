@@ -13,54 +13,70 @@ margin-top: 30px;
   flex-direction: row;
 }
 
-.firstcontact-box
-{
-  position: absolute;
-  top: 130px;
+.recent-contacts-container {
+  display: flex;
+  gap: 20px; /* Space between cards */
+  border-radius: 8px;
   left: 350px;
-  width: 347px;
-height: 168px;
-background: #FFFFFFFF;
-border-radius: 8px;
-border-width: 1px;
-border-color: #F3F4F6FF;
-border-style: solid;
-box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
-}
-.secondcontact-box
-{
   position: absolute;
-  top: 130px;
-  left: 750px;
-  width: 347px;
-height: 168px;
-background: #FFFFFFFF;
-border-radius: 8px;
-border-width: 1px;
-border-color: #F3F4F6FF;
-border-style: solid;
-box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+  
 }
-.thirdcontact-box
-{
-  position: absolute;
-  top: 130px;
-  left: 1150px;
-  width: 347px;
-height: 168px;
-background: #FFFFFFFF;
-border-radius: 8px;
-border-width: 1px;
-border-color: #F3F4F6FF;
-border-style: solid;
-box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+
+.firstcontact-box {
+  
+  flex: 1; /* Allow boxes to grow equally */
+  margin-top: 105px;
+  width:347px;
+height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+ background-color: white;
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 8px;
+  text-decoration: none; /* Remove underline from links */
+  color: #333; /* Dark text color */
+  box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.smiley1{
-  width: 50px;
-height: 46px;
-fill: #323743FF;
-margin-top: auto;
+
+.firstcontact-box:hover {
+  transform: translateY(-5px); /* Slightly lift the box on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
 }
+
+.heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 8rem;
+  
+}
+
+.paragraph {
+  font-size: 14px;
+  margin: 0;
+  color: #666; /* Grey color for the paragraph text */
+}
+
+.smiley {
+  margin-top: 10px;
+  font-size: 24px; /* Size of the smiley */
+}
+
+/* Optional: Add responsiveness */
+@media (max-width: 600px) {
+  .recent-contacts-container {
+    flex-direction: column; /* Stack vertically on small screens */
+    padding: 10px;
+  }
+
+  .firstcontact-box {
+    width: 100%; /* Full width for each card */
+    margin-bottom: 10px; /* Space between cards on small screens */
+  }
+}
+
 
 
 
@@ -93,7 +109,7 @@ color: #565D6DFF;
 
 
 
-.excel-dropdown-menu1 {
+.excel-dropdown-menu33 {
   /* Your custom styles here */
   font-family: 'Manrope';
   font-size: 14px;
@@ -1529,9 +1545,7 @@ color: #171A1FFF;
   outline: none;
 
 }
-.contactinfo_email input{
 
-}
 .contactinfo_email{
   position: relative;
   top: -20px;
@@ -2762,25 +2776,6 @@ margin-bottom: 40px;
       width: 100px; /* Adjust the width and height as needed */
       height: 100px;
     }
-    .firstcontact-box,
-    .secondcontact-box,
-    .thirdcontact-box {
-      position: absolute;
-      top: 130px;
-      width: 347px;
-      height: 168px;
-      background: #fff;
-      border-radius: 8px;
-      border: 1px solid #f3f4f6;
-      box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
-      transition: transform 0.3s ease; /* Adding transition for smooth effect */
-    }
-    
-    .firstcontact-box:hover,
-    .secondcontact-box:hover,
-    .thirdcontact-box:hover {
-      transform: translateY(-5px) scale(1.02); /* Applying translation and scaling */
-    }
     .sidebar1{
       margin-left: 48px;
     width: 163px;
@@ -3223,25 +3218,7 @@ bottom: 13rem;
   height: 100px;
 }
 
-.firstcontact-box,
-.secondcontact-box,
-.thirdcontact-box {
-  position: absolute;
-  top: 130px;
-  width: 347px;
-  height: 168px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #f3f4f6;
-  box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
-  transition: transform 0.3s ease;
-}
 
-.firstcontact-box:hover,
-.secondcontact-box:hover,
-.thirdcontact-box:hover {
-  transform: translateY(-5px) scale(1.02);
-}
 
 /* Sidebar styles */
 .sidebar1 {

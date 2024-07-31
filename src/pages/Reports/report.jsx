@@ -206,6 +206,13 @@ const Report = () => {
             <th>Phone</th>
           </tr>
         );
+        case 'total_campaign':
+        return (
+          <tr>
+            <th>Campaign Owner</th>
+            <th>Campaign Name</th>
+          </tr>
+        );
       default:
         return null;
     }
@@ -338,25 +345,47 @@ const Report = () => {
         if (!Array.isArray(reportData.mailing_list) || reportData.mailing_list.length === 0) {
           return (
             <tr>
-              <td colSpan="2">No data available</td>
+              <td colSpan="6">No data available</td>
             </tr>
           );
         }
-        return reportData.mailing_list.map((contact, index) => (
+        return reportData.mailing_list.map((Contacts, index) => (
           <tr key={index}>
-            <td>{contact.first_name || 'N/A'}</td>
-            <td>{contact.last_name || 'N/A'}</td>
+            <td>{Contacts.first_name || 'N/A'}</td>
+            <td>{Contacts.last_name || 'N/A'}</td>
           </tr>
         ));
 
       case 'call_email':
-        return (
+        if (!Array.isArray(reportData.mailing_list) || reportData.mailing_list.length === 0) {
+          return (
+            <tr>
+              <td colSpan="6">No data available</td>
+            </tr>
+          );
+        }
+        return reportData.call_email.map((Contacts, index) => (
           <tr>
             <td>{reportData.address || 'N/A'}</td>
             <td>{reportData.email || 'N/A'}</td>
             <td>{reportData.phone || 'N/A'}</td>
           </tr>
-        );
+         ) );
+         case 'total_campaign':
+          console.log('Total Campaign Data:', reportData.total_campaign);
+          if (!Array.isArray(reportData.total_campaign) || reportData.length === 0) {
+            return (
+              <tr>
+                <td colSpan="2">No data available</td>
+              </tr>
+            );
+          }
+          return reportData.map((campaign, index) => (
+            <tr key={index}>
+              <td>{campaign.campaign_owner || 'N/A'}</td>
+              <td>{campaign.campaign_name || 'N/A'}</td>
+            </tr>
+          ));
 
       default:
         return null;

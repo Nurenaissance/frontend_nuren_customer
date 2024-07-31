@@ -187,7 +187,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
                               <option value="">View!</option>
                               <option value="table">Table View</option>
                               <option value="tile">Tile View</option>
-                              <option value="list">List View</option>
                             </select>
                           </div>
 
@@ -327,18 +326,6 @@ const Met = ({handleScheduleMeeting, scheduleData, setScheduleData}) => {
           </div>
         </div>
 
-        <div className="record5">
-          
-          <select
-            value={viewMode}
-            onChange={(e) => handleViewModeChange(e.target.value)}
-            className="view-mode-select-meet"
-          >
-            <option value="">View!</option>
-            <option value="table">Table View</option>
-            <option value="tile">Tile View</option>
-          </select>
-        </div>
 
         {viewMode === 'table' && (
   <div className="table10">
