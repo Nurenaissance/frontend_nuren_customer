@@ -15,8 +15,15 @@ const getTenantIdFromUrl = () => {
 };
 
 const colors = [
-  "#5DADE2", "#34495E", "#D5DBDB", "#566573", "#F5CBA7",
-  "#708090", "#B0C4DE", "#82E0AA", "#F08080" // Add more colors if needed
+  "#2C3E50", // Dark Slate Blue
+  "#2980B9", // Strong Blue
+  "#BDC3C7", // Silver
+  "#7F8C8D", // Grayish
+  "#AAB7B8", // Cool Gray
+  "#34495E", // Blue Gray
+  "#1ABC9C", // Strong Cyan
+  "#95A5A6", // Light Gray
+  "#5D6D7E"  // Soft Blue Gray
 ];
 
 const Kanban2 = () => {
@@ -282,6 +289,17 @@ const Kanban2 = () => {
     <>
     <br />
     <div className="Kanban">
+    <div className="leaad_column add_leaad-column">
+  <div className="add-column-content">
+    <button onClick={handleAddStage} className="add-button">+</button>
+    <input
+      type="text"
+      placeholder="New Stage"
+      value={newStageTitle}
+      onChange={(e) => setNewStageTitle(e.target.value)}
+    />
+  </div>
+</div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="kanban-board">
           {Object.keys(columns).map((columnId) => {
@@ -361,7 +379,7 @@ const Kanban2 = () => {
               </div>
             );
           })}
-          <div className="column add-column">
+          {/* <div className="column add-column">
             <input
               type="text"
               placeholder="New Stage"
@@ -369,7 +387,7 @@ const Kanban2 = () => {
               onChange={(e) => setNewStageTitle(e.target.value)}
             />
             <button onClick={handleAddStage}>+</button>
-          </div>
+          </div> */}
         </div>
       </DragDropContext>
     </div>
