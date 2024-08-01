@@ -82,24 +82,74 @@ padding: 5px;
 margin-left: 30px;
 }
 
+
 .first-remindbx{
-width: 281px;
-height: 185px;
-background: #15ABFF40;
-border-radius: 8px;
+  position:absolute;
+  top: 250px;
+  width:347px;
+  left: 350px;
+height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+ background-color: white;
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 8px;
+  text-decoration: none; /* Remove underline from links */
+  color: #333; /* Dark text color */
+  box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.first-remindbx:hover {
+  transform: translateY(-5px); /* Slightly lift the box on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
 }
 .second-remindbx{
-    width: 281px;
-    height: 185px;
-    background: #FFD31740;
-    border-radius: 8px;
+  position:absolute;
+  top: 250px;
+  width:347px;
+  left: 720px;
+height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+ background-color: white;
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 8px;
+  text-decoration: none; /* Remove underline from links */
+  color: #333; /* Dark text color */
+  box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+    .second-remindbx:hover {
+      transform: translateY(-5px); /* Slightly lift the box on hover */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+    }
+    
     .third-remindbx{
-        width: 281px;
-        height: 185px;
-        background: #F9623E40;
-        border-radius: 8px;
+      position:absolute;
+      top: 250px;
+      width:347px;
+      left:1100px;
+    height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+     background-color: white;
+      border: 1px solid #ddd; /* Light border for separation */
+      border-radius: 8px;
+      text-decoration: none; /* Remove underline from links */
+      color: #333; /* Dark text color */
+      box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .third-remindbx:hover {
+          transform: translateY(-5px); /* Slightly lift the box on hover */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+        } 
 
         .reminds-boxes{
             display: flex;

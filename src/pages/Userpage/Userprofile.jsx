@@ -45,10 +45,11 @@ const UserProfile = () => {
       try {
         const response = await axiosInstance.get(`/get-user/${tenantId}`);
         setUser(response.data);
+        
         console.log("user data", response.data);
+        setUserId(response.data.id);
         setEditedUser(response.data);
         setIsLoading(false);
-        setUserId(response.data.id);
         console.log(userId);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -95,7 +96,7 @@ const UserProfile = () => {
     fetchUserData();
     fetchUserTasks();
     fetchProfileImage();
-  }, [id, tenantId]);
+  }, [id, tenantId, userId]);
   
 
   const handleSaveChanges = async () => {
@@ -184,26 +185,39 @@ return (
       <div className="up-top-nav">
         <TopNavbar profileImageUrl={profileImageUrl}  />
       </div>
-      <h2 className="up-title" style={{marginLeft:'2rem'}}>User Profile</h2>
-      <div className="up-profile-card">
-        {isLoading ? (
-          <div className="up-loading">Loading...</div>
-        ) : user ? (
-          <div className="up-profile-content">
-            <div className="up-profile-header">
-              <div className="up-avatar-container">
-                <div className="up-avatar-background">
-                  <div className="up-avatar-decoration up-decoration-1"></div>
-                  <div className="up-avatar-decoration up-decoration-2"></div>
-                  <div className="up-avatar-decoration up-decoration-3"></div>
-                  <div className="up-avatar-decoration up-decoration-4"></div>
-                </div>
-                <label htmlFor="profile-image" className="up-avatar">
-                  {profileImageUrl ? (
-                    <img src={profileImageUrl} alt="Profile" className="up-profile-image" />
-                  ) : (
-                    <div className="up-avatar-placeholder">Upload Image</div>
-                  )}
+<div>
+  <div className="right_div">
+    <TopNavbar profileImageUrl={profileImageUrl} userId={userId} />
+  </div>
+  <div>
+    <h2 className="user-profile-container1">User Profile</h2>
+  </div>
+  <div className="user-profile-wrapper">
+    {isLoading ? (
+      <div>Loading...</div>
+    ) : user ? (
+      <div className="profile-details">
+        <div className="avatar-container">
+          <div className="container-behind-avatar">
+            <div className='semi-half-circle'></div>
+            <div className='semi-half-circle2'></div>
+            <div className='semi-half-circle3'></div>
+            <div className='semi-half-circle4'></div>
+          </div> 
+          <label htmlFor="profile-image" className="avatar" onClick={() => document.getElementById("profile-image")}>
+            {profileImageUrl ? (
+              <img src={profileImageUrl} alt="Profile" />
+            ) : (
+              <div className="up-avatar-placeholder">Upload Image</div>
+            )}
+            <span className='profile-user'>Profile</span>
+          </label>
+        </div>
+      </div>
+    ) : null}
+  </div>
+</div>
+
                 </label>
                 <input
                   type="file"

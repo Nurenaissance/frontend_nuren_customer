@@ -63,7 +63,8 @@ function Form2() {
     px: 4,
     pb: 3,
   };
-
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -119,6 +120,22 @@ function Form2() {
     // Generate a random color when the component mounts
     const randomColor = generateRandomColor();
     setPhotoColor(randomColor);
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get(`/get-all-user/`);
+        setUsers(response.data);
+        console.log(users);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const closePopup = () => {
@@ -354,19 +371,28 @@ function Form2() {
         <form onSubmit={handleSubmit}>
         <div className="contact_form_fill">
         <div className="form-row">
-          <div className="form-group col-md-6">
-            <label htmlFor="ContactOwner" className="contact_owner_form">Contact Owner:</label>
-            <input
-              type="text"
-              className="form-control_contact-owner"
-              id="ContactOwner"
-              name="ContactOwner"
-              value={contactData.ContactOwner}
-              onChange={handleChange}
-              placeholder="Enter contact Owner"
-              style={{ borderColor: errorFields.ContactOwner ? 'red' : '' }}
-            />
-          </div>
+        <div className="form-group col-md-6">
+      <label htmlFor="ContactOwner" className="contact_owner_form">Contact Owner:</label>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          className="form-control_contact-owner"
+          id="ContactOwner"
+          name="ContactOwner"
+          value={contactData.ContactOwner}
+          onChange={handleChange}
+          style={{ borderColor: errorFields.ContactOwner ? 'red' : '' }}
+        >
+          <option value="" disabled>Select contact owner</option>
+          {users.map((user) => (
+            <option key={user.username} value={user.username}>
+              {user.name || user.username}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
           <div className="form-group col-md-6">
             <label htmlFor="first_name" className="contact_first_name">First Name:</label>
             <input
@@ -599,18 +625,27 @@ function Form2() {
             />
           </div>
           <div className="form-group col-md-6">
-            <label htmlFor="createdBy" className="other_createdBy"> Created By:</label>
-            <input
-              type="text"
-              className="form-control-createdBy"
-              id="createdBy"
-              name="createdBy"
-              value={contactData.createdBy}
-              onChange={handleChange}
-              placeholder="Enter Created By "
-              style={{ borderColor: errorFields.createdBy ? 'red' : '' }}
-            />
-          </div>
+        <label htmlFor="createdBy" className="other_createdBy">Created By:</label>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <select
+            className="form-control-createdBy"
+            id="createdBy"
+            name="createdBy"
+            value={contactData.createdBy}
+            onChange={handleChange}
+            style={{ borderColor: errorFields.createdBy ? 'red' : '' }}
+          >
+            <option value="" disabled>Select creator</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.username}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
          
         </div>
         </div>
