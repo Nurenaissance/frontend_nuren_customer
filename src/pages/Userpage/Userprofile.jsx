@@ -178,70 +178,57 @@ const UserProfile = () => {
 
 return (
   <div className={`up-container ${isEditing ? 'up-editing' : ''}`}>
-    <div className="up-sidebar">
-      <Sidebar />
+  <div className="up-sidebar">
+    <Sidebar />
+  </div>
+  <div className="up-main-content">
+    <div className="up-top-nav">
+      <TopNavbar profileImageUrl={profileImageUrl} userId={userId} />
     </div>
-    <div className="up-main-content">
-      <div className="up-top-nav">
-        <TopNavbar profileImageUrl={profileImageUrl}  />
-      </div>
-<div>
-  <div className="right_div">
-    <TopNavbar profileImageUrl={profileImageUrl} userId={userId} />
-  </div>
-  <div>
-    <h2 className="user-profile-container1">User Profile</h2>
-  </div>
-  <div className="user-profile-wrapper">
-    {isLoading ? (
-      <div>Loading...</div>
-    ) : user ? (
-      <div className="profile-details">
-        <div className="avatar-container">
-          <div className="container-behind-avatar">
-            <div className='semi-half-circle'></div>
-            <div className='semi-half-circle2'></div>
-            <div className='semi-half-circle3'></div>
-            <div className='semi-half-circle4'></div>
-          </div> 
-          <label htmlFor="profile-image" className="avatar" onClick={() => document.getElementById("profile-image")}>
-            {profileImageUrl ? (
-              <img src={profileImageUrl} alt="Profile" />
-            ) : (
-              <div className="up-avatar-placeholder">Upload Image</div>
-            )}
-            <span className='profile-user'>Profile</span>
-          </label>
-        </div>
-      </div>
-    ) : null}
-  </div>
-</div>
-
-                </label>
-                <input
-                  type="file"
-                  id="profile-image"
-                  accept="image/*"
-                  onChange={handleProfileImageUpload}
-                  className="up-file-input"
-                  style={{display:'none'}}
-                />
-                 <button className="up-upload-btn" onClick={() => document.getElementById("profile-image").click()}>
-    +
-  </button>
-              </div>
-              <div className="up-profile-actions">
-                <button className="up-action-btn up-message-btn">
-                  <InsertCommentRoundedIcon />
-                </button>
-                <button className="up-action-btn up-email-btn">
-                  <MailOutlineRoundedIcon />
-                </button>
-                <button className="up-action-btn up-call-btn">
-                  <CallRoundedIcon />
-                </button>
-              </div>
+    <div>
+      <h2 className="user-profile-container1">User Profile</h2>
+      <div className="user-profile-wrapper">
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : user ? (
+          <div className="profile-details" style={{marginLeft:'350px'}}>
+            <div className="avatar-container">
+              <div className="container-behind-avatar">
+                <div className='semi-half-circle'></div>
+                <div className='semi-half-circle2'></div>
+                <div className='semi-half-circle3'></div>
+                <div className='semi-half-circle4'></div>
+              </div> 
+              <label htmlFor="profile-image" className="avatar">
+                {profileImageUrl ? (
+                  <img src={profileImageUrl} alt="Profile" />
+                ) : (
+                  <div className="up-avatar-placeholder">Upload Image</div>
+                )}
+                <span className='profile-user'>Profile</span>
+              </label>
+              <input
+                type="file"
+                id="profile-image"
+                accept="image/*"
+                onChange={handleProfileImageUpload}
+                className="up-file-input"
+                style={{ display: 'none' }}
+              />
+              <button className="up-upload-btn" onClick={() => document.getElementById("profile-image").click()}>
+                +
+              </button>
+            </div>
+            <div className="up-profile-actions">
+              <button className="up-action-btn up-message-btn">
+                <InsertCommentRoundedIcon />
+              </button>
+              <button className="up-action-btn up-email-btn">
+                <MailOutlineRoundedIcon />
+              </button>
+              <button className="up-action-btn up-call-btn">
+                <CallRoundedIcon />
+              </button>
             </div>
             <div className="up-profile-details">
               <div className="up-detail-item">
@@ -330,205 +317,41 @@ return (
           <div className="up-no-data">No user data available</div>
         )}
       </div>
-      <div className="up-tasks-section">
-        <h2 className="up-tasks-title" onClick={toggleTasksVisibility}>
-          Latest Tasks
-        </h2>
-        {showTasks && (
-          <div className="up-task-list">
-            {tasks.length > 0 ? (
-              tasks.map(task => (
-                <div key={task.id} className="up-task-item" style={{animationDelay: `${index * 0.1}s`}}>
-                  <h3 className="up-task-subject">{task.subject}</h3>
-                  <p className="up-task-detail">
-                    <strong>Status:</strong> <span>{task.status}</span>
-                  </p>
-                  <p className="up-task-detail">
-                    <strong>Priority:</strong> 
-                    <span className={`up-priority up-priority-${task.priority.toLowerCase()}`}>
-                      {task.priority}
-                    </span>
-                  </p>
-                  <p className="up-task-detail">
-                    <strong>Due Date:</strong> <span>{task.due_date}</span>
-                  </p>
-                  <p className="up-task-detail">
-                    <strong>Description:</strong> <span>{task.description}</span>
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="up-no-tasks">No tasks found for this user.</p>
-            )}
-          </div>
-        )}
-      </div>
+    </div>
+    <div className="up-tasks-section">
+      <h2 className="up-tasks-title" onClick={toggleTasksVisibility}>
+        Latest Tasks
+      </h2>
+      {showTasks && (
+        <div className="up-task-list">
+          {tasks.length > 0 ? (
+            tasks.map((task, index) => (
+              <div key={task.id} className="up-task-item" style={{ animationDelay: `${index * 0.1}s` }}>
+                <h3 className="up-task-subject">{task.subject}</h3>
+                <p className="up-task-detail">
+                  <strong>Status:</strong> <span>{task.status}</span>
+                </p>
+                <p className="up-task-detail">
+                  <strong>Priority:</strong> 
+                  <span className={`up-priority up-priority-${task.priority.toLowerCase()}`}>
+                    {task.priority}
+                  </span>
+                </p>
+                <p className="up-task-detail">
+                  <strong>Due Date:</strong> <span>{task.due_date}</span>
+                </p>
+                <p className="up-task-detail">
+                  <strong>Description:</strong> <span>{task.description}</span>
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="up-no-tasks">No tasks found for this user.</p>
+          )}
+        </div>
+      )}
     </div>
   </div>
-);
-
-//   return (
-//     <div className="user-profile-container">
-//       <div className="home_left_box1" style={{marginTop:"7rem" }}>
-//         <Sidebar />
-//       </div>
-//       <div>
-//         <div className="right_div">
-//           <TopNavbar profileImageUrl={profileImageUrl} />
-//         </div>
-//         <div>
-//           <h2 className="user-profile-container1">User Profile</h2>
-//         </div>
-//         <div className="user-profile-wrapper">
-//           {isLoading ? (
-//             <div>Loading...</div>
-//           ) : user ? (
-//             <div className="profile-details">
-//               <div className="avatar-container">
-//                 <div className="container-behind-avatar">
-//                   <div className='semi-half-circle'></div>
-//                   <div className='semi-half-circle2'></div>
-//                   <div className='semi-half-circle3'></div>
-//                   <div className='semi-half-circle4'></div>
-//                 </div> 
-//                 <label htmlFor="profile-image" className="avatar" onClick={() => document.getElementById("profile-image")}>
-//                   {profileImageUrl && <img src={profileImageUrl} alt="Profile" />}
-//                   <span className=' profile-user'>Profile</span>
-//                 </label>
-//                 <input
-//                   type="file"
-//                   id="profile-image"
-//                   accept="image/*"
-//                   onChange={handleProfileImageUpload}
-//                   style={{ display: "none" }}
-//                 />
-//               </div>
-//               <div className="profile_font">
-//                 <div className='use_mate'>
-//                   <div className="material-icons-container">
-//                     <InsertCommentRoundedIcon  style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }}/>
-//                   </div>
-//                   <div className="material-icons-container">
-//                     <MailOutlineRoundedIcon  style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }}/>
-//                   </div>
-//                   <div className="material-icons-container">
-//                     <CallRoundedIcon  style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }}/>
-//                   </div>
-//                 </div>
-//                 <div className="profile_data" style={{ margin: '20px', fontSize: '18px', marginLeft: '20px' }}>
-//                   <div style={{ marginBottom: '16px' }}>
-//                     <BadgeRoundedIcon style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }} />
-//                     {isEditing ? (
-//                       <input
-//                         type="text"
-//                         name="name"
-//                         value={editedUser.name}
-//                         onChange={handleInputChange}
-//                         style={{ marginLeft: '10px', padding: '5px' }}
-//                       />
-//                     ) : (
-//                       <span className="user-info">{user.name}</span>
-//                     )}
-//                   </div>
-//                   <div style={{ marginBottom: '16px' }}>
-//                     <MailOutlineRoundedIcon style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }} />
-//                     {isEditing ? (
-//                       <input
-//                         type="text"
-//                         name="email"
-//                         value={editedUser.email}
-//                         onChange={handleInputChange}
-//                         style={{ marginLeft: '10px', padding: '5px' }}
-//                       />
-//                     ) : (
-//                       <span className="user-info">{user.email}</span>
-//                     )}
-//                   </div>
-//                   <div style={{ marginBottom: '16px' }}>
-//                     <CallRoundedIcon style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }} />
-//                     {isEditing ? (
-//                       <input
-//                         type="text"
-//                         name="phoneNumber"
-//                         value={editedUser.phoneNumber}
-//                         onChange={handleInputChange}
-//                         style={{ marginLeft: '10px', padding: '5px' }}
-//                       />
-//                     ) : (
-//                       <span className="user-info">{user.phoneNumber}</span>
-//                     )}
-//                   </div>
-//                   <div style={{ marginBottom: '16px' }}>
-//                     <LocationOnRoundedIcon style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }} />
-//                     {isEditing ? (
-//                       <input
-//                         type="text"
-//                         name="address"
-//                         value={editedUser.address}
-//                         onChange={handleInputChange}
-//                         style={{ marginLeft: '10px', padding: '5px' }}
-//                       />
-//                     ) : (
-//                       <span className="user-info">{user.address}</span>
-//                     )}
-//                   </div>
-//                   <div style={{ marginBottom: '16px' }}>
-//                     <InsertCommentRoundedIcon style={{ width: '24px', height: '24px', fill: '#6D31EDFF' }} />
-//                     {isEditing ? (
-//                       <input
-//                         type="text"
-//                         name="job_profile"
-//                         value={editedUser.job_profile}
-//                         onChange={handleInputChange}
-//                         style={{ marginLeft: '10px', padding: '5px' }}
-//                       />
-//                     ) : (
-//                       <span className="user-info">{user.job_profile}</span>
-//                     )}
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           ) : (
-//             <div>No user data available</div>
-//           )}
-//           <div className="edit-profile-form">
-//             {isEditing ? (
-//               <>
-//  <button className="btn_username-save" onClick={handleSaveChanges}>Save</button>
-//                 <button className="btn_username-cancel" onClick={() => setIsEditing(false)}>Cancel</button>
-//               </>
-//                ) : (
-//                 <button className="btn_username" onClick={() => setIsEditing(true)}>Edit Profile</button>
-//               )}
-//                </div>
-//                </div>
-//                  {/* Displaying user tasks */}
-//       {/* Displaying user tasks */}
-//       <div className="user-tasks-container">
-//                     <h2 onClick={toggleTasksVisibility} style={{ cursor: 'pointer' }} className='latest-page'>Latest Tasks</h2>
-//                     {showTasks && (
-//                         <div className="task-list">
-//                             {tasks.length > 0 ? (
-//                                 tasks.map(task => (
-//                                     <div key={task.id} className="task-item">
-//                                         <h3>{task.subject}</h3>
-//                                         <p><strong>Status:</strong> <span className="task-detail">{task.status}</span></p>
-//                                         <p><strong>Priority:</strong> <span className={`task-priority-${task.priority.toLowerCase()} task-detail`}>{task.priority}</span></p>
-//                                         <p><strong>Due Date:</strong> <span className="task-detail">{task.due_date}</span></p>
-//                                         <p><strong>Description:</strong> <span className="task-detail">{task.description}</span></p>
-//                                     </div>
-//                                 ))
-//                             ) : (
-//                                 <p>No tasks found for this user.</p>
-//                             )}
-//                         </div>
-//                     )}
-//                 </div>
-
-//       </div>
-//     </div>
-//   );
+</div>);
 };
-
 export default UserProfile;
