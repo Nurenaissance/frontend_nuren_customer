@@ -31,6 +31,11 @@ const CoinStatsPage = () => {
     fetchTransactions();
   }, []);
 
+  useEffect(() => {
+    console.log("Spending categories:", coinStats.spendingCategories);
+  }, [coinStats.spendingCategories]);
+  
+
   const fetchWalletBalance = async () => {
     try {
       const response = await axiosInstance.get(`wallet/balance?user_id=${userId}`);
@@ -46,9 +51,9 @@ const CoinStatsPage = () => {
       const transactions = response.data.transactions.map(transaction => ({
         id: transaction.id,
         description: transaction.description,
-        amount: parseFloat(transaction.amount),
+        amount: transaction.transaction_type === 'Deduction' ? -parseFloat(transaction.amount) : parseFloat(transaction.amount),
         date: new Date(transaction.timestamp).toISOString().split('T')[0],
-        category: transaction.amount >= 0 ? transaction.transaction_type : 'Purchase'
+        category: transaction.transaction_type
       }));
       setCoinStats(prevStats => ({ 
         ...prevStats, 
@@ -67,11 +72,20 @@ const CoinStatsPage = () => {
     const categories = {};
     transactions.forEach(transaction => {
       if (transaction.amount < 0) {
-        const category = transaction.category === 'Purchase' ? transaction.description : transaction.category;
+        let category;
+        if (transaction.category === 'Deduction') {
+          // Use the description as the category for more specific information
+          category = transaction.description;
+        } else {
+          category = transaction.category;
+        }
         categories[category] = (categories[category] || 0) + Math.abs(transaction.amount);
       }
     });
-    const spendingCategories = Object.entries(categories).map(([category, value]) => ({ category, value }));
+    const spendingCategories = Object.entries(categories)
+      .map(([category, value]) => ({ category, value }))
+      .sort((a, b) => b.value - a.value) // Sort by value in descending order
+      .slice(0, 5); // Take top 5 categories
     setCoinStats(prevStats => ({ ...prevStats, spendingCategories }));
   };
   
@@ -84,6 +98,9 @@ const CoinStatsPage = () => {
     });
     setCoinStats(prevStats => ({ ...prevStats, coinHistory }));
   };
+
+
+  
   
 
   const handleAddCoins = async () => {
@@ -154,14 +171,17 @@ const CoinStatsPage = () => {
             <div className="recent-transactions">
               <h3>Recent Transactions</h3>
               <ul>
-                {coinStats.recentTransactions.slice(0, 5).map((transaction) => (
-                  <li key={transaction.id} className={transaction.amount > 0 ? 'positive' : 'negative'}>
-                    <span className="transaction-description">{transaction.description}</span>
-                    <span className="transaction-amount">{transaction.amount} coins</span>
-                    <span className="transaction-date">{transaction.date}</span>
-                  </li>
-                ))}
-              </ul>
+  {coinStats.recentTransactions.slice(0, 5).map((transaction) => (
+    <li key={transaction.id} className={transaction.amount >= 0 ? 'positive' : 'negative'}>
+      <span className="transaction-description">{transaction.description}</span>
+      <span className={`transaction-amount ${transaction.amount >= 0 ? 'positive' : 'negative'}`}>
+        {transaction.amount >= 0 ? '+' : '-'}
+        {Math.abs(transaction.amount).toFixed(2)} coins
+      </span>
+      <span className="transaction-date">{transaction.date}</span>
+    </li>
+  ))}
+</ul>
               <button className="show-all-btn" onClick={() => setShowAllTransactions(true)}>Show All Transactions</button>
             </div>
 
@@ -177,7 +197,7 @@ const CoinStatsPage = () => {
       cy="50%"
       outerRadius={100}
       fill="#8884d8"
-      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+      label={({ name, value, percent }) => `${name}: ${value.toFixed(2)} (${(percent * 100).toFixed(0)}%)`}
       labelLine={true}
       animationBegin={0}
       animationDuration={1500}
@@ -186,7 +206,7 @@ const CoinStatsPage = () => {
         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
       ))}
     </Pie>
-    <Tooltip />
+    <Tooltip formatter={(value) => value.toFixed(2)} />
     <Legend layout="vertical" align="right" verticalAlign="middle" />
   </PieChart>
 </ResponsiveContainer>
@@ -207,7 +227,7 @@ const CoinStatsPage = () => {
           </div>
 
           {showAllTransactions && (
-            <div className="modal-overlay">
+            <div className="modal-overlay-coins">
               <div className="all-transactions-modal">
                 <h3>All Transactions</h3>
                 <div className="filters">
@@ -239,18 +259,18 @@ const CoinStatsPage = () => {
                   </div>
                 </div>
                 <div className="transactions-list">
-                  <ul>
-                    {filteredTransactions.map((transaction) => (
-                      <li key={transaction.id} className={transaction.amount >= 0 ? 'positive' : 'negative'}>
-                      <span className="transaction-description">{transaction.description}</span>
-                      <span className="transaction-amount">
-                        {transaction.amount >= 0 ? '+' : '-'}{Math.abs(transaction.amount)} coins
-                      </span>
-                      <span className="transaction-date">{transaction.date}</span>
-                      <span className="transaction-category">{transaction.category}</span>
-                    </li>
-                    ))}
-                  </ul>
+                <ul>
+  {filteredTransactions.map((transaction) => (
+    <li key={transaction.id} className={transaction.amount >= 0 ? 'positive' : 'negative'}>
+      <span className="transaction-description">{transaction.description}</span>
+      <span className={`transaction-amount ${transaction.amount >= 0 ? 'positive' : 'negative'}`}>
+        {transaction.amount >= 0 ? '+' : '-'}{Math.abs(transaction.amount).toFixed(2)} coins
+      </span>
+      <span className="transaction-date">{transaction.date}</span>
+      <span className="transaction-category">{transaction.category}</span>
+    </li>
+  ))}
+</ul>
                 </div>
                 <button className="close-button" onClick={() => setShowAllTransactions(false)}>Close</button>
               </div>
