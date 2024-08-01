@@ -50,6 +50,8 @@ function AccountForm() {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const tenantId=getTenantIdFromUrl();
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [accountData, setAccountData] = useState({
     Name: '',
     email:'',
@@ -103,6 +105,21 @@ function AccountForm() {
       [event.target.name]: event.target.value,
     });
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get("/get-all-user/");
+        setUsers(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     // Set initial error fields based on formErrors
@@ -237,7 +254,7 @@ function AccountForm() {
 
   const closeSuccessPopup = () => {
     setShowSuccessPopup(false);
-    navigate(`/${tenantId}/acounts`);
+    navigate(`/${tenantId}/accounts`);
 
   };
   useEffect(() => {
@@ -288,19 +305,28 @@ function AccountForm() {
                             <div className='account_forms'>
                             <div className="form-row">
                         <div>
-                        <div className="form-group col-md-6 ">
-                                <label htmlFor="Name" className='anual_ownership'>Account Owner:</label>
-                                <input
-                                  type="text"
-                                  className="form-control_account1"
-                                  id="Name"
-                                  name="Name"
-                                  value={accountData.Name}
-                                  onChange={handleChange}
-                                  placeholder="Enter Account Owner"
-                                  style={{ borderColor: errorFields.Name ? 'red' : '' }}
-                                />
-                              </div>
+                        <div className="form-group col-md-6">
+        <label htmlFor="Name" className="anual_ownership">Account Owner:</label>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <select
+            className="form-control_account1"
+            id="Name"
+            name="Name"
+            value={accountData.Name}
+            onChange={handleChange}
+            style={{ borderColor: errorFields.Name ? 'red' : '' }}
+          >
+            <option value="" disabled>Select account owner</option>
+            {users.map((user) => (
+              <option key={user.username} value={user.username}>
+                {user.name || user.username}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
                               <div className="form-group col-md-6">
                                 <label htmlFor="email" className='anual_email'>Email:</label>
                                 <input

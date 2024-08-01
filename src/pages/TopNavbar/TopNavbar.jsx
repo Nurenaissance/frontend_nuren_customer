@@ -31,7 +31,6 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
 
   const tenantId = getTenantIdFromUrl();
   const [notificationCount, setNotificationCount] = useState(0);
-  const userId  = 3;
   const [notifications, setNotifications] = useState([]);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [showAddDropdown, setShowAddDropdown] = useState(false);

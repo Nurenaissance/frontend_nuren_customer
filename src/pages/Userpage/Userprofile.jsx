@@ -42,10 +42,11 @@ const UserProfile = () => {
       try {
         const response = await axiosInstance.get(`/get-user/${tenantId}`);
         setUser(response.data);
+        
         console.log("user data", response.data);
+        setUserId(response.data.id);
         setEditedUser(response.data);
         setIsLoading(false);
-        setUserId(response.data.id);
         console.log(userId);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -92,7 +93,7 @@ const UserProfile = () => {
     fetchUserData();
     fetchUserTasks();
     fetchProfileImage();
-  }, [id, tenantId]);
+  }, [id, tenantId, userId]);
   
 
   const handleSaveChanges = async () => {
@@ -173,7 +174,7 @@ const UserProfile = () => {
       </div>
       <div>
         <div className="right_div">
-          <TopNavbar profileImageUrl={profileImageUrl} />
+          <TopNavbar profileImageUrl={profileImageUrl} userId={userId} />
         </div>
         <div>
           <h2 className="user-profile-container1">User Profile</h2>

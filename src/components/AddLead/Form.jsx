@@ -42,6 +42,8 @@ const getTenantIdFromUrl = () => {
 function Form() {
   const tenantId = getTenantIdFromUrl();
   const { userId } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     address: '',
     assigned_to: [''],
@@ -79,6 +81,21 @@ function Form() {
       });
     }
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get("/get-all-user/");
+        setUsers(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const validateForm = () => {
     let errors = {};
@@ -349,18 +366,28 @@ useEffect(() => {
         
       </div>
       <div className="form-row">
-        <div className="form-group col-md-6">
-          <label htmlFor="assigned_to" className='lead_title'>Assigned To</label>
-          <input
-  type="text"
-  className="form-control"
-  id="assigned_to"
-  name="assigned_to"
-  value={formData.assigned_to}
-  onChange={handleChange}
-  placeholder="Enter Assigned To"
-/>
-</div>
+         <div className="form-group col-md-6">
+        <label htmlFor="assigned_to" className="lead_title">Assigned To:</label>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <select
+            className="form-control"
+            id="assigned_to"
+            name="assigned_to"
+            value={formData.assigned_to}
+            onChange={handleChange}
+            placeholder="Enter Assigned To"
+          >
+            <option value="" disabled>Select assigned to</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name || user.username}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 <div className="form-row">
         <div className="form-group col-md-6">
           <label htmlFor="paymentMethod" className='lead_title'>Opportunity Amount</label>
