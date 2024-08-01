@@ -82,12 +82,35 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   const [tenantId, setTenantId] = useState('');
   const [draftImageUrl, setDraftImageUrl] = useState('');
   const [showDraftsPopup, setShowDraftsPopup] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0);
   const categories = [
     { name: 'Gen Z', icon: <EmojiEmotionsIcon /> },
     { name: 'Professional', icon: <WorkIcon /> },
     { name: 'Creative', icon: <BrushIcon /> },
     { name: 'Meme', icon: <SentimentVerySatisfiedIcon /> },
   ];
+
+const userId = 3;
+
+  useEffect(() => {
+    fetchWalletBalance();
+  }, [tenantId]);
+
+  const deductCoins = async () => {
+    try {
+      const response = await axiosInstance.post('wallet/deduct/', {
+        amount: 20.00,
+        description: "Payment for Instagram post",
+        user_id: userId 
+      });
+      console.log("Deduction response:", response.data);
+      await fetchWalletBalance(); // Refresh balance after deduction
+      return true;
+    } catch (error) {
+      console.error('Error deducting coins:', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const storedTenantId = localStorage.getItem('tenant_Id');
@@ -110,6 +133,16 @@ const InstagramPost = ({ uploadedImageUrl }) => {
       return response.data;
     } catch (error) {
       throw error;
+    }
+  };
+
+  const fetchWalletBalance = async () => {
+    try {
+      const response = await axiosInstance.get(`wallet/balance?user_id=${userId}`);
+      console.log("Fetched balance:", response.data.balance);
+      setCoinBalance(response.data.balance);
+    } catch (error) {
+      console.error('Error fetching wallet balance:', error);
     }
   };
   
@@ -143,7 +176,20 @@ const InstagramPost = ({ uploadedImageUrl }) => {
 
 
   const handleSaveDraft = async () => {
-    try {
+    await fetchWalletBalance();
+    console.log("Current balance before saving draft:", coinBalance);
+    if (parseFloat(coinBalance) < 20) {
+      alert('Insufficient balance. You need at least 20 coins to post.');
+      return;
+    }
+
+  const deductionSuccessful = await deductCoins();
+  if (!deductionSuccessful) {
+    alert('Failed to deduct coins. Please try again.');
+    return;
+  }
+
+  try {
       console.log('Draft saving started');
   
       // Step 1: Upload files to Firebase
@@ -241,6 +287,11 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   }, [files]);
 
 
+  
+
+
+
+
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -335,6 +386,17 @@ const InstagramPost = ({ uploadedImageUrl }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+  
+    if (coinBalance < 20) {
+      alert('Insufficient balance. You need at least 20 coins to post.');
+      return;
+    }
+  
+    const deductionSuccessful = await deductCoins();
+    if (!deductionSuccessful) {
+      alert('Failed to deduct coins. Please try again.');
+      return;
+    }
   
     console.log('Form submission started');
   

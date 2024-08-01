@@ -242,7 +242,7 @@ margin-left: 20px;
 font-size: 14px;
 line-height: 22px;
 font-weight: 600;
-color: #565D6DFF;
+color: rgb(255, 255, 255);
 }
 .title_row_data,.from_row_data{
   font-family: 'Manrope';
