@@ -261,6 +261,7 @@ function Kanban({ leadCountsData }) {
           assigned_to: movedCard.assigned_to,
           createdBy: movedCard.createdBy,
           tenant: tenantId,
+          stage: destination.droppableId ,
         };
 
         // Make a PUT request to update the lead status in the backend

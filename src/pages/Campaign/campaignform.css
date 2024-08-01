@@ -1,0 +1,162 @@
+.cf-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .cf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
+  }
+
+  .cf-title {
+    font-size: 32px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .cf-button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+  }
+
+  .cf-btn {
+    padding: 12px 24px;
+    margin-left: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .cf-btn-cancel { background-color: #f44336; color: white; }
+  .cf-btn-draft { background-color: #2196f3; color: white; }
+  .cf-btn-submit { background-color: #4caf50; color: white; }
+
+  .cf-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .cf-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+
+  .cf-form-group {
+    margin-bottom: 25px;
+  }
+
+  .cf-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 16px;
+  }
+
+  .cf-input,
+  .cf-select,
+  .cf-flow-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+
+  .cf-input:focus,
+  .cf-select:focus,
+  .cf-flow-select:focus {
+    border-color: #2196f3;
+    outline: none;
+  }
+
+  .cf-campaign-type {
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .cf-social-btn-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 15px;
+  }
+
+  .cf-social-btn {
+    background: none;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    margin: 5px;
+    color: #555;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .cf-social-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .cf-social-btn.active {
+    color: #ffffff;
+    background-color: #2196f3;
+    border-color: #2196f3;
+  }
+
+  .cf-icon {
+    display: inline-block;
+    margin-left: 10px;
+    color: #2196f3;
+    font-size: 24px;
+  }
+
+  .cf-create-flow-option {
+    color: #2196f3;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .cf-flow-editor {
+    width: 100%;
+    height: 200px;
+    margin-top: 15px;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    resize: vertical;
+  }
+
+  @media (max-width: 768px) {
+    .cf-form {
+      grid-template-columns: 1fr;
+    }
+
+    .cf-button-group {
+      flex-direction: column;
+    }
+
+    .cf-btn {
+      margin: 10px 0;
+      width: 100%;
+    }
+  }
