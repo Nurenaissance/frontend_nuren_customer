@@ -32,7 +32,7 @@ const Popup = ({ errors, onClose }) => (
 const SuccessPopup = ({ message, onClose }) => (
   <div className="product-popup2">
     <div className="product-popup-content2">
-      <h2>Product Created Sucessfully</h2>
+      <h2>Task Created Sucessfully</h2>
       <button className="product-popup-ok-button2" onClick={onClose}>OK</button>
     </div>
   </div>
@@ -189,6 +189,9 @@ const AddTaskForm = () => {
             interaction_datetime: new Date().toISOString(),
           };
 
+          setShowSuccessPopup(true);
+      setSuccessMessage(true);
+
           try {
               await axiosInstance.post('/interaction/', interactionData);
               console.log('Interaction logged successfully');
@@ -206,7 +209,7 @@ const AddTaskForm = () => {
         account: "",
         createdBy: "",
       });
-      navigate(`/${tenantId}/tasks`);
+
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response) {
@@ -227,7 +230,6 @@ const AddTaskForm = () => {
   const closeSuccessPopup = () => {
     setShowSuccessPopup(false);
     navigate(`/${tenantId}/tasks`);
-
   };
 
   const handleCancel = () => {
