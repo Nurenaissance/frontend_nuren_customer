@@ -108,7 +108,6 @@ const getTenantIdFromUrl = () => {
 };
 
 import PdfUploader from "../pages/PDF";
-import FlowTable from "../pages/ReactFlow/FlowTable.jsx";
 import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 
 
@@ -338,7 +337,6 @@ export const RouteWrapper = () => {
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
           
-          <Route path=":tenant_id/flowtable" element={<FlowTable/>} />
 
           <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
 

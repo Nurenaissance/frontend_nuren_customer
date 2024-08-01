@@ -28,6 +28,7 @@ import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
+import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 
 
 const getTenantIdFromUrl = () => {
@@ -70,9 +71,22 @@ const ShowLead = () => {
   const [editedLead, setEditedLead] = useState({});
   const [timeline, setTimeline] = useState([]); // New state variable for timeline data
   const [showTimeline, setShowTimeline] = useState(false); 
+  const [leadStages, setLeadStages] = useState([]);
+  const [leadScore, setLeadScore] = useState(0);
+
+const fetchLeadScore = async () => {
+  try {
+    const response = await axiosInstance.get(`/lead-score/${id}`);
+    setLeadScore(response.data.score);
+  } catch (error) {
+    console.error("Error fetching lead score:", error);
+  }
+};
 
 
   useEffect(() => {
+    fetchLeadStages();
+  fetchLeadScore();
     const fetchformData = async () => {
       try {
         const response = await axiosInstance.get(`/leads/${id}`);
@@ -83,17 +97,37 @@ const ShowLead = () => {
     };
     fetchformData();
   }, [id]);
+
+
+  const fetchLeadStages = async () => {
+    try {
+      const response = await axiosInstance.get("/lead/stage");
+      if (response.data && Array.isArray(response.data.stages)) {
+        setLeadStages(response.data.stages);
+      } else {
+        console.error("Lead stages data is not an array:", response.data);
+        setLeadStages([]);
+      }
+    } catch (error) {
+      console.error("Error fetching lead stages:", error);
+      setLeadStages([]);
+    }
+  };
+
+
+
+
   useEffect(() => {
     const ctx = document.getElementById("leadScoreChart1").getContext("2d");
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
       type: "doughnut",
       data: {
         labels: ["Lead Score", " "],
         datasets: [
           {
             label: "Lead Score",
-            data: [80, 20],
-            backgroundColor: ["#4CAF50", "lightgrey"], // Set the permanent background color here
+            data: [leadScore, 100 - leadScore],
+            backgroundColor: ["#4CAF50", "lightgrey"],
             borderWidth: [0, 0],
             hoverOffset: 10,
           },
@@ -110,8 +144,11 @@ const ShowLead = () => {
         cutout: "70%",
       },
     });
-  }, []);
   
+    return () => {
+      chart.destroy();
+    };
+  }, [leadScore]);
 
   const relatedListItems = [
     "Notes",
@@ -250,12 +287,12 @@ const ShowLead = () => {
       <div className="side_lead">
       <Sidebar />
       </div>
-     
-      <div className="head_lead_information">
+      <div  className="lead_info_topnav">
+        <div>
+        <TopNavbar/>
+        </div>
+        <div className="head_lead_information">
         <div className="arrow_head">
-          <div className="arrow_lead">
-            <ArrowForwardRoundedIcon />
-          </div>
           <div>
             <h1 className="lead_info">Lead details</h1>
           </div>
@@ -270,63 +307,27 @@ const ShowLead = () => {
           <div className="arrow_container">
            
 
-<div className="lead_display"> 
-  <NavLink to="/new-lead" className="lead_data_">
-    <div className="lead_click">
-      <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#EEFDF3FF' }} />
-    </div>
-    <div>
-      <h1 className="lead_headd">New Lead </h1>
-    </div>
-    <div className="half-arrow">
-      <ArrowForwardIosRoundedIcon/>
-    </div>
-  </NavLink>
-  <NavLink to="/proposal" className="lead_data_">
-    <div className="lead_click">
-      <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#EEFDF3FF' }} />
-    </div>
-    <div>
-      <h1 className="lead_headd">Proposal </h1>
-    </div>
-    <div className="half-arrow">
-      <ArrowForwardIosRoundedIcon/>
-    </div>
-  </NavLink>
-  <NavLink to="/negotiation" className="lead_data_">
-    <div className="lead_click1">
-      <div className="lead_number2">3</div>
-    </div>
-    <div>
-      <h1 className="lead_headd">Negotiation </h1>
-    </div>
-    <div className="half-arrow">
-      <ArrowForwardIosRoundedIcon/>
-    </div>
-  </NavLink>
-  <NavLink to="/contact-sent" className="lead_data_">
-    <div className="lead_click2">
-      <div className="lead_number">4</div>
-    </div>
-    <div>
-      <h1 className="lead_headd">Contact Sent</h1>
-    </div>
-    <div className="half-arrow">
-      <ArrowForwardIosRoundedIcon/>
-    </div>
-  </NavLink>
-  <NavLink to="/close" className="lead_data_">
-    <div className="lead_click2">
-      <div className="lead_number">5</div>
-    </div>
-    <div>
-      <h1 className="lead_headd">Close</h1>
-    </div>
-    <div className="half-arrow">
-      <ArrowForwardIosRoundedIcon/>
-    </div>
-  </NavLink>
-</div>
+          <div className="lead_display">
+          {Array.isArray(leadStages) && leadStages.map((stage, index) => (
+    <NavLink to={stage.link} className="lead_data_" key={stage.id}>
+            <div className={`lead_click${index + 1}`}>
+              {stage.completed ? (
+                <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#EEFDF3FF' }} />
+              ) : (
+                <div className="lead_number">{index + 1}</div>
+              )}
+            </div>
+            <div>
+              <h1 className="lead_headd">{stage.name}</h1>
+            </div>
+            {index < leadStages.length - 1 && (
+              <div className="half-arrow">
+                <ArrowForwardIosRoundedIcon/>
+              </div>
+            )}
+          </NavLink>
+        ))}
+      </div>
 
 
 
@@ -361,7 +362,7 @@ const ShowLead = () => {
           </div>
           
           <div>
-          <div className='lead-headings'>
+          {/* <div className='lead-headings'>
   <div className="task_lead_head">
     <div className="sum_header">
       <button>Summary</button>
@@ -376,7 +377,7 @@ const ShowLead = () => {
       <button>Activitieslog</button>
     </div>
   </div>
-</div>
+</div> */}
 
 <div className="big-lead-container">
       <div className="general-lead-container">
@@ -638,18 +639,9 @@ const ShowLead = () => {
   <h1 className="lead_general_head">Lead Score </h1>
   <div className="lead-data-chart">
   <canvas id="leadScoreChart1" className="chart-canvas"></canvas>
-  <div  className = 'lead_num 'style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center' }}>
-    <ShowChartIcon style={{ width: '24px', height: '24px' }} />
-    80%
-  </div>
-  <div className="lead_data_list">
-  <ul >
-    <li className='lead_data_list_data '>Country/Region:UK</li>
-    <li className='lead_data_list_data '>Job Title:Manager</li>
-    <li className='lead_data_list_data '>ReturningOpportunity</li>
-    <li className='lead_data_list_data '>Est. Close Date:10</li>
-    <li className='lead_data_list_data '>Accept DemoMeeting</li>
-  </ul>
+  <div className="lead_num" style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center' }}>
+  <ShowChartIcon style={{ width: '24px', height: '24px' }} />
+  {leadScore}%
 </div>
 
   </div>
@@ -728,7 +720,7 @@ const ShowLead = () => {
   </div>
 )}
 </div>
-       
+</div>
         </div>
       </div>
     </div>

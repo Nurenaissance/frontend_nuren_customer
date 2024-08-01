@@ -81,11 +81,16 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
   const fetchCoinCount = async () => {
     try {
       const response = await axiosInstance.get(`wallet/balance?user_id=${userId}`);
-      setCoinCount(prevStats => ({ ...prevStats, totalCoins: response.data.balance }));
+      if (response.data && response.data.balance !== undefined) {
+        setCoinCount(response.data.balance);
+      } else {
+        console.error('Error: Unexpected response structure', response.data);
+      }
     } catch (error) {
       console.error('Error fetching wallet balance:', error);
     }
   };
+  
 
 
 
@@ -312,10 +317,10 @@ return (
         </div>
         
         <div className="coin-container" onClick={handleCoinClick}>
-  <div className="coin-shine"></div>
-  <MonetizationOnIcon className="coin-icon" />
-  <span className="coin-count1">{totalCoins}</span>
-</div>
+        <div className="coin-shine"></div>
+        <MonetizationOnIcon className="coin-icon" />
+        <span className="coin-count1">{coinCount}</span>
+      </div>
 
 <Link to={`/${tenantId}/user_id`}>
   {profileImageUrl ? (
