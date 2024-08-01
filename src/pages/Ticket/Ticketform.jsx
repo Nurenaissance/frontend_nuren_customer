@@ -6,6 +6,8 @@ import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useNavigate } from "react-router-dom";
 
+const CASE_NUMBER_START = 1000;
+
 const getTenantIdFromUrl = () => {
     const pathArray = window.location.pathname.split('/');
     if (pathArray.length >= 2) {
@@ -96,6 +98,17 @@ const Ticketform = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorFields, setErrorFields] = useState({});
+
+
+  useEffect(() => {
+    // Generate new case number
+    const lastCaseNumber = parseInt(localStorage.getItem('lastCaseNumber') || CASE_NUMBER_START, 10);
+    const newCaseNumber = (lastCaseNumber + 1).toString();
+    setFormData(prevFormData => ({ ...prevFormData, casenumber: newCaseNumber }));
+
+    // Update local storage
+    localStorage.setItem('lastCaseNumber', newCaseNumber);
+}, []);
 
 
     const handleInputChange = (e) => {

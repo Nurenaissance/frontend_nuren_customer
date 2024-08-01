@@ -16,7 +16,7 @@ const getTenantIdFromUrl = () => {
     return null; 
 };
 
-function Appa() {
+function EmailAppa() {
     const navigate = useNavigate();
     const location = useLocation();
     const [emailUser, setEmailUser] = useState('');
@@ -192,4 +192,4 @@ function Appa() {
     );
 }
 
-export default Appa;
+export default EmailAppa;
