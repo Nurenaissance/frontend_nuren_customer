@@ -75,7 +75,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     });
   };
 
-  const userId = 3;
+  //const userId = 3;
 
 
   const fetchCoinCount = async () => {

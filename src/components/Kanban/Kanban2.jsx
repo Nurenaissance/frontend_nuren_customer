@@ -255,7 +255,7 @@ const Kanban2 = () => {
         entity_id: movedCard.id,
         interaction_type: "Note",
         tenant_id: tenantId, // Make sure you have tenant_id in movedCard
-        notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity amount: ${movedCard.amount}. Contact: ${movedCard.contact}.`,
+        notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity ID: ${movedCard.id}. Contact: ${movedCard.contact}.`,
         interaction_datetime: new Date().toISOString(),
       };
 
