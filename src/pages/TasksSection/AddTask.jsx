@@ -49,6 +49,8 @@ const getTenantIdFromUrl = () => {
 const AddTaskForm = () => {
   const navigate = useNavigate();
   const tenantId=getTenantIdFromUrl();
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const {userId}=useAuth();
   const style = {
     position: "absolute",
@@ -116,6 +118,21 @@ const AddTaskForm = () => {
 
   useEffect(() => {
     fetchAccountOptions();
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get("/get-all-user/");
+        setUsers(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleChange = (event) => {
@@ -189,6 +206,7 @@ const AddTaskForm = () => {
         account: "",
         createdBy: "",
       });
+      navigate(`/${tenantId}/tasks`);
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response) {
@@ -365,18 +383,28 @@ const AddTaskForm = () => {
                 </select>
               </div>
               <div className="form-group col-md-6">
-                <label htmlFor="createdBy" className="form_row_head">Created By</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="createdBy"
-                  name="createdBy"
-                  value={taskData.createdBy}
-                  onChange={handleChange}
-                  placeholder="Enter created By"
-                  style={{ borderColor: errorFields.createdBy ? 'red' : '' }}
-                />
-              </div>
+      <label htmlFor="createdBy" className="form_row_head">Created By</label>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          className="form-control"
+          id="createdBy"
+          name="createdBy"
+          value={taskData.createdBy || ""}
+          onChange={handleChange}
+          placeholder="Select creator"
+          style={{ borderColor: errorFields.createdBy ? 'red' : '' }}
+        >
+          <option value="" disabled>Select creator</option>
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.name || user.username}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
               <div className="form-group col-md-6">
                 <label htmlFor="contact" className="form_row_head">Contact</label>
                 <input

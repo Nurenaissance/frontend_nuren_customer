@@ -71,7 +71,8 @@ const Form3 = () => {
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
     const [formErrors, setFormErrors] = useState({});
     const [showPopup, setShowPopup] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -138,6 +139,22 @@ const Form3 = () => {
             console.error("Error fetching account options:", error);
         }
     };
+
+    useEffect(() => {
+      const fetchUsers = async () => {
+        try {
+          const response = await axiosInstance.get("/get-all-user/");
+          setUsers(response.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+          setIsLoading(false);
+        }
+      };
+  
+      fetchUsers();
+    }, []);
+  
 
     useEffect(() => {
         fetchAccountOptions();
@@ -344,19 +361,29 @@ useEffect(() => {
           
           <form onSubmit={handleSubmit} className="oppo_form_fill">
             <div className="form-row">
-              <div className="form-group col-md-6">
-                <label className="oppo_form_name" htmlFor="name">Contact Owner</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  value={oppourtunityData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter contact Owner"
-                  style={{ borderColor: errorFields.name ? 'red' : '' }}
-                />
-              </div>
+            <div className="form-group col-md-6">
+      <label className="oppo_form_name" htmlFor="name">Contact Owner</label>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          className="form-control"
+          id="name"
+          name="name"
+          value={oppourtunityData.name || ""}
+          onChange={handleInputChange}
+          placeholder="Select contact Owner"
+          style={{ borderColor: errorFields.name ? 'red' : '' }}
+        >
+          <option value="" disabled>Select contact owner</option>
+          {users.map((user) => (
+            <option key={user.username} value={user.username}>
+              {user.name || user.username}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
 
               <div className="form-group col-md-6">
                 <label className="oppo_form_contact" htmlFor="contacts">Contacts</label>
