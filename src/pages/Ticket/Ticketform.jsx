@@ -5,6 +5,8 @@ import './Ticketform.css';
 import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../authContext";
+
 
 const CASE_NUMBER_START = 1000;
 
@@ -17,6 +19,7 @@ const getTenantIdFromUrl = () => {
   };
 
   const Popup = ({ errors, onClose }) => (
+    
     <div className="product-popup">
       <div className="product-popup-content">
         <h2>Error</h2>
@@ -75,6 +78,7 @@ const Ticketform = () => {
     const navigate = useNavigate();
     const tenantId = getTenantIdFromUrl();
     console.log('Extracted tenant ID:', tenantId);
+    const {userId}=useAuth();
     const [formData, setFormData] = useState({
         tenant: tenantId,
         contactName: '',
@@ -170,6 +174,21 @@ const Ticketform = () => {
             });
             console.log('Ticket created:', response.data);
             setSuccessMessage(response.data.message);
+        const interactionData = {
+                entity_type: 'tickets',
+                entity_id: casenumber,
+                interaction_type: 'Event',
+                tenant_id: tenantId,
+                notes: `Ticket created with id : ${casenumber} created by user : ${userId}`,
+                interaction_datetime: new Date().toISOString(),
+              };
+        
+        try {
+                await axiosInstance.post('/interaction/', interactionData);
+                console.log('Interaction logged successfully');
+              } catch (error) {
+                console.error('Error logging interaction:', error);
+              }
       setShowSuccessPopup(true);
 
            

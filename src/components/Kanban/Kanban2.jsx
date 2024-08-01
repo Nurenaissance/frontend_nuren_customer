@@ -225,7 +225,7 @@ const Kanban2 = () => {
   };
 
   const onDragEnd = async (result) => {
-    const { source, destination } = result;
+    const { source, destination,draggableId } = result;
     if (!destination) return;
 
     const startColumn = columns[source.droppableId];
@@ -248,6 +248,30 @@ const Kanban2 = () => {
         ...movedCard,
         stage: endColumn.title,
       });
+      
+      try {
+        // Prepare the data for the PUT request
+        const opportunityData = {
+          ...movedCard,
+          stage: destination.droppableId, // Using the new stage ID
+          name: movedCard.name,
+          amount: movedCard.amount,
+          lead_source: movedCard.lead_source,
+          probability: movedCard.probability,
+          closedOn: movedCard.closedOn,
+          description: movedCard.description,
+          isActive: movedCard.isActive,
+          account: movedCard.account,
+          contacts: movedCard.contacts,
+          closedBy: movedCard.closedBy,
+          createdBy: movedCard.createdBy,
+          tenant: tenantId,
+        };
+  
+        // Make a PUT request to update the opportunity in the backend
+        await axiosInstance.put(`/opportunities/${movedCard.id}/`, opportunityData);
+        console.log('Opportunity updated successfully');
+  
 
       // Log the interaction
       const interactionData = {
@@ -255,16 +279,13 @@ const Kanban2 = () => {
         entity_id: movedCard.id,
         interaction_type: "Note",
         tenant_id: tenantId, // Make sure you have tenant_id in movedCard
-        notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity amount: ${movedCard.amount}. Contact: ${movedCard.contact}.`,
+        notes: `Stage changed from ${startColumn.title} to ${endColumn.title}. Opportunity ID: ${movedCard.id}. Contact: ${movedCard.contact}.`,
         interaction_datetime: new Date().toISOString(),
+        stage: destination.droppableId ,
       };
 
-      try {
-        await axiosInstance.post('/interaction/', interactionData);
-        console.log('Interaction logged successfully');
-      } catch (error) {
-        console.error('Error logging interaction:', error);
-      }
+      await axiosInstance.post('/interaction/', interactionData);
+      console.log('Interaction logged successfully');
 
       const newColumns = {
         ...columns,
@@ -272,7 +293,12 @@ const Kanban2 = () => {
         [destination.droppableId]: { ...endColumn, cards: endCards },
       };
       setColumns(newColumns);
+
+    } catch (error) {
+      console.error('Error updating opportunity or logging interaction:', error);
+      // Optionally, you can revert the state change here if the API call fails
     }
+  }
   };
 
 
