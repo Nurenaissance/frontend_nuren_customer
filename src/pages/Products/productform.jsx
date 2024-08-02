@@ -158,8 +158,9 @@ const ProductForm = () => {
       const response = await axiosInstance.post('/products/', formData);
       console.log('Form submitted successfully:', response.data);
 
-      setSuccessMessage(response.data.message);
       setShowSuccessPopup(true);
+      setSuccessMessage(true);
+
 
 
     } catch (error) {

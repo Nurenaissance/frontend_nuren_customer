@@ -110,6 +110,8 @@ const Vendorsform = () => {
         try {
           const response = await axiosInstance.post('/vendors', vendorData);
           console.log("Form submitted:", response.data);
+          setShowSuccessPopup(true);
+      setSuccessMessage(true);
         } catch (error) {
           console.error("Error submitting form:", error);
           if (error.response) {

@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../authContext";
 
 
+const CASE_NUMBER_START = 1000;
+
 const getTenantIdFromUrl = () => {
     const pathArray = window.location.pathname.split('/');
     if (pathArray.length >= 2) {
@@ -85,7 +87,7 @@ const Ticketform = () => {
         case_reason: '',
         comment: '',
         file: null,
-        casenumber: '23456',
+        casenumber: '23452',
         subject: '',
         description: '',
         status: '',
@@ -100,6 +102,17 @@ const Ticketform = () => {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorFields, setErrorFields] = useState({});
+
+
+  useEffect(() => {
+    // Generate new case number
+    const lastCaseNumber = parseInt(localStorage.getItem('lastCaseNumber') || CASE_NUMBER_START, 10);
+    const newCaseNumber = (lastCaseNumber + 1).toString();
+    setFormData(prevFormData => ({ ...prevFormData, casenumber: newCaseNumber }));
+
+    // Update local storage
+    localStorage.setItem('lastCaseNumber', newCaseNumber);
+}, []);
 
 
     const handleInputChange = (e) => {

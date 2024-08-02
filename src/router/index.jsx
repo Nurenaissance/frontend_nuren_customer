@@ -109,6 +109,7 @@ const getTenantIdFromUrl = () => {
 
 import PdfUploader from "../pages/PDF";
 import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
+import EmailAppa from "../pages/Email/Emailss.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -359,7 +360,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/CustomModel"  element= {<Custom/>}/>
           <Route path=":tenant_id/models/:modelName"  element= {<Models/>}/>
           {/* <Route path=":tenant_id/CustomModelForm"  element= {<CustomModelForm/>}/> */}
-          <Route path=":tenant_id/emailss"  element= {<Appa/>}/>
+          <Route path=":tenant_id/emailss"  element= {<EmailAppa/>}/>
           <Route path=":tenant_id/email-list" element={<EmailList/>} />
           <Route path=":tenant_id/email-provider" element={<EmailProviders/>} />
           
