@@ -259,3 +259,28 @@ h3{
   flex-basis: 100%;
   height: 0;
 }
+.ai-button {
+  background: #6D31EDFF; 
+  color: #fff;
+  border: none;
+  border-radius: 70%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.ai-button:hover {
+  background-color: #5C27C3; /* Darker shade on hover */
+}
+
+.popup-content {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: auto;
+}

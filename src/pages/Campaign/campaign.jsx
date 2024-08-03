@@ -57,6 +57,31 @@ const Campaign = () => {
     description: "",
     campaign_owner: ""
   });
+
+  const [filterType, setFilterType] = useState("");
+
+  useEffect(() => {
+    const applyFilter = () => {
+      if (filterType === "") {
+        setFilteredCampaigns(campaign);
+      } else {
+        const filteredData = campaign.filter(campaign => {
+          switch (filterType) {
+            case "1":
+              return new Date(campaign.start_date).toLocaleDateString() === new Date().toLocaleDateString();
+            case "2":
+              return campaign.status === "Active";
+            case "3":
+              return parseFloat(campaign.expected_revenue) > 1000;
+            default:
+              return true;
+          }
+        });
+        setFilteredCampaigns(filteredData);
+      }
+    };
+    applyFilter();
+  }, [filterType, campaign]);
   useEffect(() => {
     fetchCampaigns();
     fetchTemplates();
