@@ -73,30 +73,31 @@ const ShowLead = () => {
   const [showTimeline, setShowTimeline] = useState(false); 
   const [leadStages, setLeadStages] = useState([]);
   const [leadScore, setLeadScore] = useState(0);
-
-const fetchLeadScore = async () => {
-  try {
-    const response = await axiosInstance.get(`/lead-score/${id}`);
-    setLeadScore(response.data.score);
-  } catch (error) {
-    console.error("Error fetching lead score:", error);
-  }
-};
+  const [currentStageIndex, setCurrentStageIndex] = useState(0);
 
 
-  useEffect(() => {
-    fetchLeadStages();
-  fetchLeadScore();
-    const fetchformData = async () => {
-      try {
-        const response = await axiosInstance.get(`/leads/${id}`);
-        setShowLead(response.data);
-      } catch (error) {
-        console.error("Error fetching account data:", error);
-      }
-    };
-    fetchformData();
-  }, [id]);
+useEffect(() => {
+  // Determine the current stage index based on the lead's status
+  const index = leadStages.findIndex(stage => stage.name === showLead.LeadStatus);
+  setCurrentStageIndex(index !== -1 ? index : 0);
+}, [leadStages, showLead.LeadStatus]);
+
+
+useEffect(() => {
+  fetchLeadStages();
+  const fetchLeadData = async () => {
+    try {
+      const response = await axiosInstance.get(`/leads/${id}`);
+      setShowLead(response.data);
+      // Determine the current stage index based on the lead's status
+      const index = leadStages.findIndex(stage => stage.name === response.data.LeadStatus);
+      setCurrentStageIndex(index !== -1 ? index : 0);
+    } catch (error) {
+      console.error("Error fetching lead data:", error);
+    }
+  };
+  fetchLeadData();
+}, [id, leadStages]);
 
 
   const fetchLeadStages = async () => {
@@ -117,7 +118,16 @@ const fetchLeadScore = async () => {
 
 
 
+  const calculateLeadScore = () => {
+    if (leadStages.length === 0) return 0;
+    const completedStages = currentStageIndex + 1;
+    return Math.round((completedStages / leadStages.length) * 100);
+  };
+  
   useEffect(() => {
+    const calculatedScore = calculateLeadScore();
+    setLeadScore(calculatedScore);
+  
     const ctx = document.getElementById("leadScoreChart1").getContext("2d");
     const chart = new Chart(ctx, {
       type: "doughnut",
@@ -126,7 +136,7 @@ const fetchLeadScore = async () => {
         datasets: [
           {
             label: "Lead Score",
-            data: [leadScore, 100 - leadScore],
+            data: [calculatedScore, 100 - calculatedScore],
             backgroundColor: ["#4CAF50", "lightgrey"],
             borderWidth: [0, 0],
             hoverOffset: 10,
@@ -148,7 +158,19 @@ const fetchLeadScore = async () => {
     return () => {
       chart.destroy();
     };
-  }, [leadScore]);
+  }, []);
+
+  useEffect(() => {
+    const calculatedScore = calculateLeadScore();
+    setLeadScore(calculatedScore);
+  
+    // Update chart data here instead of recreating the chart
+    if (window.myChart) {
+      window.myChart.data.datasets[0].data = [calculatedScore, 100 - calculatedScore];
+      window.myChart.update();
+    }
+  }, [currentStageIndex, leadStages]);
+
 
   const relatedListItems = [
     "Notes",
@@ -195,8 +217,8 @@ const fetchLeadScore = async () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        "https://backendcrmnurenai.azurewebsites.net/leads/",
+      const response = await axiosInstance.post(
+        "leads/",
         showLead
       );
       console.log("ShowLead Information submitted :", response.data);
@@ -238,23 +260,6 @@ const fetchLeadScore = async () => {
       console.error("Error In ShowLead Information:", error);
     }
     setIsEditing(false);
-  };
-
-  const handleAttach = () => {
-    console.log("Attach happened");
-  };
-
-  const handleNew = () => {
-    console.log("Add New happened");
-  };
-
-  const toggleAdditionalDetails = () => {
-    setShowLead(!showLead);
-  };
-
-  const handleConvert = () => {
-    // Add logic here to handle conversion
-    console.log("Lead converted");
   };
 
   const handleEdit = () => {
@@ -308,26 +313,26 @@ const fetchLeadScore = async () => {
            
 
           <div className="lead_display">
-          {Array.isArray(leadStages) && leadStages.map((stage, index) => (
+  {leadStages.map((stage, index) => (
     <NavLink to={stage.link} className="lead_data_" key={stage.id}>
-            <div className={`lead_click${index + 1}`}>
-              {stage.completed ? (
-                <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#EEFDF3FF' }} />
-              ) : (
-                <div className="lead_number">{index + 1}</div>
-              )}
-            </div>
-            <div>
-              <h1 className="lead_headd">{stage.name}</h1>
-            </div>
-            {index < leadStages.length - 1 && (
-              <div className="half-arrow">
-                <ArrowForwardIosRoundedIcon/>
-              </div>
-            )}
-          </NavLink>
-        ))}
+      <div className={`lead_click${index <= currentStageIndex ? '' : (index + 1)}`}>
+        {index <= currentStageIndex ? (
+          <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#FFFFFF' }} />
+        ) : (
+          <div className="lead_number">{index + 1}</div>
+        )}
       </div>
+      <div>
+        <h1 className="lead_headd">{stage.name}</h1>
+      </div>
+      {index < leadStages.length - 1 && (
+        <div className="half-arrow">
+          <ArrowForwardIosRoundedIcon style={{ width: '16px', height: '16px' }} />
+        </div>
+      )}
+    </NavLink>
+  ))}
+</div>
 
 
 
@@ -635,17 +640,19 @@ const fetchLeadScore = async () => {
 
     </div>
     <div className="lead_score_activity">
-     
-  <h1 className="lead_general_head">Lead Score </h1>
+  <h1 className="lead_general_head">Lead Score</h1>
   <div className="lead-data-chart">
-  <canvas id="leadScoreChart1" className="chart-canvas"></canvas>
-  <div className="lead_num" style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center' }}>
-  <ShowChartIcon style={{ width: '24px', height: '24px' }} />
-  {leadScore}%
-</div>
-
+    <canvas id="leadScoreChart1" className="chart-canvas"></canvas>
+    <div className="lead_num" style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <ShowChartIcon style={{ width: '24px', height: '24px', marginRight: '8px' }} />
+      {leadScore}%
+    </div>
   </div>
-  
+  <div className="lead_data_list">
+    <div className="lead_data_list_data">
+      Stage {currentStageIndex + 1} of {leadStages.length}
+    </div>
+  </div>
 </div>
 
 

@@ -96,7 +96,7 @@ import CoinStatsPage from '../pages/CoinStats/CoinStatsPage';
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 import EmailList from "../pages/Email/Email-List.jsx";
-import EmailProviders from "../pages/Email/Email-provider.jsx";
+// import EmailProviders from "../pages/Email/Email-provider.jsx";
 
 
 const getTenantIdFromUrl = () => {
@@ -110,6 +110,7 @@ const getTenantIdFromUrl = () => {
 import PdfUploader from "../pages/PDF";
 import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 import EmailAppa from "../pages/Email/Emailss.jsx";
+import GmailCallback from "../pages/Email/GmailCallback.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -340,7 +341,7 @@ export const RouteWrapper = () => {
           
 
           <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
-
+          {/* <Route path=":tenant_id/compose" element={<GmailCallback />} /> */}
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>
           <Route path=":tenant_id/bulk-import" element={<BulkImport/>}/>
           <Route path=":tenant_id/flow" element={<FlowGraph/>}/>
@@ -362,7 +363,7 @@ export const RouteWrapper = () => {
           {/* <Route path=":tenant_id/CustomModelForm"  element= {<CustomModelForm/>}/> */}
           <Route path=":tenant_id/emailss"  element= {<EmailAppa/>}/>
           <Route path=":tenant_id/email-list" element={<EmailList/>} />
-          <Route path=":tenant_id/email-provider" element={<EmailProviders/>} />
+          {/* <Route path=":tenant_id/email-provider" element={<EmailProviders/>} /> */}
           
           <Route path=":tenant_id/loyaltyinfo"  element= {<LoyaltyInfo/>}/>
           <Route path=":tenant_id/chatbot"  element= {<Chatbot/>}/>

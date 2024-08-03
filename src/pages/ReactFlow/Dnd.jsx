@@ -30,6 +30,7 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const { templateId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const tenantId = getTenantIdFromUrl();
 
@@ -42,14 +43,21 @@ const DnDFlow = () => {
     setCondition: SetCondition
   }), []);
 
+
   useEffect(() => {
     if (templateId) {
       fetchTemplate(templateId);
+    } else {
+      // If no templateId, initialize with an empty flow
+      setNodes([]);
+      setEdges([]);
+      setIsLoading(false);
     }
   }, [templateId]);
 
   const fetchTemplate = async (id) => {
     try {
+      setIsLoading(true);
       const response = await axiosInstance.get(`node-templates/${id}/`);
       const template = response.data;
       if (template && template.node_data) {
@@ -75,6 +83,11 @@ const DnDFlow = () => {
       }
     } catch (error) {
       console.error("Error fetching template:", error);
+      // If there's an error, initialize with an empty flow
+      setNodes([]);
+      setEdges([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -123,7 +136,13 @@ const DnDFlow = () => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === selectedNode.id) {
-          return { ...node, data: { ...node.data, ...updatedData } };
+          return { 
+            ...node, 
+            data: { 
+              ...node.data, 
+              ...updatedData 
+            } 
+          };
         }
         return node;
       })
@@ -157,7 +176,7 @@ const DnDFlow = () => {
       data: node.data,
       position: node.position,
     }));
-
+  
     const adjacencyList = edges.reduce((adjList, edge) => {
       const sourceIndex = parseInt(edge.source);
       const targetIndex = parseInt(edge.target);
@@ -167,33 +186,34 @@ const DnDFlow = () => {
       adjList[sourceIndex].push(targetIndex);
       return adjList;
     }, {});
-
+  
     const adjacencyListAsList = Object.values(adjacencyList);
-
+  
     const data = {
-      name: "Flow Template Name",
-      description: "Description of the flow template",
-      category: "Category",
-      createdBy: 1,
+      name: "Flow Template Name", // Consider adding an input field for this
+      description: "Description of the flow template", // Consider adding an input field for this
+      category: "Category", // Consider adding a dropdown for this
+      createdBy: 1, // Consider getting this from the user's session
       node_data: {
         nodes: formattedNodes,
         adjacencyList: adjacencyListAsList,
       },
     };
-
+  
     const url = templateId 
       ? `https://webappbaackend.azurewebsites.net/node-templates/${templateId}/`
       : "https://webappbaackend.azurewebsites.net/node-templates/";
-
+  
     const method = templateId ? 'put' : 'post';
-
+  
     axiosInstance[method](url, data)
       .then((response) => {
-        console.log('Flow response:', response.data);
+        console.log('Flow saved successfully:', response.data);
         navigate(`/${tenantId}/chatbot`);
       })
       .catch((error) => {
-        console.error("Error sending data to backend:", error);
+        console.error("Error saving flow:", error);
+        // Consider showing an error message to the user
       });
   }, [nodes, edges, templateId, tenantId, navigate]);
 
@@ -202,23 +222,27 @@ const DnDFlow = () => {
       <Sidebar />
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeClick={onNodeClick}
-            fitView
-          >
-            <Controls />
-            <MiniMap />
-            <Background />
-          </ReactFlow>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onInit={setReactFlowInstance}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeClick={onNodeClick}
+              fitView
+            >
+              <Controls />
+              <MiniMap />
+              <Background />
+            </ReactFlow>
+          )}
         </div>
       </ReactFlowProvider>
       <div className="sidebar">
