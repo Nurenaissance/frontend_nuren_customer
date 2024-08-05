@@ -283,7 +283,7 @@ const [popupContent, setPopupContent] = useState('');
     }
   };
   const handleAiButtonClick = async (card) => {
-    const prompt = `Given the lead ${card.name}, suggest how I can move it to the stage ${card.status}`;
+    const prompt = `Show me all leads`;
 
 
   
@@ -403,17 +403,19 @@ const [popupContent, setPopupContent] = useState('');
               <AiOutlineRobot style={{fontSize: '20px'}}/>
             </button>
             <Modal
-              open={popupOpen}
-              onClose={handleClosePopup}
-              aria-labelledby="ai-suggestion-popup"
-              aria-describedby="ai-suggestion-description"
-            >
-              <div className="popup-content">
-                <h2>AI Suggestion</h2>
-                <p>{popupContent}</p>
-                <button onClick={handleClosePopup}>Close</button>
-              </div>
-            </Modal>
+  open={popupOpen}
+  onClose={handleClosePopup}
+  aria-labelledby="ai-suggestion-popup"
+  aria-describedby="ai-suggestion-description"
+  className="futuristic-popup"
+>
+  <div className="popup-content">
+    <h2>AI Suggestion</h2>
+    <p>{popupContent}</p>
+    <button onClick={handleClosePopup}>Close</button>
+  </div>
+</Modal>
+
                             </div>
                             <div className="content_">
                               {columnId === 'new' && (
