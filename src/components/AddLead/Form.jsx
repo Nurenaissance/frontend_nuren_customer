@@ -201,8 +201,74 @@ useEffect(() => {
     navigate(`/${tenantId}/product`);
 
   };
+  const handleCancel = () => {
+    const isConfirmed = window.confirm("Are you sure you want to cancel? Any unsaved data will be lost.");
+    if (isConfirmed) {
+      console.log("Cancel button clicked");
+      localStorage.removeItem('leadDraft'); // Clear draft data
+      window.location.href = `../${tenantId}/lead`;
+    }
+  };
+
+  const handleSubmitForm = (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    localStorage.removeItem('leadDraft'); // Clear draft data
+    handleSubmit(event);
+  };
+
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true); // Set loading state
+    
+    try {
+      const tenantId = getTenantIdFromUrl(); // Assuming you have a function to get tenantId from URL
+      const dataToSend = {
+        ...contactData, // Assuming contactData is your form data state
+        createdBy: userId, // Assuming userId is available in scope
+        tenant: tenantId,
+        status: "Draft",
+      };
+  
+      console.log('Data to send:', dataToSend);
+  
+      // Save draft data to localStorage
+      localStorage.setItem('contactDraft', JSON.stringify(dataToSend));
+  
+      // Assuming axiosInstance is your Axios instance configured with baseURL
+      await axiosInstance.post('/leads/', dataToSend); // POST request to save draft
+  
+      console.log("Draft saved successfully");
+  
+      // Redirect to contacts list after saving draft
+      navigate(`/${tenantId}/leads`);
+    } catch (error) {
+      console.error("Error saving draft:", error);
+  
+      // Handle specific error cases
+      if (error.response) {
+        setFormErrors(error.response.data || error.message); // Set form errors from server response
+      } else {
+        setFormErrors({ networkError: 'Network Error. Please try again later.' }); // Handle network errors
+      }
+    } finally {
+      setIsSavingDraft(false); // Reset loading state regardless of success or failure
+    }
+  };
+
+  useEffect(() => {
+    const draftData = localStorage.getItem('leadDraft');
+    if (draftData) {
+      setContactData(JSON.parse(draftData));
+    }
+  }, []);
 
   return (
+    <div className="lead-form-header">
+      <h1>Leads</h1>
+      <div className="lead-buttons">
+      <button type="button" onClick={handleCancel} className="lead-cancel-button">Cancel</button>
+          <button type="save" onClick={handleSaveAsDraft} className="lead-draft-button">Save as Draft</button>
+          <button type="submit" onClick={handleSubmitForm} className="lead-save-button">Submit</button>
+          </div>
     <div className='lead_form'>
       <form onSubmit={handleSubmit}>
       <div className="form-row">
@@ -415,7 +481,7 @@ useEffect(() => {
 
 {showSuccessPopup && <SuccessPopup message={successMessage} onClose={closeSuccessPopup} />}
     </div>
-    
+    </div>
   );
 }
 

@@ -131,7 +131,7 @@ const AddInteractionForm = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="interaction-form-container">
       <h1 className="form-title">Add Interaction Form</h1>
       <form onSubmit={handleSubmit}>
       <div className="form-field">

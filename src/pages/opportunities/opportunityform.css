@@ -1,0 +1,176 @@
+.relatedOppo_back{
+    width: 150px;
+    background-color: #F3F4F6FF; /* Adjust background color as needed */
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed positioning */
+    left: 0;
+    top: 0;
+    overflow-y: auto; 
+}
+.oops_navform {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #DEE1E6;
+    
+  }
+  
+  /* Style for the back button */
+  .task_back {
+    background-color: #6D31EDFF; /* Sidebar style color */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    
+  }
+  
+  /* Form container styles */
+  .opportunityfill_forms {
+    display: flex;
+    flex-direction: column;
+    margin-left: 250px;
+  }
+  
+  .oppo_form_contain {
+    /* Container Styling */
+    border: 1px solid #DEE1E6; /* Light gray border for the box */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Space inside the box */
+    background-color: #FFFFFF; /* White background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    margin: 20px; /* Space around the box */
+    width: 80%; /* Full width of its container */
+  }
+  .btnsss_oopo {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-left: 70%;
+  }
+  
+  /* Button styles */
+  .btn-submit_cancel {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-submit_save {
+    background-color: #62CD14FF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-submit_submit {
+    background-color: #6D31EDFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointenamer;
+  }
+  .form-group select {
+    padding: 8px; /* Ensure padding is enough to display text properly */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+  }
+  
+  /* Form styles */
+  .oppo_form_fill {
+    width: 100%;
+    max-width: 800px; /* Adjust as needed */
+  }
+  
+  .oppo_form_fill .form-row {
+    margin-bottom: 15px;
+  }
+  
+  .oppo_form_fill .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #DEE1E645;
+  }
+  
+  .form-control:focus {
+    border-color: #6D31EDFF;
+  }
+  
+  .oppo_form_fill input[type="datetime-local"] {
+    /* Adjust as needed */
+  }
+  
+  .account_form_data {
+    width: 100%;
+  }
+  
+  .account_form_data .oppo_data_form {
+    width: 100%;
+  }
+  
+  .oppo_submit {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .btn-primary1 {
+    background-color: #6D31EDFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  /* Container to center the form box */
+.form-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    padding: 20px; /* Padding around the form box */
+    height: 100vh; /* Full viewport height */
+  }
+  
+  /* Box styling for the form */
+  .form-box {
+    background-color: #ffffff; /* White background for the box */
+    border: 1px solid #DEE1E6; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Padding inside the box */
+    width: 100%; /* Full width of the container */
+    max-width: 800px; /* Maximum width of the box */
+    box-sizing: border-box; /* Include padding and border in the box's total width and height */
+  }
+  
+  /* Ensure form fields fit nicely inside the box */
+  .oppo_form_fill {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Gap between form fields */
+  }
+  
+  /* Optional: Adjust form controls */
+  .form-control {
+    width: 100%; /* Full width within the column */
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #DEE1E6;
+  }
+  
+  .form-control:focus {
+    border-color: #6D31EDFF; /* Focus color */
+  }
+  

@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { Header } from "../../components/Header";
 import CreateNewAccountForm from "../ContactsTable/CreateNewAccountForm.jsx";
 import Select from "react-select";
-import "./opportunities.css";
+import "./opportunityform.css";
 import "./index.jsx";
 import axiosInstance from "../../api.jsx";
 import { useAuth } from "../../authContext.jsx";
@@ -351,9 +351,9 @@ useEffect(() => {
 
     return (
     <div>
-        <div className="oops_navform">
-      <TopNavbar/>
-    </div>
+         <div className="call_nav">
+    <TopNavbar/>
+  </div>
       <div className="opportunityfill_forms">
       {showCreateNewAccountForm && <CreateNewAccountForm />}
      

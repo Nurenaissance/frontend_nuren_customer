@@ -6,6 +6,8 @@ import { NavLink } from "react-router-dom";
 import { sendEmail } from './email.jsx'; // Import the sendEmail function
 import axiosInstance from "../../api.jsx";
 import { Delete } from "@mui/icons-material";
+import { Modal } from '@mui/material';
+import { AiOutlineRobot } from "react-icons/ai"; 
 
 
 const getTenantIdFromUrl = () => {
@@ -28,6 +30,8 @@ function Kanban({ leadCountsData }) {
   const [editingColumnId, setEditingColumnId] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [newStageTitle, setNewStageTitle] = useState('');
+  const [popupOpen, setPopupOpen] = useState(false);
+const [popupContent, setPopupContent] = useState('');
 
   const handleDoubleClick = (columnId, currentTitle) => {
     setEditingColumnId(columnId);
@@ -278,7 +282,35 @@ function Kanban({ leadCountsData }) {
       setColumns(newColumns);
     }
   };
+  const handleAiButtonClick = async (card) => {
+    const prompt = `Given the lead ${card.name}, suggest how I can move it to the stage ${card.status}`;
 
+
+  
+   
+  
+    try {
+      const response = await axiosInstance.post(`/query/`, { 
+        prompt, 
+        tenant: tenantId
+      });
+      const result = response.data;
+      // Show result in a popup
+      showLeadPopup(result);
+    } catch (error) {
+      console.error('Error fetching AI suggestion:', error);
+    }
+  };
+  
+
+  const showLeadPopup = (content) => {
+    setPopupContent(content);
+    setPopupOpen(true);
+  };
+  
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+  };
   const mapStatusToBackend = (frontendStatus) => {
     switch (frontendStatus) {
       case 'Assigned':
@@ -364,7 +396,24 @@ function Kanban({ leadCountsData }) {
         >
           <Delete style={{fontSize:'16px'}}/>
         </button>
-        <button>AI</button>
+                    <button 
+              onClick={() => handleAiButtonClick(card)}
+              className="ai-button"
+            >
+              <AiOutlineRobot style={{fontSize: '20px'}}/>
+            </button>
+            <Modal
+              open={popupOpen}
+              onClose={handleClosePopup}
+              aria-labelledby="ai-suggestion-popup"
+              aria-describedby="ai-suggestion-description"
+            >
+              <div className="popup-content">
+                <h2>AI Suggestion</h2>
+                <p>{popupContent}</p>
+                <button onClick={handleClosePopup}>Close</button>
+              </div>
+            </Modal>
                             </div>
                             <div className="content_">
                               {columnId === 'new' && (
