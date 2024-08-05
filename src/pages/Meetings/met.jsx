@@ -21,6 +21,10 @@ export const ReminderPopup = ({ subject }) => {
     </div>
   );
 };
+
+
+
+
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split("/");
@@ -41,6 +45,19 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
     related_to: "",
     createdBy: "",
   });
+  const fetchMeeting = async () => {
+    try {
+      const response = await axiosInstance.get(`/meetings/`);
+      setMeetings(response.data);
+     
+      console.log("Meeting details fetched successfully:", response.data);
+    } catch (error) {
+      console.error("Error fetching meeting details:", error);
+    }
+  };
+  useEffect(() => {
+    fetchMeeting();
+  }, []);
 
   const tenantId = getTenantIdFromUrl(); // Ensure getTenantIdFromUrl is defined
   const modelName = "Meetings";
@@ -130,16 +147,16 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
   };
 
   return (
-    <div>
+    <div >
       <div className="oppo_nav">
         <TopNavbar openMeetingForm={openMeetingForm} />
       </div>
-      <div className="calls">
-        <div className="home_left_box">
+<div className="callsss" style={{display:'flex',flexDirection:'column',marginTop:'2rem'}}  >
+        <div className="home_left_box1">
           <Sidebar />
         </div>
-        <div className="meetings-header" style={{ marginTop: "10rem", marginBottom:'10rem' }}>
-          <h1 className="meeting_head">Meetings</h1>
+        <div className="meetings-header1" style={{ display:'flex' }}>
+          <h1 className="meeting_head"style={{marginLeft:'350px'}}>Meetings</h1>
           <div className="meeting-header-buttons">
             <div>
               <Dropdown>
@@ -197,9 +214,9 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
             </div>
           </div>
         </div>
-
-        <div className="contain" style={{marginTop:'10rem'}}>
-          <div className="meet">
+    <div>
+        <div className="contained">
+          
             <div className="create">
               {modalOpen && (
                 <div className="modal-overlay">
@@ -346,12 +363,14 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
                     </form>
                   </div>
                 </div>
-              )}
+              )}  
             </div>
-          </div>
+  
+       
+        
 
           {viewMode === "table" && (
-            <div className="table10" >
+            <div className="table100" style={{marginLeft:'300px'}} >
               <table >
                 <thead >
                   <tr className="host" >
@@ -411,7 +430,8 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
               </div>
             </div>
           )}
-        </div>
+          </div>
+          </div>
       </div>
     </div>
   );
