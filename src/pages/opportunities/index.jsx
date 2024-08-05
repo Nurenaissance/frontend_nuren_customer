@@ -90,6 +90,7 @@ export const Opportunities = () => {
             <div className="opportunities-header">
               <h1 className="opportunities-heading">Opportunities</h1>
               <div className="opportunities-actions">
+            
                 <div className="opportunity_excel">
                   <Dropdown>
                     <Dropdown.Toggle variant="primary22" id="payments-dropdown9">
@@ -112,9 +113,9 @@ export const Opportunities = () => {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-                <div className="create1">
+                <div className="create1" style={{height:'auto'}}>
                   <NavLink to={`/${tenantId}/opportunity`} id="btn3">
-                    Create Opportunity
+                    + New
                   </NavLink>
                 </div>
                 <button onClick={toggleViewMode} className="view-mode-btn">

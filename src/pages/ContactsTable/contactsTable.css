@@ -333,7 +333,7 @@ line-height: 22px;
 font-weight: 400;
 color: #171A1FFF;
 position: relative;
-top: 4px;
+
 }
 .cont-first_name{
   font-family: 'Manrope';
@@ -343,7 +343,7 @@ font-weight: 700;
 color: #171A1FFF;
 position: relative;
 left: 41px;
-top: 4px;
+
 }
 .handle4{
   /* margin-left: -10%; */
@@ -1169,15 +1169,12 @@ top: -16px;
 
 
 }
-.table10--{
+.table10{
   height: 313px;
   width: 960px;
     opacity: 1;
     border-radius: 8px;
     box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-}
-.contacttablerow{
-  border: 1px solid #ddd;
 }
 
 .view-mode-select3{

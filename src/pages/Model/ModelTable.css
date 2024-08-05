@@ -39,13 +39,8 @@ th {
     color: white;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+    
 
-tr:hover {
-    background-color: #ddd;
-}
 
 .loading {
     display: flex;
@@ -180,8 +175,3 @@ tr:hover {
     margin-top: 10px;
 }
 
-h2 {
-    font-weight: bold;
-    align-items: center;
-    margin-bottom: 2rem
-}
