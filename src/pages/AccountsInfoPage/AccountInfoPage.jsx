@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom"; // Import Link
 import "./page.css";
 import uploadToBlob from "../../azureUpload.jsx";
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-
+import { useAuth } from '../../authContext.jsx'
 import { FaSearchPlus, FaSearchMinus, FaDownload } from 'react-icons/fa';
 import axios from "axios";
 import RelatedList from "../ContactsTable/RelatedList";
@@ -30,6 +30,7 @@ const AccountsPage = () => {
   const tenantId=getTenantIdFromUrl();
   const { id } = useParams(); 
     const [file, setFile] = useState(null);
+    const { userId } = useAuth();
     
     const [isEditing, setIsEditing] = useState(false);
   const [editedValues, setEditedValues] = useState({});
@@ -42,6 +43,7 @@ const AccountsPage = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [contactPersons,setContactPersons]=useState([]);
+  
 
 
   const handleMoreClick = () => {
@@ -86,7 +88,7 @@ const AccountsPage = () => {
 
       try {
         console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
 
         console.log('Sending POST request to backend...');
@@ -120,7 +122,7 @@ const AccountsPage = () => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       try {
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         setProfileImage(fileUrl);
   
         // Save the profile image URL to the backend

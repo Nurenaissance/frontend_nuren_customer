@@ -364,6 +364,7 @@ function Kanban({ leadCountsData }) {
         >
           <Delete style={{fontSize:'16px'}}/>
         </button>
+        <button>AI</button>
                             </div>
                             <div className="content_">
                               {columnId === 'new' && (

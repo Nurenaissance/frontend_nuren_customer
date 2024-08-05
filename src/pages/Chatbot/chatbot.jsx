@@ -41,6 +41,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useAuth } from '../../authContext.jsx'
+
 //import {getdata} from './chatfirebase';
 import axios from 'axios';
 //import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
@@ -61,6 +63,7 @@ const getTenantIdFromUrl = () => {
 
 const Chatbot = () => {
   const tenantId=getTenantIdFromUrl();
+  const { userId } = useAuth();
   const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -210,7 +213,7 @@ const Chatbot = () => {
 
       try {
         console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
 
         console.log('Sending POST request to backend...');

@@ -14,6 +14,8 @@ import uploadToBlob from "../../azureUpload.jsx";
 import { storage, firestore } from "./profilefirebase.jsx";
 import { ref, uploadBytes, getDownloadURL,listAll } from "firebase/storage";
 
+
+
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -27,6 +29,7 @@ const getTenantIdFromUrl = () => {
 
 
 const UserProfile = () => {
+
   const  [userId, setUserId]= useState();
   const { id } = useParams(); 
   const [user, setUser] = useState(null);
