@@ -385,11 +385,8 @@ const renderTableRows = () => {
       </select>
     </div>
   
-    <div className="accounts-container">
-        <div className="accounts-header" style={{ width: "100%" }}>
-          <h2 className="accountTableCenter">Accounts </h2>
-        
-        </div>
+    <div className>
+       
         {viewMode === "table" && (
   <div className="accounts-table-wrapper">
     <table>

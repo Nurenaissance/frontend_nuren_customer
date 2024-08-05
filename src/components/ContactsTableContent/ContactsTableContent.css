@@ -6,7 +6,7 @@
 .table tbody tr:hover {
   background-color: #e2e2e2; /* Adjust hover color as needed */
 }
-.excel-like-table {
+.excel-like-table { 
   overflow: auto; /* Enable scrolling if the table exceeds the container */
 }
 

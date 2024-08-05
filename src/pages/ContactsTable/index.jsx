@@ -495,21 +495,7 @@ export const ContactsTable = () => {
     </div>
 
       
-          <div className="records10">
-                           
-                    
-                    <select className="view-mode-select3" onChange={handleRecords1}>
-                      <option value="">10 Records per page</option>
-                      <option value="1">Option 1</option>
-                      <option value="2">Option 2</option>
-                    </select>
-            
-                
-              
-
-  
-
-          </div>
+         
         <div className="bugs10">
 
         {viewMode === "table" && (
