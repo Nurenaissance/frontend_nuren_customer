@@ -38,7 +38,7 @@ function ConvertLead() {
   const convertLead = async () => {
     setLoading(true);
     setError(null);
-
+  
     const accountFormData = {
       Name: leadData.first_name,
       phone: leadData.phone,
@@ -46,17 +46,15 @@ function ConvertLead() {
       tenant: tenantId,
       createdBy: 1
     };
-
+  
     const opportunityFormData = {
       name: `${leadData.first_name}'s Opportunity`,
       description: 'Converted from lead',
       tenant: tenantId,
       createdBy: 1,
-      stage:'NEEDS ANALYSIS'
+      stage: 1  // Assuming 1 is the primary key for the "NEEDS ANALYSIS" stage
     };
-
-    
-
+  
     try {
       await axiosInstance.post('/accounts/', accountFormData);
       await axiosInstance.post('/opportunities/', opportunityFormData);
@@ -65,7 +63,7 @@ function ConvertLead() {
       setSuccess(true);
     } catch (error) {
       setLoading(false);
-      setError("Error converting lead");
+      setError("Error converting lead: " + (error.response?.data?.stage?.[0] || error.message));
     }
   };
 
