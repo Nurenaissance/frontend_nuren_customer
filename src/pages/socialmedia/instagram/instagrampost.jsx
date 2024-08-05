@@ -35,9 +35,18 @@ import TopNavbar from '../../TopNavbar/TopNavbar';
 
 
 const urlToFile = async (url, filename, mimeType) => {
-  const res = await fetch(url);
-  const blob = await res.blob();
-  return new File([blob], filename, { type: mimeType });
+  try {
+    const response = await Promise.race([
+      fetch(url),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Fetch timeout')), 10000))
+    ]);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: mimeType });
+  } catch (error) {
+    console.error('Error in urlToFile:', error);
+    throw error;
+  }
 };
 
 
@@ -157,18 +166,28 @@ const userId = 3;
   
   const loadDraft = async (draftId) => {
     try {
-      const response = await axiosInstance.get(`drafts/${draftId}`);
-      return response.data;
+      const response = await axiosInstance.get('drafts/');
+      const allDrafts = response.data;
+      
+      // Find the specific draft by its ID
+      const specificDraft = allDrafts.find(draft => draft.id === draftId);
+      
+      if (specificDraft) {
+        return specificDraft;
+      } else {
+        throw new Error('Draft not found');
+      }
     } catch (error) {
+      console.error('Error loading draft:', error);
       throw error;
     }
   };
   
   const deleteDraft = async (draftId) => {
     try {
-      const response = await axiosInstance.delete(`drafts/${draftId}`);
-      return response.data;
+      await axiosInstance.delete(`drafts/${draftId}/`);
     } catch (error) {
+      console.error('Error deleting draft:', error);
       throw error;
     }
   };
@@ -235,29 +254,54 @@ const userId = 3;
     }
   };
 
-  const handleLoadDraft = async (draftId) => {
-    try {
-      const loadedDraft = await loadDraft(draftId);
-      setCaption(loadedDraft.caption);
-      setIsStory(loadedDraft.isStory);
-      setIsReel(loadedDraft.isReel);
-      setSelectedDate(new Date(loadedDraft.scheduledDate));
-      setSelectedTime(loadedDraft.scheduledTime);
-      if (loadedDraft.image_urls && loadedDraft.image_urls.length > 0) {
-        const filePromises = loadedDraft.image_urls.map(url => 
-          urlToFile(url, `draftImage_${Date.now()}.jpg`, 'image/jpeg')
-        );
-        const loadedFiles = await Promise.all(filePromises);
-        setFiles(loadedFiles);
-        setImage(loadedFiles[0]); // Set the first image as the main image
-      }
-      setShowDrafts(false);
-    } catch (error) {
-      console.error('Error loading draft:', error);
-      alert('Error loading draft');
+const handleLoadDraft = async (draftId) => {
+  try {
+    const loadedDraft = await loadDraft(draftId);
+    if (!loadedDraft) {
+      throw new Error('Failed to load draft');
     }
-  };
 
+    setCaption(loadedDraft.caption || '');
+    setIsStory(loadedDraft.is_story || false);
+    setIsReel(loadedDraft.is_reel || false);
+    setSelectedDate(loadedDraft.scheduled_date ? new Date(loadedDraft.scheduled_date) : new Date());
+    setSelectedTime(loadedDraft.scheduled_time || '12:00');
+
+    let loadedFiles = [];
+    if (loadedDraft.image_url && loadedDraft.image_url.length > 0) {
+      for (const url of loadedDraft.image_url) {
+        try {
+          const file = await urlToFile(url, `draftImage_${Date.now()}.jpg`, 'image/jpeg');
+          loadedFiles.push(file);
+        } catch (fileError) {
+          console.error('Error loading image file:', url, fileError);
+          // You can add the URL to a list of failed URLs if you want to inform the user
+        }
+      }
+    }
+
+    setFiles(loadedFiles);
+    if (loadedFiles.length > 0) {
+      setImage(loadedFiles[0]); // Set the first successfully loaded image as the main image
+    }
+
+    setShowDraftsPopup(false);
+
+    if (loadedFiles.length === 0 && loadedDraft.image_url && loadedDraft.image_url.length > 0) {
+      alert('The draft data has been loaded, but no images could be retrieved. They may no longer be available.');
+    } else if (loadedFiles.length < (loadedDraft.image_url ? loadedDraft.image_url.length : 0)) {
+      alert('Some images from the draft could not be loaded. They may no longer be available.');
+    }
+
+  } catch (error) {
+    console.error('Error loading draft:', error);
+    alert('Error loading draft: ' + error.message);
+  }
+};
+
+
+    
+  
   const handleDeleteDraft = async (draftId) => {
     try {
       await deleteDraft(draftId);
@@ -265,9 +309,11 @@ const userId = 3;
       alert('Draft deleted successfully!');
     } catch (error) {
       console.error('Error deleting draft:', error);
-      alert('Error deleting draft');
+      alert('Error deleting draft: ' + error.message);
     }
   };
+
+ 
 
   
   const openPopup = () => {
@@ -591,7 +637,6 @@ const userId = 3;
     setShowPopup(false);
   };
   
-
 
   const DraftsPopup = ({ drafts, onClose, onLoadDraft, onDeleteDraft }) => (
     <div className="drafts-popup-overlay">

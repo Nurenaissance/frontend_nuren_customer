@@ -641,7 +641,7 @@ export const ContactsTable = () => {
           {viewMode==='list' &&(
             <div>
             <h2>List View</h2>
-            <div className="accounts-list-container" style={{width:"180%"}}>
+            <div className="accounts-list-container" style={{width:"100%"}}>
               <ListGroup >
                 {contacts.map((contact, index) => (
                   <ListGroup.Item key={contact.id} className="accounts-list-item" >
