@@ -68,7 +68,7 @@ const Form3 = () => {
     const tenantId = getTenantIdFromUrl(); // Get tenantId from route params
 
     const [open, setOpen] = React.useState(false);
-
+    const [contacts, setContacts] = useState([]);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [users, setUsers] = useState([]);
@@ -95,6 +95,25 @@ const Form3 = () => {
         description: "",
         isActive: "",
     });
+
+    useEffect(() => {
+      const fetchContacts = async () => {
+        try {
+          const response = await axiosInstance.get('/contacts/', {
+            headers: {
+              token: localStorage.getItem('token'),
+            },
+          });
+          setContacts(response.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching contacts data:", error);
+          setIsLoading(false);
+        }
+      };
+  
+      fetchContacts();
+    }, []);
 
     const leadSourceOptions = [
         { id: 1, value: "NONE", label: "NONE" },
@@ -385,19 +404,28 @@ useEffect(() => {
       )}
     </div>
 
-              <div className="form-group col-md-6">
-                <label className="oppo_form_contact" htmlFor="contacts">Contacts</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="contacts"
-                  name="contacts"
-                  value={oppourtunityData.contacts}
-                  onChange={handleInputChange}
-                  placeholder="Enter contacts"
-                  style={{ borderColor: errorFields.contacts ? 'red' : '' }}
-                />
-              </div>
+    <div className="form-group col-md-6">
+      <label className="oppo_form_contact" htmlFor="contacts">Contacts</label>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          className="form-control"
+          id="contacts"
+          name="contacts"
+          value={oppourtunityData.contacts || ""}
+          onChange={handleInputChange}
+          style={{ borderColor: errorFields.contacts ? 'red' : '' }}
+        >
+          <option value="" disabled>Select contact</option>
+          {contacts.map((contact) => (
+            <option key={contact.id} value={contact.id}>
+              {contact.name || `${contact.first_name} ${contact.last_name}`}
+            </option>
+          ))}
+        </select>
+      )}
+    </div>
               <div className="form-group col-md-6">
                 <label className="oppo_form_lead" htmlFor="contacts">Lead Source</label>
                 <select

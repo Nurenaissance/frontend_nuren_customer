@@ -336,7 +336,7 @@ export const Sidebar = ({ onSelectModel }) => {
                 text="Chatbot"
               />
               <NurenSidebarItem
-                to={formatLink("/email-provider")}
+                to={formatLink("/emailss")}
                 icon={<EmailIcon />}
                 text="Email"
               />

@@ -1,170 +1,261 @@
-.Appa {
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  h1 {
-    text-align: center;
-  }
-  
-  .business-email-provider {
-    display: flex; /* Use flexbox to align items in a row */
-    justify-content: center; /* Center items horizontally within the container */
-    gap: 10px; /* Space between each logo */
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
+.emailApp {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
 
-.email-provider {
-    display: flex; /* Use flexbox to arrange items in a row */
-    justify-content: center; /* Center align items horizontally */
-    align-items: center; /* Center align items vertically */
-    margin-bottom: 20px; /* Add some margin for spacing */
-  }
-  
-  .email-provider img {
-    margin-top: 10rem;
-    height: 150px;
-    width: 150px;
-    align-items: center;
-    }
-  
-  .business-email-provider img:hover {
-    transform: scale(1.1);
-  }
-  
-  form_email{
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  form div_email {
-    margin-bottom: 10px;
-  }
-  
-  label_email {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"]_email,
-  input[type="password"]_email,
-  input[type="email"]_email,
-  textarea_email{
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  textarea_email {
-    resize: vertical;
-  }
-  
-  .sendemail {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .sendemail:hover {
-    background-color: #0056b3;
-  }
-  
-  p {
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .email-list {
-    margin-top: 20px;
-  }
-  
-  .email-list div {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .email-list div:last-child {
-    border-bottom: none;
-  }
-  .provider-emailss {
-    display: flex;
-    justify-content: space-evenly; /* Adjusts spacing between images */
-    align-items: center; /* Centers images vertically */
-    padding: 20px;
-    gap: 20px; /* Adds space between images */
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  
-  .provider-emailss img {
-    width: 120px; /* Adjust the width as needed */
-    height: 120px; /* Adjust the height as needed */
-    object-fit: contain; /* Ensures the image maintains aspect ratio within the specified dimensions */
-    border-radius: 10%; /* Optional: Rounds the corners of each image */
-    padding: 10px; /* Optional: Adds some padding around each image */ 
-  }
-  .provider-emailss img:hover {
-    transform: scale(1.1);
-  }
-  .email-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.emailApp h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  font-weight: 700;
+}
+
+.emailProvider {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  justify-items: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.providerItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.providerItem:hover {
+  transform: translateY(-3px);
+}
+
+.emailProviderLogo {
+  height: 50px;
+  width: 50px;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.providerName {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #34495e;
+  text-transform: capitalize;
+}
+
+.formContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.emailForm {
+  flex: 1 1 300px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  color: #34495e;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9em;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 150px;
+}
+
+.button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.button:hover {
+  background-color: #2980b9;
+}
+
+.message {
+  text-align: center;
+  margin-top: 15px;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Credential Popup Styles */
+.email-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .email-modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    width: 300px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  max-width: 350px;
+  width: 90%;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .email-modal-content h2 {
-    margin-top: 0;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: 700;
 }
 
 .email-modal-content div {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .email-modal-content label {
-    display: block;
-    margin-bottom: 5px;
+  display: block;
+  margin-bottom: 5px;
+  color: #34495e;
+  font-weight: 600;
+  font-size: 0.9em;
 }
 
 .email-modal-content input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9em;
+  transition: border-color 0.3s ease;
+}
+
+.email-modal-content input:focus {
+  border-color: #3498db;
+  outline: none;
 }
 
 .email-modal-content button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .email-modal-content button:hover {
-    background-color: #0056b3;
+  background-color: #2980b9;
+}
+
+@media (max-width: 600px) {
+  .emailApp {
+    padding: 15px;
+  }
+
+  .providerGrid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .emailProviderLogo {
+    height: 40px;
+    width: 40px;
+  }
+
+  .providerName {
+    font-size: 0.8em;
+  }
+
+  .formContainer {
+    flex-direction: column;
+  }
+
+  .emailForm {
+    flex: 1 1 100%;
+  }
 }

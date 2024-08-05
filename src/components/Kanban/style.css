@@ -191,7 +191,7 @@
     border-width: 1px; 
     border-color: #F3F4F6FF; /* neutral-200 */
     border-style: solid; 
-    box-shadow: 2px 6px 22px 0px rgba(0, 0, 0, 0.36);
+    box-shadow: -3px 1px 13px 1px rgba(0, 0, 0, 0.36);;
 
     
   }
