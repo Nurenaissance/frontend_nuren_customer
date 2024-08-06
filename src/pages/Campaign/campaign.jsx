@@ -147,21 +147,28 @@ const Campaign = () => {
     fetchFlows();
   }, []);
 
-  const fetchFlows = async () => {
-    try {
-      const response = await axiosInstance.get('/flows/');
-      const data = await response.data;
-      setFlows(data);
-    } catch (error) {
-      console.log("Error fetching flows:", error);
-    }
-  };
+  const fetchFlows = async (templateIds) => {
+  try {
+    const promises = templateIds.map(id => 
+      axiosInstance.get(`/node-templates/${id}/`)
+    );
+    const responses = await Promise.all(promises);
+    const data = responses.map(response => response.data);
+    setFlows(data);
+  } catch (error) {
+    console.log("Error fetching flows:", error);
+  }
+};
+
+// Usage:
+fetchFlows([1, 2, 3]); // Replace with actual IDs
 
   const handleFlowsButtonClick = () => {
     setShowFlows(!showFlows);
   };
 
   const handleTemplateSelect = (templateId) => {
+    console.log("Selected template ID:", templateId); // Add this log
     navigate(`/${tenantId}/flow`, { state: { templateId } });
   };
 

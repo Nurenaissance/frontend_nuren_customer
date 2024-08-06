@@ -76,89 +76,93 @@ const ShowLead = () => {
   const [currentStageIndex, setCurrentStageIndex] = useState(0);
 
 
-useEffect(() => {
-  // Determine the current stage index based on the lead's status
-  const index = leadStages.findIndex(stage => stage.name === showLead.LeadStatus);
-  setCurrentStageIndex(index !== -1 ? index : 0);
-}, [leadStages, showLead.LeadStatus]);
+  useEffect(() => {
+    const currentIndex = leadStages.findIndex(stage => stage.status === showLead.status);
+    setCurrentStageIndex(currentIndex !== -1 ? currentIndex : 0);
+  }, [leadStages, showLead.status]);
 
 
 useEffect(() => {
   fetchLeadStages();
-  const fetchLeadData = async () => {
-    try {
-      const response = await axiosInstance.get(`/leads/${id}`);
-      setShowLead(response.data);
-      // Determine the current stage index based on the lead's status
-      const index = leadStages.findIndex(stage => stage.name === response.data.LeadStatus);
-      setCurrentStageIndex(index !== -1 ? index : 0);
-    } catch (error) {
-      console.error("Error fetching lead data:", error);
-    }
-  };
   fetchLeadData();
-}, [id, leadStages]);
+}, [id]);
 
+const fetchLeadData = async () => {
+  try {
+    const response = await axiosInstance.get(`/leads/${id}`);
+    setShowLead(response.data);
+    // Find the index of the current stage based on the lead's status
+    const currentIndex = leadStages.findIndex(stage => stage.status === response.data.status);
+    setCurrentStageIndex(currentIndex !== -1 ? currentIndex : 0);
+  } catch (error) {
+    console.error("Error fetching lead data:", error);
+  }
+};
 
-  const fetchLeadStages = async () => {
-    try {
-      const response = await axiosInstance.get("/lead/stage");
-      if (response.data && Array.isArray(response.data.stages)) {
-        setLeadStages(response.data.stages);
-      } else {
-        console.error("Lead stages data is not an array:", response.data);
-        setLeadStages([]);
-      }
-    } catch (error) {
-      console.error("Error fetching lead stages:", error);
+const fetchLeadStages = async () => {
+  try {
+    const response = await axiosInstance.get("/lead/stage");
+    if (response.data && Array.isArray(response.data.stages)) {
+      setLeadStages(response.data.stages);
+    } else {
+      console.error("Lead stages data is not an array:", response.data);
       setLeadStages([]);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching lead stages:", error);
+    setLeadStages([]);
+  }
+};
 
 
 
-
-  const calculateLeadScore = () => {
-    if (leadStages.length === 0) return 0;
-    const completedStages = currentStageIndex + 1;
-    return Math.round((completedStages / leadStages.length) * 100);
-  };
+const calculateLeadScore = () => {
+  if (leadStages.length === 0) return 0;
+  const completedStages = currentStageIndex + 1;
+  return Math.round((completedStages / leadStages.length) * 100);
+};
   
-  useEffect(() => {
-    const calculatedScore = calculateLeadScore();
-    setLeadScore(calculatedScore);
+useEffect(() => {
+  const calculatedScore = calculateLeadScore();
+  setLeadScore(calculatedScore);
+
+  const ctx = document.getElementById("leadScoreChart1").getContext("2d");
   
-    const ctx = document.getElementById("leadScoreChart1").getContext("2d");
-    const chart = new Chart(ctx, {
-      type: "doughnut",
-      data: {
-        labels: ["Lead Score", " "],
-        datasets: [
-          {
-            label: "Lead Score",
-            data: [calculatedScore, 100 - calculatedScore],
-            backgroundColor: ["#4CAF50", "lightgrey"],
-            borderWidth: [0, 0],
-            hoverOffset: 10,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
+  if (window.myChart) {
+    window.myChart.destroy();
+  }
+
+  window.myChart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Lead Score", "Remaining"],
+      datasets: [
+        {
+          data: [calculatedScore, 100 - calculatedScore],
+          backgroundColor: ["#4CAF50", "#E0E0E0"],
+          borderWidth: 0,
+          hoverOffset: 4,
         },
-        cutout: "70%",
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "70%",
+      plugins: {
+        legend: {
+          display: false,
+        },
       },
-    });
-  
-    return () => {
-      chart.destroy();
-    };
-  }, []);
+    },
+  });
+
+  return () => {
+    if (window.myChart) {
+      window.myChart.destroy();
+    }
+  };
+}, [currentStageIndex, leadStages]);
 
   useEffect(() => {
     const calculatedScore = calculateLeadScore();
@@ -314,23 +318,25 @@ useEffect(() => {
 
           <div className="lead_display">
   {leadStages.map((stage, index) => (
-    <NavLink to={stage.link} className="lead_data_" key={stage.id}>
+    <div className="lead_data_" key={stage.id}>
       <div className={`lead_click${index <= currentStageIndex ? '' : (index + 1)}`}>
-        {index <= currentStageIndex ? (
+        {index < currentStageIndex ? (
           <DoneRoundedIcon style={{ width: '20px', height: '20px', fill: '#FFFFFF' }} />
+        ) : index === currentStageIndex ? (
+          <div className="lead_number" style={{ color: '#FFFFFF' }}>{index + 1}</div>
         ) : (
           <div className="lead_number">{index + 1}</div>
         )}
       </div>
       <div>
-        <h1 className="lead_headd">{stage.name}</h1>
+        <h1 className={`lead_headd ${index === currentStageIndex ? 'current-stage' : ''}`}>{stage.status}</h1>
       </div>
       {index < leadStages.length - 1 && (
         <div className="half-arrow">
           <ArrowForwardIosRoundedIcon style={{ width: '16px', height: '16px' }} />
         </div>
       )}
-    </NavLink>
+    </div>
   ))}
 </div>
 
@@ -640,20 +646,21 @@ useEffect(() => {
 
     </div>
     <div className="lead_score_activity">
-  <h1 className="lead_general_head">Lead Score</h1>
-  <div className="lead-data-chart">
-    <canvas id="leadScoreChart1" className="chart-canvas"></canvas>
-    <div className="lead_num" style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <ShowChartIcon style={{ width: '24px', height: '24px', marginRight: '8px' }} />
-      {leadScore}%
-    </div>
-  </div>
-  <div className="lead_data_list">
-    <div className="lead_data_list_data">
-      Stage {currentStageIndex + 1} of {leadStages.length}
-    </div>
-  </div>
-</div>
+        <h1 className="lead_general_head">Lead Score</h1>
+        <div className="lead-data-chart">
+          <canvas id="leadScoreChart1" className="chart-canvas"></canvas>
+          <div className="lead_num" style={{ fontFamily: 'Lexend', fontSize: '24px', lineHeight: '36px', fontWeight: 700, color: '#1DD75BFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ShowChartIcon style={{ width: '24px', height: '24px', marginRight: '8px' }} />
+            {calculateLeadScore()}%
+          </div>
+        </div>
+        <div className="lead_data_list">
+          <div className="lead_data_list_data">
+            Stage {currentStageIndex + 1} of {leadStages.length}
+          </div>
+        </div>
+      </div>
+
 
 
   </div>
