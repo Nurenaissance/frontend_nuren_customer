@@ -93,12 +93,7 @@ export const LeadPage = () => {
           <h1 className="leads-heading">Leads</h1>
 
           <div className="lead_add_btn">
-            <div className="navlinks">
-              <NavLink to={`/${tenantId}/addlead`} style={{ backgroundColor: '#62CD14FF',color:'white', padding:'1rem', borderRadius:'4px', marginRight:'2rem' }}>+ New</NavLink>
-              <button onClick={toggleViewMode} className="view-mode-btn">
-                {viewMode === "kanban" ? "Table View" : "Kanban View"}
-              </button>
-            </div>
+          
             <div className="btn-container">
               <Dropdown>
                 <Dropdown.Toggle variant="primary" id="payments-dropdown" className="excel-dropdown-menu_lead" style={{marginLeft:'1rem', marginRight:'1rem'}}>
@@ -119,6 +114,13 @@ export const LeadPage = () => {
                 </Dropdown.Menu>
               </Dropdown>
             </div>
+            <div className="navlinks">
+              <NavLink to={`/${tenantId}/addlead`} style={{ backgroundColor: '#62CD14FF',color:'white', padding:'1rem', borderRadius:'4px', marginRight:'2rem' }}>+ New</NavLink>
+              <button onClick={toggleViewMode} className="view-mode-btn">
+                {viewMode === "kanban" ? "Table View" : "Kanban View"}
+              </button>
+            </div>
+           
           </div>
           {viewMode === "kanban" ? (
   <div className="kanban-container">

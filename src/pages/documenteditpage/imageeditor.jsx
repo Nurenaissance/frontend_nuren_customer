@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import uploadToBlob from "../../azureUpload.jsx";
 import './imageeditor.css';
+import { useAuth } from '../../authContext.jsx'
+
 const secretKey = import.meta.env.VITE_MY_KEY_FOR_AI;
 const samplePrompts = [
   "You are a professional graphic designer. Create the marketing graphics for the following request. Be very professional and do not display text unless specifically asked =>",
@@ -12,6 +14,7 @@ const samplePrompts = [
 ];
 
 const ImageEditor = () => {
+  const { userId } = useAuth();
   const [base64Data, setBase64Data] = useState('');
   const [selectedPrompt, setSelectedPrompt] = useState(samplePrompts[0]);
   const [additionalSpecifications, setAdditionalSpecifications] = useState('');
@@ -105,7 +108,7 @@ const ImageEditor = () => {
       console.log("Starting upload to Azure...");
       const blob = await fetch(base64Data).then(res => res.blob());
       console.log("Blob created:", blob);
-      const uploadedUrl = await uploadToBlob(new File([blob], `${uuidv4()}.png`, { type: blob.type }), 'll');
+      const uploadedUrl = await uploadToBlob(new File([blob], `${uuidv4()}.png`, { type: blob.type }),userId,tenantId);
       console.log('Image uploaded to Azure:', uploadedUrl);
 
       if (!uploadedUrl) {

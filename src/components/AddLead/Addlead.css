@@ -26,7 +26,7 @@
     border-radius: 0px; 
     cursor: pointer; 
     white-space: nowrap; 
-    
+
   }
   /* Header Menu 2 - Selected item */
   .header-menu .header-item:focus {
@@ -141,7 +141,7 @@
     background-color: #F3F4F6FF;
   }
   .lead_form{
-    width: 1096px;
+    width: 750px;
     background: #F8F9FAFF;
     border-radius: 8px;
     border-width: 1px;
@@ -149,7 +149,7 @@
     border-style: solid;
     box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
     margin-top: 60px;
-    margin-left: 250px;
+    margin-left: 200px;
   }
 
  .lead_title{
@@ -174,16 +174,17 @@
   border-color: #dee1e645;
   outline: none;
   margin-bottom: 20px;
-  margin-left: 40px;
 }
  .form-group{
   margin-bottom: -2px;
  
  }
- /* Base styles */
+ .lead-form-header h1{
+  font-weight: bold;
+ }
 .lead_form {
-  width: 100%; /* Take full width of the container */
-  height: auto; /* Adjust height based on content */
+  width: 90%; /* Take full width of the container */
+  height: 800px; /* Adjust height based on content */
   background: #F8F9FAFF;
   border-radius: 8px;
   border-width: 1px;
@@ -191,6 +192,7 @@
   border-style: solid;
   box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
   margin-top: 60px;
+  margin-bottom: 5rem;
   padding: 20px; /* Add padding for better spacing */
 }
 
@@ -204,6 +206,68 @@
   margin-bottom: 10px;
 }
 
+.lead-buttons{
+  display: flex;
+  gap: 20px;
+  padding-left: 800px;
+  position: relative;
+  top: 10px;
+  
+   }
+   .lead-cancel-button{
+    width: 140px;
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manrope';
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #FFFFFFFF;
+    background: #DE3B40FF;
+    opacity: 1;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+   }
+   .lead-draft-button{
+    width: 140px;
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manrope';
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #FFFFFFFF;
+    background: #62CD14FF;
+    opacity: 1;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+   }
+   .lead-save-button{
+    width: 140px;
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manrope';
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #FFFFFFFF;
+    background: #6D31EDFF;
+    opacity: 1;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+   }
 .form-control {
   width: 100%;
   padding-left: 12px;

@@ -15,6 +15,7 @@
   box-shadow: 0px 17px 35px #171a1f, 0px 0px 2px #171a1f;
   position: relative; /* Change from absolute to relative */
   margin-bottom: 20px; /* Add margin to create space between form and table */
+  margin-left: 400px;
 }
 
 .excel-dropdown-menu_call {
@@ -117,7 +118,7 @@
 
 .meeting-form-container10 {
   width: 700px;
-  height: 900px;
+  height: 700px;
   background: #FAFAFBFF;
   border-radius: 8px;
   border-width: 1px;

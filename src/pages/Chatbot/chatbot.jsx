@@ -11,6 +11,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
+import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import { useAuth } from '../../authContext.jsx'
+
+//import {getdata} from './chatfirebase';
+import axios from 'axios';
+//import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
+//import { app, db } from '../socialmedia/instagram/firebase.js';
+//import { onSnapshot } from "firebase/firestore";
+import io from 'socket.io-client';
+
+const socket = io('https://whatsappbotserver.azurewebsites.net/');
+
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -22,6 +38,8 @@ const getTenantIdFromUrl = () => {
 
 const Chatbot = () => {
   const tenantId=getTenantIdFromUrl();
+  const { userId } = useAuth();
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
   const [searchText, setSearchText] = useState('');
@@ -132,7 +150,7 @@ const Chatbot = () => {
 
       try {
         console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
 
         console.log('Sending POST request to backend...');

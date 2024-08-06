@@ -6,6 +6,8 @@ import "./TaskTable.jsx";
 import axiosInstance from "../../api.jsx";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 import "./task.css";
+import { useAuth } from '../../authContext.jsx'
+
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -16,6 +18,7 @@ const getTenantIdFromUrl = () => {
   return null;
 };
 export const Taskinfo=()=>{
+  const { userId } = useAuth();
   const tenantId = getTenantIdFromUrl();
   const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +67,7 @@ export const Taskinfo=()=>{
 
       try {
         console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
 
         console.log('Sending POST request to backend...');
