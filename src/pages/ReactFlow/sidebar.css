@@ -1,6 +1,7 @@
 .sidebar-flow {
     animation: openSideBar 200ms ease-in;
     background: linear-gradient(to left, #f0f0f0, #e0e0e0);
+    margin-top: -60px !important;
     height: 100vh;
     padding: 1rem;
     position: fixed;

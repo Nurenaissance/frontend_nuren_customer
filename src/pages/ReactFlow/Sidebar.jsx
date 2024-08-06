@@ -13,7 +13,7 @@ const SidebarFlow = () => {
     background: 'linear-gradient(to left, #f0f0f0, #e0e0e0)',
     height: '100vh',
     padding: '1rem',
-    // position: 'fixed',
+    position: 'fixed',
     left: 0,
     width: '25rem',
     boxShadow: '2px 0 5px rgba(0, 0, 0, 0.2)',

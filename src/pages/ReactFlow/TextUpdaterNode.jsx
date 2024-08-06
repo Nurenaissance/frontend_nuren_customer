@@ -12,15 +12,16 @@ const handleStyle = { left: 0 };
 export const CustomNode = ({ data, handleNodeDelete, onNodeClick, onCopy, onDelete, }) => {
   return (
     <div
-      style={{
-        width: "200px",
-        border: "2px solid #ddd",
-        textAlign: "center",
-        borderRadius: "5px",
-        padding: "0px",
-      }}
+    style={{
+      width: "200px",
+      border: "2px solid #ddd",
+      textAlign: "center",
+      borderRadius: "5px",
+      padding: "0px",
+      position: "relative",
+    }}
     >
-       <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
         <IconButton onClick={() => onCopy(id)} size="small">
           <ContentCopyIcon fontSize="small" />
         </IconButton>
@@ -92,7 +93,7 @@ export const ButtonNode = ({ isConnectable }) => {
 
   return (
     <div className="button-node">
-      <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+       <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
         <IconButton onClick={() => onCopy(id)} size="small">
           <ContentCopyIcon fontSize="small" />
         </IconButton>
@@ -233,8 +234,8 @@ export const SendMessage = ({ isConnectable, onDelete, id }) => {
 
   return (
     <div style={{border:'2px black solid', backgroundColor:'#FF7A59', borderRadius:'8px', padding:'1rem', position: 'relative' }}>
-      <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
-        <IconButton size="small">
+       <div style={{ position: "absolute", top: "5px", right: "5px", zIndex: 10 }}>
+        <IconButton onClick={() => onCopy(id)} size="small">
           <ContentCopyIcon fontSize="small" />
         </IconButton>
         <IconButton onClick={() => onDelete(id)} size="small">

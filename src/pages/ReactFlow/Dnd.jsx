@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -11,11 +11,24 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { CustomNode, TextUpdaterNode, ButtonNode, SendMessage, AskQuestion, SetCondition } from './TextUpdaterNode';
+import './dnd.css'; 
+import { useNodeActions } from './UseNodeActions';
 import Sidebar from "./Sidebar";
-import "./dnd.css";
 import axiosInstance from "../../api.jsx";
+import { dummyFlowData } from './dummyData';
 
-let id = 0;
+const initialNodes = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Input Node' },
+    position: { x: 250, y: 25 },
+  },
+];
+
+const initialEdges = [];
+
+let id = 2;
 const getId = () => `${id++}`;
 
 const getTenantIdFromUrl = () => {
@@ -23,16 +36,108 @@ const getTenantIdFromUrl = () => {
   return pathArray.length >= 2 ? pathArray[1] : null;
 };
 
+const mapBackendDataToNodes = (backendData) => {
+  if (!backendData || !backendData.node_data || !Array.isArray(backendData.node_data.nodes)) {
+    console.error('Invalid backend data structure:', backendData);
+    return [];
+  }
+  return backendData.node_data.nodes.map(item => {
+    let nodeType, nodeData;
+
+    switch (item.type) {
+      case 'customNode':
+        nodeType = 'customNode';
+        nodeData = {
+          id: item.id.toString(),
+          type: 'customNode',
+          data: {
+            heading: item.data.heading,
+            content: item.data.content,
+            headbg: item.data.headbg || 'orange',
+          },
+          position: item.position || { x: 0, y: 0 }
+        };
+        break;
+      case 'sendMessage':
+        nodeType = 'sendMessage';
+        nodeData = {
+          id: item.id.toString(),
+          type: 'sendMessage',
+          data: {
+            label: item.data.label,
+            content: item.data.content
+          },
+          position: item.position || { x: 0, y: 0 }
+        };
+        break;
+      case 'askQuestion':
+        nodeType = 'askQuestion';
+        nodeData = {
+          id: item.id.toString(),
+          type: 'askQuestion',
+          data: {
+            label: item.data.label,
+            content: item.data.content,
+            options: item.data.options
+          },
+          position: item.position || { x: 0, y: 0 }
+        };
+        break;
+      case 'setCondition':
+        nodeType = 'setCondition';
+        nodeData = {
+          id: item.id.toString(),
+          type: 'setCondition',
+          data: {
+            label: item.data.label,
+            variable1: item.data.variable1,
+            conditionType: item.data.conditionType,
+            variable2: item.data.variable2
+          },
+          position: item.position || { x: 0, y: 0 }
+        };
+        break;
+      default:
+        nodeType = item.type;
+        nodeData = {
+          id: item.id.toString(),
+          type: item.type,
+          data: item.data,
+          position: item.position || { x: 0, y: 0 }
+        };
+    }
+
+    return nodeData;
+  });
+};
+
+const mapBackendDataToEdges = (backendData) => {
+  return backendData.node_data.adjacencyList.flatMap((targets, sourceIndex) => 
+    targets.map((target, index) => ({
+      id: `e${sourceIndex + 1}-${index}`,
+      source: (sourceIndex + 1).toString(),
+      target: target.toString(),
+    }))
+  );
+};
+
 const DnDFlow = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const { templateId } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
   const tenantId = getTenantIdFromUrl();
+  const navigate = useNavigate();
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [title, setTitle] = useState('');
+  const [editId, setEditId] = useState();
+  const [selectedNodeId, setSelectedNodeId] = useState();
+  const { handleCopyNode, handleDeleteNode } = useNodeActions(setNodes, setEdges);
+  const location = useLocation();
+  const templateId = location.state?.templateId;
+  console.log("Received template ID:", templateId);
 
   const nodeTypes = useMemo(() => ({ 
     textUpdater: TextUpdaterNode,
@@ -43,52 +148,76 @@ const DnDFlow = () => {
     setCondition: SetCondition
   }), []);
 
-
   useEffect(() => {
-    if (templateId) {
+    const storedData = localStorage.getItem('flowData');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setNodes(mapBackendDataToNodes(parsedData));
+      setEdges(mapBackendDataToEdges(parsedData));
+    } else if (templateId) {
       fetchTemplate(templateId);
     } else {
-      // If no templateId, initialize with an empty flow
-      setNodes([]);
-      setEdges([]);
-      setIsLoading(false);
+      // Use dummy data if no stored data or templateId is provided
+      const mappedNodes = mapBackendDataToNodes(dummyFlowData);
+      const mappedEdges = mapBackendDataToEdges(dummyFlowData);
+      setNodes(mappedNodes);
+      setEdges(mappedEdges);
     }
   }, [templateId]);
 
-  const fetchTemplate = async (id) => {
-    try {
-      setIsLoading(true);
-      const response = await axiosInstance.get(`node-templates/${id}/`);
-      const template = response.data;
-      if (template && template.node_data) {
-        const { nodes: templateNodes, adjacencyList } = template.node_data;
-        
-        const transformedNodes = templateNodes.map(node => ({
-          id: node.id.toString(),
-          type: node.type,
-          data: node.data,
-          position: node.position || { x: Math.random() * 500, y: Math.random() * 500 },
-        }));
-  
-        const transformedEdges = adjacencyList.flatMap((targets, sourceIndex) => 
-          targets.map(target => ({
-            id: `e${sourceIndex}-${target}`,
-            source: sourceIndex.toString(),
-            target: target.toString(),
-          }))
-        );
 
-        setNodes(transformedNodes);
-        setEdges(transformedEdges);
+ const fetchTemplate = async (id) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axiosInstance.get(`/node-templates/${id}/`);
+      // const template = response.data;
+      const template = dummyFlowData;
+      if (template && template.node_data && Array.isArray(template.node_data.nodes)) {
+        const mappedNodes = mapBackendDataToNodes(template);
+        const mappedEdges = mapBackendDataToEdges(template);
+        setNodes(mappedNodes);
+        setEdges(mappedEdges);
+      } else {
+        throw new Error('Invalid template data structure');
       }
     } catch (error) {
       console.error("Error fetching template:", error);
-      // If there's an error, initialize with an empty flow
-      setNodes([]);
-      setEdges([]);
+      setError("Failed to load template. Please try again.");
+      setNodes(initialNodes);
+      setEdges(initialEdges);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const onNodeDoubleClick = (e, node) => {
+    setTitle(node.data?.heading || '');
+    setEditValue(node.data?.content || '');
+    setEditId(node.id);
+  };
+
+  const onNodeClick = (e, node) => {
+    setSelectedNodeId(node.id);
+    let action = node.data.selectedOption;
+
+    if (action === 'edit') {
+      handleEdit();
+    } else if (action === 'delete') {
+      handleDeleteNode(node.id);
+    } else if (action === 'copy') {
+      handleCopyNode(node.id);
+    }
+  };
+
+  const handleEdit = () => {
+    setNodes(nodes.map(node => 
+      node.id === editId
+        ? { ...node, data: { ...node.data, content: editValue, heading: title } }
+        : node
+    ));
+    setEditValue("");
+    setTitle("");
   };
 
   const onConnect = useCallback(
@@ -104,161 +233,124 @@ const DnDFlow = () => {
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
-  
       const type = event.dataTransfer.getData("application/reactflow");
-  
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
-  
+      if (!type) return;
+
       const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
-  
+
       const newNode = {
         id: getId(),
         type,
         position,
         data: { label: `${type} node` },
       };
-  
+
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance]
   );
 
-  const onNodeClick = useCallback((event, node) => {
-    setSelectedNode(node);
-  }, []);
-
-  const handleUpdateNode = useCallback((updatedData) => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === selectedNode.id) {
-          return { 
-            ...node, 
-            data: { 
-              ...node.data, 
-              ...updatedData 
-            } 
-          };
-        }
-        return node;
-      })
-    );
-  }, [selectedNode]);
-
-  const handleDeleteNode = useCallback((nodeId) => {
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-    setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-  }, []);
-
-  const handleCopyNode = useCallback((nodeId) => {
-    const nodeToCopy = nodes.find((node) => node.id === nodeId);
-    if (nodeToCopy) {
-      const newNode = {
-        ...nodeToCopy,
-        id: getId(),
-        position: {
-          x: nodeToCopy.position.x + 50,
-          y: nodeToCopy.position.y + 50,
-        },
-      };
-      setNodes((nds) => [...nds, newNode]);
-    }
-  }, [nodes]);
-
-  const sendDataToBackend = useCallback(() => {
-    const formattedNodes = nodes.map((node) => ({
+  const sendDataToBackend = () => {
+    const formattedNodes = nodes.map(node => ({
       id: parseInt(node.id),
       type: node.type,
       data: node.data,
-      position: node.position,
+      position: node.position
     }));
-  
+
     const adjacencyList = edges.reduce((adjList, edge) => {
-      const sourceIndex = parseInt(edge.source);
-      const targetIndex = parseInt(edge.target);
-      if (!adjList[sourceIndex]) {
-        adjList[sourceIndex] = [];
+      const { source, target } = edge;
+      if (!adjList[parseInt(source)]) {
+        adjList[parseInt(source)] = [];
       }
-      adjList[sourceIndex].push(targetIndex);
+      adjList[parseInt(source)].push(parseInt(target));
       return adjList;
     }, {});
-  
-    const adjacencyListAsList = Object.values(adjacencyList);
-  
+
     const data = {
-      name: "Flow Template Name", // Consider adding an input field for this
-      description: "Description of the flow template", // Consider adding an input field for this
-      category: "Category", // Consider adding a dropdown for this
-      createdBy: 1, // Consider getting this from the user's session
+      name: "Flow Template Name",
+      description: "Description of the flow template",
+      category: "Category",
+      createdBy: 1,
       node_data: {
         nodes: formattedNodes,
-        adjacencyList: adjacencyListAsList,
+        adjacencyList: Object.values(adjacencyList)
       },
     };
-  
+
+    // Store the data locally
+    localStorage.setItem('flowData', JSON.stringify(data));
+
     const url = templateId 
       ? `https://webappbaackend.azurewebsites.net/node-templates/${templateId}/`
       : "https://webappbaackend.azurewebsites.net/node-templates/";
-  
+
     const method = templateId ? 'put' : 'post';
-  
+
     axiosInstance[method](url, data)
       .then((response) => {
-        console.log('Flow saved successfully:', response.data);
+        console.log('Flow response:', response.data);
         navigate(`/${tenantId}/chatbot`);
       })
       .catch((error) => {
-        console.error("Error saving flow:", error);
-        // Consider showing an error message to the user
+        console.error("Error sending data to backend:", error);
       });
-  }, [nodes, edges, templateId, tenantId, navigate]);
+  };
+
+  const onCopy = useCallback((id) => {
+    setNodes((prevNodes) => {
+      const nodeToCopy = prevNodes.find((node) => node.id === id);
+      if (!nodeToCopy) return prevNodes;
+      
+      const newNode = {
+        ...nodeToCopy,
+        id: `${nodeToCopy.id}-copy-${Date.now()}`,
+        position: {
+          x: nodeToCopy.position.x + 20,
+          y: nodeToCopy.position.y + 20,
+        },
+      };
+      
+      return [...prevNodes, newNode];
+    });
+  }, []);
+  
+  const onDelete = useCallback((id) => {
+    setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
+  }, []);
+
 
   return (
     <div className="dndflow">
+      <div className="updatenode">
       <Sidebar />
+      </div>
+      <button className="send-button" onClick={sendDataToBackend}>Send Data to Backend</button>
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onInit={setReactFlowInstance}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              onNodeClick={onNodeClick}
-              fitView
-            >
-              <Controls />
-              <MiniMap />
-              <Background />
-            </ReactFlow>
-          )}
-        </div>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onNodeDoubleClick={onNodeDoubleClick}
+            onNodeClick={onNodeClick}
+            fitView
+          >
+            <Controls />
+            <MiniMap />
+            <Background />
+          </ReactFlow>
+        </div>  
       </ReactFlowProvider>
-      <div className="sidebar">
-        <button onClick={sendDataToBackend}>Save Flow</button>
-        {selectedNode && (
-          <div>
-            <h3>Edit Node</h3>
-            <input
-              value={selectedNode.data.label}
-              onChange={(evt) => handleUpdateNode({ label: evt.target.value })}
-            />
-            <button onClick={() => handleDeleteNode(selectedNode.id)}>Delete</button>
-            <button onClick={() => handleCopyNode(selectedNode.id)}>Copy</button>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
