@@ -13,6 +13,8 @@ import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 import TextSnippetRoundedIcon from '@mui/icons-material/TextSnippetRounded';
 import CallRoundedIcon from '@mui/icons-material/CallRounded';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
+import { useAuth } from '../../authContext.jsx'
+
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 
 import "./index.jsx";
@@ -25,6 +27,7 @@ const getTenantIdFromUrl = () => {
 };
 
 const ContactInfo = ( ) => {
+  const {userId}=useAuth();
 const tenantId=getTenantIdFromUrl();
   // const [showCadence, setShowCadence] = useState(false);
   const handleAddCadence = () => {
@@ -180,7 +183,7 @@ const [selectedFile, setSelectedFile] = useState(null);
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       try {
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         setProfileImage(fileUrl);
         console.log(profileImage);
         console.log(fileUrl);
@@ -307,7 +310,7 @@ const [selectedFile, setSelectedFile] = useState(null);
   
       try {
         console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile);
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
   
         console.log('Sending POST request to backend...');

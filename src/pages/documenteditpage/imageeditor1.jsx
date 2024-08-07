@@ -7,6 +7,7 @@ import uploadToBlob from "../../azureUpload.jsx";
 import './style.css';
 import { Sidebar } from '../../components/Sidebar';
 import axiosInstance from '../../api.jsx';
+import { useAuth } from '../../authContext.jsx'
 const secretKey = import.meta.env.VITE_MY_KEY_FOR_AI;
 
 const getTenantIdFromUrl = () => {
@@ -34,6 +35,7 @@ const samplePrompts = [
 ];
 
 const ImageEditorComponent = ({ onUpload }) => {
+  const { userId } = useAuth();
   const tenantId = getTenantIdFromUrl();
   const editorRef = useRef(null);
   const [prompt, setPrompt] = useState(samplePrompts[0]);
@@ -188,7 +190,7 @@ const ImageEditorComponent = ({ onUpload }) => {
       const blob = await fetch(editedImage).then(res => res.blob());
 
       // Upload the blob to Azure Blob Storage
-      const uploadedUrl = await uploadToBlob(new File([blob], `${uuidv4()}.png`, { type: blob.type }));
+      const uploadedUrl = await uploadToBlob(new File([blob], `${uuidv4()}.png`, { type: blob.type }),userId,tenantId);
       console.log('Image uploaded to Azure:', uploadedUrl);
 
       if (onUpload) {

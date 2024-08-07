@@ -111,6 +111,7 @@ import PdfUploader from "../pages/PDF";
 import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 import EmailAppa from "../pages/Email/Emailss.jsx";
 import GmailCallback from "../pages/Email/GmailCallback.jsx";
+// import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 
 
 // import CustomModelForm from "../pages/CustomModel/customform";
@@ -339,7 +340,6 @@ export const RouteWrapper = () => {
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
           
-
           <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
           {/* <Route path=":tenant_id/compose" element={<GmailCallback />} /> */}
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>

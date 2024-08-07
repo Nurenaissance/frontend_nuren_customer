@@ -3,6 +3,7 @@
   min-height: 100vh;
   padding: 3rem;
   background-color: #f0f4f8;
+  margin-left: 220px;
 }
 
 .lead_info_topnav{
@@ -408,6 +409,7 @@
   background-color: #f0f4f8;
   padding: 1rem;
   border-radius: 8px;
+  overflow-y: auto;
 }
 
 .lead_stage {
@@ -504,4 +506,228 @@
   font-size: 24px;
   font-weight: 700;
   color: #4CAF50;
+}
+
+.lead_display {
+  display: flex;
+  justify-content: flex-start;
+  background-color: #f0f4f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f0f4f8;
+}
+
+.lead_display::-webkit-scrollbar {
+  height: 8px;
+}
+
+.lead_display::-webkit-scrollbar-track {
+  background: #f0f4f8;
+}
+
+.lead_display::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.lead_data_ {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  min-width: 150px;
+  background-color: #ffffff;
+}
+
+.current-stage {
+  font-weight: bold;
+  color: #6D31ED;
+}
+
+.lead_data_:last-child {
+  margin-right: 0;
+}
+
+.lead_data_:hover {
+  background-color: #e0e7ff;
+  transform: translateY(-2px);
+}
+
+.lead_click, .lead_click1, .lead_click2 {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.lead_headd {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.half-arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Enhanced layout for lead information */
+.lead_info_container {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #ffffff;
+}
+
+.lead_info_container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lead_info_container::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.lead_info_container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.lead_info_container-data {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Improved styling for lead details */
+.Lead_general_box {
+  background-color: #f7fafc;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.Lead_general_box:hover {
+  background-color: #edf2f7;
+  transform: translateY(-2px);
+}
+
+.head_Lead_ {
+  font-size: 14px;
+  color: #4a5568;
+  margin-bottom: 5px;
+}
+
+.lead_head_data {
+  font-size: 16px;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* Enhanced upcoming activities section */
+.upcoming_lead_activity {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+}
+
+.small_lead_container {
+  background-color: #f7fafc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.lead_Internal {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.lead_Internal_data {
+  display: flex;
+  align-items: center;
+  color: #718096;
+  font-size: 14px;
+}
+
+/* Improved lead score activity section */
+.lead_score_activity {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+}
+
+.lead-data-chart {
+  position: relative;
+  height: 180px;
+  margin-bottom: 20px;
+}
+
+.lead_num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: 700;
+  color: #4CAF50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lead_data_list_data {
+  font-size: 14px;
+  color: #2e704c;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Responsive design improvements */
+@media (max-width: 1024px) {
+  .big-lead-container {
+    flex-direction: column;
+  }
+
+  .general-lead-container,
+  .upcoming_lead_activity,
+  .lead_score_activity {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .lead_info_container-data {
+    grid-template-columns: 1fr;
+  }
+
+  .lead_display {
+    padding: 10px;
+  }
+
+  .lead_data_ {
+    min-width: 120px;
+  }
 }

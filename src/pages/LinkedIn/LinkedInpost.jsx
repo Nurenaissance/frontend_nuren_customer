@@ -15,6 +15,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import axios from 'axios';
 import axiosInstance from '../../api.jsx';
+import { useAuth } from '../../authContext.jsx'
 
 
 const getTenantIdFromUrl = () => {
@@ -27,6 +28,7 @@ const getTenantIdFromUrl = () => {
 };
 
 const LinkedInPost = () => {
+  const { userId } = useAuth();
   const tenantId=getTenantIdFromUrl();
   const [text, setText] = useState('');
   const [dragging, setDragging] = useState(false);
@@ -244,7 +246,7 @@ const handleGenerateCaption = async () => {
       try {
         // Upload the file to Azure Blob Storage
         console.log('Uploading file to Azure Blob Storage...');
-      const fileUrl = await uploadToBlob(selectedFile);
+      const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
         console.log('File uploaded to Azure, URL:', fileUrl);
 
        

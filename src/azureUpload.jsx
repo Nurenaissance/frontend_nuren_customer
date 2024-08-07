@@ -6,28 +6,30 @@ const sas = "sv=2022-11-02&ss=bfqt&srt=co&sp=rwdlacupiytfx&se=2025-06-01T16:13:3
 const containerName = 'pdf';
 const blobServiceClient = new BlobServiceClient(`https://${account}.blob.core.windows.net/?${sas}`);
 
-const uploadToBlob = async (file) => {
+const uploadToBlob = async (file, userId, tenantId) => {
   try {
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    const blobName = file.name + '-' + Date.now(); // Appending timestamp to the file name for uniqueness
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    // Construct the unique file name
+    const originalFileName = file.name;
+    const fileExtension = originalFileName.split('.').pop(); // Get the file extension
+    const newFileName = `${originalFileName.split('.')[0]}_${userId}_${tenantId}.${fileExtension}`; // Create the new file name
+
+    const blockBlobClient = containerClient.getBlockBlobClient(newFileName);
 
     const uploadBlobResponse = await blockBlobClient.uploadData(file, {
       blobHTTPHeaders: {
-        blobContentType: file.type
-      }
+        blobContentType: file.type,
+      },
     });
 
-    console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
+    console.log(`Upload block blob ${newFileName} successfully`, uploadBlobResponse.requestId);
 
     return blockBlobClient.url; // Return the URL of the uploaded file
   } catch (error) {
     console.error('Error uploading file to Azure:', error);
     throw error;
   }
-
-  
 };
 
 export default uploadToBlob;

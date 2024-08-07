@@ -90,22 +90,6 @@ height: 180px;
 
 
 /*changes in table view*/
-.user1{
-  font-family: 'Lexend';
-font-size: 14px;
-line-height: 22px;
-font-weight: 600;
-color: #565D6DFF;
-position: relative;
-left: 1px;
-}
-.username1,.useremail1,.useraccount1,.usercontact1{
-  font-family: 'Lexend';
-font-size: 14px;
-line-height: 22px;
-font-weight: 400;
-color: #565D6DFF;
-}
 
 
 
@@ -333,7 +317,7 @@ line-height: 22px;
 font-weight: 400;
 color: #171A1FFF;
 position: relative;
-top: 4px;
+
 }
 .cont-first_name{
   font-family: 'Manrope';
@@ -343,7 +327,7 @@ font-weight: 700;
 color: #171A1FFF;
 position: relative;
 left: 41px;
-top: 4px;
+
 }
 .handle4{
   /* margin-left: -10%; */
@@ -352,11 +336,11 @@ top: 4px;
   border-radius: 4px 4px 4px 4px;
   width: 120px;
   align-items: center;
-  
+ 
 
   color: white;
   background: #FFFFFFFF;
-  background: #4CA110FF;
+  background: #62CD14;
   font-weight: 400;
   font-family: 'Manrope';
   font-size: 14px;
@@ -1169,15 +1153,12 @@ top: -16px;
 
 
 }
-.table10--{
+.table10{
   height: 313px;
   width: 960px;
     opacity: 1;
     border-radius: 8px;
     box-shadow: 0px 8px 17px #171a1f, 0px 0px 2px #171a1f;
-}
-.contacttablerow{
-  border: 1px solid #ddd;
 }
 
 .view-mode-select3{
@@ -3346,6 +3327,7 @@ bottom: 13rem;
 }
 .contain1{
   position: relative;
+  margin-bottom: -40px;
  /* bottom: 7rem;*/
 }
 .contactinfo_accountName1,.contactinfo_email1,.contactinfo_leadSource1,.contactinfo.vendorName1{

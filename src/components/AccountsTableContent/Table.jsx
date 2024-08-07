@@ -274,9 +274,9 @@ const renderTableRows = () => {
   <div className="account_right_page_data">
     <div className="account_page_top_header">
               <div className="contactlist">
-              <h1 style={{paddingBottom:'100px'}}>Account list</h1>
+              <h1 style={{paddingBottom:'100px',marginLeft:'43rem',marginTop:'35px'}}>Account list</h1>
               </div>
-              <div style={{display:'flex',flexDirection:'row',marginTop:'90px'}}>
+              <div style={{display:'flex',flexDirection:'row',marginTop:'150px'}}>
               <div  style={{marginRight:'10px'}}>
                           <Dropdown>
                             <Dropdown.Toggle variant="primary" id="payments-dropdown" className="excel-dropdown-menu">
@@ -313,7 +313,7 @@ const renderTableRows = () => {
     </div>
     <div className="account-boxes">
         <div className="account-bigboxes">
-                <h1 className="newcontact">New Accounts this Week</h1>
+                <h1 className="newcontact" style={{marginLeft:'-34rem'}}>New Accounts this Week</h1>
                 <div className="new-accounts-container">
                   {recentAccounts.slice(-3).reverse().map(accounts =>(
                     <Link key={accounts.id} to={`/${tenantId}/accounts/${accounts.id}`} className="firstaccount-box">
@@ -321,9 +321,12 @@ const renderTableRows = () => {
                       <h1 className="heading1">{accounts.Name}</h1>
                       <p className="paragraph1">{accounts.description}</p>
                     </div>
-                    <div className="smiley1">
-                      {generateSmiley2(generateRandomColor())}
-                    </div>
+                    <span className="account-circle" style={{ backgroundColor: getCircleColor(accounts.company.charAt(0)),marginTop:'-6rem',width:'50px',height:'50px' }}>
+
+                      {accounts.company.charAt(0).toUpperCase()}
+                      </span>
+                
+                    
                   </Link>
                 ))}
                 </div>
@@ -385,11 +388,8 @@ const renderTableRows = () => {
       </select>
     </div>
   
-    <div className="accounts-container">
-        <div className="accounts-header" style={{ width: "100%" }}>
-          <h2 className="accountTableCenter">Accounts </h2>
-        
-        </div>
+    <div className>
+       
         {viewMode === "table" && (
   <div className="accounts-table-wrapper">
     <table>
