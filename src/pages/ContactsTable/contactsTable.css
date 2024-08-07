@@ -336,11 +336,11 @@ left: 41px;
   border-radius: 4px 4px 4px 4px;
   width: 120px;
   align-items: center;
-  
+ 
 
   color: white;
   background: #FFFFFFFF;
-  background: #4CA110FF;
+  background: #62CD14;
   font-weight: 400;
   font-family: 'Manrope';
   font-size: 14px;
@@ -3327,6 +3327,7 @@ bottom: 13rem;
 }
 .contain1{
   position: relative;
+  margin-bottom: -40px;
  /* bottom: 7rem;*/
 }
 .contactinfo_accountName1,.contactinfo_email1,.contactinfo_leadSource1,.contactinfo.vendorName1{
