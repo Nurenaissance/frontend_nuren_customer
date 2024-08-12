@@ -16,66 +16,94 @@ function EmailList() {
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
   const { provider, emailUser, emailPass } = location.state || {};
+  const [selectedEmails, setSelectedEmails] = useState(new Set());
+  const [selectedRows, setSelectedRows] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [storedEmails, setStoredEmails] = useState([]);
+  const tenantId='ll';
+  const getNewlySelectedEmails = (selected, stored) => {
+    return [...selected].filter(emailId => !stored.includes(emailId));
+  };
+  
+  const handleCheckboxChange = (emailId) => {
+    setSelectedEmails((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+  
+      // Toggle selection
+      if (newSelected.has(emailId)) {
+        newSelected.delete(emailId); // Deselect if already selected
+      } else {
+        newSelected.add(emailId); // Select if not selected
+      }
+  
+      // Get newly selected emails
+      const newlySelected = getNewlySelectedEmails(newSelected, storedEmails.map(email => email.email_id));
+      
+      console.log('Newly selected emails:', newlySelected); // Log the newly selected emails
+      
+      return newSelected; // Return the updated set
+    });
+  };
+    const handleSelectAllChange = () => {
+      if (selectedEmails.size === emails.length && emails.length > 0) {
+        // If all emails are selected, clear the selection
+        setSelectedEmail(new Set());
+      } else {
+        // If not all emails are selected, add all email IDs to the selection
+        const allEmailIds = new Set(emails.map(email => email.id)); // Assuming each email object has a unique 'id'
+        setSelectedEmail(allEmailIds);
+      }
+    };
 
-
-
-  useEffect(() => {
-    console.log("Provider:", provider);
-    console.log("Email User:", emailUser);
-    console.log("Email Pass:", emailPass);
-    fetchEmails();
-  }, []);
 
   
-
-  useEffect(() => {
-    fetchEmails();
-  }, []);
-
+    
   const fetchEmails = async () => {
     setIsLoading(true);
     setError(null);
-  
+
     const imapConfig = {
-      gmail: { host: 'imap.gmail.com', port: 993 },
-      outlook: { host: 'outlook.office365.com', port: 993 },
-      zoho: { host: 'imap.zoho.com', port: 993 },
-      hostinger: { host: 'imap.hostinger.com', port: 993 },
-      godaddy: { host: 'imap.secureserver.net', port: 993 },
+        gmail: { host: 'imap.gmail.com', port: 993 },
+        outlook: { host: 'outlook.office365.com', port: 993 },
+        zoho: { host: 'imap.zoho.com', port: 993 },
+        hostinger: { host: 'imap.hostinger.com', port: 993 },
+        godaddy: { host: 'imap.secureserver.net', port: 993 },
     };
-  
+
     if (!provider) {
-      setError('No email provider specified');
-      setIsLoading(false);
-      return;
+        setError('No email provider specified');
+        setIsLoading(false);
+        return;
     }
-  
+
     const config = imapConfig[provider.toLowerCase()];
-  
+
     if (!config) {
-      setError(`Invalid email provider: ${provider}`);
-      setIsLoading(false);
-      return;
+        setError(`Invalid email provider: ${provider}`);
+        setIsLoading(false);
+        return;
     }
-  
+
     if (!emailUser || !emailPass) {
-      setError('Email credentials are missing');
-      setIsLoading(false);
-      return;
+        setError('Email credentials are missing');
+        setIsLoading(false);
+        return;
     }
-  
+
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/receive-emails', {
-        imapUser: emailUser,
-        imapPass: emailPass,
-        host: config.host,
-        port: config.port,
+          imapUser: emailUser,
+          imapPass: emailPass,
+          host: config.host,
+          port: config.port,
       });
-  
-      if (response.data && Array.isArray(response.data)) {
+
+       if (response.data && Array.isArray(response.data)) {
         setEmails(response.data);
+        
+    
       } else {
-        setError('Received invalid data from server');
+           setError('Received invalid data from server');
       }
     } catch (error) {
       console.error('Error fetching emails:', error);
@@ -83,7 +111,19 @@ function EmailList() {
     } finally {
       setIsLoading(false);
     }
-  };
+};
+
+useEffect(() => {
+  const savedSelections = JSON.parse(localStorage.getItem('selectedEmails')) || [];
+  setSelectedRows(new Set(savedSelections));
+}, []);
+
+useEffect(() => {
+  console.log("Provider:", provider);
+  console.log("Email User:", emailUser);
+  console.log("Email Pass:", emailPass);
+  fetchEmails();
+}, []);
 
 
   useEffect(() => {
@@ -109,67 +149,196 @@ function EmailList() {
   };
 
   const extractHumanReadableContent = (textContent) => {
+    // Split the email content by unique delimiters
     const parts = textContent.split(/--[a-fA-F0-9]+/);
-    let content = parts.find(part => part.includes('Content-Type: text/html'));
+    
+    // Initialize variables to hold extracted content
+    let htmlContent = '';
+    let plainTextContent = '';
 
-    if (!content) {
-      content = parts.find(part => part.includes('Content-Type: text/plain'));
+    // Loop through the parts to find HTML and plain text content
+    for (let part of parts) {
+        if (part.includes('Content-Type: text/html')) {
+            htmlContent = part;
+        } else if (part.includes('Content-Type: text/plain')) {
+            plainTextContent = part;
+        }
     }
 
+    // Choose the preferred content to return (HTML > Plain Text)
+    let content = htmlContent || plainTextContent;
+
     if (!content) {
-      return 'No readable content found';
+        return {
+            combinedContent: 'No readable content found',
+        };
     }
 
-    content = content.replace(/Content-Type:.*?\r\n/g, '');
-    content = content.replace(/Content-Transfer-Encoding:.*?\r\n/g, '');
-    content = content.replace(/Content-Disposition:.*?\r\n/g, '');
+    // Clean up the extracted content
+    content = content
+        .replace(/Content-Type:.*?\r\n/g, '') // Remove Content-Type headers
+        .replace(/Content-Transfer-Encoding:.*?\r\n/g, '') // Remove Transfer-Encoding headers
+        .replace(/Content-Disposition:.*?\r\n/g, '') // Remove Content-Disposition headers
+        .replace(/=\r\n/g, '') // Decode quoted-printable encoding
+        .replace(/=([\r\n])/g, '') // Remove line breaks
+        .replace(/=([a-fA-F0-9]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))) // Convert hex to characters
+        .replace(/[\r\n]+/g, ' ') // Replace multiple newlines with a space
+        .trim(); // Trim whitespace
 
-    content = content.replace(/=\r\n/g, '');
-    content = content.replace(/=([a-fA-F0-9]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
+    // Combine the subject and cleaned content
+    const combinedContent = `\n\n${content}`;
 
-    return content;
+    return {
+        combinedContent,
+    };
+};
+
+  
+  const extractPdfData = (multipartData) => {
+    // Split the multipart data into sections
+    const parts = multipartData.split('--00000000000018b182061ce07879');
+  
+    // Find the PDF part
+    const pdfPart = parts.find(part => part.includes('Content-Type: application/pdf'));
+  
+    if (pdfPart) {
+      // Extract the base64 data
+      const base64Data = pdfPart.split('\r\n\r\n')[1].trim();
+      return base64Data;
+    } else {
+      console.log("PDF part not found.");
+      return null;
+    }
   };
+  useEffect(() => {
+    const fetchStoredEmails = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
+          headers: {
+            'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
+          }
+        }); 
+        const emailData = response.data;
+        const storedEmailSet = new Set(emailData.map(email => email.id));
+        setStoredEmails(emailData);
+        setSelectedEmails(storedEmailSet);
+        
+      } catch (error) {
+        console.error('Error fetching stored emails:', error);
+      }
+    };
 
+    fetchStoredEmails();
+  }, []);
+  function extractInnerText(htmlString) {
+    // Create a new DOMParser instance
+    const parser = new DOMParser();
+    // Parse the HTML string into a Document
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    // Extract and return the inner text
+    return doc.body.innerText.trim(); // Use trim() to remove any leading or trailing whitespace
+}
+function extractMainText(emailContent) {
+  // Split the content into lines
+  const lines = emailContent.split('\n');
+
+  // Filter lines to find the main text part
+  const mainTextLines = lines.filter(line => {
+      // Exclude lines that are likely to be part of the header or footer
+      return line.trim() !== '' && !line.startsWith('--'); /*&& !line.startsWith('DISCLAIMER:')*/
+  });
+
+  // Join the filtered lines back into a single string
+  const mainText = mainTextLines.join('\n').trim();
+  return mainText;
+}
+  const storeSelectedEmails = async () => {
+    // Convert selectedEmails Set to an array
+    const selectedEmailIds = Array.from(selectedEmails);
+  
+    // Get the email IDs that were fetched from the backend
+    const fetchedEmailIds = storedEmails.map(email => email.id);
+  
+    // Filter to get newly selected emails (those not in fetchedEmailIds)
+    const newlySelectedEmails = selectedEmailIds.filter(emailId => !fetchedEmailIds.includes(emailId));
+  
+    // Prepare the selected email list for storage
+    const selectedEmailList = newlySelectedEmails.map(emailId => ({
+      email_id: emailId,  // Use the emailId directly
+      from: 'dummy@example.com',  // Dummy data for from
+      subject: 'Dummy Subject',    // Dummy data for subject
+      text: 'Dummy text content'    // Dummy data for text
+    }));
+  
+    // First try-catch block for storing selected emails
+    try {
+      // Store the newly selected emails
+      await axios.post('http://127.0.0.1:8000/store-selected-emails/', selectedEmailList, {
+        headers: {
+          'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
+        }
+      });
+      console.log('Selected emails stored successfully');
+    } catch (error) {
+      console.error('Error storing selected emails:', error);
+      // Optionally return early or handle the error further if needed
+      return; // Exit the function if storing emails fails
+    }
+  
+    // Prepare emails to send
+    const emailsToSend = emails
+      .filter(email => newlySelectedEmails.includes(email.id)) // Only include newly selected emails
+      .map(email => {
+        const { combinedContent, subject } = extractHumanReadableContent(email.text);
+        const combineContent2=extractInnerText(combinedContent);
+        const combineContent3=extractMainText(combineContent2);// Use your existing function
+        return {
+          sender: email.from,  // Email sender
+          content: subject + combineContent3, // Combined content
+          sent_at: new Date().toISOString(), // Current date/time in ISO format
+          platform: 'email', // Set platform to 'email'
+          userid: emailUser, // Adjust this if you have a different user ID
+        };
+      });
+  
+    // Second try-catch block for sending email messages
+    try {
+      // Send a POST request to your Django API to store all email content
+      await axios.post('http://127.0.0.1:8000/save-email-messages/', { emails: emailsToSend }, {
+        headers: {
+          'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
+        }
+      });
+      console.log('Emails sent successfully');
+    } catch (error) {
+      console.error('Error sending emails:', error);
+    }
+  };
+  
+  // Modify the extractAttachments function to include PDF extraction
   const extractAttachments = (email) => {
     const attachments = [];
+    
+    // Extract PDF data if available
+    const pdfData = extractPdfData(email.text);
+    if (pdfData) {
+      attachments.push({ filename: 'attachment.pdf', encodedContent: pdfData });
+    }
+  
+    // Original attachment extraction logic remains
     const attachmentRegex = /filename="([^"]+)"[\s\S]*?Content-Transfer-Encoding: base64[\s\S]*?([\w\d+/=]+)\s/g;
     let match;
-
+  
     while ((match = attachmentRegex.exec(email.text)) !== null) {
       const [, filename, encodedContent] = match;
-      attachments.push({ filename, encodedContent });
+      // Remove newlines and carriage returns from the base64 content
+      const cleanedContent = encodedContent.replace(/[\n\r]/g, '');
+      attachments.push({ filename, encodedContent: cleanedContent });
     }
-
+  
     return attachments;
   };
-
-  const validateBase64 = (base64) => {
-    return base64.replace(/[^A-Za-z0-9+/=]/g, '');
-  };
-
-  const base64ToBlob = (base64, type) => {
-    try {
-      // Remove any non-base64 characters (like newlines) that might be present
-      const cleanedBase64 = base64.replace(/[^A-Za-z0-9+/=]/g, '');
-      const byteCharacters = atob(cleanedBase64);
-      const byteArrays = [];
-  
-      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        const slice = byteCharacters.slice(offset, offset + 512);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-  
-      return new Blob(byteArrays, { type });
-    } catch (error) {
-      console.error('Failed to decode base64 string:', error);
-      throw error;
-    }
-  };
+ 
   
   const renderAttachmentIcon = (attachment) => {
     const extension = attachment.filename.split('.').pop().toLowerCase();
@@ -182,25 +351,15 @@ function EmailList() {
     else if (['xls', 'xlsx'].includes(extension)) icon = '📊';
   
     try {
-      const base64String = attachment.encodedContent.replace(/\s/g, '');
-      const blob = base64ToBlob(base64String, `application/${extension}`);
-      const url = URL.createObjectURL(blob);
+      const base64String = attachment.encodedContent;
+      const dataUrl = `data:application/${extension};base64,${base64String}`;
   
       return (
         <div key={attachment.filename} className="attachment">
           <span className="attachment-icon">{icon}</span>
           <a 
-            href={url} 
+            href={dataUrl} 
             download={attachment.filename} 
-            onClick={(e) => {
-              e.preventDefault();
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = attachment.filename;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}
           >
             {attachment.filename}
           </a>
@@ -211,21 +370,20 @@ function EmailList() {
       return (
         <div key={attachment.filename} className="attachment attachment-error">
           <span className="attachment-icon">{icon}</span>
-          <span>Error decoding {attachment.filename}</span>
+          <span>Error rendering {attachment.filename}</span>
         </div>
       );
     }
   };
-
   return (
     <div className="email-container">
       <div className='email-sidebar-main'>
         <Sidebar/>
       </div>
       <div className="email-content-area">
-      <div className="email_topnavbar">
-        <TopNavbar/>
-      </div>
+        <div className="email_topnavbar">
+          <TopNavbar/>
+        </div>
         <div className="email-actions">
           <button className="compose-button" onClick={() => setShowComposeModal(true)}>Compose</button>
           <button className="refresh-button" onClick={fetchEmails}><RefreshIcon/></button>
@@ -235,10 +393,19 @@ function EmailList() {
           <p>Loading emails...</p>
         ) : error ? (
           <p className="error-message">{error}</p>
-        ) : (
+        ) : (<div>
+          <button onClick={storeSelectedEmails}>Store Selected Emails</button>
+         
           <table className="email-table">
             <thead>
               <tr>
+              <th>
+  <input
+    type="checkbox"
+    checked={selectedEmails.size === emails.length && emails.length > 0} // Check if all emails are selected
+    onChange={handleSelectAllChange}
+  />
+</th>
                 <th>From</th>
                 <th>Subject</th>
                 <th>Date</th>
@@ -247,19 +414,28 @@ function EmailList() {
             <tbody>
               {emails.length > 0 ? (
                 emails.map((email, index) => (
-                  <tr key={index} onClick={() => openEmailPopup(email)} className="email-row">
-                    <td>{email.from}</td>
+                  <tr key={index} className="email-row" >
+                    <td>
+                    <input
+        type="checkbox"
+        checked={selectedEmails.has(email.id)}
+        onChange={() => handleCheckboxChange(email.id)}
+        disabled={storedEmails.map(e => e.email_id).includes(email.id)} // Disable if email is fetched
+      />
+                    </td>
+                    <td onClick={() => openEmailPopup(email)}>{email.from}</td>
                     <td>{email.subject}</td>
                     <td>{new Date(email.date).toLocaleString()}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3">No emails to display</td>
+                  <td colSpan="4">No emails to display</td>
                 </tr>
               )}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 

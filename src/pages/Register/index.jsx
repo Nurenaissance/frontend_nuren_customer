@@ -79,7 +79,7 @@ export const Register = () => {
 
    const authRegister = async() => {
     event.preventDefault(); 
-    if (!validateForm()) return;
+   // if (!validateForm()) return;
     setIsSubmitting(true);
     // Find the tenant ID associated with the selected organisation
     const selectedOrg = organisations.find((org) => org.name === organisation);
