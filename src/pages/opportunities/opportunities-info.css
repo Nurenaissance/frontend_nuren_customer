@@ -3,25 +3,29 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  font-family: 'Manrope', Arial, sans-serif;
   background-color: #f8f9fa;
   color: #333;
 }
 
-.opportunities-Sidebar {
+.opportunities-Sidebar1 {
   align-self: flex-start;
   margin-bottom: 20px;
+  
 }
 
-.opportunities-Sidebar a {
+.opportunities-Sidebar1 a {
+  color: #f39c12;
   text-decoration: none;
-  color: #007bff;
+  font-size: 20px;
   font-weight: bold;
-  transition: color 0.3s ease;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
 }
 
-.opportunities-Sidebar a:hover {
-  color: #0056b3;
+.opportunities-Sidebar1 a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
 }
 
 .opportunities-info {
@@ -125,7 +129,7 @@
   transform: translateY(-2px);
 }
 
-.edit-button {
+.edit-button-oppo {
   background-color: #4CAF50;
   color: white;
 }
@@ -174,7 +178,6 @@ button:disabled {
   padding: 10px 15px;
   background: none;
   border: none;
-  font-family: 'Manrope', sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: #565D6D;

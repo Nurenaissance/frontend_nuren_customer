@@ -30,7 +30,8 @@ const getTenantIdFromUrl = () => {
 
 const UserProfile = () => {
 
-  const  [userId, setUserId]= useState();
+  
+  const {userId}=useAuth();
   const { id } = useParams(); 
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +51,6 @@ const UserProfile = () => {
         setUser(response.data);
         
         console.log("user data", response.data);
-        setUserId(response.data.id);
         setEditedUser(response.data);
         setIsLoading(false);
         console.log(userId);
@@ -69,36 +69,9 @@ const UserProfile = () => {
       }
     };
 
-    const fetchProfileImage = async () => {
-      try {
-       
-        const imagesRef = ref(storage, `profileImage/${tenantId}/${userId}/`);
-        const result = await listAll(imagesRef);
-    
-        if (result.items.length > 0) {
-          const sortedItems = result.items.sort((a, b) => {
-            return b.name.localeCompare(a.name); 
-          });
-    
-          
-          const latestFileRef = sortedItems[0];
-          const url = await getDownloadURL(latestFileRef);
-    
-          
-          setProfileImageUrl(url);
-        } else {
-          console.log("No profile images found.");
-        }
-      } catch (error) {
-        console.error("Error fetching profile image:", error);
-       
-        setProfileImageUrl(null);
-      }
-    };
-
+   
     fetchUserData();
     fetchUserTasks();
-    fetchProfileImage();
   }, [id, tenantId, userId]);
   
 
@@ -139,38 +112,129 @@ const UserProfile = () => {
     }));
   };
 
-
-
+  const handleProfileImageUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    console.log('Selected file:', selectedFile);
   
-
- 
-
-  const handleProfileImageUpload = async (e, id) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("Selected file:", file);
+    if (selectedFile) {
       try {
-        // Create a reference to the user's profile image directory in Firebase Storage
-        const profileImageRef = ref(storage, `profileImage/${tenantId}/${userId}/${file.name}`);
-        console.log("Uploading to:", profileImageRef.fullPath);
+        // Upload the new profile image
+        console.log('Uploading file to Azure Blob Storage...');
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
+        console.log('File uploaded to Azure, URL:', fileUrl);
   
-        // Upload the file to Firebase Storage
-        const uploadResult = await uploadBytes(profileImageRef, file);
-        console.log("Upload result:", uploadResult);
+        // Fetch all existing profile images to delete old ones
+        console.log('Fetching existing profile images...');
+        const response = await axiosInstance.get(`/return-documents/3/2`, {
+          params: {
+            model: 'Profile_Image',
+            entity_type: 3, // Ensure this matches the correct entity_type
+            entity_id: 2,   // Use the correct entity_id if needed
+            tenant: tenantId,
+            userId: userId
+          }
+        });
   
-        // Get the download URL for the uploaded file
-        const url = await getDownloadURL(profileImageRef);
-        console.log("File available at:", url);
+        const documents = response.data.documents || [];
+        if (documents.length > 0) {
+          console.log('Documents to delete:', documents);
   
-        // Update the profile image URL state
-        setProfileImageUrl(url);
+          // Delete previous profile images
+          for (const doc of documents) {
+            await axiosInstance.delete(`/documents/${doc.id}`, {
+              params: {
+                model: 'Profile_Image',
+                entity_type: 3, // Ensure this matches the correct entity_type
+                entity_id: 2,   // Use the correct entity_id if needed
+                tenant: tenantId,
+                userId: userId
+              }
+            });
+            console.log(`Deleted previous profile image: ${doc.name}`);
+          }
+        } else {
+          console.log('No previous profile images found.');
+        }
+  
+        // Save the new profile image
+        console.log('Saving new profile image...');
+        await axiosInstance.post(`/documents/`, {
+          name: selectedFile.name,
+          document_type: selectedFile.type,
+          description: 'Your file description',
+          entity_type: 3, // Assuming entity_type 3 is for Profile Images
+          entity_id: 2,
+          file_url: fileUrl,
+          tenant: tenantId,
+          userId: userId,
+          model: 'Profile_Image'
+        });
+  
+        // Fetch and set the latest profile image
+        await fetchProfileImage();
+  
+        console.log('Profile image uploaded and updated successfully.');
       } catch (error) {
-        console.error("Error uploading profile image:", error);
+        console.error('Error uploading profile image:', error);
       }
     } else {
-      console.error("No file selected");
+      console.error('No file selected');
     }
   };
+  
+  
+  const fetchProfileImage = async () => {
+    try {
+      console.log('Fetching profile images...');
+      // Fetch all documents with the specified model
+      const response = await axiosInstance.get(`/return-documents/3/2`, {
+        params: {
+          model: 'Profile_Image',
+          entity_type: 3, // Ensure this matches the correct entity_type
+          entity_id: 2,   // Use the correct entity_id if needed
+          tenant: tenantId,
+          userId: userId
+        }
+      });
+  
+      // Check the API response
+      console.log('API Response:', response.data);
+  
+      const documents = response.data.documents || [];
+      if (documents.length > 0) {
+        // Log documents for debugging
+        console.log('Documents:', documents);
+  
+        // Sort documents by creation date or other property to get the latest one
+        const sortedDocuments = documents.sort((a, b) => {
+          // Adjust sorting logic if needed
+          return new Date(b.created_at) - new Date(a.created_at); // Assuming 'created_at' is the date property
+        });
+  
+        // Get the latest document
+        const latestDocument = sortedDocuments[0];
+        const url = latestDocument.file_url; // Adjust according to your API response
+  
+        // Set the profile image URL
+        setProfileImageUrl(url);
+        console.log('Latest profile image URL:', url);
+      } else {
+        console.log('No profile images found.');
+        setProfileImageUrl(null);
+      }
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+      setProfileImageUrl(null);
+    }
+  };
+  
+
+    useEffect(() => {
+      // Fetch profile image when component mounts or when userId or tenantId changes
+      fetchProfileImage();
+    }, [userId, tenantId]);
+  
+
   
   
 

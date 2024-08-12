@@ -11,7 +11,6 @@ import axiosInstance from "../../api.jsx";
 import "./TaskTable.jsx";
 import { useAuth } from "../../authContext.jsx";
 import { useNavigate } from "react-router-dom";
-import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 
 
 const Popup = ({ errors, onClose }) => (
@@ -295,12 +294,9 @@ const AddTaskForm = () => {
   
   return (
     <div>
-      <div className="Add-task-topnav">
-        <TopNavbar/>
-      </div>
       <div className="task_form">
-      <div className="relatedTask_back">
-        <Link className='task_back' to={`/${tenantId}/tasks`}>Back</Link>
+      <div className="relatedTask_back1">
+        <Link className='task_back1' to={`/${tenantId}/tasks`}>Back</Link>
       </div>
      
       <div>

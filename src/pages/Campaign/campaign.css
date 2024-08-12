@@ -8,7 +8,9 @@
 }
 
 .campaign_nav{
-  margin-top: -60px;
+  margin-left: 25rem;
+  position: relative;
+  bottom: 6rem;
 }
 
 /* Header styles */

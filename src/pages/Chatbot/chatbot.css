@@ -115,7 +115,6 @@
 .chatbot-contain {
   position: relative;
   height: 38px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 400;
@@ -145,7 +144,6 @@
 }
 
 .chatbot-msg {
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 24px;
   font-weight: 400;
@@ -154,7 +152,6 @@
 }
 
 .chatbot-contact {
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 24px;
   font-weight: 700;
@@ -163,7 +160,6 @@
 }
 
 .chatbot-contacts {
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 24px;
   font-weight: 400;

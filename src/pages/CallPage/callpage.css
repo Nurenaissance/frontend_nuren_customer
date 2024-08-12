@@ -20,7 +20,6 @@
 
 .excel-dropdown-menu_call {
   /* Your custom styles here */
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   color: #FFFFFF;
@@ -187,7 +186,6 @@
   width: 100px;
 }
 .call_head{
-  font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -206,21 +204,18 @@ left: 50px;
  /* margin-left: -70px; */
 }
 .calls_row_head{
-  font-family: 'Lexend';
   font-size: 14px;
   line-height: 22px;
   font-weight: 600;
   color: #565D6DFF;
 }
 .call_to,.call_type,.call_start,.call_duration,.call_record,.call_location{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
   color: #171A1FFF;
 }
 .call_related{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -235,7 +230,6 @@ padding: 0 12px;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -248,7 +242,6 @@ gap: 6px;
 
 }
 .form-legend-schedule{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -258,7 +251,6 @@ gap: 6px;
   left: 60px;
 }
 .form-subject,.form-DateTime,.form-timeTrigeer,.form-CreatedBy, .form-trigger_type{
-  font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
@@ -269,7 +261,6 @@ color: #171A1FFF;
 height: 36px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -330,7 +321,6 @@ outline: none;
   left: 80px;
 }
 .form-legend_log{
-  font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
@@ -342,14 +332,12 @@ left: 60px;
 
 .labelcall-location,.form-Related_to,.form-label_callType,.form-label_call_Status,.form-label_select,.form-label_duration
 .form-descriCall{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
   color: #171A1FFF;
 }
 .form-label_duration{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -357,7 +345,6 @@ left: 60px;
 }
 
 .form-descriCall{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -373,7 +360,6 @@ left: 90px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -391,7 +377,6 @@ left: 90px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -422,7 +407,6 @@ left: 90px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -443,7 +427,6 @@ left: 180px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -466,7 +449,6 @@ left: 180px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -489,7 +471,6 @@ left: 180px;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -585,18 +566,26 @@ left: 180px;
 display: flex;
 }
 .callpagelist{
-  width: 256px;
-  height: 1100px;
-  background: #FAFAFBFF;
-  border-radius: 0px;
-  border-width: 1px;
-  border-color: #FFFFFFFF;
-  border-style: solid;
-  box-shadow: 0px 2px 5px;
-  position: relative;
-  bottom: 14rem;
-    
-    
+  height: 100vh;
+  width: 250px;
+  background: white;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.callpagelist a{
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+}
+.callpagelist a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
 }
 .call_info_pagee{
   position: relative;
@@ -605,7 +594,6 @@ display: flex;
 .call_head{
 
   
-    font-family: 'Lexend';
     font-size: 32px;
     line-height: 48px;
     font-weight: 700;
@@ -616,7 +604,6 @@ display: flex;
 }
 
 .button-edit3{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 3px;
   font-weight: 600;
@@ -648,7 +635,6 @@ padding-top: 20px;
 
 
 .callpage_listtt{
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 22px;
   font-weight: 500;
@@ -660,7 +646,6 @@ padding-top: 20px;
 height: 36px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -685,7 +670,6 @@ flex-direction: row;
 height: 36px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -712,21 +696,16 @@ position: relative;
  margin-top: 12rem; 
 }
 .edit-call{
-  font-family: 'Lexend';
   font-size: 20px;
-  line-height: 22px;
-  font-weight: 500;
   color: #FFFFFF;
   background: #6D31EDFF;
-  width: 100px;
+  width: 90px;
   height: 40px;
   border-radius: 6px;
-  position: relative;
   margin-top: 20px;
   
 }
 .edit-call-save{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -741,7 +720,6 @@ position: relative;
   
 }
 .edit-call-cancel{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 20px;
   font-weight: 400;

@@ -3,7 +3,7 @@
 .home {
   background-color: #ffffff;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
 }
 
 .home_inner {
@@ -16,9 +16,12 @@
   padding: 0pc 30px;
   max-width: calc(100vw - 280px); /* Assuming sidebar width is 250px */
 }
-
+.heading-dashboard{
+  font-size: 3rem;
+  font-weight: bold;
+}
 .dashboard-title {
-  font-size: 2.5rem;
+  font-size: 5rem;
   color: #333;
   margin-bottom: 30px;
   border-bottom: 2px solid #3498db;

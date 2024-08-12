@@ -1,12 +1,27 @@
 .ticket-form-page{
     height: 100vh;
 }
-.ticket-sidebar {
-    width: 180px;
-    background-color:white;
+.ticket-form-sidebar {
+    width: 250px;
+    background: white;
+    color: #ffffff;
     padding: 20px;
+    border-radius: 15px;
   }
-
+  .ticket-form-sidebar a{
+    color: #f39c12;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
+    margin-left: 3rem;
+    transition: color 0.3s, transform 0.3s;
+  }
+  .ticket-form-sidebar a:hover {
+    color: #f1c40f;
+    transform: scale(1.05);
+  }
   .form-ticket{
     font-weight: bold;
 

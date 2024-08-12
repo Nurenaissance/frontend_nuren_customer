@@ -99,7 +99,9 @@ const Ticket = () => {
 
     return (
         <div className="ticket-page">
+            <div className='ticket_nav'>
             <TopNavbar />
+            </div>
             <div className="ticket-content">
                 <div className="ticket-sidebar">
                     <Sidebar />

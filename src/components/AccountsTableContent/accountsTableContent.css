@@ -9,8 +9,6 @@
   justify-content: space-between;
 }
 .excel-dropdown-menu1 {
-  /* Your custom styles here */
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   color: #FFFFFF;
@@ -93,7 +91,22 @@
   
 }
 
-
+.createaccount{
+  height: 34px;
+  padding: 0 12px;
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 25px;
+  font-weight: 400;
+  color: #FFFFFFFF;
+  background: #62CD14FF;
+  opacity: 1;
+  border: none;
+  border-radius: 4px;
+}
 /* .view-mode-select:hover {
   background-color: #f0f0f0;
 } */
@@ -161,7 +174,6 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-family: 'Manrope';
   font-weight: 400;
   color: #fff;
 }
@@ -195,7 +207,6 @@
   top: -15px;
   font-size: 14px;
   color: #171a1fff;
-  font-family: 'Manrope';
   font-weight: 400;
 } 
 
@@ -238,7 +249,6 @@ color: #171A1FFF;
 .accountIndustry{
   position: relative;
     top: -11px;
-    font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -285,7 +295,6 @@ font-weight: 400;
   animation: l3 1s infinite linear;
 }
 .accountnames,.accountems{
-  font-family: 'Manrope';
   font-size: 14px;
     font-weight: 400;
     color: #171A1FFF;
@@ -442,7 +451,6 @@ font-weight: 400;
 
 .accountIndus{
   color: #379AE6FF;
-  font-family: 'Manrope';
   font-size: 14px;
     font-weight: 400;
     
@@ -459,7 +467,6 @@ font-weight: 400;
 
 .excel-dropdown-menu {
   /* Your custom styles here */
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   color: #FFFFFF;
@@ -641,7 +648,6 @@ box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
     background: #FFFFFFFF;
     background: #4CA110FF;
     font-weight: 400;
-    font-family: 'Manrope';
     font-size: 14px;
     position: relative;
     top: 19px;

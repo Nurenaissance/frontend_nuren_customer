@@ -182,63 +182,92 @@ const [selectedFile, setSelectedFile] = useState(null);
   const handleProfileImageUpload = async (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      try {
-        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
-        setProfileImage(fileUrl);
-        console.log(profileImage);
-        console.log(fileUrl);
-  
-        // Save the profile image URL to the backend
-        await axiosInstance.patch(`/contacts/${id}/`, { profile_image_url: fileUrl });
-  
-        // Optionally, fetch the updated account data to update the state
-        console.log('Sending POST request to backend...');
-        const response = await axiosInstance.post('/documents/', {
-            name: selectedFile.name,
-            document_type: selectedFile.type,
-            description: 'Your file description',
-            file_url: fileUrl,
-            entity_type: 10,
-            entity_id: id,
-            tenant: tenantId,
-        });
-        console.log('POST request successful, response:', response.data);
-       
-      } catch (error) {
-        console.error('Error uploading profile image:', error);
-      }
+        try {
+            // Fetch existing profile images
+            const existingDocumentsResponse = await axiosInstance.get(`/documents/`, {
+                params: {
+                    entity_type: 10,
+                    entity_id: id,
+                    tenant: tenantId,
+                    userId: userId,
+                    model: 'Contactprofilepic'
+                }
+            });
+
+            const existingDocuments = existingDocumentsResponse.data.documents;
+
+            // Filter documents by the specific model and delete them
+            if (existingDocuments && existingDocuments.length > 0) {
+                const documentsToDelete = existingDocuments.filter(doc => doc.model === 'Contactprofilepic');
+                for (const document of documentsToDelete) {
+                    await axiosInstance.delete(`/documents/${document.id}/`);
+                }
+            }
+
+            // Upload the new profile image
+            const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
+            setProfileImage(fileUrl); // Update state immediately
+            console.log('Uploaded profile image URL:', fileUrl);
+
+            // Save the profile image URL to the backend
+            await axiosInstance.patch(`/contacts/${id}/`, { profile_image_url: fileUrl });
+
+            // Optionally, fetch the updated profile image data
+            fetchProfileImage(); // Refresh the profile image data
+
+            // Upload the document information
+            console.log('Sending POST request to backend...');
+            const response = await axiosInstance.post('/documents/', {
+                name: selectedFile.name,
+                document_type: selectedFile.type,
+                description: 'Your file description',
+                file_url: fileUrl,
+                entity_type: 10,
+                entity_id: id,
+                tenant: tenantId,
+                userId: userId,  
+                model: 'Contactprofilepic', 
+            });
+            console.log('POST request successful, response:', response.data);
+
+        } catch (error) {
+            console.error('Error uploading profile image:', error);
+        }
     }
-  };
+};
+
 
   useEffect(() => {
     const fetchProfileImage = async () => {
-        try {
-            console.log('Fetching profile image for account:', id);
-            console.log('Tenant ID:', tenantId);
-
-            const response = await axiosInstance.get(`/return-documents/10/${id}`);
-            console.log('GET request successful, response:', response.data);
-
-            const documents = response.data.documents;
-            console.log('Documents array:', documents);
-
-            if (documents && documents.length > 0) {
-                const profileImage = documents[0].file;
-                console.log('Found profile image:', profileImage);
-                setProfileImage(profileImage);
-            } else {
-                console.log('No profile image found.');
-                setProfileImage(null); // Set a default image URL or null if no image found
-            }
-        } catch (error) {
-            console.error('Error fetching profile image:', error);
+      try {
+        const response = await axiosInstance.get(`/return-documents/10/${id}`, {
+          params: {
+            entity_type: 10,
+            entity_id: id,
+            tenant: tenantId,
+            userId: userId,
+            model: 'Contactprofilepic'
+          }
+        });
+  
+        const documents = response.data.documents;
+        if (documents && documents.length > 0) {
+          const profileImage = documents[0].file;
+          setProfileImage(profileImage);
+          console.log('this is the profile image',profileImage);
+        } else {
+          setProfileImage(null); // Set a default image URL or null if no image found
         }
+      } catch (error) {
+        console.error('Error fetching profile image:', error);
+      }
     };
-
+  
     if (id && tenantId) {
-        fetchProfileImage();
+      fetchProfileImage();
     }
-}, [id, tenantId]);
+  }, [id, tenantId]);
+  
  
   const fetchTimeline = async () => {
     try {
@@ -270,14 +299,33 @@ const [selectedFile, setSelectedFile] = useState(null);
 
   const fetchUploadedFiles = async () => {
     try {
-      const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${id}&tenant=${tenantId}&userId=3`);
-      setUploadedFiles(response.data);
+      const response = await axiosInstance.get(`/return-documents/10/${id}`, {
+        params: {
+          entity_type: 10,
+          entity_id: id,
+          tenant: tenantId,
+          userId: userId,
+          model: 'Contact'
+        }
+      });
+  
+      setUploadedFiles(response.data.documents || []); // Ensure correct data is set
+      console.log('Fetched files:', response.data.documents);
     } catch (error) {
       console.error("Error fetching uploaded files:", error);
     }
   };
   
-  // Assuming fetchUploadedFiles is called within a useEffect hook
+  useEffect(() => {
+    if (id && tenantId) {
+      fetchUploadedFiles();
+    }
+  }, [id, tenantId]);
+  
+  
+  
+  
+ 
   useEffect(() => {
     fetchUploadedFiles();
   }, [id, tenantId]);
@@ -322,7 +370,8 @@ const [selectedFile, setSelectedFile] = useState(null);
           entity_type: 1,
           entity_id: id,
           tenant: tenantId,
-          userId: 3,  // hardcoded user ID
+          userId: userId,  
+          model: 'Contact', 
         });
         console.log('POST request successful, response:', response.data);
   
@@ -334,7 +383,7 @@ const [selectedFile, setSelectedFile] = useState(null);
     } else {
       console.log('No file selected');
     }
-  };
+  };  
   
   
   
@@ -582,7 +631,7 @@ const [selectedFile, setSelectedFile] = useState(null);
     </div>
 
       <div className="relatedList-Contacts">
-            <Link to={`../${tenantId}/contacts`}> Back</Link>
+            <Link to={`../${tenantId}/contacts`} className="contact-back-button"> Back</Link>
           </div>
 
 

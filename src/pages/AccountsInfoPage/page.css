@@ -25,7 +25,6 @@
   }
   .account-descp{
     position: relative;
-    font-family: 'Manrope';
     font-size: 14px;
     left: -410px;
     font-weight: 400;
@@ -35,23 +34,28 @@
   }
  
   .relatedList-Accounts{
-    
-    font-family: 'Manrope';
+    width: 150px;
+    background: white;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
     position: relative;
-    top: -2px;
-    left: 55px;
-    font-size: 14px;
-    font-weight: 400;
-    background: #FFFFFFFF;
-    width: 70px;
     text-align: center; 
-    height: 35px;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: #9095A1FF;
     outline: none;
    }
-  
+   .relatedList-Accounts a {
+    color: #f39c12;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
+    transition: color 0.3s, transform 0.3s;
+   }
+   .relatedList-Accounts a:hover {
+    color: #f1c40f;
+    transform: scale(1.05);
+  }
    .blank-page1{
     margin-bottom: 100px;
     width: 3200px;
@@ -63,7 +67,6 @@
       position: absolute;
       top: 50px;
       left: 380px;
-      font-family: 'Manrope';
       font-size: 20px;
       line-height: 30px;
       font-weight: 700;
@@ -80,7 +83,6 @@
 
       font-weight: 1000;
       color: #171A1FFF;
-      font-family: 'Lexend';
       font-size: 32px;
      }
   
@@ -90,7 +92,6 @@
       top: 110px;
       left: 320px;
       width: 203px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 400;
@@ -160,7 +161,6 @@
     }
    .account-para{
     
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 400;
@@ -173,7 +173,6 @@
   opacity: 1;
   }
   .account-para1{
-    font-family: 'Manrope';
     position: relative;
     left: -5px;
   font-size: 16px;
@@ -182,7 +181,6 @@
   color: #171A1FFF;
   }
   .account-para2{
-    font-family: 'Manrope';
     position: relative;
     left: 50px;
   font-size: 16px;
@@ -190,7 +188,6 @@
   font-weight: 400;
   color: #171A1FFF;
   } .account-para3{
-    font-family: 'Manrope';
     position: relative;
     left: 25px;
   font-size: 16px;
@@ -198,7 +195,6 @@
   font-weight: 400;
   color: #171A1FFF;
   } .account-para4{
-    font-family: 'Manrope';
     position: relative;
     left: 28px;
   font-size: 16px;
@@ -207,7 +203,6 @@
   color: #171A1FFF;
   }
   .account-para5{
-    font-family: 'Manrope';
     position: relative;
     left: -8px;
   font-size: 16px;
@@ -216,7 +211,6 @@
   color: #171A1FFF;
   }
   .account-para6{
-    font-family: 'Manrope';
     position: relative;
     left: -8px;
   font-size: 16px;
@@ -225,7 +219,6 @@
   color: #171A1FFF;
   }
   .accountinfos1{
-    font-family: 'Manrope';
     position: relative;
     left: -5px;
   font-size: 16px;
@@ -234,7 +227,6 @@
   color: #171A1FFF;
   }
   .accountinfos2{
-    font-family: 'Manrope';
     position: relative;
     left: 15px;
   font-size: 16px;
@@ -243,7 +235,6 @@
   color: #171A1FFF;
   }
   .accountinfos3{
-    font-family: 'Manrope';
     position: relative;
     left: 40px;
   font-size: 16px;
@@ -252,7 +243,6 @@
   color: #171A1FFF;
   }
   .accountinfos4{
-    font-family: 'Manrope';
     position: relative;
     left: 15px;
   font-size: 16px;
@@ -397,7 +387,6 @@
       top: -12px;
      left: 130px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     padding-left: 10px;
     padding-top: 4px;
@@ -428,7 +417,6 @@
   top: 32px;
  left: 130px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -446,7 +434,6 @@ padding-left: 10px;
   top: 73px;
  left: 130px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -464,7 +451,6 @@ padding-left: 10px;
   top: 115px;
  left: 130px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -482,7 +468,6 @@ padding-left: 10px;
   top: 155px;
  left: 130px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -501,7 +486,6 @@ padding-left: 10px;
   top: 205px;
  left: 130px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -542,7 +526,6 @@ padding-left: 10px;
 
 .contactheading {
   left: 90%;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 125px;
   font-weight: 700;
@@ -565,7 +548,6 @@ margin-top: 180px;
 
 .address-para{
     
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 400;
@@ -577,7 +559,6 @@ margin-top: 180px;
       top: -13px;
      left: 150px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -596,7 +577,6 @@ margin-top: 180px;
   top: 30px;
  left: 150px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -614,7 +594,6 @@ padding-left: 10px;
   top: 80px;
  left: 150px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -632,7 +611,6 @@ padding-left: 10px;
   top: 130px;
  left: 150px;
   background-color: #F3F4F6FF;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -688,7 +666,6 @@ padding-left: 10px;
     .address-placepara1{
       position: relative;
       left: 25px;
-      font-family: 'Manrope';
       font-size: 16px;
       line-height: 26px;
       font-weight: 400;
@@ -697,7 +674,6 @@ padding-left: 10px;
         .address-placepara2{
           position: relative;
           left: 40px;
-          font-family: 'Manrope';
           font-size: 16px;
           line-height: 26px;
           font-weight: 400;
@@ -706,7 +682,6 @@ padding-left: 10px;
             .address-placepara3{
               position: relative;
               left: 30px;
-              font-family: 'Manrope';
               font-size: 16px;
               line-height: 26px;
               font-weight: 400;
@@ -715,7 +690,6 @@ padding-left: 10px;
                 .address-placepara4{
                   position: relative;
               left: 7px;
-                  font-family: 'Manrope';
                   font-size: 16px;
                   line-height: 26px;
                   font-weight: 400;
@@ -724,7 +698,6 @@ padding-left: 10px;
                     .address-placepara5{
                       position: relative;
                       left: 10px;
-                      font-family: 'Manrope';
                       font-size: 16px;
                       line-height: 26px;
                       font-weight: 400;
@@ -755,7 +728,6 @@ padding-left: 10px;
       top: -13px;
      left: 90px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -774,7 +746,6 @@ padding-left: 10px;
       top: 30px;
      left: 90px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -792,7 +763,6 @@ padding-left: 10px;
       top: 70px;
      left: 90px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -810,7 +780,6 @@ padding-left: 10px;
       top: 120px;
      left: 90px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -828,7 +797,6 @@ padding-left: 10px;
       top: 170px;
      left: 90px;
       background-color: #F3F4F6FF;
-      font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -856,9 +824,8 @@ padding-left: 10px;
     }
     .attachments{
     position:absolute;
-    top:   -10px;
+    top:   -30px;
       left: 50%;
-      font-family: 'Manrope';
 font-size: 18px;
 line-height: 58px;
 font-weight: 700;
@@ -870,7 +837,6 @@ transform: translateX(-50%);
     .accountinfos{
       position:absolute;
       left: 50%;
-      font-family: 'Manrope';
 font-size: 18px;
 
 font-weight: 700;
@@ -922,7 +888,6 @@ color: #171A1FFF;
   content: "+";
   position:absolute;
 
-  font-family: 'Manrope';
   font-size: 24px;
   line-height: 32px;
   font-weight: 700;
@@ -935,7 +900,6 @@ color: #171A1FFF;
   border-color: #DEE1E645;
 }
 .clicktoupload{
-  font-family: 'Manrope';
    position: relative; 
  line-height: 20px;
  top: 65px;
@@ -951,7 +915,6 @@ padding: 0 12px;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -1222,7 +1185,6 @@ margin-top: 10rem;
 height: 56px;
 display: flex;
 align-items: center;
-font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 400;
@@ -1253,7 +1215,6 @@ color: #6D31EDFF;
   border-radius: 8px;
   }
   .timeline-data-account,.timeline-data2-account{
-    font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 800;
@@ -1262,7 +1223,6 @@ color: #171A1FFF;
 
  
   .contract-account{
-    font-family: 'Manrope';
 font-size: 18px;
 line-height: 22px;
 font-weight: 800;
@@ -1304,7 +1264,6 @@ height: 128px;
 background: #FAFAFBFF;
 border-radius: 8px;
 font-size: 16px;
-font-family: "lexend";
 padding: 20px;
 margin-left: 10rem;
 

@@ -23,13 +23,18 @@
 }
 
 .back-button {
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
   display: block;
   margin-bottom: 20px;
-  font-size: 16px;
-  text-decoration: none;
-  color: #171a1f;
+  transition: color 0.3s, transform 0.3s;
 }
-
+.back-button a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
 .calendar-content {
   flex: 1;
   margin-left: 256px; /* Width of the sidebar */
@@ -56,7 +61,6 @@
 }
 
 .calendar-title h1 {
-  font-family: 'Lexend', sans-serif;
   font-size: 32px;
   font-weight: 800;
   color: #171A1F;
@@ -198,4 +202,75 @@
       width: 95%;
       padding: 20px;
   }
+}
+/* Calendar.css */
+
+/* Modal Overlay */
+.event-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it is above other content */
+}
+
+/* Modal Content */
+.event-modal {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001; /* Ensure it is above the overlay */
+}
+
+/* Modal Title */
+.event-modal h2 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #333;
+}
+
+/* Modal Content */
+.event-modal p {
+  margin: 10px 0;
+  font-size: 1em;
+  color: #555;
+}
+
+/* Close Button */
+.event-modal button {
+  background-color: #6D31EDFF;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.event-modal button:hover {
+  background-color: #4b1b9b;
+}
+
+/* Ensure Modal Styles are Clean */
+.event-modal button:focus {
+  outline: none;
+}
+
+/* Optional - Ensure body scroll is disabled when modal is open */
+body.modal-open {
+  overflow: hidden;
 }

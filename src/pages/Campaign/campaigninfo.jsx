@@ -25,6 +25,7 @@ export const CampaignInfo = () => {
       try {
         const response = await axiosInstance.get(`/campaign/${id}`);
         setCampaign(response.data);
+        console.log(response.data);
         
       } catch (error) {
         console.error("Error fetching campaign data:", error);
@@ -96,7 +97,7 @@ export const CampaignInfo = () => {
     <div className="content">
       <div className="info-box">
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="campaign_name">Campaign Name:</label>
             <input
               type="text"
@@ -107,7 +108,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="campaign_owner">Campaign Owner:</label>
             <input
               type="text"
@@ -120,10 +121,10 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="start_date">Start Date:</label>
             <input
-              type="text"
+              type="date"
               id="start_date"
               name="start_date"
               value={isEditing ? editedValues.start_date : campaign.start_date}
@@ -131,10 +132,10 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="end_date">End Date:</label>
             <input
-              type="text"
+              type="date"
               id="end_date"
               name="end_date"
               value={isEditing ? editedValues.end_date : campaign.end_date}
@@ -144,7 +145,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="expected_revenue">Expected Revenue:</label>
             <input
               type="text"
@@ -155,7 +156,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="actual_cost">Actual Cost:</label>
             <input
               type="text"
@@ -170,7 +171,7 @@ export const CampaignInfo = () => {
       </div>
       <div className="info-box">
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="numbers_sent">Numbers Sent:</label>
             <input
               type="text"
@@ -181,7 +182,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="type">Type:</label>
             <input
               type="text"
@@ -194,7 +195,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="status">Status:</label>
             <input
               type="text"
@@ -205,7 +206,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="budgeted_cost">Budgeted Cost:</label>
             <input
               type="text"
@@ -218,7 +219,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="expected_response">Expected Response:</label>
             <input
               type="text"
@@ -229,7 +230,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="tenant">Tenant:</label>
             <input
               type="text"
@@ -242,7 +243,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="description">Description:</label>
             <textarea
               id="description"

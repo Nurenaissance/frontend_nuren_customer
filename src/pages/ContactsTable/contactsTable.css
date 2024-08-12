@@ -94,8 +94,7 @@ height: 180px;
 
 
 .excel-dropdown-menu33 {
-  /* Your custom styles here */
-  font-family: 'Manrope';
+
   font-size: 14px;
   font-weight: 400;
   color: #FFFFFF;
@@ -228,7 +227,6 @@ box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
   top: -35px;
 }
 .tile-header1 {
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -238,7 +236,6 @@ box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
   top: -5px;
 }
 .contactphone{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -248,7 +245,6 @@ top: 70px;
 /*left: 120px;*/
 }
 .contactaddress{
-  font-family: 'Manrope';
 font-size: 12px;
 line-height: 20px;
 font-weight: 400;
@@ -258,7 +254,6 @@ top: -30px;
 /*left: 120px;*/
 }
 .contactemail{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -268,7 +263,6 @@ top: -30px;
 /*left: 120px;*/
 }
 .contfirst-name{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -282,7 +276,6 @@ left: 150px;
 
 
 .view-mode-select7 {
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   color: #323743FF;
@@ -311,7 +304,6 @@ left: 150px;
   border: 1px solid #ddd;
 }
 .contlast_name , .cont_email,.cont_phone{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -320,7 +312,6 @@ position: relative;
 
 }
 .cont-first_name{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 700;
@@ -342,7 +333,6 @@ left: 41px;
   background: #FFFFFFFF;
   background: #62CD14;
   font-weight: 400;
-  font-family: 'Manrope';
   font-size: 14px;
 }
 
@@ -385,8 +375,7 @@ left: 41px;
 }
 .cadence{
  margin-left: 20px;
-  font-family: 'Manrope';
-font-size: 18px;
+ font-size: 18px;
 line-height: 28px;
 font-weight: 700;
 color: #171A1FFF;
@@ -399,7 +388,6 @@ color: #171A1FFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -446,7 +434,6 @@ color: #171A1FFF;
   margin-top: -22px;
   left: 17px;
   top: 30px;
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -558,7 +545,6 @@ display: flex;
 flex: 1 1 0;
 align-items: center;
 justify-content: center;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -576,7 +562,6 @@ display: flex;
 flex: 1 1 0;
 align-items: center;
 justify-content: center;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -627,7 +612,6 @@ background: #CFD2DAFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -666,7 +650,6 @@ background: #CFD2DAFF;
   margin-top: 20px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 
 }
 
@@ -704,7 +687,6 @@ font-family: 'Manrope';
  
 }
 .recent-notes-button{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 700;
@@ -758,7 +740,6 @@ font-family: 'Manrope';
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -776,19 +757,12 @@ font-family: 'Manrope';
   left: 440px;
 }
 .relatedList-Contacts{
-    
-  font-family: 'Manrope';
  position: relative;
  right: 16rem;
  bottom: 4rem;
 font-size: 14px;
 font-weight: 400;
-width: 70px;
-text-align: center; 
-height: 35px;
-border-radius: 4px;
-border-width: 1px;
-border-color: #9095A1FF;
+
 outline: none;
 
  }
@@ -804,6 +778,25 @@ outline: none;
   left: 40px;
 
 }
+.contact-back-button{
+  
+  background: white;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.contact-back-button:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
+
+
 .twitter{
   width: 24px;
   height: 24px;
@@ -843,7 +836,6 @@ gap: 800px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
@@ -880,7 +872,6 @@ gap: 800px;
   height: 36px;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -898,7 +889,6 @@ gap: 800px;
   height: 36px;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -935,7 +925,6 @@ gap: 800px;
 position: relative;
 top: -8px;
 left: 470px;
-font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -1027,14 +1016,12 @@ color: #171A1FFF;
   'opsz' 24
 }
 .heading1,.heading2,.heading3{
-  font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
 color: #171A1FFF;
 }
 .paragraph1,.paragraph2,.paragraph3{
-  font-family: 'Manrope';
 font-size: 12px;
 line-height: 20px;
 font-weight: 400;
@@ -1062,7 +1049,6 @@ color: #6F7787FF;
   left: 70px;
 }
 .newcontact{
-  font-family: 'Lexend';
 font-size: 18px;
 line-height: 28px;
 font-weight: 400;
@@ -1082,7 +1068,6 @@ left: 370px;
   top: 20px;
 /* top: 196px; */
 /* left: 288px; */
-font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -1097,7 +1082,6 @@ color: #171A1FFF;
 }
 
 .activeInactivebtn button {
-  font-family: 'Manrope';
   font-size: 16px;
   font-weight: 400;
   color: #6D31EDFF;
@@ -1148,7 +1132,6 @@ left: -600px;
 font-size: 25px;
 line-height: 22px;
 font-weight: 600;
-font-family: 'Manrope';
 top: -16px;
 
 
@@ -1164,13 +1147,11 @@ top: -16px;
 .view-mode-select3{
   color: #323743FF;
 background: #FFFFFFFF;
-font-family:'Manrope' ;
 position: relative;
 left: -20px;
 }
 /* css of Contactinfopage */
 .contact-details{
-  font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -1178,7 +1159,6 @@ color: #171A1FFF;
 }
 
 .owner1{
-  font-family: 'Manrope';
 font-size: 20px;
 line-height: 30px;
 font-weight: 700;
@@ -1188,14 +1168,12 @@ position: relative;
 top: 9rem;
 }
 .note-head-contact{
-  font-family: 'Manrope';
   font-size: 18px;
 line-height: 22px;
 font-weight: 800;
 }
 
 .button-edit{
-  font-family: 'Manrope';
   font-size: 18px;
 line-height: 22px;
 font-weight: 600;
@@ -1204,7 +1182,6 @@ position: relative;
 bottom: 24rem;
 }
 .button-edit1{
-  font-family: 'Manrope';
   font-size: 18px;
 line-height: 22px;
 font-weight: 600;
@@ -1214,7 +1191,6 @@ bottom: 14rem;
 left: 100rem;
 }
 .button-edit2--{
-  font-family: 'Manrope';
   font-size: 18px;
 line-height: 22px;
 font-weight: 600;
@@ -1223,7 +1199,6 @@ position: relative;
 bottom: 12rem;
 }
 .button-saves{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1239,7 +1214,6 @@ bottom: 12rem;
   left: 85rem;}
 
   .button-cancels{
-    font-family: 'Lexend';
     font-size: 20px;
     line-height: 22px;
     font-weight: 500;
@@ -1256,7 +1230,6 @@ bottom: 12rem;
   }
 
   .button-saves1{
-    font-family: 'Lexend';
     font-size: 20px;
     line-height: 22px;
     font-weight: 500;
@@ -1272,7 +1245,6 @@ bottom: 12rem;
     left: 85rem;}
   
     .button-cancels1{
-      font-family: 'Lexend';
       font-size: 20px;
       line-height: 22px;
       font-weight: 500;
@@ -1288,7 +1260,6 @@ bottom: 12rem;
       left: 85rem;
     }
 .edit-box1{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1302,7 +1273,6 @@ bottom: 12rem;
   left: 90rem;
 }
 .button-editmail{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1316,7 +1286,6 @@ bottom: 12rem;
   left: 40rem;
 }
 .button-editmail1{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1330,7 +1299,6 @@ bottom: 12rem;
   left: 95rem; 
 }
 .edit-box2{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1344,7 +1312,6 @@ bottom: 12rem;
   left: 40rem;
 }
 .button-save1box{
-font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1360,7 +1327,6 @@ font-family: 'Lexend';
   left: 85rem;
 }
 .button-save2{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1376,7 +1342,6 @@ font-family: 'Lexend';
   left: 85rem;
 }
 .button-cancel2{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -1393,7 +1358,6 @@ font-family: 'Lexend';
 }
 
 .button-cancel1box{
-  font-family: 'Lexend';
     font-size: 20px;
     line-height: 22px;
     font-weight: 500;
@@ -1410,7 +1374,6 @@ font-family: 'Lexend';
   }
 
 .button-cancel{
-  font-family: 'Manrope';
   color: red;
   font-size: 18px;
 line-height: 22px;
@@ -1420,7 +1383,6 @@ bottom: 13rem;
 left: 90rem;
 }
 .button-save1{
-  font-family: 'Manrope';
   color: green;
   font-size: 18px;
 line-height: 22px;
@@ -1430,7 +1392,6 @@ bottom: 20rem;
 left: 90rem;
 }
 .button-cancel1{
-  font-family: 'Manrope';
   color: red;
   font-size: 18px;
 line-height: 22px;
@@ -1440,7 +1401,6 @@ bottom: 20rem;
 left: 90rem;
 }
 .owner3{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -1451,7 +1411,6 @@ top: 16rem;
 }
 .visitLinkedin{
   width: 203px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -1487,7 +1446,6 @@ bottom: 10rem;
 
 }
 .contactinfo-para1,.contactinfo-para2,.contactinfo-para3,.contactinfo-para4{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -1498,7 +1456,6 @@ color: #171A1FFF;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -1515,7 +1472,6 @@ color: #171A1FFF;
   height: 39px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -1536,7 +1492,6 @@ color: #171A1FFF;
   margin-top: -20px;
 }
 .owner{
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -1606,7 +1561,6 @@ color: #171A1FFF;
 .contactdetails-para1,.contactdetails-para2,.contactdetails-para3,
 .contactdetails-para6,.contactdetails-para7{
   width: 240px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 700;
@@ -1614,7 +1568,6 @@ color: #171A1FFF;
 }
 .contactinfo_accountName, .contactinfo_Email,.contactinfo_leadSource{
   width: 240px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -1623,7 +1576,6 @@ color: #171A1FFF;
 .contactdetails-para4,.contactdetails-para5
 {
   width: 240px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 700;
@@ -1631,7 +1583,6 @@ color: #171A1FFF;
 }
 .contactinfo_ContactName,.contactinfo_vendorName,.contactinfo_OtherPhone,.contactinfo_Address{
   width: 240px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -1713,7 +1664,6 @@ left: 65px;
   top: 40px;
   left: 30px;
   width: 240px;
-font-family: 'Manrope';
 font-size: 15px;
 line-height: 22px;
 font-weight: 700;
@@ -1722,7 +1672,6 @@ color: #323743FF;
 .contactdetails-para8, .contactdetails-para9,.contactdetails-para10
 ,.contactdetails-para13{
   width: 240px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 700;
@@ -1731,7 +1680,6 @@ color: #171A1FFF;
 .contactdetails-para11, 
 .contactdetails-para12{
   width: 240px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 700;
@@ -1788,7 +1736,6 @@ left: 130px;
 .contactdetails-para14, .contactdetails-para15,.contactdetails-para16
 ,.contactdetails-para17 ,.contactdetails-para18 ,.contactdetails-para19{
   width: 240px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 700;
@@ -1844,7 +1791,6 @@ color: #171A1FFF;
     .contactinfo_assistant,.contactinfo_createdBy,.contactinfo_modifiedBy,.contactinfo_Currency1
    .contactinfo_Account,.contactinfo_Fax {
       width: 240px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 400;
@@ -1853,7 +1799,6 @@ color: #171A1FFF;
     .contactinfo_DOB,.contactinfo_Asst,.contactinfo_emailopt,.contactinfo_SkypeID
     .contactinfo_Secondaryemail,.contactinfo_Twitter {
        width: 240px;
-       font-family: 'Manrope';
        font-size: 14px;
        line-height: 22px;
        font-weight: 400;
@@ -1872,7 +1817,6 @@ position: relative;
 margin-top: 50px;
      }
      .addinfo1{
-      font-family: 'Manrope';
       font-size: 18px;
       line-height: 28px;
       font-weight: 700;
@@ -1883,7 +1827,6 @@ margin-top: 50px;
      }
      .contactdetails-para20,.contactdetails-para21,.contactdetails-para22,.contactdetails-para23{
       width: 240px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 700;
@@ -1891,7 +1834,6 @@ margin-top: 50px;
      }
      .contactdetails-para24,.contactdetails-para25,.contactdetails-para26,.contactdetails-para27{
       width: 240px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 700;
@@ -1976,7 +1918,6 @@ margin-top: 50px;
             }
 
   .description-info{
-    font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 700;
@@ -1988,7 +1929,6 @@ left: -440px;
   .add_description{
     width: 948px;
     height: 66px;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -2009,7 +1949,6 @@ box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
 margin-top: 50px;
   }    
   .notes{
-font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -2041,7 +1980,6 @@ top: 60px;
 border: 1px solid #ddd;
 }
 .table_cadence-row{
-  font-family: 'Lexend';
 font-size: 14px;
 line-height: 22px;
 font-weight: 600;
@@ -2049,7 +1987,6 @@ color: #565D6DFF;
 border: 1px solid #ddd;
 }
 .table_cadence-data{
-  font-family: 'Lexend';
 font-size: 14px;
 line-height: 22px;
 font-weight: 600;
@@ -2115,8 +2052,6 @@ margin-bottom: 10px;
 .attachment-upload1 label::after {
 content: "+";
 position:absolute;
-
-font-family: 'Manrope';
 font-size: 24px;
 line-height: 32px;
 font-weight: 700;
@@ -2129,7 +2064,6 @@ background-color: #F8F9FAFF;
 border-color: #DEE1E645;
 }
 .clicktoupload1{
-  font-family: 'Manrope';
    position: relative; 
  line-height: 20px;
  top: 55px;
@@ -2149,7 +2083,6 @@ border-color: #DEE1E645;
 .info_deals2{
  margin-left: 42%;
  margin-top: 10px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2170,7 +2103,6 @@ border-color: #DEE1E645;
   position: relative;
   top: 13px;
   left: 450px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2182,7 +2114,6 @@ border-color: #DEE1E645;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -2214,7 +2145,6 @@ border-color: #DEE1E645;
 .closed_activity{
 margin-left: 20px;
 margin-top: 20px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2234,7 +2164,6 @@ margin-top: 20px;
 .invite_meet{
 margin-left: 20px;
 margin-top: 20px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2255,7 +2184,6 @@ margin-top: 20px;
 .info-pro{
 margin-top: 20px;
 margin-left: 40%;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2267,7 +2195,6 @@ margin-left: 40%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
@@ -2299,14 +2226,12 @@ margin-left: 40%;
 .cases,.info-quto,.purchase,.invoice,.infi-campi{
  margin-left: 20px;
  margin-top: 20px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
   color: #171A1FFF;
 }
 .info_social{
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2337,7 +2262,6 @@ margin-left: 40%;
 .info-sale{
   margin-top: 20px;
   margin-left: 20px;
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2352,7 +2276,6 @@ left: 70px;
 top: 30px;
 }
 .meet_title{
-  font-family: 'Manrope';
   font-size: 14px;
 line-height: 22px;
   font-weight: 700;
@@ -2362,7 +2285,6 @@ line-height: 22px;
   left: 16px;
 }
 .timing{
-  font-family: 'Manrope';
 font-size: 12px;
 line-height: 20px;
 font-weight: 400;
@@ -2372,7 +2294,6 @@ top: 30px;
 left: 16px;
 }
 .rooms{
-  font-family: 'Manrope';
 font-size: 12px;
 line-height: 20px;
 font-weight: 400;
@@ -2387,7 +2308,6 @@ height: 24px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-font-family: 'Manrope';
 font-size: 11px;
 line-height: 18px;
 font-weight: 400;
@@ -2436,20 +2356,14 @@ top: 30px;
  }
  .relatedList-Contacts3{
     
-  font-family: 'Manrope';
 
 font-size: 14px;
 font-weight: 400;
 width: 80px;
 text-align: center; 
-height: 35px;
-border-radius: 4px;
-border-width: 1px;
-border-color: #9095A1FF;
 outline: none;
 position: relative;
-top: 170px;
-left: 10px;
+
 padding-left: 2px;
 padding-top: 4px;
  }
@@ -2473,7 +2387,6 @@ bottom: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -2492,7 +2405,6 @@ bottom: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -2511,7 +2423,6 @@ bottom: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -2555,14 +2466,12 @@ bottom: 5rem;
     top: -100px;
     left: 90px;
     width: 203px;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
     color: #6D31EDFF;
   }
   .cont_infoo{
-    font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -2581,7 +2490,6 @@ top: -60px;
     border: 1px solid #ddd; /* Add a border around the box */
   }
   .info_address_info{
-    font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -2593,7 +2501,6 @@ top: -60px;
   .contact_owner_form{
     position: relative;
     left: 10px;
-    font-family: 'Manrope';
     font-size: 15px;
     line-height: 16px;
     font-weight: 700;
@@ -2609,7 +2516,6 @@ top: -60px;
       height: 36px;
       padding-left: 12px;
       padding-right: 12px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 400;
@@ -2624,7 +2530,6 @@ top: -60px;
       height: 36px;
       padding-left: 12px;
       padding-right: 12px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 400;
@@ -2652,7 +2557,6 @@ top: -60px;
       box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
     }
     .mailing_cont_street{
-      font-family: 'Manrope';
       font-size: 15px;
       line-height: 16px;
       font-weight: 700;
@@ -2661,7 +2565,6 @@ top: -60px;
       left: 20px;
     }
     .mailing_cont_city{
-      font-family: 'Manrope';
       font-size: 15px;
       line-height: 16px;
       font-weight: 700;
@@ -2670,7 +2573,6 @@ top: -60px;
       left: 20px;
     }
     .mailing-cont-state{
-      font-family: 'Manrope';
       font-size: 15px;
       line-height: 16px;
       font-weight: 700;
@@ -2679,7 +2581,6 @@ top: -60px;
       left: 20px;
     }
     .mailing-cont-zip{
-      font-family: 'Manrope';
       font-size: 15px;
       line-height: 16px;
       font-weight: 700;
@@ -2688,7 +2589,6 @@ top: -60px;
       left: 20px;
     }
     .mailing-cont-country{
-      font-family: 'Manrope';
       font-size: 15px;
       line-height: 16px;
       font-weight: 700;
@@ -2702,7 +2602,6 @@ top: -60px;
       height: 36px;
       padding-left: 12px;
       padding-right: 12px;
-      font-family: 'Manrope';
       font-size: 14px;
       line-height: 22px;
       font-weight: 400;
@@ -2739,7 +2638,6 @@ padding: 0 12px;
 display: flex;
 align-items: center;
 justify-content: center;
-font-family: Manrope;
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -2896,33 +2794,33 @@ margin-bottom: 40px;
 
 /* Contact form styles */
 .back_container111 {
-  width: 250px;
-  height: 700px;
-  margin-top: 2px;
-  background: #FAFAFBFF;
-  margin-left: 1px;
-  padding-top: 20px;
-  border-radius: 0px;
-  position: relative;
-bottom: 13rem;
+  width: 150px;
+  background: white;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
 }
-
+.back_container111 a{
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+}
+.back_container111 a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
 .relatedList-Contacts3 {
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   width: 80px;
   text-align: center; 
   height: 35px;
-  border-radius: 4px;
-  border-width: 1px;
-  border-color: #9095A1FF;
   outline: none;
   position: relative;
-  top: 170px;
-  left: 10px;
-  padding-left: 2px;
-  padding-top: 4px;
 }
 
 
@@ -2945,7 +2843,6 @@ bottom: 13rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -2995,7 +2892,6 @@ bottom: 13rem;
   top: -100px;
   left: 90px;
   width: 203px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -3009,7 +2905,6 @@ bottom: 13rem;
 /* Contact info styles */
 .cont_infoo,
 .info_address_info {
-  font-family: 'Manrope';
   font-size: 18px;
   line-height: 28px;
   font-weight: 700;
@@ -3021,7 +2916,6 @@ bottom: 13rem;
 .contact_owner_form {
   position: relative;
   left: 10px;
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 16px;
   font-weight: 700;
@@ -3067,7 +2961,6 @@ bottom: 13rem;
 .form-control_state_mail,
 .form-control_zip_mail,
 .form-control_country_mail {
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 16px;
   font-weight: 700;
@@ -3104,7 +2997,6 @@ bottom: 13rem;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -3141,7 +3033,6 @@ bottom: 13rem;
 .mailing-cont-state,
 .mailing-cont-zip,
 .mailing-cont-country {
-  font-family: 'Manrope';
   font-size: 15px;
   line-height: 16px;
   font-weight: 700;
@@ -3160,7 +3051,6 @@ bottom: 13rem;
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -3178,7 +3068,6 @@ bottom: 13rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: Manrope;
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -3358,7 +3247,6 @@ margin-top: 10rem;
 height: 56px;
 display: flex;
 align-items: center;
-font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 400;
@@ -3389,7 +3277,6 @@ color: #6D31EDFF;
   border-radius: 8px;
   }
   .timeline-data-contact,.timeline-data2-contact{
-    font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 800;
@@ -3398,7 +3285,6 @@ color: #171A1FFF;
 
  
   .contract-contact{
-    font-family: 'Manrope';
 font-size: 18px;
 line-height: 22px;
 font-weight: 800;
@@ -3440,7 +3326,6 @@ height: 128px;
 background: #FAFAFBFF;
 border-radius: 8px;
 font-size: 16px;
-font-family: "lexend";
 padding: 20px;
 margin-left: 10rem;
 

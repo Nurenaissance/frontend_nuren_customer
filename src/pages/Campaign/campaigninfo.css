@@ -1,50 +1,150 @@
+/* General Styles */
 .campaign-info-page {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .campaign-sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    padding: 20px;
-  }
-  
-  .campaign-info {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  h1 {
-    font-size: 40px;
-    margin-bottom: 30px;
-  }
-  
-  .content {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .info-box {
-    background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .info-row p {
-    margin: 5px 0;
-    flex: 1;
-  }
-  
-  .info-row p strong {
-    margin-right: 10px;
-  }
-  
+  display: flex;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Sidebar Styles */
+.campaign-sidebar {
+  width: 250px;
+  background: white;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.campaign-sidebar a {
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.campaign-sidebar a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
+
+/* Main Content Styles */
+.campaigninformation {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  padding: 30px;
+  margin-left: 20px;
+}
+
+/* Buttons */
+.campaign-button {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.edit-button, .save-button, .cancel-button {
+  border: none;
+  padding: 15px 25px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.edit-button {
+  background: linear-gradient(135deg, #6d31ed, #8e2de2);
+}
+
+.save-button {
+  background: linear-gradient(135deg, #62cd14, #2a9d8f);
+}
+
+.cancel-button {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.edit-button:hover, .save-button:hover, .cancel-button:hover {
+  transform: scale(1.1);
+}
+
+/* Campaign Info Styles */
+.campaign-info h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+/* Responsive Grid Layout */
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Info Box Styles */
+.info-box {
+  background-color: #f4f6f9;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  padding: 20px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.info-box:hover {
+  background-color: #f4f6f9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* Info Row Styles */
+.info-row {
+  margin-bottom: 20px;
+}
+
+/* Info Pair Styles */
+.info-pair-campaign {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: box-shadow 0.3s, transform 0.3s;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.info-pair-campaign:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  transform: translateY(-5px);
+}
+
+/* Labels and Inputs */
+.info-pair-campaign label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #34495e;
+  display: block;
+}
+
+.info-pair-campaign input, .info-pair-campaign textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: border-color 0.3s, background-color 0.3s;
+  font-size: 16px;
+}
+
+.info-pair-campaign input:focus, .info-pair-campaign textarea:focus {
+  border-color: #6d31ed;
+  background-color: #f4f6f9;
+  outline: none;
+}
+

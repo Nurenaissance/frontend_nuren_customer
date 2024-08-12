@@ -9,7 +9,10 @@
   width: 100%;
   margin-top: 20px;
 }
-
+.leads-heading{
+  font-weight: bold;
+  font-size: 3rem;
+}
 .lead_add_btn{
   display: flex;
   justify-content: flex-end;

@@ -139,14 +139,14 @@ const getColor = (index) => {
 
   return (
     <div className="Opportunities-info-page">
-      <div className="opportunities-Sidebar">
+      <div className="opportunities-Sidebar1">
         <Link to={`/${tenantId}/opportunities`}>Back</Link>
       </div>
       <div className="opportunities-info">
         <h1>Opportunities Info</h1>
         <div className="opportunity-button">
           
-        <button className="edit-button" onClick={handleEdit} disabled={isEditing}>Edit</button>
+        <button className="edit-button-oppo" onClick={handleEdit} disabled={isEditing}>Edit</button>
         {isEditing && (
           <>
             <button className="save-button" onClick={handleSubmit}>Save</button>
@@ -293,7 +293,7 @@ const getColor = (index) => {
             <div className="info-pair">
               <label htmlFor="closedOn">Closed On:</label>
               <input
-                type="text"
+                type="date"
                 id="closedOn"
                 name="closedOn"
                 value={editedValues.closedOn}

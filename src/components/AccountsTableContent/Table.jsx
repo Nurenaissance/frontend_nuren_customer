@@ -24,7 +24,6 @@ const getTenantIdFromUrl = () => {
   return null; // Return null if tenant ID is not found or not in the expected place
 };
 const AccountsTable1 = () => {
-
   const [accounts, setAccounts] = useState([]);
   const [viewMode, setViewMode] = useState("table");
   const [recentAccounts, setRecentAccounts] = useState([]);
@@ -305,8 +304,8 @@ const renderTableRows = () => {
                             </Dropdown.Menu>
                           </Dropdown>
                     </div>
-                    <div className="create1">
-                      <NavLink to={`/${tenantId}/addaccount`} id="btn3">+CreateAccount</NavLink>
+                    <div className="createaccount">
+                      <NavLink to={`/${tenantId}/addaccount`} >+CreateAccount</NavLink>
                     </div>
               </div>
 

@@ -71,17 +71,28 @@
   }
 
   .interaction_back{
-    width: 256px;
     height: 1100px;
-    background: #FAFAFBFF;
-    border-radius: 0px;
-    border-width: 1px;
-    border-color: #FFFFFFFF;
-    border-style: solid;
-    box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
+    width: 250px;
+    background: white;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  }
+  .interaction_back a{
+    color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+  }
+  .interaction_back a:hover {
+    color: #f1c40f;
+    transform: scale(1.05);
   }
   .Interaction_head{
-font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -107,7 +118,7 @@ box-shadow: 0px 4px 9px
   .second_inter{
  
     width: 1106px;
-height: 172px;
+height: 250px;
 background: #F8F9FAFF;
 border-radius: 8px;
 border-width: 1px;
@@ -121,7 +132,6 @@ flex-direction: column;
   }
   .note_head{
 
-    font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -137,7 +147,6 @@ padding-top: 37px;
 padding-bottom: 7px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -154,7 +163,6 @@ border-color: #9095A11C;
  
   }
   .first_inter_data1{
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -164,7 +172,6 @@ border-color: #9095A11C;
   #back-inter{
     /* padding: 100px; */
   margin-left: 100px;
-  font-family: "Manrope";
  
 
     border: 1px solid #DDD ;

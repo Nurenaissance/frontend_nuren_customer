@@ -1,7 +1,7 @@
 .text-heading{
     margin-bottom: 1rem;
     line-height: 5rem;
-
+    font-weight: bold;
 }
 .recharts-legend-wrapper{
     display: none;

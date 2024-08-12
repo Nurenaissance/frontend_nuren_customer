@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -26,6 +25,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error parsing 'user_role' from localStorage:", error);
       return null; // Provide a default value or handle the error as needed
+    }
+  });
+
+  const [model, setModel] = useState(() => {
+    try {
+      const storedModel = localStorage.getItem("model");
+      return storedModel ? JSON.parse(storedModel) : null;
+    } catch (error) {
+      console.error("Error parsing JSON from localStorage:", error);
+      return null; // or provide a default value
     }
   });
   
@@ -62,11 +71,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, [userRole]);
 
-  const login = (userId, tenantId, role) => { // Change userRole to role
+  useEffect(() => {
+    try {
+      localStorage.setItem("model", JSON.stringify(model));
+    } catch (error) {
+      console.error("Error saving 'model' to localStorage:", error);
+    }
+  }, [model]);
+
+  const login = (userId, tenantId, role, model) => { // Add model parameter
     setAuthenticated(true);
     setUserId(userId);
     setTenantId(tenantId);
-    setUserRole(role); // default to "employee" if role is undefined
+    setUserRole(role);
+    setModel(model); // Set model
   };
 
   const logout = () => {
@@ -75,17 +93,19 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("user_id");
       localStorage.removeItem("tenant_id");
       localStorage.removeItem("user_role");
+      localStorage.removeItem("model");
       setAuthenticated(false);
       setUserId(null);
       setTenantId(null);
-      setUserRole(null); // default to "employee"
+      setUserRole(null);
+      setModel(null); // Clear model
     } catch (error) {
       console.error("Error clearing localStorage:", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ authenticated, userId, tenantId, userRole, login, logout, setAuthenticated }}>
+    <AuthContext.Provider value={{ authenticated, userId, tenantId, userRole, model, login, logout, setAuthenticated, setModel }}>
       {children}
     </AuthContext.Provider>
   );
