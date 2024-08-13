@@ -1,0 +1,372 @@
+.campaign-additional-page{
+  display: flex;
+}
+.insta-additional-fields {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.insta-additional-fields h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #FF5E62;
+  font-weight: 600;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 10px;
+}
+
+.insta-additional-fields .form-group {
+  margin-bottom: 20px;
+}
+
+.insta-additional-fields .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #8e8e8e;
+}
+
+.insta-additional-fields .form-group input[type="text"],
+.insta-additional-fields .form-group input[type="number"],
+.insta-additional-fields .form-group input[type="email"],
+.insta-additional-fields .form-group input[type="datetime-local"],
+.insta-additional-fields .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dbdbdb;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #262626;
+}
+
+.insta-additional-fields .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.insta-additional-fields .form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.insta-additional-fields .button {
+ background: linear-gradient(135deg, #FF9966, #FF5E62); 
+  color: #fff; /* White text */
+  border: none; /* No border */
+  padding: 12px 24px; /* Padding around the text */
+  border-radius: 6px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  font-weight: 600; /* Bold text */
+  text-align: center; /* Center the text */
+  display: inline-block; /* Fit content */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.insta-additional-fields .button:hover {
+  background-color: linear-gradient(135deg, #FF9966, #FF5E62); /* Darker blue for hover effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect on hover */
+}
+
+.insta-additional-fields .button:active {
+  background-color: linear-gradient(135deg, #FF9966, #FF5E62); /* Even darker blue when pressed */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .insta-additional-fields {
+    padding: 15px;
+  }
+
+  .insta-additional-fields h3 {
+    font-size: 20px;
+  }
+
+  .insta-additional-fields .form-group input,
+  .insta-additional-fields .form-group textarea {
+    font-size: 13px;
+  }
+
+  .insta-additional-fields .button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+/* WhatsApp-like additional fields styling */
+.whatsapp-additional-fields {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color:#fff ;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-additional-fields h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #075e54; /* WhatsApp green */
+  font-weight: 600;
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 10px;
+}
+
+.whatsapp-additional-fields .form-group {
+  margin-bottom: 20px;
+}
+
+.whatsapp-additional-fields .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.whatsapp-additional-fields .form-group input[type="text"],
+.whatsapp-additional-fields .form-group input[type="number"],
+.whatsapp-additional-fields .form-group input[type="email"],
+.whatsapp-additional-fields .form-group input[type="datetime-local"],
+.whatsapp-additional-fields .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+}
+
+.whatsapp-additional-fields .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.whatsapp-additional-fields .form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Buttons styled like WhatsApp buttons */
+.whatsapp-additional-fields .button {
+  background: linear-gradient(135deg, #11998e, #38ef7d); /* WhatsApp green */
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-additional-fields .button:hover {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .whatsapp-additional-fields {
+    padding: 15px;
+  }
+
+  .whatsapp-additional-fields h3 {
+    font-size: 20px;
+  }
+
+  .whatsapp-additional-fields .form-group input,
+  .whatsapp-additional-fields .form-group textarea {
+    font-size: 13px;
+  }
+
+  .whatsapp-additional-fields .button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+/* Email-like additional fields styling */
+.email-additional-fields {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.email-additional-fields h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #EA4335;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+.email-additional-fields .form-group {
+  margin-bottom: 20px;
+}
+
+.email-additional-fields .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555555;
+}
+
+.email-additional-fields .form-group input[type="text"],
+.email-additional-fields .form-group input[type="number"],
+.email-additional-fields .form-group input[type="email"],
+.email-additional-fields .form-group input[type="datetime-local"],
+.email-additional-fields .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333333;
+}
+
+.email-additional-fields .form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.email-additional-fields .form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Buttons styled for email context */
+.email-additional-fields .button {
+  background-color: #EA4335; /* Primary blue color */
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.email-additional-fields .button:hover {
+  background-color: #EA4335; /* Darker blue for hover effect */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .email-additional-fields {
+    padding: 15px;
+  }
+
+  .email-additional-fields h3 {
+    font-size: 20px;
+  }
+
+  .email-additional-fields .form-group input,
+  .email-additional-fields .form-group textarea {
+    font-size: 13px;
+  }
+
+  .email-additional-fields .button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+/* Call-like additional fields styling */
+.call-additional-fields {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.call-additional-fields h3 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #011230;
+  font-weight: 600;
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 10px;
+}
+
+.call-additional-fields .form-group {
+  margin-bottom: 20px;
+}
+
+.call-additional-fields .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555555;
+}
+
+.call-additional-fields .form-group input[type="text"],
+.call-additional-fields .form-group input[type="number"],
+.call-additional-fields .form-group input[type="email"],
+.call-additional-fields .form-group input[type="datetime-local"],
+.call-additional-fields .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333333;
+}
+
+.call-additional-fields .form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.call-additional-fields .form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Buttons styled for call context */
+.call-additional-fields .button {
+  background-color: #011230; /* Call green color */
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.call-additional-fields .button:hover {
+  background-color: #011230; /* Darker green for hover effect */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .call-additional-fields {
+    padding: 15px;
+  }
+
+  .call-additional-fields h3 {
+    font-size: 20px;
+  }
+
+  .call-additional-fields .form-group input,
+  .call-additional-fields .form-group textarea {
+    font-size: 13px;
+  }
+
+  .call-additional-fields .button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}

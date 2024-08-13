@@ -6,11 +6,13 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
+import CallIcon from '@mui/icons-material/Call';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from "../../api";
 import { useAuth } from "../../authContext";
 import { Link} from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import AdditionalCampaignFields from './individual_form_campaign'; 
 import './campaignform.css'
 
 const getTenantIdFromUrl = () => {
@@ -50,6 +52,13 @@ const Campaignform = () => {
   const navigate = useNavigate();
   const tenantId = getTenantIdFromUrl();
   const {userId}=useAuth();
+  const [additionalFields, setAdditionalFields] = useState({
+    facebook: false,
+    instagram: false,
+    whatsapp: false,
+    email: false,
+    call: false,
+  });
   const [campaignData, setCampaignData] = useState({
     campaign_name: "",
     start_date: "",
@@ -135,7 +144,7 @@ const Campaignform = () => {
         expected_revenue: "",
         actual_cost: "",
         numbers_sent:"" ,
-        type: "",
+        type: [],
         status: "",
         budgeted_cost: "",
         expected_response: "",
@@ -216,16 +225,21 @@ const Campaignform = () => {
   };
 
   const handleSocialButtonClick = (type) => {
-    setCampaignData(prevState => ({
-      ...prevState,
-      type: type,
+   
+  
+    setCampaignData((prevData) => {
+      const newTypes = prevData.type.includes(type)
+        ? prevData.type.filter(t => t !== type) // Remove the type if it's already selected
+        : [...prevData.type, type]; // Add the type if it's not selected
+
+      return { ...prevData, type: newTypes }; // Update the campaignData with new types
+    });
+
+  
+    setAdditionalFields((prevFields) => ({
+      ...prevFields,
+      [type.toLowerCase()]: !prevFields[type.toLowerCase()], // Toggle the specific campaign type
     }));
-    if (type === 'Instagram') {
-      window.location.href = "/instagramflow";
-    }
-    else if (type === 'WhatsApp'){
-      window.location.href = "/whatsappflow"
-    }
   };
 
   const handleCancel = () => {
@@ -443,34 +457,44 @@ const Campaignform = () => {
 
   <div className="cf-form-group">
     <p className='cf-campaign-type'>Type</p>
-    <button 
-      className={`cf-social-btn ${campaignData.type === 'Facebook' ? 'active' : ''}`} 
-      onClick={() => handleSocialButtonClick('Facebook')}
-    >
-      <FacebookIcon />
-    </button>
-    <button 
-      className={`cf-social-btn ${campaignData.type === 'Instagram' ? 'active' : ''}`}
-      onClick={() => handleSocialButtonClick('Instagram')}
-    >
-      <InstagramIcon />
-    </button>
-    <button className={`cf-social-btn ${campaignData.type === 'WhatsApp' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('WhatsApp')}>
-      <WhatsAppIcon />
-    </button>
-    <button className={`cf-social-btn ${campaignData.type === 'Email' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Email')}>
-      <EmailIcon />
-    </button>
-    <button className={`cf-social-btn ${campaignData.type === 'Message' ? 'active' : ''}`} onClick={() => handleSocialButtonClick('Message')}>
-      <ChatBubbleOutlineIcon />
-    </button>
+   
+        <button 
+          type="button" 
+          className={`cf-social-btn ${campaignData.type.includes('Instagram') ? 'active' : ''}`}
+          onClick={() => handleSocialButtonClick('Instagram')}
+        >
+          <InstagramIcon />
+        </button>
+        <button
+          type="button"  
+          className={`cf-social-btn ${campaignData.type.includes('WhatsApp') ? 'active' : ''}`} 
+          onClick={() => handleSocialButtonClick('WhatsApp')}
+        >
+          <WhatsAppIcon />
+        </button>
+        <button
+          type="button"  
+          className={`cf-social-btn ${campaignData.type.includes('Email') ? 'active' : ''}`} 
+          onClick={() => handleSocialButtonClick('Email')}
+        >
+          <EmailIcon />
+        </button>
+        <button
+          type="button"  
+          className={`cf-social-btn ${campaignData.type.includes('Call') ? 'active' : ''}`} 
+          onClick={() => handleSocialButtonClick('Call')}
+        >
+          <CallIcon />
+        </button>
   </div>
 
 
 </form>
+<AdditionalCampaignFields additionalFields={additionalFields} />
 </div>
       {showPopup && <Popup errors={formErrors} onClose={closePopup} />}
       {showSuccessPopup && <SuccessPopup message={successMessage} onClose={closeSuccessPopup} />}
+      
     </div>
   );
 }

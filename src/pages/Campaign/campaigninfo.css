@@ -14,6 +14,126 @@
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
+.additional-campaign-whatsappinfo {
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 15px;
+  margin: 20px 0; /* Space outside the box */
+  padding: 20px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  background-color: #f4f6f9;
+  max-width: 800px; /* Max width to control the size of the box */
+  margin-left: 2rem;
+}
+.additional-campaign-whatsappinfo:hover {
+  background-color: #f4f6f9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.additional-campaign-whatsappinfo h2 {
+  color: #333; /* Darker text color for the heading */
+  font-size: 1.5em; /* Larger font size for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.additional-campaign-whatsappinfo p {
+  color: #555; /* Darker gray for text */
+  margin: 8px 0; /* Space between paragraphs */
+}
+
+.additional-campaign-whatsappinfo p strong {
+  color: #333; /* Darker color for strong text */
+}
+
+.additional-campaign-emailinfo {
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  padding: 20px;
+  background-color: #f4f6f9;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin: 20px 0; /* Space outside the box */
+  max-width: 800px; /* Max width to control the size of the box */
+  margin-left: 2rem;
+}
+.additional-campaign-emailinfo:hover {
+  background-color: #f4f6f9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.additional-campaign-emailinfo h2 {
+  color: #333; /* Darker text color for the heading */
+  font-size: 1.5em; /* Larger font size for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.additional-campaign-emailinfo p {
+  color: #555; /* Darker gray for text */
+  margin: 8px 0; /* Space between paragraphs */
+}
+
+.additional-campaign-emailinfo p strong {
+  color: #333; /* Darker color for strong text */
+}
+.additional-campaign-instainfo {
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  padding: 20px;
+  background-color: #f4f6f9;
+  margin-left: 2rem;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  max-width: 800px; /* Max width to control the size of the box */
+}
+.additional-campaign-instainfo:hover {
+  background-color: #f4f6f9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+.additional-campaign-instainfo h2 {
+  color: #333; /* Darker text color for the heading */
+  font-size: 1.5em; /* Larger font size for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.additional-campaign-instainfo p {
+  color: #555; /* Darker gray for text */
+  margin: 8px 0; /* Space between paragraphs */
+}
+
+.additional-campaign-instainfo p strong {
+  color: #333; /* Darker color for strong text */
+}
+.additional-campaign-callinfo {
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  padding: 20px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin: 20px 0; /* Space outside the box */
+  background-color: #f4f6f9;
+  margin-left: 2rem;
+  max-width: 800px; /* Max width to control the size of the box */
+}
+.additional-campaign-callinfo:hover {
+  background-color: #f4f6f9;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.additional-campaign-callinfo h3 {
+  color: #333; /* Darker text color for the heading */
+  font-size: 1.4em; /* Slightly larger font size for the heading */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.additional-campaign-callinfo p {
+  color: #666; /* Medium gray for text */
+  margin: 8px 0; /* Space between paragraphs */
+}
+
+.additional-campaign-callinfo p strong {
+  color: #333; /* Darker color for strong text */
+}
+
 
 .campaign-sidebar a {
   color: #f39c12;
