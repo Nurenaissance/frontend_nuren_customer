@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './chatbot.css';
 import OpenAI from "openai";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api.jsx";
 import MailIcon from '@mui/icons-material/Mail';
 import SearchIcon from '@mui/icons-material/Search';

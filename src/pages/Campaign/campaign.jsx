@@ -102,14 +102,14 @@ const Campaign = () => {
 }, []);
 
 
-  const fetchTemplates = async () => {
-    try {
-      const response = await axiosInstance.get('/node-templates/');
-      setTemplates(response.data);
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-    }
-  };
+const fetchTemplates = async () => {
+  try {
+    const response = await axiosInstance.get('/node-templates/');
+    setTemplates(response.data);
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+  }
+};
 
 
 
@@ -172,29 +172,37 @@ const Campaign = () => {
     fetchFlows();
   }, []);
 
-  const fetchFlows = async (templateIds) => {
-  try {
-    const promises = templateIds.map(id => 
-      axiosInstance.get(`/node-templates/${id}/`)
-    );
-    const responses = await Promise.all(promises);
-    const data = responses.map(response => response.data);
-    setFlows(data);
-  } catch (error) {
-    console.log("Error fetching flows:", error);
-  }
-};
+  const fetchFlows = async () => {
+    try {
+      const response = await axiosInstance.get('/node-templates/');
+      setFlows(response.data);
+    } catch (error) {
+      console.log("Error fetching flows:", error);
+    }
+  };
 
 // Usage:
 fetchFlows([1, 2, 3]); // Replace with actual IDs
 
-  const handleFlowsButtonClick = () => {
-    setShowFlows(!showFlows);
-  };
+const handleFlowsButtonClick = () => {
+  setShowFlows(!showFlows);
+};
 
-  const handleTemplateSelect = (templateId) => {
-    console.log("Selected template ID:", templateId); // Add this log
-    navigate(`/${tenantId}/flow`, { state: { templateId } });
+const handleTemplateSelect = (template) => {
+  navigate(`/${tenantId}/flow`, { state: { template } });
+};
+
+
+  const handleDeleteFlow = async (templateId) => {
+    if (window.confirm("Are you sure you want to delete this flow?")) {
+      try {
+        await axiosInstance.delete(`/node-templates/${templateId}/`);
+        // Refresh the templates list after deletion
+        fetchTemplates();
+      } catch (error) {
+        console.error("Error deleting flow:", error);
+      }
+    }
   };
 
   const handleDownloadPDF = () => {
@@ -395,20 +403,28 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
       </tr>
     </thead>
     <tbody>
-      {showFlows
-        ? templates.map((template) => (
-            <tr key={template.id}>
-              <td>{template.name}</td>
-              <td>{template.description}</td>
-              <td>{template.category}</td>
-              <td>{template.createdBy}</td>
-              <td>{new Date(template.date_created).toLocaleDateString()}</td>
-              <td>
-                <button style={{border:"1px red solid", padding:'10px', borderRadius:'8px'}} onClick={() => handleTemplateSelect(template.id)}>
-                  Open Flow
-                </button>
-              </td>
-            </tr>
+      {showFlows ? flows.map((flow) => (
+            <tr key={flow.id}>
+            <td>{flow.name}</td>
+            <td>{flow.description}</td>
+            <td>{flow.category}</td>
+            <td>{flow.createdBy}</td>
+            <td>{new Date(flow.date_created).toLocaleDateString()}</td>
+            <td>
+              <button 
+                style={{border:"1px blue solid", padding:'10px', borderRadius:'8px', marginRight: '10px'}} 
+                onClick={() => handleTemplateSelect(flow)}
+              >
+                Open Flow
+              </button>
+              <button 
+                style={{border:"1px red solid", padding:'10px', borderRadius:'8px'}} 
+                onClick={() => handleDeleteFlow(flow.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
           ))
         : filteredCampaigns.map((campaign) => (
             <tr className="campaign_table_row" key={campaign.id}>

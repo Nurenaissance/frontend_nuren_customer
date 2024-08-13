@@ -5,6 +5,8 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 import axiosInstance from "../../api.jsx";
 import { Delete } from "@mui/icons-material";
+import { AiOutlineRobot } from "react-icons/ai";
+import { Modal } from '@mui/material';
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -33,6 +35,63 @@ const Kanban2 = () => {
   const [newStageTitle, setNewStageTitle] = useState("");
   const [editingColumnId, setEditingColumnId] = useState(null);
   const [newTitle, setNewTitle] = useState("");
+  const [popupOpen, setPopupOpen] = useState(false);
+const [popupContent, setPopupContent] = useState('');
+const [isLoading, setIsLoading] = useState(false);
+const [loadingMessage, setLoadingMessage] = useState('');
+
+const loadingMessages = [
+  "Analyzing data patterns...",
+  "Generating insightful suggestions...",
+  "Crunching numbers at light speed...",
+  "Unlocking hidden potential in your opportunities...",
+  "Preparing to blow your mind with AI magic..."
+];
+
+
+useEffect(() => {
+  let interval;
+  if (isLoading) {
+    interval = setInterval(() => {
+      setLoadingMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
+    }, 3000);
+  }
+  return () => clearInterval(interval);
+}, [isLoading]);
+
+
+const handleAiButtonClick = async (card) => {
+  setIsLoading(true);
+  setPopupOpen(true);
+  setLoadingMessage(loadingMessages[0]);
+
+  const prompt = `analyse this opportunity and suggest me the best way to handle it`;
+
+  try {
+    const response = await axiosInstance.post(`/query/`, { 
+      prompt, 
+      tenant: tenantId
+    });
+    const result = response.data;
+    showOpportunityPopup(result);
+  } catch (error) {
+    console.error('Error fetching AI suggestion:', error);
+    showOpportunityPopup("An error occurred while fetching AI suggestions. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+const showOpportunityPopup = (content) => {
+  setPopupContent(content);
+};
+
+const handleClosePopup = () => {
+  setPopupOpen(false);
+  setPopupContent('');
+};
+
+
   const handleDoubleClick = (columnId, currentTitle) => {
     setEditingColumnId(columnId);
     setNewTitle(currentTitle);
@@ -379,6 +438,45 @@ const Kanban2 = () => {
         >
           <Delete style={{fontSize:'16px'}}/>
         </button>
+        <button 
+    onClick={() => handleAiButtonClick(card)}
+    className="ai-button"
+  >
+    <AiOutlineRobot style={{fontSize: '20px'}}/>
+  </button>
+  <Modal
+  open={popupOpen}
+  onClose={handleClosePopup}
+  aria-labelledby="ai-suggestion-popup"
+  aria-describedby="ai-suggestion-description"
+  className="modal"
+>
+  <div className="ai-popup-content">
+    <h2>AI Insights</h2>
+    {isLoading ? (
+      <>
+        <div className="ai-loader"></div>
+        <p className="ai-loading-message">{loadingMessage}</p>
+      </>
+    ) : (
+      <div className="ai-insights-content">
+        {Array.isArray(popupContent) ? (
+          popupContent.map((insight, index) => (
+            <div key={index} className="ai-insight-item">
+              <h3>Insight {index + 1}</h3>
+              <p>{insight}</p>
+            </div>
+          ))
+        ) : (
+          <div className="ai-insight-item">
+            <p>{popupContent}</p>
+          </div>
+        )}
+      </div>
+    )}
+    <button onClick={handleClosePopup}>Close</button>
+  </div>
+</Modal>
                                   </div>
                                   <div className="content_">
                                     <NavLink to={`/${tenantId}/ShowOpportunity/${card.id}`}>
