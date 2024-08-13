@@ -13,6 +13,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
+import CallIcon from '@mui/icons-material/Call';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from '../../api';
 import jsPDF from 'jspdf';
@@ -359,6 +360,9 @@ const handleTemplateSelect = (template) => {
                     </button>
                     <button   className="campaign_btn4"       onClick={handleEmailClick}>
                       <EmailIcon />
+                    </button>
+                    <button   className="campaign_btn5"       onClick={handleEmailClick}>
+                      <CallIcon />
                     </button>
               </div>
               <div className="flow-button">

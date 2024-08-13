@@ -1,0 +1,64 @@
+.call-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+.contacts {
+  grid-column: 1;
+}
+
+.conversation {
+  grid-column: 2;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.conversation h2{
+  margin-bottom: 50px;
+}
+.conversation-text{
+  margin-bottom: 50px;
+}
+.details {
+  grid-column: 3;
+}
+
+.contacts h2,
+.conversation h2,
+.details h2 {
+  margin-top: 0;
+}
+
+.contacts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.contacts li {
+  cursor: pointer;
+}
+
+.contacts li:hover {
+  background-color: #f0f0f0;
+}
+
+.contacts input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.contacts ul {
+  display: grid;
+  gap: 5px;
+}
+
+.contacts ul li {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+.details-content p {
+  margin-bottom: 50px;
+}
