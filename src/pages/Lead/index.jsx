@@ -13,6 +13,7 @@ import { useAuth } from "../../authContext";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
+import { AiCacheProvider } from '../../components/Kanban/AiCacheContext';
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -131,7 +132,9 @@ export const LeadPage = () => {
         <div className="loading-element"></div>
       </div>
     ) : (
+      <AiCacheProvider>
       <Kanban />
+      </AiCacheProvider>
     )}
   </div>
 ) : (

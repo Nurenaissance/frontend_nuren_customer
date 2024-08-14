@@ -1,0 +1,146 @@
+.flow-builder {
+    display: flex;
+    height: 100vh;
+    margin-top: -60px;
+  }
+  
+  .reactflow-wrapper {
+    flex-grow: 1;
+    height: 100%;
+  }
+  
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+    border-left: 1px solid #ccc;
+  }
+  
+  .dndnode {
+    padding: 10px;
+    border: 1px solid #1a192b;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    cursor: grab;
+  }
+  
+  .ask-question-node, .send-message-node, .set-condition-node {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid #1a192b;
+    width: 200px;
+  }
+  
+  .ask-question-node input, .send-message-node textarea, .set-condition-node input {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .ask-question-node button, .send-message-node button, .set-condition-node button {
+    margin-top: 5px;
+  }
+
+  .flow-builder {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .reactflow-wrapper {
+    flex-grow: 1;
+    height: 100%;
+  }
+  
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-left: 1px solid #ccc;
+  }
+  
+  .sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .sidebar button:hover {
+    background-color: #45a049;
+  }
+  
+  .node-wrapper {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 12px;
+  }
+  
+  .node-wrapper h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .node-wrapper input,
+  .node-wrapper select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .node-wrapper button {
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .node-wrapper button:hover {
+    background-color: #007B9A;
+  }
+
+
+  .save-flow-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    z-index: 1000;
+  }
+  
+  .save-flow-popup input,
+  .save-flow-popup textarea {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .save-flow-popup button {
+    margin-right: 10px;
+    background-color: red;
+    padding: 1rem;
+    color: white;
+    border-radius: 6px;
+  }
+
+  .sidebar select {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 5px;
+  }
