@@ -47,7 +47,7 @@
   overflow: hidden;
 }
 
-.form_container {
+.login_form_container {
   flex: 1;
   display: flex;
   align-items: center;
