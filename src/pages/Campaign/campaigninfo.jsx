@@ -23,17 +23,17 @@ export const CampaignInfo = () => {
     whatsapp: null,
     email: null,
     call: null,
-  }); const [instagramCampaignData, setInstagramCampaignData] = useState(null);
-  const [emailCampaignData, setEmailCampaignData] = useState(null);
-  const [callCampaignData, setCallCampaignData] = useState(null);
-  const [whatsappCampaignData, setWhatsappCampaignData] = useState(null);
+  }); const [instagramCampaignData, setInstagramCampaignData] = useState({});
+  const [emailCampaignData, setEmailCampaignData] = useState({});
+  const [callCampaignData, setCallCampaignData] = useState({});
+  const [whatsappCampaignData, setWhatsappCampaignData] = useState({});
 
   useEffect(() => {
     const fetchCampaignData = async () => {
       try {
         const response = await axiosInstance.get(`/campaign/${id}`);
         setCampaign(response.data);
-        console.log(response.data);
+        console.log(campaign);
         
       } catch (error) {
         console.error("Error fetching campaign data:", error);
@@ -57,10 +57,10 @@ export const CampaignInfo = () => {
 
         const [campaignResponse, instagramResponse, whatsappResponse, emailResponse, callResponse] = await Promise.all([
           axiosInstance.get(`/campaign/${id}`, { headers }),
-          axiosInstance.get('https://webappbaackend.azurewebsites.net/instagram-campaigns/', { headers }),
-          axiosInstance.get('https://webappbaackend.azurewebsites.net/whatsapp-campaigns/', { headers }),
-          axiosInstance.get('https://webappbaackend.azurewebsites.net/email-campaigns/', { headers }),
-          axiosInstance.get('https://webappbaackend.azurewebsites.net/call-campaigns/', { headers }),
+          axiosInstance.get(`/instagram-campaigns/`, { headers }),
+          axiosInstance.get(`/whatsapp-campaigns/`, { headers }),
+          axiosInstance.get(`/email-campaigns/`, { headers }),
+          axiosInstance.get(`/call-campaigns/`, { headers }),
         ]);
 
         

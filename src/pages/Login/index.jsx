@@ -82,7 +82,7 @@ export const Login = () => {
   return (
     <div className="auth">
       <div className="auth_wrapper">
-        <div className="form_container">
+        <div className="login_form_container">
         <div className="navbar2">
       <div className="nav-logo-container">
         <img src={logo} alt="Logo" className="nav-logo" />
