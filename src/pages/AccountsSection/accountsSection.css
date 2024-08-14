@@ -24,7 +24,6 @@ th {
 
 td a {
   /* color: #0066cc; */
-  font-family: 'Manrope';
 font-size: 14px;
   font-weight: 400;
   color: #171A1FFF;
@@ -69,7 +68,6 @@ margin-left: 20px;
 }
 
 .acc_head{
-font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -83,7 +81,6 @@ color: #171A1FFF;
   
 }
 .create_account3{
-  font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -92,7 +89,6 @@ margin-left: 20px;
 }
 .anual_ownership,.anual_email,.account_name,.account_site,.parent_account,.account_number,.account_type,
 .industryy,.anual_revenue,.ratings,.anual_phone,.anual_fax,.anual_website,.anual_ticker,.anual_owner,.anual_employess{
-  font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
@@ -136,7 +132,6 @@ margin-left: 1.3rem;
 height: 36px;
 padding-left: 12px;
 padding-right: 12px;
-font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -148,7 +143,6 @@ outline: none;
 
 }
 .info_address{
-  font-family: 'Manrope';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -156,7 +150,6 @@ color: #171A1FFF;
 }
 .bill_street,.bill_city,.bill_state,.bill_code,.bill_country,.ship_street,.ship_city,.ship_state,.ship_code,.ship_country,.ship_descri
 {
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -189,26 +182,28 @@ color: #171A1FFF;
   position: relative;
   bottom: 5rem;
 }
-.relatedList-Accounts3{
-    
-  font-family: 'Manrope';
-
-font-size: 14px;
-font-weight: 400;
-width: 80px;
-text-align: center; 
-height: 35px;
-border-radius: 4px;
-border-width: 1px;
-border-color: #9095A1FF;
-outline: none;
-position: relative;
-top: 170px;
-left: 10px;
-padding-left: 2px;
-padding-top: 4px;
+.relatedList-Accounts3{ 
+width: 250px;
+background: white;
+color: #ffffff;
+padding: 20px;
+border-radius: 15px;
 
  }
+ .relatedList-Accounts3 a{
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+  margin-top: 6rem;
+ }
+ .relatedList-Accounts3 a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
  .form_account{
   position: relative;
   bottom: 5.5rem;

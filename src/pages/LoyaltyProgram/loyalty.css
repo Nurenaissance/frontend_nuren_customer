@@ -16,7 +16,6 @@
 }
 .loyal-head {
   margin-top: 20px;
-  font-family: "Lexend";
   font-size: 34px;
   line-height: 48px;
   font-weight: 700;
@@ -26,7 +25,6 @@
   margin-left: 0rem;
 }
 .loyalprogram {
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -34,14 +32,12 @@
   margin-left: 3rem;
 }
 .loyalprogram1 {
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 26px;
   font-weight: 400;
   color: #171a1fff;
 }
 .loyalprogram2 {
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 26px;
   font-weight: 400;
@@ -61,7 +57,6 @@
   flex-direction: row;
 }
 .loyal_list {
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -74,7 +69,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 25px;
   font-weight: 400;
@@ -93,7 +87,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 25px;
   font-weight: 400;
@@ -113,7 +106,6 @@
   gap: 20px;
 }
 .loyal-rule {
-  font-family: "Lexend";
   font-size: 19px;
   line-height: 30px;
   font-weight: 700;
@@ -126,7 +118,6 @@
 
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -144,7 +135,6 @@
 
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
@@ -227,7 +217,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -245,7 +234,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -263,7 +251,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Manrope";
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -280,7 +267,6 @@
   gap: 19rem;
 }
 .form_condition {
-  font-family: "Lexend";
   font-size: 24px;
   line-height: 30px;
   font-weight: 700;
@@ -335,7 +321,6 @@
 .info-detail-loyal {
   width: 742px;
   height: 66px;
-  font-family: "Manrope";
   font-size: 16px;
   line-height: 22px;
   font-weight: 400;
@@ -426,7 +411,6 @@
   gap: 5rem;
 }
 .promo-code {
-  font-family: "Manrope";
   font-size: 14px;
   line-height: 20px;
   font-weight: 700;
@@ -439,7 +423,6 @@
     font-weight: 600;
 }
 .loyal_list-data{
-    font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 400;
@@ -447,7 +430,6 @@ color: #9095A1FF;
 margin-left: 4rem;
 }
 .loyal-table-data{
-    font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
@@ -455,21 +437,18 @@ color: #171A1FFF;
 }
 
 .loyal-table-d{
-    font-family: 'Manrope';
 font-size: 16px;
 line-height: 26px;
 font-weight: 700;
 color: #171A1FFF;
 }
 .loyal-table-d1{
-    font-family: 'Manrope';
     font-size: 16px;
     line-height: 26px;
     font-weight: 400;
     color: #171A1FFF;   
 }
 .loyal-table-d2{
-    font-family: 'Lexend';
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;

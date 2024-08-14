@@ -78,40 +78,7 @@ const AccountsPage = () => {
     revenue: "$10 million",
     contactNumber: "+1 123-456-7890",
   };
-  const handleUploadedFile = async (event) => {
-    const selectedFile = event.target.files[0];
-    console.log('Selected file:', selectedFile);
-    
-    if (selectedFile) {
-      setFile(selectedFile);
-      console.log('File state set:', selectedFile);
-
-      try {
-        console.log('Uploading file to Azure Blob Storage...');
-        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
-        console.log('File uploaded to Azure, URL:', fileUrl);
-
-        console.log('Sending POST request to backend...');
-        const response = await axiosInstance.post('/documents/', {
-          name: selectedFile.name,
-          document_type: selectedFile.type,
-          description: 'Your file description',
-          file_url: fileUrl,
-          entity_type: 10,
-          entity_id: id,
-          tenant: tenantId,
-        });
-        console.log('POST request successful, response:', response.data);
-
-        setUploadedFiles(prevFiles => [...prevFiles, { name: selectedFile.name, url: fileUrl }]);
-        console.log('File uploaded successfully:', response.data);
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
-    } else {
-      console.log('No file selected');
-    }
-  };
+ 
   
  // const { id } = useParams(); 
   const [account, setAccount] = useState(null);
@@ -122,30 +89,56 @@ const AccountsPage = () => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       try {
-        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
-        setProfileImage(fileUrl);
-  
-        // Save the profile image URL to the backend
-        await axiosInstance.patch(`/accounts/${id}/`, { profile_image_url: fileUrl });
-  
-        // Optionally, fetch the updated account data to update the state
-        console.log('Sending POST request to backend...');
-        const response = await axiosInstance.post('/documents/', {
-            name: selectedFile.name,
-            document_type: selectedFile.type,
-            description: 'Your file description',
-            file_url: fileUrl,
+        // Fetch existing profile images
+        const existingDocumentsResponse = await axiosInstance.get(`/documents/`, {
+          params: {
             entity_type: 10,
             entity_id: id,
             tenant: tenantId,
+            userId: userId,
+            model: 'accountprofilepic' // Specific model for profile images
+          }
+        });
+
+        const existingDocuments = existingDocumentsResponse.data.documents;
+
+        // Filter documents by the specific model and delete them
+        if (existingDocuments && existingDocuments.length > 0) {
+          const documentsToDelete = existingDocuments.filter(doc => doc.model === 'accountprofilepic');
+          for (const document of documentsToDelete) {
+            await axiosInstance.delete(`/documents/${document.id}/`);
+          }
+        }
+
+        // Upload the new profile image
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
+        setProfileImage(fileUrl);
+
+        // Save the profile image URL to the backend
+        await axiosInstance.patch(`/accounts/${id}/`, { profile_image_url: fileUrl });
+
+        // Optionally, upload the profile image as a document
+        console.log('Sending POST request to backend...');
+        const response = await axiosInstance.post('/documents/', {
+          name: selectedFile.name,
+          document_type: selectedFile.type,
+          description: 'Profile image',
+          file_url: fileUrl,
+          entity_type: 10,       // Assuming entity_type 10 is for Accounts
+          entity_id: id,
+          tenant: tenantId,
+          userId: userId,  
+          model: 'accountprofilepic', // Update to the correct model name
         });
         console.log('POST request successful, response:', response.data);
-       
+
       } catch (error) {
         console.error('Error uploading profile image:', error);
       }
     }
-  };
+};
+
+  
   useEffect(() => {
     const fetchAccountData = async () => {
       try {
@@ -167,19 +160,78 @@ const AccountsPage = () => {
     fetchAccountData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchUploadedFiles = async () => {
+  const handleUploadedFile = async (event) => {
+    const selectedFile = event.target.files[0];
+    console.log('Selected file:', selectedFile);
+    
+    if (selectedFile) {
+      setFile(selectedFile);
+      console.log('File state set:', selectedFile);
+  
       try {
-        const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${id}`);
-        setUploadedFiles(response.data);
-        
-        
+        console.log('Uploading file to Azure Blob Storage...');
+        const fileUrl = await uploadToBlob(selectedFile, userId, tenantId);
+        console.log('File uploaded to Azure, URL:', fileUrl);
+  
+        console.log('Sending POST request to backend...');
+        const response = await axiosInstance.post('/documents/', {
+          name: selectedFile.name,
+          document_type: selectedFile.type,
+          description: 'Uploaded file',
+          file_url: fileUrl,
+          entity_type: 10,      // Assuming entity_type 10 is for Accounts
+          entity_id: id,
+          tenant: tenantId,
+          userId: userId,  
+          model: 'account'    // Updated to the correct model name
+        });
+        console.log('POST request successful, response:', response.data);
+  
+        const newFile = { name: selectedFile.name, url: fileUrl };
+        setUploadedFiles(prevFiles => {
+          const updatedFiles = [...prevFiles, newFile];
+          localStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
+          return updatedFiles;
+        });
+        console.log('File uploaded successfully:', response.data);
       } catch (error) {
-        console.error("Error fetching uploaded files:", error);
+        console.error('Error uploading file:', error);
       }
-    };
-    fetchUploadedFiles();
-  }, [id, tenantId, ]);
+    } else {
+      console.log('No file selected');
+    }
+  };
+  
+  const fetchUploadedFiles = async () => {
+    try {
+      console.log('Fetching uploaded files...');
+      const response = await axiosInstance.get(`/documents/}`, {
+        params: {
+          entity_type: 10,      // Assuming entity_type 10 is for Accounts
+          entity_id: id,
+          tenant: tenantId,
+          userId: userId,
+          model: 'account'     // Updated to the correct model name
+        }
+      });
+  
+      const documents = response.data.documents || [];
+      setUploadedFiles(documents);
+      console.log('documnt of this contact',documents );
+      localStorage.setItem('uploadedFiles', JSON.stringify(documents));
+      console.log('Fetched files:', documents);
+    } catch (error) {
+      console.error('Error fetching uploaded files:', error);
+    }
+  };
+  
+  useEffect(() => {
+    // Initialize the state from local storage if available
+    const storedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+    setUploadedFiles(storedFiles);
+      fetchUploadedFiles();
+  }, [id, tenantId, userId]);
+  
 
   const renderFiles = (files) => {
     return files.map((file, index) => (
@@ -195,28 +247,38 @@ const AccountsPage = () => {
       try {
         console.log('Fetching profile image for account:', id);
         console.log('Tenant ID:', tenantId);
-  
-        const response = await axiosInstance.get(`/return-documents/10/${id}`);
+
+        const response = await axiosInstance.get(`/documents`, {
+          params: {
+            entity_type: 10,     // Entity type as required
+            entity_id: id,       // Use the appropriate id
+            tenant: tenantId,    // Tenant ID from context or state
+            userId: userId,      // User ID from context or state
+            model: 'accountprofilepic' // Updated model name
+          }
+        });
         console.log('GET request successful, response:', response.data);
-  
+
         const documents = response.data.documents;
-    if (documents && documents.length > 0) {
-        const profileImage = documents[0].file;
-        console.log('Found profile image:', profileImage);
-        setProfileImage(profileImage);
-    } else {
-        console.log('No profile image found.');
-        setProfileImage(null); // Set a default image URL or null if no image found
-    }
+        if (documents && documents.length > 0) {
+          const profileImage = documents[0].file; // Assuming the first document is the latest
+          console.log('Found profile image:', profileImage);
+          setProfileImage(profileImage);
+        } else {
+          console.log('No profile image found.');
+          setProfileImage(null); // Set a default image URL or null if no image found
+        }
       } catch (error) {
         console.error('Error fetching profile image:', error);
       }
     };
-  
+
     if (id && tenantId) {
       fetchProfileImage();
     }
-  }, [id, tenantId]);
+  }, [id, tenantId, userId]);
+
+  
 
   if (!account) {
     return <div className="loader"></div>; // Show a loading message while fetching data
@@ -512,9 +574,7 @@ const AccountsPage = () => {
       </div>
 
             <div className="contacts" id="Contacts">
-            <h2 className="contactheading">Contacts</h2>
               <ul className="list-group">
-                <h2 className="contactheading" style={{marginTop:'10px'}}>Contacts</h2>
                   {contactPersons?contactPersons.map((contact, index) => (
                     <li key={index} className="list-group-item">
                       <strong>Name:</strong> {contact.name}
@@ -568,7 +628,7 @@ const AccountsPage = () => {
           <div className="info-pair">
             <label htmlFor="startDate">Start Date:</label>
             <input
-              type="text"
+              type="date"
               id="startDate"
               name="startDate"
               value={isEditing ? editedValues.startDate :account.name}
@@ -579,7 +639,7 @@ const AccountsPage = () => {
           <div className="info-pair">
             <label htmlFor="renewalDate">Renewal Date:</label>
             <input
-              type="text"
+              type="date"
               id="renewalDate"
               name="renewalDate"
               value={isEditing ? editedValues.renewalDate : account.name}

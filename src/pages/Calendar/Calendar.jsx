@@ -9,6 +9,10 @@ import Calendarform from './Calendarform.jsx';
 import SearchIcon from '@mui/icons-material/Search';
 import axiosInstance from "../../api";
 import CustomEvent from './CustomEvent';
+import Modal from 'react-modal';
+
+// Set up the modal root element
+Modal.setAppElement('#root');
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -19,7 +23,9 @@ const localizer = momentLocalizer(moment);
 
 const CalendarComponent = () => {
   const tenantId = getTenantIdFromUrl();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [eventModalIsOpen, setEventModalIsOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -53,8 +59,19 @@ const CalendarComponent = () => {
     fetchEvents();
   }, []);
 
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const openCreateModal = () => setCreateModalIsOpen(true);
+  const closeCreateModal = () => setCreateModalIsOpen(false);
+
+  const openEventModal = (event) => {
+    setSelectedEvent(event);
+    setEventModalIsOpen(true);
+  };
+
+  const closeEventModal = () => {
+    setSelectedEvent(null);
+    setEventModalIsOpen(false);
+  };
+
   const handleSearchChange = (e) => setSearchQuery(e.target.value.toLowerCase());
 
   const filteredEvents = events.filter(event => {
@@ -75,7 +92,7 @@ const CalendarComponent = () => {
   });
 
   return (
-    <div className={`calendar-page ${modalIsOpen ? 'blur' : ''}`}>
+    <div className={`calendar-page ${eventModalIsOpen || createModalIsOpen ? 'blur' : ''}`}>
       <div className='calendar-side'>
         <Link to={`/${tenantId}/callpage`} id='back-inter-task' className='back-button'>
           Back
@@ -90,8 +107,8 @@ const CalendarComponent = () => {
             <h1>Calendar</h1>
           </div>
           <div className="create-calendar">
-            <button id="btn1" onClick={openModal}>+ Create New</button>
-            <Calendarform isOpen={modalIsOpen} onRequestClose={closeModal} fetchEvents={fetchEvents} />
+            <button id="btn1" onClick={openCreateModal}>+ Create New</button>
+            <Calendarform isOpen={createModalIsOpen} onRequestClose={closeCreateModal} fetchEvents={fetchEvents} />
           </div>
         </div>
         <div className='calendar-container'>
@@ -116,9 +133,26 @@ const CalendarComponent = () => {
             }}
             views={[Views.MONTH, Views.WEEK, Views.DAY]}
             defaultView={Views.MONTH}
+            onSelectEvent={openEventModal}
           />
         </div>
       </div>
+
+      {/* Modal for Event Details */}
+      {selectedEvent && (
+        <Modal
+          isOpen={eventModalIsOpen}
+          onRequestClose={closeEventModal}
+          contentLabel="Event Details"
+          className="event-modal"
+          overlayClassName="event-modal-overlay"
+        >
+          <h2>{selectedEvent.title}</h2>
+          <p><strong>Start:</strong> {moment(selectedEvent.start).format('YYYY-MM-DD HH:mm')}</p>
+          <p><strong>End:</strong> {moment(selectedEvent.end).format('YYYY-MM-DD HH:mm')}</p>
+          <button onClick={closeEventModal}>Close</button>
+        </Modal>
+      )}
     </div>
   );
 };

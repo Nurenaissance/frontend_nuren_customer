@@ -23,7 +23,7 @@ const DonutChart = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Opportunity Stage</h2>
+      <h2 style={{ textAlign: "center", fontWeight:"bold" }}>Opportunity Stage</h2>
       <Chart
         chartType="PieChart"
         width="100%"

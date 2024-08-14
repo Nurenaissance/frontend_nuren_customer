@@ -6,7 +6,7 @@ import axiosInstance from "../../api.jsx";
 import { useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
-
+import TopNavbar from "../TopNavbar/TopNavbar.jsx";
 
 const getTenantIdFromUrl = () => {
     const pathArray = window.location.pathname.split('/');
@@ -103,6 +103,7 @@ export const Product = () => {
         <div className="product-page">
             <Sidebar className="product-sidebar" />
             <div className="product-content">
+                
                 <div className="product-header">
                     <h1>Products</h1>
                     <div className="product-header-actions">

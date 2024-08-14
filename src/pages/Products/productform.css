@@ -1,5 +1,4 @@
 .product-forms-page {
-  font-family: Arial, sans-serif;
   margin: 20px;
   display: flex;
   flex-direction: column;
@@ -8,25 +7,25 @@
 /* Sidebar styling */
 .product-Sidebar {
   width: 250px;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: #f4f4f4;
+  background: white;
+  color: #ffffff;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  border-radius: 15px;
 }
 
 .product-Sidebar a {
-  display: block;
-  padding: 10px;
+  color: #f39c12;
   text-decoration: none;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
 }
 
 .product-Sidebar a:hover {
-  background-color: #ddd;
+  color: #f1c40f;
+  transform: scale(1.05);
 }
 
 .product-form-heading{

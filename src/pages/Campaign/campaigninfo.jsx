@@ -1,8 +1,7 @@
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import './campaigninfo.css'; // Import the CSS file
-
 import axiosInstance from "../../api.jsx";
 
 const getTenantIdFromUrl = () => {
@@ -19,12 +18,22 @@ export const CampaignInfo = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedValues, setEditedValues] = useState({});
   const { id } = useParams();
+  const [additionalData, setAdditionalData] = useState({
+    instagram: null,
+    whatsapp: null,
+    email: null,
+    call: null,
+  }); const [instagramCampaignData, setInstagramCampaignData] = useState(null);
+  const [emailCampaignData, setEmailCampaignData] = useState(null);
+  const [callCampaignData, setCallCampaignData] = useState(null);
+  const [whatsappCampaignData, setWhatsappCampaignData] = useState(null);
 
   useEffect(() => {
     const fetchCampaignData = async () => {
       try {
         const response = await axiosInstance.get(`/campaign/${id}`);
         setCampaign(response.data);
+        console.log(response.data);
         
       } catch (error) {
         console.error("Error fetching campaign data:", error);
@@ -33,6 +42,45 @@ export const CampaignInfo = () => {
 
     fetchCampaignData();
   }, [id]);
+
+  useEffect(() => {
+    if (!id || !tenantId) {
+      console.warn('No campaign ID or tenant ID provided.');
+      return;
+    }
+
+    const fetchAdditionalData = async () => {
+      try {
+        const headers = {
+          'X-Tenant-ID': tenantId,
+        };
+
+        const [campaignResponse, instagramResponse, whatsappResponse, emailResponse, callResponse] = await Promise.all([
+          axiosInstance.get(`/campaign/${id}`, { headers }),
+          axiosInstance.get('https://webappbaackend.azurewebsites.net/instagram-campaigns/', { headers }),
+          axiosInstance.get('https://webappbaackend.azurewebsites.net/whatsapp-campaigns/', { headers }),
+          axiosInstance.get('https://webappbaackend.azurewebsites.net/email-campaigns/', { headers }),
+          axiosInstance.get('https://webappbaackend.azurewebsites.net/call-campaigns/', { headers }),
+        ]);
+
+        
+        setWhatsappCampaignData(whatsappResponse.data);
+        setInstagramCampaignData(instagramResponse.data);
+        setEmailCampaignData(emailResponse.data);
+        setCallCampaignData(callResponse.data);
+
+        console.log('Campaign Data:', campaignResponse.data);
+        console.log('Instagram Campaign Data:', instagramResponse.data);
+        console.log('Email Campaign Data:', emailResponse.data);
+        console.log('Call Campaign Data:', callResponse.data);
+        
+      } catch (error) {
+        console.error("Error fetching additional campaign data:", error);
+      }
+    };
+
+    fetchAdditionalData();
+  }, [id, tenantId]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -96,7 +144,7 @@ export const CampaignInfo = () => {
     <div className="content">
       <div className="info-box">
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="campaign_name">Campaign Name:</label>
             <input
               type="text"
@@ -107,7 +155,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="campaign_owner">Campaign Owner:</label>
             <input
               type="text"
@@ -120,10 +168,10 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="start_date">Start Date:</label>
             <input
-              type="text"
+              type="date"
               id="start_date"
               name="start_date"
               value={isEditing ? editedValues.start_date : campaign.start_date}
@@ -131,10 +179,10 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="end_date">End Date:</label>
             <input
-              type="text"
+              type="date"
               id="end_date"
               name="end_date"
               value={isEditing ? editedValues.end_date : campaign.end_date}
@@ -144,7 +192,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="expected_revenue">Expected Revenue:</label>
             <input
               type="text"
@@ -155,7 +203,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="actual_cost">Actual Cost:</label>
             <input
               type="text"
@@ -170,7 +218,7 @@ export const CampaignInfo = () => {
       </div>
       <div className="info-box">
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="numbers_sent">Numbers Sent:</label>
             <input
               type="text"
@@ -181,7 +229,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="type">Type:</label>
             <input
               type="text"
@@ -194,7 +242,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="status">Status:</label>
             <input
               type="text"
@@ -205,7 +253,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="budgeted_cost">Budgeted Cost:</label>
             <input
               type="text"
@@ -218,7 +266,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="expected_response">Expected Response:</label>
             <input
               type="text"
@@ -229,7 +277,7 @@ export const CampaignInfo = () => {
               readOnly={!isEditing}
             />
           </div>
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="tenant">Tenant:</label>
             <input
               type="text"
@@ -242,7 +290,7 @@ export const CampaignInfo = () => {
           </div>
         </div>
         <div className="info-row">
-          <div className="info-pair">
+          <div className="info-pair-campaign">
             <label htmlFor="description">Description:</label>
             <textarea
               id="description"
@@ -255,6 +303,84 @@ export const CampaignInfo = () => {
         </div>
             </div>
           </div>
+          <div className="additional-campaign-whatsappinfo">
+      <h2>Whatsapp Campaign Information</h2>
+      {whatsappCampaignData ? (
+        <div>
+            <p><strong>Broadcast Message:</strong> {whatsappCampaignData.broadcast_message}</p>
+            <p><strong>Chatbot Enabled:</strong> {whatsappCampaignData.chatbot_enabled ? 'Yes' : 'No'}</p>
+            <p><strong>Chatbot Script:</strong> {whatsappCampaignData.chatbot_script}</p>
+            <p><strong>AI Integration:</strong> {whatsappCampaignData.ai_integration ? 'Yes' : 'No'}</p>
+            <p><strong>AI Features:</strong> {whatsappCampaignData.ai_features}</p>
+            <p><strong>Target Audience:</strong> {whatsappCampaignData.target_audience}</p>
+            <p><strong>Message Template:</strong> {whatsappCampaignData.message_template}</p>
+            <p><strong>Number of Recipients:</strong> {whatsappCampaignData.number_of_recipients}</p>
+            <p><strong>Scheduling Time:</strong> {new Date(whatsappCampaignData.scheduling_time).toLocaleString()}</p>
+            <p><strong>Engagement Goal:</strong> {whatsappCampaignData.engagement_goal}</p>
+            <p><strong>Actual Engagement:</strong> {whatsappCampaignData.actual_engagement}</p>
+            <p><strong>Notes:</strong> {whatsappCampaignData.notes}</p>
+        </div>
+      ) : (
+        <p>No Whatsapp campaign data available.</p>
+      )}
+    </div>
+    <div className="additional-campaign-instainfo">
+  <h2>Instagram Campaign Information</h2>
+  {instagramCampaignData ? (
+    <div>
+        <p><strong>Campaign Tone:</strong> {instagramCampaignData.campaign_tone}</p>
+        <p><strong>Number of Posts:</strong> {instagramCampaignData.number_of_posts}</p>
+        <p><strong>Target Hashtags:</strong> {instagramCampaignData.target_hashtags}</p>
+        <p><strong>Duration:</strong> {instagramCampaignData.duration}</p>
+        <p><strong>Audience Targeting:</strong> {instagramCampaignData.audience_targeting}</p>
+        <p><strong>Call to Action:</strong> {instagramCampaignData.call_to_action}</p>
+        <p><strong>Engagement Goal:</strong> {instagramCampaignData.engagement_goal}</p>
+        <p><strong>Actual Engagement:</strong> {instagramCampaignData.actual_engagement}</p>
+        <p><strong>Notes:</strong> {instagramCampaignData.notes}</p>
+
+    </div>
+  ) : (
+    <p>No Instagram campaign data available.</p>
+  )}
+</div>
+<div className="additional-campaign-emailinfo">
+  <h2>Email Campaign Information</h2>
+  {emailCampaignData ? (
+    <div>
+        <p><strong>Subject Line:</strong> {emailCampaignData.subject_line}</p>
+        <p><strong>Email Body:</strong> {emailCampaignData.email_body}</p>
+        <p><strong>Sender Email:</strong> {emailCampaignData.sender_email}</p>
+        <p><strong>Recipient List:</strong> {emailCampaignData.recipient_list}</p>
+        <p><strong>Scheduled Time:</strong> {new Date(emailCampaignData.scheduled_time).toLocaleString()}</p>
+        <p><strong>Email Template:</strong> {emailCampaignData.email_template}</p>
+        <p><strong>Emails Sent:</strong> {emailCampaignData.emails_sent}</p>
+        <p><strong>Emails Opened:</strong> {emailCampaignData.emails_opened}</p>
+        <p><strong>Clicks:</strong> {emailCampaignData.clicks}</p>
+        <p><strong>Bounces:</strong> {emailCampaignData.bounces}</p>
+        <p><strong>Unsubscribes:</strong> {emailCampaignData.unsubscribes}</p>
+        <p><strong>Engagement Rate:</strong> {emailCampaignData.engagement_rate}</p>
+        <p><strong>Notes:</strong> {emailCampaignData.notes}</p>
+    </div>
+  ) : (
+    <p>No Email campaign data available.</p>
+  )}
+</div>
+<div className="additional-campaign-callinfo">
+  <h2>Call Campaign Information</h2>
+  {callCampaignData ? (
+    <div>
+        <p><strong>Campaign Type:</strong> {callCampaignData.campaign_type}</p>
+        <p><strong>Call Script:</strong> {callCampaignData.call_script}</p>
+        <p><strong>Contacts:</strong> {callCampaignData.contacts}</p>
+        <p><strong>Scheduled Time:</strong> {new Date(callCampaignData.scheduled_time).toLocaleString()}</p>
+        <p><strong>Duration:</strong> {callCampaignData.duration}</p>
+        <p><strong>Status:</strong> {callCampaignData.status}</p>
+        <p><strong>Notes:</strong> {callCampaignData.notes}</p>
+    </div>
+  ) : (
+    <p>No Call campaign data available.</p>
+  )}
+</div>
         </div>
       </div>
     </div>

@@ -417,12 +417,12 @@ export const Taskinfo=()=>{
   </div>
 </div>
 
-          <div className="info-attach">
+          <div className="info-attach-task">
             <div >
-              <div className="heads">
+              <div className="attachments-heads">
                 <h2>Attachments</h2>
               </div>
-              <div className="attachment-upload2">
+              <div className="attachment-upload2-task">
               <input
           type="file"
           id="attachment-input"
@@ -432,7 +432,7 @@ export const Taskinfo=()=>{
   <label htmlFor="attachment-input1" className="clicktoupload2">Upload</label>
   
 </div>
-<div className="uploaded-files">
+<div className="uploaded-files-task">{/*important*/}
           <ul>
             {renderFiles(uploadedFiles.slice(0, 3))}
           </ul>

@@ -51,7 +51,7 @@ const TicketInfo = () => {
             <TopNavbar />
             <div className="ticket-info-content">
                 <aside className="ticket-info-sidebar">
-                    <Link to={`/${tenantId}/ticket`}>← Back to Tickets</Link>
+                    <Link to={`/${tenantId}/ticket`}> Back </Link>
                 </aside>
                 <main className="ticket-info-main">
                     <header className="ticket-info-header">
