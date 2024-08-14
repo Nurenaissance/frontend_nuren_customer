@@ -111,7 +111,7 @@ const Reminderform = () => {
       <div className="reminder_form_page">
         
    <div className="relatedremind_back">
-          <Link className='task_back' to={`/${tenantId}/reminder`}>Back</Link>
+          <Link  to={`/${tenantId}/reminder`}>Back</Link>
         </div>
        
         <div>

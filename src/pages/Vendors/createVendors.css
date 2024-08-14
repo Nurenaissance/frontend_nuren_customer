@@ -4,7 +4,8 @@
 
 .vendor_form_page {
     max-width: 1200px;
-    margin: 0 auto;
+    margin-left: 200px;
+    margin-right: 2rem;
     padding: 30px;
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -12,22 +13,26 @@
 }
 
 .relatedvendor_back {
-    margin-bottom: 20px;
+    width: 250px;
+    background: white;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
 }
 
-.task_back {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #6d31ed;
-    color: #fff;
+.relatedvendor_back a{
+    color: #f39c12;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
+    transition: color 0.3s, transform 0.3s;
 }
-
-.task_back:hover {
-    background-color: #5b28c7;
-}
+.relatedvendor_back a:hover {
+    color: #f1c40f;
+    transform: scale(1.05);
+  }
 
 .create_form_vendor {
     font-size: 28px;

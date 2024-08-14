@@ -244,7 +244,7 @@ const Ticketform = () => {
                 <TopNavbar />
             </div>
             <div className="ticketform">
-                <div className="ticket-sidebar">
+                <div className="ticket-form-sidebar">
                     <Link to={`/${tenantId}/ticket`}>Back</Link>
                 </div>
                 <div className="form-ticket">

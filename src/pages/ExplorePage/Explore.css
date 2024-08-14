@@ -127,7 +127,6 @@
 }
 .marketingbutton{
     align-items: center;
-    font-family: Manrope;
     color: #F9623EFF;
     background: #FFFFFFFF;
     opacity: 1;
@@ -228,7 +227,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Manrope;
     font-size: 15px;
     margin-top: 3rem;
     font-weight: 400;
@@ -245,7 +243,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Manrope;
     font-size: 15px;
     line-height: 20px;
     font-weight: 400;
@@ -263,7 +260,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Manrope;
     font-size: 15px;
     line-height: 20px;
     font-weight: 400;
@@ -281,7 +277,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Manrope;
     font-size: 16px;
     font-weight: 500;
     color: #FFFFFFFF;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
-
+import './individualform.css';
 const AdditionalCampaignFields = ({ additionalFields }) => {
      // State for Instagram Campaign
   const [instagramCampaignData, setInstagramCampaignData] = useState({
@@ -172,9 +172,9 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
   return (
     <>
    
-
+    <div className="campaign-additional-page">
       {additionalFields.instagram && (
-        <div className="additional-fields">
+        <div className="insta-additional-fields">
           <h3>Instagram Campaign Details</h3>
           <form onSubmit={handleSubmitInstagramCampaign}>
             <div className="form-group">
@@ -281,7 +281,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       )}
 
       {additionalFields.whatsapp && (
-        <div className="additional-fields">
+        <div className="whatsapp-additional-fields">
           <h3>WhatsApp Campaign Details</h3>
           <form onSubmit={handleSubmitWhatsAppCampaign}>
             <div className="form-group">
@@ -420,7 +420,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       )}
 
       {additionalFields.email && (
-        <div className="additional-fields">
+        <div className="email-additional-fields">
           <h3>Email Campaign Details</h3>
           <form onSubmit={handleSubmitEmailCampaign}>
             <div className="form-group">
@@ -561,7 +561,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       )}
 
       {additionalFields.call && (
-       <div className="additional-fields">
+       <div className="call-additional-fields">
        <h3>Call Campaign Details</h3>
        <form onSubmit={handleSubmitCallCampaign}>
          <div className="form-group">
@@ -637,6 +637,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
        </form>
      </div>
       )}
+      </div>
     </>
   );
 };

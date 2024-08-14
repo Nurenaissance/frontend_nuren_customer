@@ -1,5 +1,6 @@
 .oppo_nav {
   margin-top: -60px;
+  margin-left: 25rem;
 }
 
 .opp-kanban-container, .opp-table-container {
@@ -99,7 +100,6 @@
 .opportunities-heading {
   margin-top: 50px;
   margin-left: 9px;
-  font-family: 'Lexend', sans-serif;
   font-size: 32px;
   line-height: 48px;
   font-weight: 800;
@@ -114,7 +114,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope', sans-serif;
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;

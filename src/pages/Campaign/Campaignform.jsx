@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Sidebar } from "../../components/Sidebar";
 import axios from 'axios';
 import './Campaignform.css';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
@@ -11,6 +10,7 @@ import CallIcon from '@mui/icons-material/Call';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from "../../api";
 import { useAuth } from "../../authContext";
+import { Link} from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import AdditionalCampaignFields from './individual_form_campaign'; 
 import './campaignform.css'
@@ -304,13 +304,12 @@ const Campaignform = () => {
     handleSubmit(event);
   };
   return (
-
+    <div className='cf_mainpage'>
+       <div className="cf-sidebar">
+      <Link to={`/${tenantId}/campaign`}>Back</Link>
+      </div>
     <div className="cf-container">
     <div className='cf-header'>
-      <div className="cf-sidebar">
-
-        <Sidebar />
-      </div>
       <h1 className="cf-title">Create Campaigns</h1>
     </div>
     <div className='cf-button-group'>
@@ -489,9 +488,10 @@ const Campaignform = () => {
         </button>
   </div>
 
-  
+
 </form>
 <AdditionalCampaignFields additionalFields={additionalFields} />
+</div>
       {showPopup && <Popup errors={formErrors} onClose={closePopup} />}
       {showSuccessPopup && <SuccessPopup message={successMessage} onClose={closeSuccessPopup} />}
       

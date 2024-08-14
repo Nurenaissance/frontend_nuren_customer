@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../api";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
-
+import './meetings.css'
 
 import { Link, useParams } from "react-router-dom";
 

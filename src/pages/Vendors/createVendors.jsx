@@ -10,7 +10,6 @@ import './createVendors.css';
 import './vendors.jsx';
 import { useAuth } from "../../authContext.jsx";
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded'; // Importing the icon
-import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 import { Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -213,14 +212,11 @@ const Vendorsform = () => {
 
   return (
   <div>
-      <div className="toppp">
-      <TopNavbar/>
-      </div>
+      <div className="relatedvendor_back">
+      <Link to={`/${tenantId}/vendors`} >Back</Link>
+           </div>
       <div className="vendor_form_page">
        
-      <div className="relatedvendor_back">
-      <Link className='task_back' to={-1}>Back</Link>
-           </div>
           
          
            <div>

@@ -1,11 +1,15 @@
 .relatedOppo_back{
-    width: 150px;
-    background-color: #F3F4F6FF; /* Adjust background color as needed */
+
     height: 100vh; /* Full viewport height */
     position: fixed; /* Fixed positioning */
     left: 0;
     top: 0;
     overflow-y: auto; 
+    width: 250px;
+    background: white;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
 }
 .oops_navform {
     display: flex;
@@ -16,17 +20,19 @@
   }
   
   /* Style for the back button */
-  .task_back {
-    background-color: #6D31EDFF; /* Sidebar style color */
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    
+  .relatedOppo_back a {
+    color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
   }
-  
+  .relatedOppo_back a:hover {
+    color: #f1c40f;
+    transform: scale(1.05);
+  }
   /* Form container styles */
   .opportunityfill_forms {
     display: flex;
@@ -103,14 +109,7 @@
     border-radius: 4px;
     border: 1px solid #DEE1E645;
   }
-  
-  .form-control:focus {
-    border-color: #6D31EDFF;
-  }
-  
-  .oppo_form_fill input[type="datetime-local"] {
-    /* Adjust as needed */
-  }
+
   
   .account_form_data {
     width: 100%;
@@ -154,7 +153,10 @@
     max-width: 800px; /* Maximum width of the box */
     box-sizing: border-box; /* Include padding and border in the box's total width and height */
   }
-  
+  .oppo_form{
+    font-weight: bold;
+    font-size: 3rem;
+  }
   /* Ensure form fields fit nicely inside the box */
   .oppo_form_fill {
     display: flex;
@@ -170,7 +172,5 @@
     border: 1px solid #DEE1E6;
   }
   
-  .form-control:focus {
-    border-color: #6D31EDFF; /* Focus color */
-  }
+
   

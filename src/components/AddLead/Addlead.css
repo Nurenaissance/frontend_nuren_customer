@@ -3,7 +3,6 @@
     width: 355px; 
     display: flex; 
     align-items: center; 
-    font-family: 'Manrope'; /* Body */
     font-size: 16px; 
     font-weight: 400; 
     line-height: 26px; 
@@ -63,7 +62,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -80,7 +78,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -97,7 +94,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -115,7 +111,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -149,11 +144,10 @@
     border-style: solid;
     box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
     margin-top: 60px;
-    margin-left: 200px;
+    margin-left: 100px;
   }
 
  .lead_title{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -164,7 +158,6 @@
 .form-control {
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -198,7 +191,6 @@
 
 /* Form fields */
 .lead_title {
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 26px;
   font-weight: 700;
@@ -221,7 +213,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -239,7 +230,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -257,7 +247,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 14px;
     line-height: 22px;
     font-weight: 400;
@@ -272,7 +261,6 @@
   width: 100%;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -292,7 +280,6 @@
   width: 100%; /* Take full width */
   max-width: 200px; /* Limit width for larger screens */
   height: 36px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;

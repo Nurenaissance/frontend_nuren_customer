@@ -6,23 +6,31 @@
    bottom: 5rem;
 }
 .subjectlist{
-  width: 256px;
-  height: 1100px;
-  background: #FAFAFBFF;
-  border-radius: 0px;
-  border-width: 1px;
-  border-color: #FFFFFFFF;
-  border-style: solid;
-  box-shadow: 0px 2px 5px;
-position: relative;
-bottom: 8rem;
+  
+  height: 100vh;
+  width: 236px;
+  background: white;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
 
     
     
 }
-
+.subjectlist a{
+  color: #f39c12;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
+}
+.subjectlist a:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
+}
 .task-info-data{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -38,7 +46,6 @@ bottom: 8rem;
     /* margin-top: 20px; */
     padding-left: 12px;
     padding-right: 23px;
-    font-family: 'Manrope';
 }
 
 .recent-notes-button{
@@ -54,7 +61,6 @@ bottom: 8rem;
   padding-bottom: 0px;
   padding-left: 1px;
   padding-right: 14px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -66,8 +72,7 @@ bottom: 8rem;
  position: relative;
  bottom: 15px;
   }
-  .heads{
-  font-family: 'Manrope';
+  .attachments-heads{
 font-size: 18px;
 line-height: 28px;
 font-weight: 700;
@@ -81,7 +86,6 @@ margin-top: 1.4%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Manrope';
     font-size: 13px;
     line-height: 20px;
     font-weight: 500;
@@ -104,7 +108,7 @@ margin-top: 1.4%;
     display: flex;
     flex-direction: column;
   }
-  .info-attach{
+  .info-attach-task{
     width: 1088px;
     height: 172px;
     background: #F8F9FAFF;
@@ -152,7 +156,6 @@ margin-top: 1.4%;
   box-shadow: 0px 2px 5px #171a1f, 0px 0px 2px #171a1f;
   }
 .task-info-data1{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 600;
@@ -176,7 +179,6 @@ box-shadow: 0px 4px 9px
   height: 36px;
   padding-left: 12px;
   padding-right: 12px;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -202,7 +204,6 @@ margin-bottom: 20px;
 }
 .task-info-head{
 width: 318px;
-font-family: 'Manrope';
 font-size: 15px;
 line-height: 26px;
 font-weight: 600;
@@ -227,7 +228,6 @@ width: 1097px;
   gap: 60px;
 }
 .task-head{
-font-family: 'Lexend';
 font-size: 32px;
 line-height: 48px;
 font-weight: 800;
@@ -236,9 +236,6 @@ color: #171A1FFF;
 #back-inter-task{
  
 margin-left: 100px;
-font-family: "Manrope";
-
-
   border: 1px solid #DDD ;
   position: relative;
   border-radius: 4px;
@@ -257,7 +254,6 @@ font-family: "Manrope";
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 25px;
   font-weight: 400;
@@ -268,7 +264,6 @@ font-family: "Manrope";
   border-radius: 4px;
 }
 .task_header{
-  font-family: 'Lexend';
   font-size: 32px;
 line-height: 48px;
 margin-left: 20px;
@@ -289,7 +284,6 @@ color: #171A1FFF;
 }
 .excel-dropdown-menu6-task {
   /* Your custom styles here */
-  font-family: 'Manrope';
   font-size: 14px;
   font-weight: 400;
   color: #FFFFFF;
@@ -311,10 +305,9 @@ color: #171A1FFF;
   right: 10rem;
 }
 .right_div-taskinfo{
-  
+  margin-left: 25rem;
   position: relative;
-  bottom: 5rem;
- /* left: 20rem;*/
+  bottom: 6rem;
 }
 .view-mode-select_task{
   float: right;
@@ -390,7 +383,6 @@ margin-left: 10px;
   box-shadow: 0px 4px 9px #171a1f, 0px 0px 2px #171a1f;
 }
 .table_Subject,.table_status,.table_due,.table_priority,.table_description,.table_contact {
-  font-family: 'Lexend';
 font-size: 14px;
 line-height: 22px;
 font-weight: 600;
@@ -398,14 +390,12 @@ color: rgb(255, 255, 255);
 
 }
 .task_status{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
 color: #171A1FFF;
 }
 .notes{
-  font-family: 'Manrope';
   font-size: 16px;
   line-height: 22px;
   font-weight: 800;
@@ -415,14 +405,12 @@ color: #171A1FFF;
   margin-top: 1px;
 }
 .task_due_date{
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
   color: #9095A1FF;
 }
 .task_due_date,.task_priority,.task_description,.task_contact{
-  font-family: 'Manrope';
 font-size: 14px;
 line-height: 22px;
 font-weight: 400;
@@ -469,7 +457,7 @@ color: #565D6DFF;
   margin-top: 20px;
 }
 
-.relatedTask_back {
+.relatedTask_back1 {
   width: 256px;
   height: 100vh;
   background: #fafafbff;
@@ -485,19 +473,21 @@ color: #565D6DFF;
   overflow-y: auto;
 }
 
-.task_back {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #f3f4f6;
-  color: #171a1f;
+.task_back1 {
+  color: #f39c12;
   text-decoration: none;
-  border-radius: 4px;
-  margin: 20px;
-  transition: background-color 0.3s ease;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 4rem;
+  margin-top: 2rem;
+  display: block;
+  margin-bottom: 20px;
+  transition: color 0.3s, transform 0.3s;
 }
 
-.task_back:hover {
-  background-color: #e2e4e9;
+.task_back1:hover {
+  color: #f1c40f;
+  transform: scale(1.05);
 }
 
 .form_task_form {
@@ -515,7 +505,6 @@ color: #565D6DFF;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  font-family: 'Manrope', sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -523,8 +512,8 @@ color: #565D6DFF;
 }
 
 .btn-submit_cancel_task {
-  background-color: #f3f4f6;
-  color: #171a1f;
+  background-color: red;
+  color: white;
 }
 
 .btn-submit_save_task {
@@ -560,7 +549,6 @@ color: #565D6DFF;
 }
 
 .task_form_header {
-  font-family: 'Lexend', sans-serif;
   font-size: 28px;
   color: #171a1f;
 }
@@ -597,7 +585,6 @@ color: #565D6DFF;
 .form_row_head {
   display: block;
   margin-bottom: 8px;
-  font-family: 'Manrope', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #171a1f;
@@ -610,7 +597,6 @@ color: #565D6DFF;
   padding: 10px;
   border: 1px solid #dee1e6;
   border-radius: 4px;
-  font-family: 'Manrope', sans-serif;
   font-size: 14px;
 }
 .form-task_description {
@@ -625,7 +611,6 @@ color: #565D6DFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope';
   font-size: 14px;
   line-height: 22px;
   font-weight: 400;
@@ -638,7 +623,7 @@ color: #565D6DFF;
   top: 200px;
   left: -30px;
 }
-.attachment-upload2 {
+.attachment-upload2-task {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -656,10 +641,10 @@ margin-top: 6%;
   transform: translate(-50%, -50%);
 }
 
-.attachment-upload2 input[type="file"] {
+.attachment-upload2-task input[type="file"] {
 display: none;
 }
-.attachment-upload2 label {
+.attachment-upload2-task label {
 display: flex;
 justify-content: center;
 align-items: center;
@@ -672,7 +657,7 @@ cursor: pointer;
 margin-bottom: 107px;
 }
 
-.attachment-upload2 label::before {
+.attachment-upload2-task label::before {
 content: "";
 display: block;
 height: 32px;
@@ -682,11 +667,10 @@ background-color: #171A1FFF;
 margin-bottom: 10px;
 }
 
-.attachment-upload2 label::after {
+.attachment-upload2-task label::after {
 content: "+";
 position:absolute;
 
-font-family: 'Manrope';
 font-size: 24px;
 line-height: 32px;
 font-weight: 700;
@@ -694,12 +678,11 @@ color: #171A1FFF;
 margin-bottom: 31px;
 }
 
-.attachment-upload2:hover {
+.attachment-upload2-task:hover {
 background-color: #F8F9FAFF;
 border-color: #DEE1E645;
 }
 .clicktoupload2{
-  font-family: 'Manrope';
    position: relative; 
  line-height: 20px;
  top: 55px;
@@ -774,7 +757,6 @@ border-color: #DEE1E645;
   bottom: 20px;
 }
 .task-edit{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -788,7 +770,6 @@ border-color: #DEE1E645;
   left: 90rem;
 }
 .task-edit-save{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -805,7 +786,6 @@ border-color: #DEE1E645;
   left: 83rem;
 }
 .task-edit-cancel{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 20px;
   font-weight: 400;
@@ -824,7 +804,6 @@ border-color: #DEE1E645;
   
 }
 .task-edit1{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -838,7 +817,6 @@ border-color: #DEE1E645;
   left: 90rem;
 }
 .task-edit1-save1{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 22px;
   font-weight: 500;
@@ -855,7 +833,6 @@ border-color: #DEE1E645;
   left: 83rem;
 }
 .task-edit1-cancel1{
-  font-family: 'Lexend';
   font-size: 20px;
   line-height: 20px;
   font-weight: 400;
@@ -873,7 +850,7 @@ border-color: #DEE1E645;
   left: 83rem;
   
 }
-.uploaded-files {
+.uploaded-files-task {
   max-height: 200px;
   overflow: hidden;
   text-align: right;
@@ -934,9 +911,6 @@ border-color: #DEE1E645;
 }
 /* General adjustments for mobile view */
 @media (max-width: 768px) {
-  .tasks_main_component {
-    /* padding: 10px; */
-  }
 
   .task_header {
     font-size: 24px;

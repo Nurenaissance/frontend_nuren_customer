@@ -62,7 +62,6 @@
 }
 
 .excel-dropdown-int {
-    font-family: 'Manrope', sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: #FFFFFF;
@@ -205,7 +204,6 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-family: 'Manrope', sans-serif;
 }
 
 .product-table th {

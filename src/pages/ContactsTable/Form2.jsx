@@ -12,7 +12,6 @@ import axiosInstance from "../../api";
 import { useAuth } from "../../authContext";
 import { useNavigate } from "react-router-dom";
 import "./contactsTable.css";
-import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -345,9 +344,6 @@ function Form2() {
   
   return (
    <div>
-     <div className="contact_nav">
-    <TopNavbar/>
-  </div>
     <div className="contactfill_forms">
       {showCreateNewAccountForm && <CreateNewAccountForm />}
       <div className="back_container111">

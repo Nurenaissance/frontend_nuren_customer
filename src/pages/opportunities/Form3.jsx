@@ -10,7 +10,6 @@ import "./opportunityform.css";
 import "./index.jsx";
 import axiosInstance from "../../api.jsx";
 import { useAuth } from "../../authContext.jsx";
-import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 import { useNavigate } from "react-router-dom";
 
 
@@ -351,16 +350,13 @@ useEffect(() => {
 
     return (
     <div>
-         <div className="call_nav">
-    <TopNavbar/>
-  </div>
       <div className="opportunityfill_forms">
       {showCreateNewAccountForm && <CreateNewAccountForm />}
      
 
       <div className="relatedOppo_back">
         {/* <Link className='oppo_back' to="/opportunities"> Back</Link> */}
-        <Link className='task_back' to={`/${tenantId}/opportunities`}>Back</Link>
+        <Link  to={`/${tenantId}/opportunities`}>Back</Link>
 
       </div>
 
