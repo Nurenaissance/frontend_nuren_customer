@@ -22,6 +22,7 @@ const TicketInfo = () => {
                 const response = await axiosInstance.get(`/tickets/${id}`);
                 setTicketData(response.data);
                 setLoading(false);
+                console.log(response.data);
             } catch (error) {
                 setError(error);
                 setLoading(false);
@@ -31,16 +32,62 @@ const TicketInfo = () => {
         fetchTicketData();
     }, [id]);
 
-    const handleMarkAsSolved = () => {
-        console.log("Marking as solved...");
+    const handleMarkAsSolved = async () => {
+        try {
+            await axiosInstance.put(`/tickets/${id}/`, {
+                ...ticketData,
+                status: 'closed' // Update the status to 'closed'
+            });
+            setTicketData(prevData => ({
+                ...prevData,
+                Status: 'closed'
+            }));
+            console.log("Marked as solved and status updated to 'closed'");
+        } catch (error) {
+            setError(error);
+            console.error("Error marking as solved:", error);
+        }
     };
 
-    const handleMarkAsImportant = () => {
-        console.log("Marking as important...");
+    const handleMarkAsUnsolved = async () => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${id}/`, {
+                ...ticketData,
+                status: 'open' // Update the status to 'open'
+            });
+            setTicketData(response.data); // Update ticketData with the response data
+            console.log("Marked as unsolved and status updated to 'open'");
+        } catch (error) {
+            setError(error);
+            console.error("Error marking as unsolved:", error);
+        }
     };
 
-    const handleSave = () => {
-        console.log("Saving changes...");
+    const handleMarkAsImportant = async () => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${id}/`, {
+                ...ticketData,
+                priority: 'high' // Update the priority to 'high'
+            });
+            setTicketData(response.data); // Update ticketData with the response data
+            console.log("Marked as important and priority updated to 'high'");
+        } catch (error) {
+            setError(error);
+            console.error("Error marking as important:", error);
+        }
+    };
+
+    const handleSave = async () => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${id}/`, {
+                ...ticketData,
+                status: 'pending' // Update the status to 'pending'
+            });
+            setTicketData(response.data); // Update ticketData with the response data
+        } catch (error) {
+            setError(error);
+            console.error("Error saving changes:", error);
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -57,8 +104,21 @@ const TicketInfo = () => {
                     <header className="ticket-info-header">
                         <h1 className="ticket-info-title">Ticket Information</h1>
                         <div className="ticket-info-actions">
-                            <button className="ticket-info-btn ticket-info-btn--solve" onClick={handleMarkAsSolved}>Mark as Solved</button>
-                            <button className="ticket-info-btn ticket-info-btn--important" onClick={handleMarkAsImportant}>Mark as Important</button>
+                        {ticketData.status !== 'closed' && (
+                                <button className="ticket-info-btn ticket-info-btn--solve" onClick={handleMarkAsSolved}>
+                                    Mark as Solved
+                                </button>
+                            )}
+                                 {ticketData.status !== 'open' && (
+                            <button className="ticket-info-btn ticket-info-btn--unsolved" onClick={handleMarkAsUnsolved}>
+                                Mark as Unsolved
+                            </button>
+                        )}
+                            {ticketData.priority !== 'high' && (
+                            <button className="ticket-info-btn ticket-info-btn--important" onClick={handleMarkAsImportant}>
+                                Mark as Important
+                            </button>
+                        )}
                         </div>
                     </header>
 
@@ -107,9 +167,27 @@ const TicketInfo = () => {
                     </section>
 
                     <footer className="ticket-info-footer">
-                        <button className="ticket-info-btn ticket-info-btn--solve" onClick={handleMarkAsSolved}>Mark as Solved</button>
-                        <button className="ticket-info-btn ticket-info-btn--important" onClick={handleMarkAsImportant}>Mark as Important</button>
-                        <button className="ticket-info-btn ticket-info-btn--save" onClick={handleSave}>Save for later</button>
+                    {ticketData.status !== 'closed' && (
+                                <button className="ticket-info-btn ticket-info-btn--solve" onClick={handleMarkAsSolved}>
+                                    Mark as Solved
+                                </button>
+                            )}
+                             {ticketData.status !== 'open' && (
+                            <button className="ticket-info-btn ticket-info-btn--unsolved" onClick={handleMarkAsUnsolved}>
+                                Mark as Unsolved
+                            </button>
+                        )}
+                            
+                            {ticketData.priority !== 'high' && (
+                            <button className="ticket-info-btn ticket-info-btn--important" onClick={handleMarkAsImportant}>
+                                Mark as Important
+                            </button>
+                        )}
+                        {ticketData.status !== 'pending' && (
+                            <button className="ticket-info-btn ticket-info-btn--save" onClick={handleSave}>
+                                Save for later
+                            </button>
+                        )}
                     </footer>
                 </main>
             </div>

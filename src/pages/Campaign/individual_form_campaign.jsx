@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
 import './individualform.css';
+import axiosInstance from '../../api';
+
 const AdditionalCampaignFields = ({ additionalFields }) => {
      // State for Instagram Campaign
   const [instagramCampaignData, setInstagramCampaignData] = useState({
@@ -53,6 +55,26 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
         actual_engagement: '',
         notes: '',
       });
+      const [users, setUsers] = useState([]);
+      const [isLoading, setIsLoading] = useState(true);
+
+      useEffect(() => {
+        const fetchUsers = async () => {
+          try {
+            const response = await axiosInstance.get(`/contacts/`);
+            setUsers(response.data);
+            console.log(users);
+            setIsLoading(false);
+          } catch (error) {
+            console.error("Error fetching users:", error);
+            setIsLoading(false);
+          }
+        };
+    
+        fetchUsers();
+      }, []);
+
+
       const handleWhatsAppCampaignChange = (e) => {
         const { name, value, type, checked } = e.target;
         setWhatsappCampaignData((prevData) => ({
@@ -457,12 +479,19 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
 
             <div className="form-group">
               <label htmlFor="recipient_list">Recipient List:</label>
-              <textarea
+              <select
                 name="recipient_list"
                 value={emailCampaignData.recipient_list}
                 onChange={handleEmailCampaignChange}
-                placeholder="Enter comma-separated email addresses"
-              />
+                placeholder="Select Recipient"
+              >
+               <option value="">Select a user</option>
+        {users.map(user => (
+          <option key={user.id} value={user.id}>
+           {user.first_name} {user.last_name}
+          </option>
+        ))}
+      </select>
             </div>
 
             <div className="form-group">
@@ -590,15 +619,21 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
          </div>
 
          <div className="form-group">
-           <label htmlFor="contacts">Contacts (IDs):</label>
-           <input
-             type="text"
-             name="contacts"
-             value={callCampaignData.contacts}
-             onChange={handleCallCampaignChange}
-             placeholder="Comma-separated IDs"
-           />
-         </div>
+      <label htmlFor="contacts">Contacts (IDs):</label>
+      <select
+        name="contacts"
+        value={callCampaignData.contacts}
+        onChange={handleCallCampaignChange}
+        placeholder="Select IDs"
+      >
+        <option value="">Select a user</option>
+        {users.map(user => (
+          <option key={user.id} value={user.id}>
+            {user.first_name} {user.last_name}
+          </option>
+        ))}
+      </select>
+    </div>
 
          <div className="form-group">
            <label htmlFor="scheduled_time">Scheduled:</label>

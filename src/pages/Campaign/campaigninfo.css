@@ -15,123 +15,192 @@
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 .additional-campaign-whatsappinfo {
-  border: 1px solid #ddd; /* Light gray border */
-  border-radius: 15px;
-  margin: 20px 0; /* Space outside the box */
-  padding: 20px;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  background-color: #f4f6f9;
-  max-width: 800px; /* Max width to control the size of the box */
-  margin-left: 2rem;
+  border: 1px solid #b3b3b3; /* Subtle border color */
+  border-radius: 15px; /* Rounded corners */
+  margin: 2rem; /* Centered horizontally with space outside the box */
+  padding: 20px; /* Space inside the box */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Enhanced shadow for depth */
+  background: linear-gradient(145deg, #e1f5fe, #f1f8e9); /* Gradient background for a fresh look */
+  max-width: 800px; /* Maximum width of the box */
+  position: relative; /* For icon positioning */
+  overflow: hidden; /* To ensure the icon does not overflow */
 }
+
+.additional-campaign-whatsappinfo::before {
+  content: "\f232"; /* WhatsApp icon from FontAwesome (example) */
+  font-family: 'FontAwesome';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2em;
+  color: #25D366; /* WhatsApp green */
+  opacity: 0.5; /* Slightly transparent */
+}
+
 .additional-campaign-whatsappinfo:hover {
-  background-color: #f4f6f9;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, #c8e6c9, #e1f5fe); /* Slightly darker gradient on hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
+  transform: scale(1.02);
 }
 
 .additional-campaign-whatsappinfo h2 {
-  color: #333; /* Darker text color for the heading */
-  font-size: 1.5em; /* Larger font size for the heading */
-  margin-bottom: 10px; /* Space below the heading */
+  color: #00796b; /* Darker green for the heading */
+  font-size: 1.6em; /* Larger font size for emphasis */
+  margin-bottom: 15px; /* Space below the heading */
 }
 
 .additional-campaign-whatsappinfo p {
-  color: #555; /* Darker gray for text */
-  margin: 8px 0; /* Space between paragraphs */
+  color: #333; /* Dark gray for text for better readability */
+  margin: 10px 0; /* Space between paragraphs */
 }
 
 .additional-campaign-whatsappinfo p strong {
-  color: #333; /* Darker color for strong text */
+  color: #00796b; /* Green for strong text to highlight it */
 }
 
+
+
 .additional-campaign-emailinfo {
-  border: 1px solid #ddd; /* Light gray border */
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-  padding: 20px;
-  background-color: #f4f6f9;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  margin: 20px 0; /* Space outside the box */
-  max-width: 800px; /* Max width to control the size of the box */
-  margin-left: 2rem;
+  border: 1px solid #b3b3b3; /* Subtle border color */
+  border-radius: 15px; /* Rounded corners */
+  margin: 2rem; /* Centered horizontally with space outside the box */
+  padding: 20px; /* Space inside the box */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Enhanced shadow for depth */
+  background: linear-gradient(145deg, #e3f2fd, #bbdefb); /* Gradient background for a fresh look */
+  max-width: 800px; /* Maximum width of the box */
+  position: relative; /* For icon positioning */
+  overflow: hidden; /* To ensure the icon does not overflow */
 }
+
+.additional-campaign-emailinfo::before {
+  content: "\f0e0"; /* Email icon from FontAwesome (example) */
+  font-family: 'FontAwesome';
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 2em;
+  color: #2196f3; /* Email blue color */
+  opacity: 0.5; /* Slightly transparent */
+}
+
 .additional-campaign-emailinfo:hover {
-  background-color: #f4f6f9;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, #bbdefb, #e3f2fd); /* Slightly darker gradient on hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
+  transform: scale(1.02);
 }
 
 .additional-campaign-emailinfo h2 {
-  color: #333; /* Darker text color for the heading */
-  font-size: 1.5em; /* Larger font size for the heading */
-  margin-bottom: 10px; /* Space below the heading */
+  color: #0d47a1; /* Dark blue for the heading */
+  font-size: 1.6em; /* Larger font size for emphasis */
+  margin-bottom: 15px; /* Space below the heading */
+
 }
 
 .additional-campaign-emailinfo p {
-  color: #555; /* Darker gray for text */
-  margin: 8px 0; /* Space between paragraphs */
+  color: #333; /* Dark gray for text for better readability */
+  margin: 10px 0; /* Space between paragraphs */
 }
 
 .additional-campaign-emailinfo p strong {
-  color: #333; /* Darker color for strong text */
+  color: #0d47a1; /* Dark blue for strong text to highlight it */
 }
+
 .additional-campaign-instainfo {
-  border: 1px solid #ddd; /* Light gray border */
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-  padding: 20px;
-  background-color: #f4f6f9;
-  margin-left: 2rem;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  max-width: 800px; /* Max width to control the size of the box */
+  border: 1px solid #e0e0e0; /* Light gray border for a subtle look */
+  border-radius: 15px; /* Rounded corners */
+  margin: 2rem; /* Centered with space outside */
+  padding: 20px; /* Padding inside the box */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Enhanced shadow for depth */
+  background: linear-gradient(145deg, #f58529, #feda75, #dd2a7b, #8134af); /* Instagram gradient */
+  max-width: 800px; /* Max width to control the size */
+  position: relative; /* For icon positioning */
+  overflow: hidden; /* Ensure content does not overflow */
+  color: #fff; /* White text for contrast */
 }
+
+.additional-campaign-instainfo::before {
+  content: "\f16d"; /* Instagram icon from FontAwesome (example) */
+  font-family: 'FontAwesome';
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 2em;
+  color: #fff; /* White icon for contrast */
+  opacity: 0.7; /* Slightly transparent */
+}
+
 .additional-campaign-instainfo:hover {
-  background-color: #f4f6f9;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, #feda75, #dd2a7b, #8134af, #f58529); /* Slightly different gradient on hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+  transform: scale(1.02); /* Slightly enlarge on hover */
 }
+
 .additional-campaign-instainfo h2 {
-  color: #333; /* Darker text color for the heading */
-  font-size: 1.5em; /* Larger font size for the heading */
-  margin-bottom: 10px; /* Space below the heading */
+  color: #fff; /* White text for heading */
+  font-size: 1.6em; /* Larger font size for emphasis */
+  margin-bottom: 15px; /* Space below the heading */
+  font-family: 'Arial', sans-serif; /* Modern, clean font */
 }
 
 .additional-campaign-instainfo p {
-  color: #555; /* Darker gray for text */
-  margin: 8px 0; /* Space between paragraphs */
+  color: #fff; /* White text for paragraphs */
+  margin: 10px 0; /* Space between paragraphs */
+  font-family: 'Arial', sans-serif; /* Consistent font style */
 }
 
 .additional-campaign-instainfo p strong {
-  color: #333; /* Darker color for strong text */
-}
-.additional-campaign-callinfo {
-  border: 1px solid #ddd; /* Light gray border */
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-  padding: 20px;
-  transition: background-color 0.3s, box-shadow 0.3s;
-  margin: 20px 0; /* Space outside the box */
-  background-color: #f4f6f9;
-  margin-left: 2rem;
-  max-width: 800px; /* Max width to control the size of the box */
-}
-.additional-campaign-callinfo:hover {
-  background-color: #f4f6f9;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  color: #fff; /* White text for strong elements */
 }
 
-.additional-campaign-callinfo h3 {
-  color: #333; /* Darker text color for the heading */
-  font-size: 1.4em; /* Slightly larger font size for the heading */
-  margin-bottom: 10px; /* Space below the heading */
+
+.additional-campaign-callinfo {
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 12px; /* Rounded corners */
+  margin: 2rem; /* Centered with space outside */
+  padding: 20px; /* Padding inside the box */
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; /* Smooth transitions */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  background-color: #fce4ec; /* Light pink background */
+  max-width: 800px; /* Max width to control the size */
+  position: relative; /* For icon positioning */
+  overflow: hidden; /* Ensure content does not overflow */
+  color: #333; /* Dark text color */
+}
+
+.additional-campaign-callinfo::before {
+  content: "\f095"; /* FontAwesome phone icon (example) */
+  font-family: 'FontAwesome';
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 2.5em; /* Larger icon size */
+  color: #d81b60; /* Deep pink color for icon */
+  opacity: 0.8; /* Slightly transparent */
+}
+
+.additional-campaign-callinfo:hover {
+  background-color: #f8bbd0; /* Slightly darker pink on hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+  transform: scale(1.02); /* Slightly enlarge on hover */
+}
+
+.additional-campaign-callinfo h2 {
+  color: #c2185b; /* Darker pink color for heading */
+  font-size: 1.8em; /* Larger font size for emphasis */
+  margin-bottom: 15px; /* Space below the heading */
+  
 }
 
 .additional-campaign-callinfo p {
-  color: #666; /* Medium gray for text */
-  margin: 8px 0; /* Space between paragraphs */
+  color: #555; /* Dark gray text */
+  margin: 10px 0; /* Space between paragraphs */
 }
 
 .additional-campaign-callinfo p strong {
-  color: #333; /* Darker color for strong text */
+  color: #c2185b; /* Matching dark pink for strong text */
 }
 
 
