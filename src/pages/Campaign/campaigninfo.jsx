@@ -43,44 +43,44 @@ export const CampaignInfo = () => {
     fetchCampaignData();
   }, [id]);
 
-  useEffect(() => {
-    if (!id || !tenantId) {
-      console.warn('No campaign ID or tenant ID provided.');
-      return;
-    }
+  // useEffect(() => {
+  //   if (!id || !tenantId) {
+  //     console.warn('No campaign ID or tenant ID provided.');
+  //     return;
+  //   }
 
-    const fetchAdditionalData = async () => {
-      try {
-        const headers = {
-          'X-Tenant-ID': tenantId,
-        };
+  //   const fetchAdditionalData = async () => {
+  //     try {
+  //       const headers = {
+  //         'X-Tenant-ID': tenantId,
+  //       };
 
-        const [campaignResponse, instagramResponse, whatsappResponse, emailResponse, callResponse] = await Promise.all([
-          axiosInstance.get(`/campaign/${id}`, { headers }),
-          axiosInstance.get(`/instagram-campaigns/`, { headers }),
-          axiosInstance.get(`/whatsapp-campaigns/`, { headers }),
-          axiosInstance.get(`/email-campaigns/`, { headers }),
-          axiosInstance.get(`/call-campaigns/`, { headers }),
-        ]);
+  //       const [campaignResponse, instagramResponse, whatsappResponse, emailResponse, callResponse] = await Promise.all([
+  //         axiosInstance.get(`/campaign/${id}`, { headers }),
+  //         axiosInstance.get('/instagram-campaigns/', { headers }),
+  //         axiosInstance.get('/whatsapp-campaigns/', { headers }),
+  //         axiosInstance.get('/email-campaigns/', { headers }),
+  //         axiosInstance.get('/call-campaigns/', { headers }),
+  //       ]);
 
         
-        setWhatsappCampaignData(whatsappResponse.data);
-        setInstagramCampaignData(instagramResponse.data);
-        setEmailCampaignData(emailResponse.data);
-        setCallCampaignData(callResponse.data);
+  //       setWhatsappCampaignData(whatsappResponse.data);
+  //       setInstagramCampaignData(instagramResponse.data);
+  //       setEmailCampaignData(emailResponse.data);
+  //       setCallCampaignData(callResponse.data);
 
-        console.log('Campaign Data:', campaignResponse.data);
-        console.log('Instagram Campaign Data:', instagramResponse.data);
-        console.log('Email Campaign Data:', emailResponse.data);
-        console.log('Call Campaign Data:', callResponse.data);
+  //       console.log('Campaign Data:', campaignResponse.data);
+  //       console.log('Instagram Campaign Data:', instagramResponse.data);
+  //       console.log('Email Campaign Data:', emailResponse.data);
+  //       console.log('Call Campaign Data:', callResponse.data);
         
-      } catch (error) {
-        console.error("Error fetching additional campaign data:", error);
-      }
-    };
+  //     } catch (error) {
+  //       console.error("Error fetching additional campaign data:", error);
+  //     }
+  //   };
 
-    fetchAdditionalData();
-  }, [id, tenantId]);
+  //   fetchAdditionalData();
+  // }, [id, tenantId]);
 
   const handleEdit = () => {
     setIsEditing(true);
