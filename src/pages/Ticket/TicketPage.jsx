@@ -23,6 +23,7 @@ const Ticket = () => {
     const [filteredTickets, setFilteredTickets] = useState([]);
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [tickets, setTickets] = useState([]);
+    const [id , setid] = useState({});
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -81,13 +82,20 @@ const Ticket = () => {
         filterTickets(selectedOption, updatedTickets); // Re-filter after status update
     };
 
-    const handleMarkAsUnsolved = (ticketToUpdate) => {
-        const updatedTickets = tickets.map(t =>
-            t.id === ticketToUpdate.id ? { ...t, status: 'notSolved' } : t
-        );
-        setTickets(updatedTickets);
-        filterTickets(selectedOption, updatedTickets); // Re-filter after status update
+    const handleMarkAsUnsolved = async () => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${id}/`, {
+                ...ticketData,
+                status: 'open' // Update the status to 'open'
+            });
+            setTicketData(response.data); // Update ticketData with the response data
+            console.log("Marked as unsolved and status updated to 'open'");
+        } catch (error) {
+            setError(error);
+            console.error("Error marking as unsolved:", error);
+        }
     };
+    
 
     const handleArchive = (ticketToUpdate) => {
         const updatedTickets = tickets.map(t =>
@@ -169,7 +177,7 @@ const Ticket = () => {
                                 </div>
                                 <button className="ticket-item__attachment">View Attachment</button>
                                 <div className="ticket-item__actions">
-                                    {ticket.status === 'solved' && (
+                                    {ticket.status === 'open' && (
                                         <>
                                             <button 
                                                 className="ticket-item__action"
@@ -185,13 +193,13 @@ const Ticket = () => {
                                             </button>
                                         </>
                                     )}
-                                    {ticket.status === 'notSolved' && (
+                                    {ticket.status === 'closed' && (
                                         <>
-                                            <button 
+                                             <button 
                                                 className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleMarkAsSolved(ticket); }}
+                                                onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
                                             >
-                                                <MdCheckCircle style={{ color: '#62CD14' }} />
+                                                <MdClose style={{ color: '#DE3B40' }} />
                                             </button>
                                             <button 
                                                 className="ticket-item__action"
@@ -201,7 +209,7 @@ const Ticket = () => {
                                             </button>
                                         </>
                                     )}
-                                    {ticket.status === 'archived' && (
+                                    {ticket.status === 'pending' && ticket.priority === 'high' &&(
                                         <>
                                             <button 
                                                 className="ticket-item__action"
@@ -222,14 +230,6 @@ const Ticket = () => {
                             </div>
                         ))}
                     </div>
-                    {selectedTicket && (
-                        <div className="ticket-details">
-                            <h2>{selectedTicket.case_reason}</h2>
-                            <p>{selectedTicket.description}</p>
-                            <button onClick={() => handleMarkAsSolved(selectedTicket)}><MdCheckCircle /> Mark as Solved</button>
-                            <button onClick={() => handleMarkAsUnsolved(selectedTicket)}><MdClose /> Mark as Unsolved</button>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

@@ -87,6 +87,17 @@
 .ticket-info-btn--save:hover {
   background-color: #D9A030;
 }
+.ticket-info-btn--unsolved {
+  background-color: #ff6f61; /* Coral color for Mark as Unsolved */
+  color: #ffffff; /* White text color for better contrast */
+  border-color: #ff6f61; /* Border matching the background color */
+}
+
+.ticket-info-btn--unsolved:hover {
+  background-color: #e55b50; /* Darker coral shade on hover */
+  border-color: #e55b50; /* Matching border color on hover */
+}
+
 
 .ticket-info-section {
   background-color: white;
