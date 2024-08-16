@@ -41,19 +41,18 @@
 .additional-campaign-whatsappinfo:hover {
   background: linear-gradient(145deg, #c8e6c9, #e1f5fe); /* Slightly darker gradient on hover */
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
+  transform: scale(1.02);
 }
 
 .additional-campaign-whatsappinfo h2 {
   color: #00796b; /* Darker green for the heading */
   font-size: 1.6em; /* Larger font size for emphasis */
   margin-bottom: 15px; /* Space below the heading */
-  font-family: 'Arial', sans-serif; /* Modern, clean font */
 }
 
 .additional-campaign-whatsappinfo p {
   color: #333; /* Dark gray for text for better readability */
   margin: 10px 0; /* Space between paragraphs */
-  font-family: 'Arial', sans-serif; /* Consistent font style */
 }
 
 .additional-campaign-whatsappinfo p strong {
@@ -89,19 +88,19 @@
 .additional-campaign-emailinfo:hover {
   background: linear-gradient(145deg, #bbdefb, #e3f2fd); /* Slightly darker gradient on hover */
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
+  transform: scale(1.02);
 }
 
 .additional-campaign-emailinfo h2 {
   color: #0d47a1; /* Dark blue for the heading */
   font-size: 1.6em; /* Larger font size for emphasis */
   margin-bottom: 15px; /* Space below the heading */
-  font-family: 'Arial', sans-serif; /* Modern, clean font */
+
 }
 
 .additional-campaign-emailinfo p {
   color: #333; /* Dark gray for text for better readability */
   margin: 10px 0; /* Space between paragraphs */
-  font-family: 'Arial', sans-serif; /* Consistent font style */
 }
 
 .additional-campaign-emailinfo p strong {
@@ -135,7 +134,8 @@
 
 .additional-campaign-instainfo:hover {
   background: linear-gradient(145deg, #feda75, #dd2a7b, #8134af, #f58529); /* Slightly different gradient on hover */
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* More pronounced shadow on hover */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+  transform: scale(1.02); /* Slightly enlarge on hover */
 }
 
 .additional-campaign-instainfo h2 {
@@ -168,7 +168,6 @@
   position: relative; /* For icon positioning */
   overflow: hidden; /* Ensure content does not overflow */
   color: #333; /* Dark text color */
-  font-family: 'Arial', sans-serif; /* Modern font */
 }
 
 .additional-campaign-callinfo::before {
@@ -192,13 +191,12 @@
   color: #c2185b; /* Darker pink color for heading */
   font-size: 1.8em; /* Larger font size for emphasis */
   margin-bottom: 15px; /* Space below the heading */
-  font-family: 'Arial', sans-serif; /* Modern font */
+  
 }
 
 .additional-campaign-callinfo p {
   color: #555; /* Dark gray text */
   margin: 10px 0; /* Space between paragraphs */
-  font-family: 'Arial', sans-serif; /* Consistent font style */
 }
 
 .additional-campaign-callinfo p strong {
