@@ -265,3 +265,37 @@
 .campaign-bigboxes > div:nth-child(2) { animation-delay: 0.2s; }
 .campaign-bigboxes > div:nth-child(3) { animation-delay: 0.3s; }
 .campaign-bigboxes > div:nth-child(4) { animation-delay: 0.4s; }
+
+.social_btn {
+  display: flex;
+  gap: 10px;
+}
+
+.campaign_btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.campaign_btn:hover, .campaign_btn.active {
+  background-color: #f0f0f0;
+}
+
+.campaign_btn.active {
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -6,7 +6,7 @@ import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 
 import { Dropdown,Card, ListGroup } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-
+import { FaLinkedin, FaInstagram, FaWhatsapp, FaEnvelope, FaPhone } from 'react-icons/fa';
 
 import { Sidebar } from "../../components/Sidebar";
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -36,13 +36,13 @@ const Campaign = () => {
   const [flows, setFlows] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedChannel, setSelectedChannel] = useState(null);
   const [campaignStats, setCampaignStats] = useState({
     total_campaigns: 0,
     total_revenue: "0.00",
     total_actual_cost: "0.00"
 });
-
-
+const [selectedChannels, setSelectedChannels] = useState([]);
   const [newCampaign, setNewCampaign] = useState({
     id:"",
     campaign_name: "",
@@ -113,39 +113,6 @@ const fetchTemplates = async () => {
 };
 
 
-
-  const loadTemplate = (template) => {
-    if (template && template.node_data) {
-      const { nodes: templateNodes, adjacencyList } = template.node_data;
-      
-      // Transform nodes to ReactFlow format
-      const transformedNodes = templateNodes.map(node => ({
-        id: node.id.toString(),
-        type: node.type,
-        data: node.data,
-        position: node.position || { x: 0, y: 0 }, // You might need to add position data to your backend
-      }));
-  
-      // Transform adjacencyList to edges
-      const transformedEdges = adjacencyList.flatMap((targets, sourceIndex) => 
-        targets.map(target => ({
-          id: `e${sourceIndex}-${target}`,
-          source: sourceIndex.toString(),
-          target: target.toString(),
-        }))
-      );
-  
-      // You'll need to decide how to use these transformed nodes and edges
-      // For now, we'll just log them
-      console.log('Transformed Nodes:', transformedNodes);
-      console.log('Transformed Edges:', transformedEdges);
-  
-      setSelectedTemplate(template);
-    }
-  };
-
-
-
   const fetchCampaigns = async () => {
     try {
       const response = await axiosInstance.get('/campaign/');
@@ -206,6 +173,70 @@ const handleTemplateSelect = (template) => {
     }
   };
 
+  // useEffect(() => {
+  //   const applyFilter = () => {
+  //     console.log('Campaigns:', campaign); // Log all campaigns
+  //     if (!selectedChannel) {
+  //       setFilteredCampaigns(campaign);
+  //     } else {
+  //       const filteredData = campaign.filter(camp => {
+  //         console.log('Campaign type:', camp.type); // Log each campaign's type
+  //         if (typeof camp.type === 'string') {
+  //           return camp.type.toLowerCase() === selectedChannel.toLowerCase();
+  //         }
+  //         return false;
+  //       });
+  //       setFilteredCampaigns(filteredData);
+  //     }
+  //   };
+  //   applyFilter();
+  // }, [selectedChannel, campaign]);
+
+  const handleChannelClick = (channel) => {
+    setSelectedChannels(prev => 
+      prev.includes(channel) 
+        ? prev.filter(c => c !== channel) 
+        : [...prev, channel]
+    );
+  };
+  
+  useEffect(() => {
+    const applyFilter = () => {
+      console.log('Campaigns:', campaign.map(c => ({ id: c.id, type: c.type })));
+      if (selectedChannels.length === 0) {
+        setFilteredCampaigns(campaign);
+      } else {
+        const filteredData = campaign.filter(camp => 
+          selectedChannels.some(channel => {
+            if (typeof camp.type !== 'string') {
+              console.warn(`Unexpected type for campaign ${camp.id}: ${camp.type}`);
+              return false;
+            }
+            return camp.type.toLowerCase().includes(channel.toLowerCase());
+          })
+        );
+        setFilteredCampaigns(filteredData);
+      }
+    };
+    applyFilter();
+  }, [selectedChannels, campaign]);
+
+  const getChannelIcon = (type) => {
+    if (typeof type !== 'string') {
+      console.warn(`Unexpected type for channel: ${type}`);
+      return <span>{String(type)}</span>; // Display the type as text if it's not a string
+    }
+  
+    switch (type.toLowerCase()) {
+      case 'linkedin': return <FaLinkedin color="#0077B5" size={24} />;
+      case 'instagram': return <FaInstagram color="#E1306C" size={24} />;
+      case 'whatsapp': return <FaWhatsapp color="#25D366" size={24} />;
+      case 'email': return <FaEnvelope color="#D44638" size={24} />;
+      case 'call': return <FaPhone color="#4285F4" size={24} />;
+      default: return <span>{type}</span>; // Display unknown types as text
+    }
+  };
+
   const handleDownloadPDF = () => {
     const unit = "pt";
     const size = "A4"; // Use A4 size for simplicity
@@ -244,22 +275,6 @@ const handleTemplateSelect = (template) => {
     });
   
     doc.save("campaigns_report.pdf");
-  };
-
-  const handleInstagramButtonClick = () => {
-    navigate(`/${tenantId}/instagrampost`)
-  };
-  const handleWhatsappButtonClick = () => {
-    navigate(`/${tenantId}/chatbot`)
-  };
-  const handleEmailClick = () => {
-    navigate(`/${tenantId}/email-provider`)
-  };
-  const handleLinkedInClick = () => {
-    navigate(`/${tenantId}/linkedinpost`)
-  };
-  const handleFlowButtonClick = () => {
-    navigate(`/${tenantId}/flow`)
   };
 
 
@@ -348,23 +363,17 @@ const handleTemplateSelect = (template) => {
 
           </div>
         <div className='campaign_filter_btn'>
-               <div className='social_btn'> 
-                    <button className="campanign_btn1"   onClick={handleLinkedInClick}>
-                      <LinkedInIcon />
-                    </button>
-                    <button  className="campaign_btn2"    onClick={handleInstagramButtonClick}>
-                      <InstagramIcon />
-                    </button>
-                    <button  className="campaign_btn3"      onClick={handleWhatsappButtonClick}>
-                      <WhatsAppIcon />
-                    </button>
-                    <button   className="campaign_btn4"       onClick={handleEmailClick}>
-                      <EmailIcon />
-                    </button>
-                    <button   className="campaign_btn5"       onClick={handleEmailClick}>
-                      <CallIcon />
-                    </button>
-              </div>
+        <div className='social_btn'> 
+  {['linkedin', 'instagram', 'whatsapp', 'email', 'call'].map(channel => (
+    <button 
+      key={channel}
+      className={`campaign_btn ${selectedChannels.includes(channel) ? 'active' : ''}`} 
+      onClick={() => handleChannelClick(channel)}
+    >
+      {getChannelIcon(channel)}
+    </button>
+  ))}
+</div>
               <div className="flow-button">
   <button className="campaign_flow_btn" onClick={handleFlowsButtonClick}>
     {showFlows ? "Show Campaigns" : "Show Flows"}
@@ -438,7 +447,10 @@ const handleTemplateSelect = (template) => {
                 </Link>
               </td>
               <td className="campaign_data_owner">{campaign.campaign_owner}</td>
-              <td className="cont_email">{campaign.type}</td>
+              <td className="cont_email">
+  {getChannelIcon(campaign.type)}
+  <span className="sr-only">{String(campaign.type)}</span>
+</td>
               <td className="campaign_data_cost">{campaign.start_date}</td>
               <td className="campaign_data_status">{campaign.status}</td>
               <td className='campaign_data_revenue'>{campaign.expected_revenue}</td>

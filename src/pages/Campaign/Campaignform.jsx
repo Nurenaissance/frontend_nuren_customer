@@ -84,6 +84,7 @@ const Campaignform = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [newFlowName, setNewFlowName] = useState('');
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isCreatingNewFlow, setIsCreatingNewFlow] = useState(false);
  
 
   const handleChange = (event) => {
@@ -97,6 +98,60 @@ const Campaignform = () => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    fetchFlows();
+  }, []);
+
+  const fetchFlows = async () => {
+    try {
+      const response = await axiosInstance.get('/node-templates/');
+      setFlows(response.data);
+    } catch (error) {
+      console.error('Error fetching flows:', error);
+      setFlows([]);
+    }
+  };
+
+  const handleFlowChange = (event) => {
+    const value = event.target.value;
+    setSelectedFlow(value);
+    if (value === 'create_new') {
+      setIsCreatingNewFlow(true);
+    } else {
+      setIsCreatingNewFlow(false);
+      // Update campaignData with the selected flow
+      const selectedFlowData = flows.find(flow => flow.id === value);
+      setCampaignData(prevState => ({
+        ...prevState,
+        flow: selectedFlowData,
+      }));
+    }
+  };
+
+  const handleCreateNewFlow = async () => {
+    if (!newFlowName.trim()) {
+      alert('Please enter a name for the new flow');
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post('/flows/', { name: newFlowName });
+      const newFlow = response.data;
+      setFlows(prevFlows => [...prevFlows, newFlow]);
+      setSelectedFlow(newFlow.id);
+      setCampaignData(prevState => ({
+        ...prevState,
+        flow: newFlow,
+      }));
+      setNewFlowName('');
+      setIsCreatingNewFlow(false);
+    } catch (error) {
+      console.error('Error creating new flow:', error);
+      alert('Failed to create new flow. Please try again.');
+    }
+  };
+
   useEffect(() => {
     // Set initial error fields based on formErrors
     const initialErrorFields = {};
@@ -164,54 +219,8 @@ const Campaignform = () => {
     }
   };
 
-
-
-  useEffect(() => {
-    fetchFlows();
-  }, []);
-
-  const fetchFlows = async () => {
-    try {
-      const response = await axiosInstance.get('/flows/');
-      setFlows(response.data);
-    } catch (error) {
-      console.error('Error fetching flows:', error);
-      // Set flows to an empty array or some default value
-      setFlows([]);
-    }
-  };
-  const handleFlowChange = (event) => {
-    setSelectedFlow(event.target.value);
-    if (event.target.value !== 'create_new') {
-      const selectedFlowData = flows.find(flow => flow.id === event.target.value);
-      setCampaignData(prevState => ({
-        ...prevState,
-        flow: selectedFlowData,
-      }));
-    }
-  };
-
-  const handleCreateNewFlow = async () => {
-    if (!newFlowName.trim()) {
-      alert('Please enter a name for the new flow');
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.post('/flows/', { name: newFlowName });
-      const newFlow = response.data;
-      setFlows(prevFlows => [...prevFlows, newFlow]);
-      setSelectedFlow(newFlow.id);
-      setCampaignData(prevState => ({
-        ...prevState,
-        flow: newFlow,
-      }));
-      setNewFlowName('');
-    } catch (error) {
-      console.error('Error creating new flow:', error);
-      alert('Failed to create new flow. Please try again.');
-    }
-  };
+  
+ 
   
 
   const closePopup = () => {
@@ -441,6 +450,38 @@ const Campaignform = () => {
       style={{ borderColor: errorFields.expected_response ? 'red' : '' }}
     />
   </div>
+
+  <div className="cf-flow-container">
+          <label htmlFor="flow" className="cf-label">Select Flow:</label>
+          <select
+            id="flow"
+            name="flow"
+            value={selectedFlow}
+            onChange={handleFlowChange}
+            className="cf-flow-select"
+          >
+            <option value="">Select a flow</option>
+            {flows.map(flow => (
+              <option key={flow.id} value={flow.id}>{flow.name}</option>
+            ))}
+            <option value="create_new">Create New Flow</option>
+          </select>
+
+          {isCreatingNewFlow && (
+            <div className="cf-new-flow-input">
+              <input
+                type="text"
+                value={newFlowName}
+                onChange={(e) => setNewFlowName(e.target.value)}
+                placeholder="Enter new flow name"
+                className="cf-input"
+              />
+              <button onClick={handleCreateNewFlow} className="cf-btn cf-btn-submit">
+                Create Flow
+              </button>
+            </div>
+          )}
+        </div>
 
   <div className="form-group col-md-6">
     <label htmlFor="description" className='campaign_description'>Description:</label>
