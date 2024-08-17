@@ -28,7 +28,7 @@ function EmailApp() {
     const tenantId = getTenantIdFromUrl();
 
     const emailProviders = {
-        gmail: { host: 'smtp.gmail.com', port: 587 },
+        gmail: { host: 'smtp.gmail.com', port: 465 },
         outlook: { host: 'smtp-mail.outlook.com', port: 465 },
         zoho: { host: 'smtp.zoho.com', port: 465 },
         godaddy: { host: 'smtpout.secureserver.net', port: 465 },
@@ -37,9 +37,10 @@ function EmailApp() {
 
     const handleProviderSelection = (provider) => {
         setSelectedProvider(provider);
-        if (provider === 'gmail') {
-            handleGmailAuthorization();
-        } else{
+     //   if (provider === 'gmail') {
+     //       handleGmailAuthorization();
+     //   } else{
+    
         const storedEmailUser = localStorage.getItem(`${provider}_emailUser`);
         const storedEmailPass = localStorage.getItem(`${provider}_emailPass`);
         if (storedEmailUser && storedEmailPass) {
@@ -49,7 +50,7 @@ function EmailApp() {
         } else {
             setShowCredentialModal(true);
         }
-    }
+    
     };
     const handleGmailAuthorization = () => {
         const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${encodeURIComponent(SCOPES)}&response_type=token&access_type=offline`;

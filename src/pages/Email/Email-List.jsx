@@ -245,7 +245,7 @@ function extractMainText(emailContent) {
   // Filter lines to find the main text part
   const mainTextLines = lines.filter(line => {
       // Exclude lines that are likely to be part of the header or footer
-      return line.trim() !== '' && !line.startsWith('--'); /*&& !line.startsWith('DISCLAIMER:')*/
+      return line.trim() !== '' && !line.startsWith('--ZZZ') && !line.startsWith('DISCLAIMER:');
   });
 
   // Join the filtered lines back into a single string
