@@ -96,7 +96,9 @@ import CoinStatsPage from '../pages/CoinStats/CoinStatsPage';
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 import EmailList from "../pages/Email/Email-List.jsx";
+import DocumentRag from "../pages/documenteditpage/documentRAG.jsx";
 // import EmailProviders from "../pages/Email/Email-provider.jsx";
+import Htmleditor from "../pages/documenteditpage/htmlcreator.jsx";
 
 
 const getTenantIdFromUrl = () => {
@@ -392,6 +394,9 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/email_setup" element={<Appa/>}/>
           <Route path=":tenant_id/InstagramMedia"  element= {<InstagramMedia/>}/>
           <Route path=":tenant_id/calllogs"  element= {<CallLogs/>}/>
+          <Route path=":tenant_id/chat2doc"  element= {<DocumentRag/>}/>
+          <Route path=":tenant_id/emaileditor"  element= {<Htmleditor/>}/>
+
         </>
       )}
 

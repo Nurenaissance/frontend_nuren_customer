@@ -54,6 +54,7 @@
     "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
+    "react-email-editor": "^1.7.11",
     "react-facebook": "^9.0.12",
     "react-flow-renderer": "^10.3.17",
     "react-force-graph": "^1.44.4",
