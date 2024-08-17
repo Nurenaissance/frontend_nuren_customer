@@ -1,0 +1,187 @@
+.doc-rag__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  /* padding: 30px; */
+  font-family: Arial, sans-serif;
+}
+
+.doc-rag__title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+}
+
+.doc-rag__content {
+  display: flex;
+  gap: 30px;
+  height: calc(100vh - 150px);
+  min-height: 600px;
+}
+
+.doc-rag__pdf-section {
+  flex: 1;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.doc-rag__pdf-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #7f8c8d;
+  background-color: #ecf0f1;
+}
+
+.doc-rag__pdf-placeholder p {
+  margin-top: 20px;
+}
+
+.doc-rag__interaction-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.doc-rag__upload-section {
+  margin-bottom: 20px;
+}
+
+.doc-rag__file-input {
+  display: none;
+}
+
+.doc-rag__upload-button,
+.doc-rag__reupload-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #3498db;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doc-rag__upload-button:hover,
+.doc-rag__reupload-button:hover {
+  background-color: #2980b9;
+}
+
+.doc-rag__reupload-button {
+  background-color: #2ecc71;
+}
+
+.doc-rag__reupload-button:hover {
+  background-color: #27ae60;
+}
+
+.doc-rag__file-name {
+  margin-top: 10px;
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+.doc-rag__chat-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.doc-rag__messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.doc-rag__message {
+  max-width: 80%;
+  margin-bottom: 15px;
+  padding: 12px 18px;
+  border-radius: 18px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.doc-rag__message--user {
+  background-color: #3498db;
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.doc-rag__message--server {
+  background-color: #0D1C5D;
+  color: #fff;
+  align-self: flex-start;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+
+.doc-rag__input-area {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #f1f3f5;
+  border-top: 1px solid #e0e0e0;
+}
+
+.doc-rag__message-input {
+  flex-grow: 1;
+  padding: 12px 18px;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.doc-rag__message-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.doc-rag__send-button {
+  margin-left: 10px;
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.doc-rag__send-button:hover {
+  background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .doc-rag__content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .doc-rag__pdf-section {
+    height: 400px;
+  }
+
+  .doc-rag__chat-section {
+    height: 400px;
+  }
+}

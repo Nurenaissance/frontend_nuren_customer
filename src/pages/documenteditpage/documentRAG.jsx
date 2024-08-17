@@ -1,119 +1,132 @@
-import React, { useState } from 'react';
-import axios from 'axios'; // Import axios for making HTTP requests
+import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import { FaUpload, FaRedo } from 'react-icons/fa';
+import './DocumentRag.css';
 
 const DocumentRag = () => {
-  const [chatMessages, setChatMessages] = useState([]); // State for chat messages
-  const [inputMessage, setInputMessage] = useState(''); // State for input message
-  const [pdf2File, setPdfFile2] = useState(null); // State for uploaded PDF file
-  const [zip2Name, setZipName2] = useState(null); // State for zip file name
+  const [chatMessages, setChatMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [pdfFile, setPdfFile] = useState(null);
+  const [zipName, setZipName] = useState(null);
   const [prompt, setPrompt] = useState('');
-  // Function to handle sending messages
-  const handleSendMessage2 = async (message) => {
+  const fileInputRef = useRef(null);
+
+  const handleSendMessage = async (message) => {
     try {
-      // Update chat messages with the user message
       setChatMessages((prevMessages) => [...prevMessages, { content: message, type: 'user' }]);
 
-      // Send a POST request to the server
-      const response = await axios.post('https://nurenai2backend.azurewebsites.net/api/get-pdf/', {
+      const response = await axios.post('https://hx587qc4-8000.inc1.devtunnels.ms/api/get-pdf/', {
         message: message,
-        zipName: zip2Name,
-        prompt:prompt, // Send the zipName obtained from file upload
+        zipName: zipName,
+        prompt: prompt,
       });
 
-      // Extract the answer from the response data
       const answer = response.data.answer;
 
-      // Update chat messages with the server response
       setChatMessages((prevMessages) => [...prevMessages, { content: answer, type: 'server' }]);
     } catch (error) {
       console.error('Error sending message:', error);
     }
   };
 
-  // Function to handle file upload
-  const handleFileUpload2 = async (e) => {
-    const file = e.target.files[0]; // Get the uploaded file
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
   
-    try {
-      // Create FormData to send the file
-      const formData = new FormData();
-      formData.append('file', file);
-  
-      // Send a POST request to upload the file
-      const response = await axios.post('https://nurenai2backend.azurewebsites.net/api/upload-pdf/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      // Set the uploaded PDF file and zip file name
-      setPdfFile2(file);
-      setZipName2(response.data.zip_file_path);
-    } catch (error) {
-      console.error('Error uploading and converting PDF:', error);
-      console.error('Error details:', error.response); // Log the error details
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        const response = await axios.post('https://hx587qc4-8000.inc1.devtunnels.ms/api/upload-pdf/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+    
+        setPdfFile(file);
+        setZipName(response.data.zip_file_path);
+      } catch (error) {
+        console.error('Error uploading and converting PDF:', error);
+        console.error('Error details:', error.response);
+      }
     }
   };
 
+  const handleReupload = () => {
+    fileInputRef.current.click();
+  };
+
   return (
-    <div style={{ height: '100vh',marginTop:'40px' }}>
-      {/* File Upload Section */}
-      <div style={{ marginTop: '30px' }}>
-        <input type="file" accept=".pdf" onChange={handleFileUpload2} />
-        {pdf2File && (
-          <div>
-            <p>Uploaded PDF: {pdf2File.name}</p>
-          
-            <embed src={URL.createObjectURL(pdf2File)} type="application/pdf" width="300" height="200" />
+    <div className="doc-rag__container">
+      <h1 className="doc-rag__title">Interactive Document Chat</h1>
+      <div className="doc-rag__content">
+        <div className="doc-rag__pdf-section">
+          {pdfFile ? (
+            <embed src={URL.createObjectURL(pdfFile)} type="application/pdf" width="100%" height="100%" />
+          ) : (
+            <div className="doc-rag__pdf-placeholder">
+              <FaUpload size={48} />
+              <p>Upload a PDF to preview here</p>
+            </div>
+          )}
+        </div>
+        <div className="doc-rag__interaction-section">
+          <div className="doc-rag__upload-section">
+            <input 
+              type="file" 
+              accept=".pdf" 
+              onChange={handleFileUpload} 
+              className="doc-rag__file-input" 
+              ref={fileInputRef}
+              style={{display:'none'}}
+            />
+            {!pdfFile ? (
+              <button className="doc-rag__upload-button" onClick={() => fileInputRef.current.click()}>
+                <FaUpload /> Upload PDF
+              </button>
+            ) : (
+              <button className="doc-rag__reupload-button" onClick={handleReupload}>
+                <FaRedo /> Reupload
+              </button>
+            )}
+            {pdfFile && <p className="doc-rag__file-name">Uploaded: {pdfFile.name}</p>}
           </div>
-        )}
-      </div>
 
-      {/* Chat Section */}
-      <div style={{ marginTop: '20px' }}>
-        {/* Display chat messages */}
-        {chatMessages.map((message, index) => (
-          <div
-            key={index}
-            style={{
-              marginBottom: '10px',
-              padding: '8px',
-              borderRadius: '8px',
-              backgroundColor: message.type === 'user' ? '#3498db' : '#0D1C5D',
-              color: '#fff',
-            }}
-          >
-            {message.content}
+          <div className="doc-rag__chat-section">
+            <div className="doc-rag__messages">
+              {chatMessages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`doc-rag__message ${message.type === 'user' ? 'doc-rag__message--user' : 'doc-rag__message--server'}`}
+                >
+                  {message.content}
+                </div>
+              ))}
+            </div>
+
+            <div className="doc-rag__input-area">
+              <input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="doc-rag__message-input"
+              />
+
+              <button
+                onClick={() => {
+                  if (inputMessage.trim()) {
+                    handleSendMessage(inputMessage);
+                    setInputMessage('');
+                  }
+                }}
+                className="doc-rag__send-button"
+              >
+                Send
+              </button>
+            </div>
           </div>
-        ))}
-
-        {/* Input field for typing messages */}
-        <input
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          placeholder="Type your message..."
-          style={{ marginTop: '10px', padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}
-        />
-
-        {/* Button to send message */}
-        <button
-          onClick={() => {
-            handleSendMessage2(inputMessage);
-            setInputMessage(''); // Clear input after sending message
-          }}
-          style={{
-            marginTop: '10px',
-            padding: '8px',
-            borderRadius: '8px',
-            backgroundColor: '#3498db',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Send
-        </button>
+        </div>
       </div>
     </div>
   );
