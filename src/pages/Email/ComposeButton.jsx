@@ -20,11 +20,11 @@ import {
 import axios from 'axios';
 
 const emailProviders = {
-  gmail: { host: 'smtp.gmail.com', port: 587 },
-  outlook: { host: 'smtp-mail.outlook.com', port: 465 },
-  zoho: { host: 'smtp.zoho.com', port: 465 },
-  godaddy: { host: 'smtpout.secureserver.net', port: 465 },
-  hostinger: { host: 'smtp.hostinger.com', port: 465 },
+  gmail: { host:'smtp.gmail.com', port:'465' },
+  outlook: { host:'smtp-mail.outlook.com', port:'465'},
+  zoho: { host:'smtp.zoho.com', port: '465' },
+  godaddy: { host:'smtpout.secureserver.net', port:'465' },
+  hostinger: { host:'smtp.hostinger.com', port:'465' },
 };
 
 function ComposeButton({ onClose, emailUser, provider }) {
@@ -50,23 +50,21 @@ function ComposeButton({ onClose, emailUser, provider }) {
       setMessage('Invalid email provider');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('smtpUser', emailUser);
-    formData.append('smtpPass', localStorage.getItem(`${provider}_emailPass`));
-    formData.append('to', to);
-    formData.append('subject', subject);
-    formData.append('text', text);
-    formData.append('host', providerConfig.host);
-    formData.append('port', providerConfig.port);
-
-    attachments.forEach((file, index) => {
-      formData.append(`attachment${index}`, file);
-    });
-
+  
+    const emailData = {
+      smtpUser: emailUser,
+      smtpPass: localStorage.getItem(`${provider}_emailPass`),
+      to: to,
+      subject: subject,
+      text: text,
+      host: providerConfig.host,
+      port: providerConfig.port,
+      attachments: attachments, // Send the attachments as part of the JSON if needed
+    };
+  
     try {
-      const response = await axios.post('https://emailserver-lake.vercel.app/send-email', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
+        headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Email sent successfully');
       setTimeout(() => {
