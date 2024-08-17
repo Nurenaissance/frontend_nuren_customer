@@ -469,3 +469,9 @@ border-radius: 30px;
 }
 
 
+.ai-graph-container {
+  width: 400px;
+  height: 300px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}

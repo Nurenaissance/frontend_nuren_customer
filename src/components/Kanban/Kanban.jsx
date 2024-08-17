@@ -38,21 +38,7 @@ const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   // const [aiCache, setAiCache] = useState({});
   const { aiCache, updateCache } = useContext(AiCacheContext);
-  const [graphData, setGraphData] = useState({
-    nodes: [
-      { id: "1", name: "Node 1" },
-      { id: "2", name: "Node 2" },
-      { id: "3", name: "Node 3" },
-      { id: "4", name: "Node 4" },
-      { id: "5", name: "Node 5" }
-    ],
-    links: [
-      { source: "1", target: "2" },
-      { source: "1", target: "3" },
-      { source: "2", target: "4" },
-      { source: "2", target: "5" }
-    ]
-  });
+  const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const graphOptions = {
     layout: {
       hierarchical: false
@@ -361,33 +347,33 @@ const [isLoading, setIsLoading] = useState(false);
   };
 
 
-  const debouncedAiRequest = useCallback(
-    debounce(async (card, tenantId) => {
-      const cacheKey = `${card.id}-${card.status}`;
-      if (aiCache[cacheKey]) {
-        showLeadPopup(aiCache[cacheKey]);
-        setIsLoading(false);
-        return;
-      }
+  // const debouncedAiRequest = useCallback(
+  //   debounce(async (card, tenantId) => {
+  //     const cacheKey = `${card.id}-${card.status}`;
+  //     if (aiCache[cacheKey]) {
+  //       showLeadPopup(aiCache[cacheKey]);
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
-      const prompt = `analyse this lead and suggest me the best way to handle it`;
-      try {
-        const response = await axiosInstance.post(`/query/`, { 
-          prompt, 
-          tenant: tenantId
-        });
-        const result = response.data;
-        updateCache(cacheKey, result);
-        showLeadPopup(result);
-      } catch (error) {
-        console.error('Error fetching AI suggestion:', error);
-        showLeadPopup("An error occurred while fetching AI suggestions. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
-    [aiCache, updateCache]
-  );
+  //     const prompt = `answer the biggest node`;
+  //     try {
+  //       const response = await axiosInstance.post(`/query/`, { 
+  //         prompt, 
+  //         tenant: tenantId
+  //       });
+  //       const result = response.data;
+  //       updateCache(cacheKey, result);
+  //       showLeadPopup(result);
+  //     } catch (error) {
+  //       console.error('Error fetching AI suggestion:', error);
+  //       showLeadPopup("An error occurred while fetching AI suggestions. Please try again.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }, 300),
+  //   [aiCache, updateCache]
+  // );
 
 
   const handleAiButtonClick = (card) => {
@@ -395,6 +381,59 @@ const [isLoading, setIsLoading] = useState(false);
     setPopupOpen(true);
     setLoadingMessage(loadingMessages[0]);
     debouncedAiRequest(card, tenantId);
+  };
+  
+  const debouncedAiRequest = useCallback(
+    debounce(async (card, tenantId) => {
+      const cacheKey = `${card.id}-${card.status}`;
+      if (aiCache[cacheKey]) {
+        processAiResponse(aiCache[cacheKey]);
+        setIsLoading(false);
+        return;
+      }
+  
+      const prompt = `answer the biggest node`;
+      try {
+        const response = await axiosInstance.post(`/query/`, { 
+          prompt, 
+          tenant: tenantId
+        });
+        const result = response.data;
+        updateCache(cacheKey, result);
+        processAiResponse(result);
+      } catch (error) {
+        console.error('Error fetching AI suggestion:', error);
+        processAiResponse("An error occurred while fetching AI suggestions. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300),
+    [aiCache, updateCache]
+  );
+  
+  const processAiResponse = (result) => {
+    if (typeof result === 'string') {
+      // If the result is a string, it's likely an error message
+      showLeadPopup(result);
+      setGraphData({ nodes: [], links: [] });
+      return;
+    }
+  
+    showLeadPopup(result.message || "No message available");
+  
+    const nodes = Array.isArray(result.nodes) ? result.nodes : [];
+    const links = Array.isArray(result.links) ? result.links : [];
+  
+    setGraphData({
+      nodes: nodes.map(node => ({
+        id: node.id || `node-${Math.random()}`,
+        name: node.name || "Unnamed Node"
+      })),
+      links: links.map(link => ({
+        source: link.source || "",
+        target: link.target || ""
+      }))
+    });
   };
   
 
@@ -509,14 +548,14 @@ const [isLoading, setIsLoading] = useState(false);
     <h2>AI Insights</h2>
     <div className="ai-popup-container">
       <div className="ai-graph-container">
-        <ForceGraph2D
-          graphData={graphData}
-          nodeLabel="name"
-          nodeAutoColorBy="id"
-          linkDirectionalParticles={2}
-          linkDirectionalParticleSpeed={0.001}
-          d3VelocityDecay={0.3}
-        />
+      <ForceGraph2D
+  graphData={graphData.nodes.length > 0 ? graphData : { nodes: [{ id: 'dummy' }], links: [] }}
+  nodeLabel="name"
+  nodeAutoColorBy="id"
+  linkDirectionalParticles={2}
+  linkDirectionalParticleSpeed={0.001}
+  d3VelocityDecay={0.3}
+/>
       </div>
       <div className="ai-insights-text">
         {isLoading ? (
