@@ -9,6 +9,7 @@ const DocumentRag = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [zipName, setZipName] = useState(null);
   const [prompt, setPrompt] = useState('');
+  const [pdfUrl, setPdfUrl] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleSendMessage = async (message) => {
@@ -44,6 +45,7 @@ const DocumentRag = () => {
         });
     
         setPdfFile(file);
+        setPdfUrl(URL.createObjectURL(file));
         setZipName(response.data.zip_file_path);
       } catch (error) {
         console.error('Error uploading and converting PDF:', error);
@@ -54,22 +56,22 @@ const DocumentRag = () => {
 
   const handleReupload = () => {
     fileInputRef.current.click();
+    setPdfUrl(null);
   };
-
   return (
     <div className="doc-rag__container">
       <h1 className="doc-rag__title">Interactive Document Chat</h1>
       <div className="doc-rag__content">
-        <div className="doc-rag__pdf-section">
-          {pdfFile ? (
-            <embed src={URL.createObjectURL(pdfFile)} type="application/pdf" width="100%" height="100%" />
-          ) : (
-            <div className="doc-rag__pdf-placeholder">
-              <FaUpload size={48} />
-              <p>Upload a PDF to preview here</p>
-            </div>
-          )}
-        </div>
+      <div className="doc-rag__pdf-section">
+  {pdfUrl ? (
+    <embed src={pdfUrl} type="application/pdf" width="100%" height="100%" />
+  ) : (
+    <div className="doc-rag__pdf-placeholder">
+      <FaUpload size={48} />
+      <p>Upload a PDF to preview here</p>
+    </div>
+  )}
+</div>
         <div className="doc-rag__interaction-section">
           <div className="doc-rag__upload-section">
             <input 
