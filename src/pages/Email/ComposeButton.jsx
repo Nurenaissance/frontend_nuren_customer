@@ -63,7 +63,7 @@ function ComposeButton({ onClose, emailUser, provider }) {
     };
   
     try {
-      const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
+      const response = await axios.post('http://localhost:3001/send-email', emailData, {
         headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Email sent successfully');
