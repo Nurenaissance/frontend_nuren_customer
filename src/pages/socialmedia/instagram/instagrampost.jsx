@@ -93,6 +93,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   const [draftImageUrl, setDraftImageUrl] = useState('');
   const [showDraftsPopup, setShowDraftsPopup] = useState(false);
   const [coinBalance, setCoinBalance] = useState(0);
+  const draftData = location.state?.draftData;
   const categories = [
     { name: 'Gen Z', icon: <EmojiEmotionsIcon /> },
     { name: 'Professional', icon: <WorkIcon /> },
@@ -192,6 +193,28 @@ const userId = 3;
       throw error;
     }
   };
+
+
+  useEffect(() => {
+    if (draftData) {
+      setCaption(draftData.caption || '');
+      setIsStory(draftData.is_story || false);
+      setIsReel(draftData.is_reel || false);
+      setSelectedDate(draftData.scheduled_date ? new Date(draftData.scheduled_date) : new Date());
+      setSelectedTime(draftData.scheduled_time || '12:00');
+      
+      // Handle image URLs
+      if (draftData.image_url && draftData.image_url.length > 0) {
+        Promise.all(draftData.image_url.map(url => 
+          fetch(url).then(res => res.blob()).then(blob => 
+            new File([blob], `draftImage_${Date.now()}.jpg`, { type: 'image/jpeg' })
+          )
+        )).then(fileArray => {
+          setFiles(fileArray);
+        });
+      }
+    }
+  }, [draftData]);
 
 
 
