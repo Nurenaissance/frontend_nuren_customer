@@ -116,6 +116,7 @@ import GmailCallback from "../pages/Email/GmailCallback.jsx";
 import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
+import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
 
 // import CustomModelForm from "../pages/CustomModel/customform";
 
@@ -342,6 +343,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/loyaltyform" element ={<Loyalityform/>}/>
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
+          <Route path=":tenant_id/email-tracking" element ={<EmailTrackingInfo/>}/>
 
           <Route path="/:tenantId/flow" element={<FlowBuilder />} />
           <Route path="/:tenantId/floww/:templateId?" element={<DnDFlow />} />

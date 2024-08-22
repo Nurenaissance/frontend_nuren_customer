@@ -19,6 +19,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from '../../api';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+// import DraftTable from './DraftsTable.jsx';
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -38,12 +39,17 @@ const Campaign = () => {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
+  const [drafts, setDrafts] = useState([]);
   const [campaignStats, setCampaignStats] = useState({
     total_campaigns: 0,
     total_revenue: "0.00",
     total_actual_cost: "0.00"
 });
 const [selectedChannels, setSelectedChannels] = useState([]);
+const [showLinkedInTable, setShowLinkedInTable] = useState(false);
+const [showInstagramTable, setShowInstagramTable] = useState(false);
+const [showWhatsAppTable, setShowWhatsAppTable] = useState(false);
+const [showDraftsTable, setShowDraftsTable] = useState(false);
   const [newCampaign, setNewCampaign] = useState({
     id:"",
     campaign_name: "",
@@ -61,6 +67,7 @@ const [selectedChannels, setSelectedChannels] = useState([]);
   });
 
   const [filterType, setFilterType] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState([]);
 
   useEffect(() => {
     const applyFilter = () => {
@@ -132,6 +139,8 @@ const fetchCampaigns = async () => {
     console.log("Error fetching campaigns:", error);
   }
 };
+
+
   const handleRecords3 = (event) => {
     console.log("Records per page: ", event.target.value);
   };
@@ -158,7 +167,7 @@ const fetchCampaigns = async () => {
   };
 
 // Usage:
-fetchFlows([1, 2, 3]); // Replace with actual IDs
+// fetchFlows([]); // Replace with actual IDs
 
 const handleFlowsButtonClick = () => {
   setShowFlows(!showFlows);
@@ -181,48 +190,92 @@ const handleTemplateSelect = (template) => {
     }
   };
 
-  // useEffect(() => {
-  //   const applyFilter = () => {
-  //     console.log('Campaigns:', campaign); // Log all campaigns
-  //     if (!selectedChannel) {
-  //       setFilteredCampaigns(campaign);
-  //     } else {
-  //       const filteredData = campaign.filter(camp => {
-  //         console.log('Campaign type:', camp.type); // Log each campaign's type
-  //         if (typeof camp.type === 'string') {
-  //           return camp.type.toLowerCase() === selectedChannel.toLowerCase();
-  //         }
-  //         return false;
-  //       });
-  //       setFilteredCampaigns(filteredData);
-  //     }
-  //   };
-  //   applyFilter();
-  // }, [selectedChannel, campaign]);
+  
 
-  const handleChannelClick = (channel) => {
-    setSelectedChannels(prev => 
-      prev.includes(channel) 
-        ? prev.filter(c => c !== channel) 
-        : [...prev, channel]
+  const handleFilterSelect = (channel) => {
+    setSelectedFilters(prev => 
+      prev.includes(channel.toLowerCase())
+        ? prev.filter(c => c !== channel.toLowerCase())
+        : [...prev, channel.toLowerCase()]
     );
   };
-  
   useEffect(() => {
     const applyFilter = () => {
-      if (selectedChannels.length === 0) {
+      if (selectedFilters.length === 0) {
         setFilteredCampaigns(campaign);
       } else {
         const filteredData = campaign.filter(camp => 
           camp.type.some(type => 
-            selectedChannels.includes(type.toLowerCase())
+            selectedFilters.includes(type.toLowerCase())
           )
         );
         setFilteredCampaigns(filteredData);
       }
     };
     applyFilter();
-  }, [selectedChannels, campaign]);
+  }, [selectedFilters, campaign]);
+
+  const fetchDrafts = async () => {
+    try {
+      const response = await axiosInstance.get('/drafts/');
+      setDrafts(response.data);
+    } catch (error) {
+      console.error("Error fetching drafts:", error);
+    }
+  };
+
+  const handleChannelClick = (channel) => {
+    if (channel.toLowerCase() === 'instagram') {
+      setShowDraftsTable(!showDraftsTable);
+      if (!showDraftsTable) {
+        fetchDrafts();
+      }
+    } else {
+      setSelectedChannels([channel]);
+      fetchCampaigns();
+    }
+  };
+
+  const handleDeleteDraft = async (draftId) => {
+    try {
+      await axiosInstance.delete(`/drafts/${draftId}/`);
+      setDrafts(drafts.filter(draft => draft.id !== draftId));
+    } catch (error) {
+      console.error("Error deleting draft:", error);
+    }
+  };
+
+  const handleLoadDraft = (draft) => {
+    navigate(`/${tenantId}/instagrampost`, { state: { draftData: draft } });
+  };
+  
+  useEffect(() => {
+    const applyFilter = () => {
+      fetchCampaigns(); // Fetch new data after channel selection changes
+    };
+    applyFilter();
+  }, [selectedChannels]);
+
+
+  // const handleLoadDraft = async (draftId) => {
+  //   try {
+  //     const loadedDraft = await loadDraft(draftId);
+  //     if (!loadedDraft) {
+  //       throw new Error('Failed to load draft');
+  //     }
+  
+  //     // Navigate to InstagramPost page with draft data
+  //     navigate(`/${tenantId}/instagrampost`, { 
+  //       state: { 
+  //         draftData: loadedDraft 
+  //       } 
+  //     });
+  //   } catch (error) {
+  //     console.error('Error loading draft:', error);
+  //     alert('Error loading draft: ' + error.message);
+  //   }
+  // };
+
 
   const getChannelIcon = (type) => {
     const renderIcon = (singleType) => {
@@ -247,6 +300,38 @@ const handleTemplateSelect = (template) => {
     }
     return renderIcon(type);
   };
+
+  // const DraftsTable = ({ drafts, onLoadDraft, onDeleteDraft }) => (
+  //   <table className="drafts-table">
+  //     <thead>
+  //       <tr>
+  //         <th>Caption</th>
+  //         <th>Created On</th>
+  //         <th>Type</th>
+  //         <th>Scheduled</th>
+  //         <th>Actions</th>
+  //       </tr>
+  //     </thead>
+  //     <tbody>
+  //       {drafts.map((draft) => (
+  //         <tr key={draft.id}>
+  //           <td>{draft.caption.substring(0, 50)}...</td>
+  //           <td>{new Date(draft.timestamp).toLocaleString()}</td>
+  //           <td>{draft.is_story ? 'Story' : draft.is_reel ? 'Reel' : 'Post'}</td>
+  //           <td>
+  //             {draft.scheduled_date
+  //               ? `${new Date(draft.scheduled_date).toLocaleDateString()} at ${draft.scheduled_time}`
+  //               : 'Not scheduled'}
+  //           </td>
+  //           <td>
+  //             <button onClick={() => onLoadDraft(draft.id)}>Load Draft</button>
+  //             <button onClick={() => onDeleteDraft(draft.id)}>Delete Draft</button>
+  //           </td>
+  //         </tr>
+  //       ))}
+  //     </tbody>
+  //   </table>
+  // );
 
   const handleDownloadPDF = () => {
     const unit = "pt";
@@ -345,8 +430,6 @@ const handleTemplateSelect = (template) => {
     </button>
   )}
 </div>
-
-    
       </div>
    </div>
 
@@ -390,17 +473,63 @@ const handleTemplateSelect = (template) => {
     {showFlows ? "Show Campaigns" : "Show Flows"}
   </button>
 </div>
-              <div className='filter_campaign'>
-              <select className="view-mode-select_campaign" onChange={handleRecords3}>
-                    <option value="">Filter by:Type</option>
-                    <option value="1">Date</option>
-                    <option value="2">Status</option>
-                    <option value="3">Value</option>
+<div className='filter_campaign'>
+  <Dropdown>
+    <Dropdown.Toggle variant="success" id="dropdown-basic">
+      Filter by Channel
+    </Dropdown.Toggle>
 
-                  </select>
-              </div>
+    <Dropdown.Menu>
+      {['LinkedIn', 'Instagram', 'WhatsApp', 'Email', 'Call'].map((channel) => (
+        <Dropdown.Item  key={channel} as="button" onClick={() => handleFilterSelect(channel)}>
+          <input
+            type="checkbox"
+            checked={selectedFilters.includes(channel.toLowerCase())}
+            onChange={() => {}}
+          />
+          {' '}
+          {channel}
+        </Dropdown.Item>
+      ))}
+    </Dropdown.Menu>
+  </Dropdown>
+</div>
         </div>
       <div>
+      {showDraftsTable ? (
+  <div className="drafts-table-container">
+    <h2>Instagram Drafts</h2>
+    <table className="drafts-table">
+      <thead>
+        <tr>
+          <th>Caption</th>
+          <th>Created On</th>
+          <th>Type</th>
+          <th>Scheduled</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {drafts.map((draft) => (
+          <tr key={draft.id}>
+            <td>{draft.caption.substring(0, 50)}...</td>
+            <td>{new Date(draft.timestamp).toLocaleString()}</td>
+            <td>{draft.is_story ? 'Story' : draft.is_reel ? 'Reel' : 'Post'}</td>
+            <td>
+              {draft.scheduled_date
+                ? `${new Date(draft.scheduled_date).toLocaleDateString()} at ${draft.scheduled_time}`
+                : 'Not scheduled'}
+            </td>
+            <td>
+              <button onClick={() => handleLoadDraft(draft)}>Load</button>
+              <button onClick={() => handleDeleteDraft(draft.id)}>Delete</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+) : (
       <div className="table_camp">
   <table className="campaign_table">
     <thead>
@@ -470,6 +599,8 @@ const handleTemplateSelect = (template) => {
     </tbody>
   </table>
 </div>
+)}
+
         </div>
       </div>
     </div>

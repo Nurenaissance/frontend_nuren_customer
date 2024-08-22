@@ -392,9 +392,9 @@ const [isLoading, setIsLoading] = useState(false);
         return;
       }
   
-      const prompt = `answer the biggest node`;
+      const prompt = `all the contact persons`;
       try {
-        const response = await axiosInstance.post(`/query/`, { 
+        const response = await axiosInstance.post(`https://8twdg37p-8000.inc1.devtunnels.ms/query/`, { 
           prompt, 
           tenant: tenantId
         });
