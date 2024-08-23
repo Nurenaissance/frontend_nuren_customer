@@ -19,7 +19,7 @@ const getTenantIdFromUrl = () => {
     return pathArray.length >= 2 ? pathArray[1] : null;
 };
 
-function EmailApp() {
+function EmailApp({ onClose, isPopup = false ,contactemails }) {
     const navigate = useNavigate();
     const [selectedProvider, setSelectedProvider] = useState(null);
     const [showCredentialModal, setShowCredentialModal] = useState(false);
@@ -34,7 +34,7 @@ function EmailApp() {
         godaddy: { host: 'smtpout.secureserver.net', port: 465 },
         hostinger: { host: 'smtp.hostinger.com', port: 465 },
     };
-
+    console.log(contactemails);
     const handleProviderSelection = (provider) => {
         setSelectedProvider(provider);
         if (provider === 'gmail') {
@@ -64,18 +64,16 @@ function EmailApp() {
     };
 
     const navigateToEmailList = (provider, user, pass) => {
-        const providerMapping = {
-            'google': 'gmail',
-            'microsoft': 'outlook',
-        };
-        const mappedProvider = providerMapping[provider] || provider;
-
-        navigate(`/${tenantId}/email-list`, { 
-            state: { 
-                provider: mappedProvider,
+        if (isPopup && onClose) {
+            onClose(); // Close the popup
+        }
+        navigate(`/${tenantId}/email-list`, {
+            state: {
+                provider,
                 emailUser: user,
-                emailPass: pass
-            } 
+                emailPass: pass,
+                fromContacts: contactemails 
+            }
         });
     };
 

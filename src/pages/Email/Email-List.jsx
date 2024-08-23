@@ -15,7 +15,7 @@ function EmailList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
-  const { provider, emailUser, emailPass } = location.state || {};
+  const { provider, emailUser, emailPass, fromContacts } = location.state || {};
   const [selectedEmails, setSelectedEmails] = useState(new Set());
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
@@ -24,7 +24,18 @@ function EmailList() {
   const getNewlySelectedEmails = (selected, stored) => {
     return [...selected].filter(emailId => !stored.includes(emailId));
   };
+
+  console.log("Provider:", provider);
+    console.log("Email User:", emailUser);
+    console.log("Email Pass:", emailPass);
+    console.log("Contact Emails:", fromContacts);
   
+  useEffect(() => {
+    if (fromContacts) {
+      setShowComposeModal(true);
+    }
+  }, [fromContacts]);
+
   const handleCheckboxChange = (emailId) => {
     setSelectedEmails((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -44,6 +55,16 @@ function EmailList() {
       return newSelected; // Return the updated set
     });
   };
+
+ 
+
+// Function to simulate receiving emails from Contact page
+const fetchEmailsFromContactPage = async () => {
+    // Simulate fetching emails (replace with your actual data fetching logic)
+    const receivedEmails = await fetchEmails(); // Replace `fetchEmails` with your API call
+    setEmails(receivedEmails);
+};
+
     const handleSelectAllChange = () => {
       if (selectedEmails.size === emails.length && emails.length > 0) {
         // If all emails are selected, clear the selection
@@ -55,6 +76,7 @@ function EmailList() {
       }
     };
 
+   
 
   
     
@@ -468,6 +490,7 @@ function extractMainText(emailContent) {
           onClose={() => setShowComposeModal(false)}
           emailUser={location.state.emailUser}
           provider={location.state.provider}
+          contactemails={location.state.fromContacts}
         />
       )}
     </div>

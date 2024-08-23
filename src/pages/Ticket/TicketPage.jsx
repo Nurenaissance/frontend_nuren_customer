@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './TicketPage.css';
 import { Sidebar } from "../../components/Sidebar";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx";
-import { MdCheckCircle, MdClose, MdArchive, MdSearch } from 'react-icons/md';
+import { MdCheckCircle, MdClose, MdArchive, MdSearch, MdStar, MdStarBorder } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../../api.jsx";
 
@@ -74,36 +74,57 @@ const Ticket = () => {
         e.preventDefault();
     };
 
-    const handleMarkAsSolved = (ticketToUpdate) => {
-        const updatedTickets = tickets.map(t =>
-            t.id === ticketToUpdate.id ? { ...t, status: 'solved' } : t
-        );
-        setTickets(updatedTickets);
-        filterTickets(selectedOption, updatedTickets); // Re-filter after status update
-    };
-
-    const handleMarkAsUnsolved = async () => {
+    const handleMarkAsSolved = async (ticketId) => {
         try {
-            const response = await axiosInstance.put(`/tickets/${id}/`, {
-                ...ticketData,
-                status: 'open' // Update the status to 'open'
+            const response = await axiosInstance.put(`/tickets/${ticketId}/`, {
+                status: 'closed' 
             });
-            setTicketData(response.data); // Update ticketData with the response data
+            setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: 'closed' } : t));
+            filterTickets(selectedOption, tickets);
+            console.log("Marked as solved and status updated to 'closed'");
+        } catch (error) {
+            console.error("Error marking as solved:", error);
+        }
+    };
+    const handleMarkAsUnsolved = async (ticketId) => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${ticketId}/`, {
+                status: 'open' 
+            });
+            setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: 'open' } : t));
+            filterTickets(selectedOption, tickets);
             console.log("Marked as unsolved and status updated to 'open'");
         } catch (error) {
-            setError(error);
             console.error("Error marking as unsolved:", error);
         }
     };
-    
 
-    const handleArchive = (ticketToUpdate) => {
-        const updatedTickets = tickets.map(t =>
-            t.id === ticketToUpdate.id ? { ...t, status: 'archived' } : t
-        );
-        setTickets(updatedTickets);
-        filterTickets(selectedOption, updatedTickets); // Re-filter after status update
+    const handleMarkAsImportant = async (ticketId) => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${ticketId}/`, {
+                priority: 'high' 
+            });
+            setTickets(tickets.map(t => t.id === ticketId ? { ...t, priority: 'high' } : t));
+            filterTickets(selectedOption, tickets);
+            console.log("Marked as important and priority updated to 'high'");
+        } catch (error) {
+            console.error("Error marking as important:", error);
+        }
     };
+
+    const handleSave = async (ticketId) => {
+        try {
+            const response = await axiosInstance.put(`/tickets/${ticketId}/`, {
+                status: 'pending' 
+            });
+            setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: 'pending' } : t));
+            filterTickets(selectedOption, tickets);
+            console.log("Changes saved and status updated to 'pending'");
+        } catch (error) {
+            console.error("Error saving changes:", error);
+        }
+    };
+
 
     return (
         <div className="ticket-page">
@@ -177,52 +198,44 @@ const Ticket = () => {
                                 </div>
                                 <button className="ticket-item__attachment">View Attachment</button>
                                 <div className="ticket-item__actions">
-                                    {ticket.status === 'open' && (
+                                    {ticket.status !== 'closed' && (
                                         <>
-                                            <button 
-                                                className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
-                                            >
-                                                <MdClose style={{ color: '#62CD14' }} />
-                                            </button>
-                                            <button 
-                                                className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleArchive(ticket); }}
-                                            >
-                                                <MdArchive style={{ color: '#EFB034' }} />
-                                            </button>
+                                        <button 
+                                            className="ticket-item__action"
+                                            onClick={(e) => { e.stopPropagation(); handleMarkAsSolved(ticket); }}
+                                        >
+                                            <MdCheckCircle style={{ color: '#62CD14' }} />
+                                        </button>
                                         </>
                                     )}
-                                    {ticket.status === 'closed' && (
+                                    {ticket.status !== 'open' && (
                                         <>
-                                             <button 
-                                                className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
-                                            >
-                                                <MdClose style={{ color: '#DE3B40' }} />
-                                            </button>
-                                            <button 
-                                                className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleArchive(ticket); }}
-                                            >
-                                                <MdArchive style={{ color: '#EFB034' }} />
-                                            </button>
-                                        </>
-                                    )}
-                                    {ticket.status === 'pending' && ticket.priority === 'high' &&(
-                                        <>
-                                            <button 
-                                                className="ticket-item__action"
-                                                onClick={(e) => { e.stopPropagation(); handleMarkAsSolved(ticket); }}
-                                            >
-                                                <MdCheckCircle style={{ color: '#62CD14' }} />
-                                            </button>
                                             <button 
                                                 className="ticket-item__action"
                                                 onClick={(e) => { e.stopPropagation(); handleMarkAsUnsolved(ticket); }}
                                             >
                                                 <MdClose style={{ color: '#DE3B40' }} />
                                             </button>
+                                        </>
+                                    )}
+                                    {ticket.priority !== 'high' && (
+                                        <>
+                                        <button
+                                           className="ticket-item__action"
+                                           onClick={(e) => {e.stopPropagation(); handleMarkAsImportant(ticket);}}
+                                           >
+                                            <MdStar style={{ color: '#ff6f61'}}/>
+                                           </button>
+                                        </>
+                                    )}
+                                    {ticket.status !== 'pending' && (
+                                        <>
+                                        <button
+                                        className="ticket-item__action"
+                                        onClick={(e) => {e.stopPropagation(); handleSave(ticket);}}
+                                        >
+                                        <MdArchive style={{ color: "#D9A030"}}/>
+                                        </button>
                                         </>
                                     )}
                                     <Link to={`/${tenantId}/ticketinfo/${ticket.id}`} onClick={(e) => e.stopPropagation()}>View Ticket Info</Link>
