@@ -8,6 +8,7 @@ import { Dropdown,Card, ListGroup } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { FaLinkedin, FaInstagram, FaWhatsapp, FaEnvelope, FaPhone } from 'react-icons/fa';
 
+
 import { Sidebar } from "../../components/Sidebar";
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -113,17 +114,24 @@ const fetchTemplates = async () => {
 };
 
 
-  const fetchCampaigns = async () => {
-    try {
-      const response = await axiosInstance.get('/campaign/');
-      const data = await response.data;
-     
-      setCampaigns(data);
-      setFilteredCampaigns(data);
-    } catch (error) {
-      console.log("Error fetching campaigns:", error);
-    }
-  };
+const fetchCampaigns = async () => {
+  try {
+    const response = await axiosInstance.get('/campaign/');
+    const data = await response.data;
+
+    const cleanedData = data.map(campaign => ({
+      ...campaign,
+      type: Array.isArray(campaign.type) 
+        ? campaign.type.map(t => t.toLowerCase()) 
+        : [campaign.type.toLowerCase()]
+    }));
+
+    setCampaigns(cleanedData);
+    setFilteredCampaigns(cleanedData);
+  } catch (error) {
+    console.log("Error fetching campaigns:", error);
+  }
+};
   const handleRecords3 = (event) => {
     console.log("Records per page: ", event.target.value);
   };
@@ -202,18 +210,13 @@ const handleTemplateSelect = (template) => {
   
   useEffect(() => {
     const applyFilter = () => {
-      console.log('Campaigns:', campaign.map(c => ({ id: c.id, type: c.type })));
       if (selectedChannels.length === 0) {
         setFilteredCampaigns(campaign);
       } else {
         const filteredData = campaign.filter(camp => 
-          selectedChannels.some(channel => {
-            if (typeof camp.type !== 'string') {
-              console.warn(`Unexpected type for campaign ${camp.id}: ${camp.type}`);
-              return false;
-            }
-            return camp.type.toLowerCase().includes(channel.toLowerCase());
-          })
+          camp.type.some(type => 
+            selectedChannels.includes(type.toLowerCase())
+          )
         );
         setFilteredCampaigns(filteredData);
       }
@@ -222,19 +225,27 @@ const handleTemplateSelect = (template) => {
   }, [selectedChannels, campaign]);
 
   const getChannelIcon = (type) => {
-    if (typeof type !== 'string') {
-      console.warn(`Unexpected type for channel: ${type}`);
-      return <span>{String(type)}</span>; // Display the type as text if it's not a string
-    }
+    const renderIcon = (singleType) => {
+      switch (singleType.toLowerCase()) {
+        case 'linkedin':
+          return <LinkedInIcon style={{ color: "#0077B5" }} />;
+        case 'instagram':
+          return <InstagramIcon style={{ color: "#E1306C" }} />;
+        case 'whatsapp':
+          return <WhatsAppIcon style={{ color: "#25D366" }} />;
+        case 'email':
+          return <EmailIcon style={{ color: "#D44638" }} />;
+        case 'call':
+          return <CallIcon style={{ color: "#4285F4" }} />;
+        default:
+          return <ChatBubbleOutlineIcon style={{ color: "#808080" }} />;
+      }
+    };
   
-    switch (type.toLowerCase()) {
-      case 'linkedin': return <FaLinkedin color="#0077B5" size={24} />;
-      case 'instagram': return <FaInstagram color="#E1306C" size={24} />;
-      case 'whatsapp': return <FaWhatsapp color="#25D366" size={24} />;
-      case 'email': return <FaEnvelope color="#D44638" size={24} />;
-      case 'call': return <FaPhone color="#4285F4" size={24} />;
-      default: return <span>{type}</span>; // Display unknown types as text
+    if (Array.isArray(type)) {
+      return type.map((t, index) => <span key={index} style={{marginRight: '5px'}}>{renderIcon(t)}</span>);
     }
+    return renderIcon(type);
   };
 
   const handleDownloadPDF = () => {
@@ -277,7 +288,7 @@ const handleTemplateSelect = (template) => {
     doc.save("campaigns_report.pdf");
   };
 
-
+  console.log('Campaign types:', filteredCampaigns.map(c => c.type));
   return (
    <div>
      <div className="campaign_nav">
@@ -448,9 +459,9 @@ const handleTemplateSelect = (template) => {
               </td>
               <td className="campaign_data_owner">{campaign.campaign_owner}</td>
               <td className="cont_email">
-  {getChannelIcon(campaign.type)}
-  <span className="sr-only">{String(campaign.type)}</span>
-</td>
+      {getChannelIcon(campaign.type)}
+      <span className="sr-only">{campaign.type.join(', ')}</span>
+    </td>
               <td className="campaign_data_cost">{campaign.start_date}</td>
               <td className="campaign_data_status">{campaign.status}</td>
               <td className='campaign_data_revenue'>{campaign.expected_revenue}</td>
