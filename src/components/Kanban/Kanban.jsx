@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./style.css";
 import axios from "axios";
@@ -8,7 +8,9 @@ import axiosInstance from "../../api.jsx";
 import { Delete } from "@mui/icons-material";
 import { Modal } from '@mui/material';
 import { AiOutlineRobot } from "react-icons/ai"; 
-
+import { debounce } from "lodash";
+import { AiCacheContext } from './AiCacheContext';
+import { ForceGraph2D } from 'react-force-graph';
 
 const getTenantIdFromUrl = () => {
   const pathArray = window.location.pathname.split('/');
@@ -32,6 +34,67 @@ function Kanban({ leadCountsData }) {
   const [newStageTitle, setNewStageTitle] = useState('');
   const [popupOpen, setPopupOpen] = useState(false);
 const [popupContent, setPopupContent] = useState('');
+const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
+  // const [aiCache, setAiCache] = useState({});
+  const { aiCache, updateCache } = useContext(AiCacheContext);
+  const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const graphOptions = {
+    layout: {
+      hierarchical: false
+    },
+    edges: {
+      color: "#000000"
+    },
+    nodes: {
+      color: {
+        border: '#6D31ED',
+        background: '#FFFFFF',
+        highlight: {
+          border: '#5b2ac7',
+          background: '#F3F0FF'
+        }
+      },
+      font: {
+        color: '#333333'
+      }
+    },
+    height: "400px",
+    physics: {
+      enabled: true,
+      barnesHut: {
+        gravitationalConstant: -2000,
+        centralGravity: 0.3,
+        springLength: 95,
+        springConstant: 0.04,
+        damping: 0.09,
+        avoidOverlap: 0.1
+      },
+    },
+    interaction: {
+      hover: true,
+      zoomView: true,
+    },
+  };
+
+  const loadingMessages = [
+    "Analyzing data patterns...",
+    "Generating insightful suggestions...",
+    "Crunching numbers at light speed...",
+    "Unlocking hidden potential in your leads...",
+    "Preparing to blow your mind with AI magic..."
+  ];
+
+
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setLoadingMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const handleDoubleClick = (columnId, currentTitle) => {
     setEditingColumnId(columnId);
@@ -282,35 +345,107 @@ const [popupContent, setPopupContent] = useState('');
       setColumns(newColumns);
     }
   };
-  const handleAiButtonClick = async (card) => {
-    const prompt = `Show me all leads`;
 
 
+  // const debouncedAiRequest = useCallback(
+  //   debounce(async (card, tenantId) => {
+  //     const cacheKey = `${card.id}-${card.status}`;
+  //     if (aiCache[cacheKey]) {
+  //       showLeadPopup(aiCache[cacheKey]);
+  //       setIsLoading(false);
+  //       return;
+  //     }
+
+  //     const prompt = `answer the biggest node`;
+  //     try {
+  //       const response = await axiosInstance.post(`/query/`, { 
+  //         prompt, 
+  //         tenant: tenantId
+  //       });
+  //       const result = response.data;
+  //       updateCache(cacheKey, result);
+  //       showLeadPopup(result);
+  //     } catch (error) {
+  //       console.error('Error fetching AI suggestion:', error);
+  //       showLeadPopup("An error occurred while fetching AI suggestions. Please try again.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }, 300),
+  //   [aiCache, updateCache]
+  // );
+
+
+  const handleAiButtonClick = (card) => {
+    setIsLoading(true);
+    setPopupOpen(true);
+    setLoadingMessage(loadingMessages[0]);
+    debouncedAiRequest(card, tenantId);
+  };
   
-   
+  const debouncedAiRequest = useCallback(
+    debounce(async (card, tenantId) => {
+      const cacheKey = `${card.id}-${card.status}`;
+      if (aiCache[cacheKey]) {
+        processAiResponse(aiCache[cacheKey]);
+        setIsLoading(false);
+        return;
+      }
   
-    try {
-      const response = await axiosInstance.post(`/query/`, { 
-        prompt, 
-        tenant: tenantId
-      });
-      const result = response.data;
-      // Show result in a popup
+      const prompt = `all the contact persons`;
+      try {
+        const response = await axiosInstance.post(`https://8twdg37p-8000.inc1.devtunnels.ms/query/`, { 
+          prompt, 
+          tenant: tenantId
+        });
+        const result = response.data;
+        updateCache(cacheKey, result);
+        processAiResponse(result);
+      } catch (error) {
+        console.error('Error fetching AI suggestion:', error);
+        processAiResponse("An error occurred while fetching AI suggestions. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300),
+    [aiCache, updateCache]
+  );
+  
+  const processAiResponse = (result) => {
+    if (typeof result === 'string') {
+      // If the result is a string, it's likely an error message
       showLeadPopup(result);
-    } catch (error) {
-      console.error('Error fetching AI suggestion:', error);
+      setGraphData({ nodes: [], links: [] });
+      return;
     }
+  
+    showLeadPopup(result.message || "No message available");
+  
+    const nodes = Array.isArray(result.nodes) ? result.nodes : [];
+    const links = Array.isArray(result.links) ? result.links : [];
+  
+    setGraphData({
+      nodes: nodes.map(node => ({
+        id: node.id || `node-${Math.random()}`,
+        name: node.name || "Unnamed Node"
+      })),
+      links: links.map(link => ({
+        source: link.source || "",
+        target: link.target || ""
+      }))
+    });
   };
   
 
   const showLeadPopup = (content) => {
     setPopupContent(content);
-    setPopupOpen(true);
   };
-  
+
   const handleClosePopup = () => {
     setPopupOpen(false);
+    setPopupContent('');
   };
+
   const mapStatusToBackend = (frontendStatus) => {
     switch (frontendStatus) {
       case 'Assigned':
@@ -407,11 +542,45 @@ const [popupContent, setPopupContent] = useState('');
   onClose={handleClosePopup}
   aria-labelledby="ai-suggestion-popup"
   aria-describedby="ai-suggestion-description"
-  className="futuristic-popup"
+  className="modal"
 >
-  <div className="popup-content">
-    <h2>AI Suggestion</h2>
-    <p>{popupContent}</p>
+  <div className="ai-popup-content">
+    <h2>AI Insights</h2>
+    <div className="ai-popup-container">
+      <div className="ai-graph-container">
+      <ForceGraph2D
+  graphData={graphData.nodes.length > 0 ? graphData : { nodes: [{ id: 'dummy' }], links: [] }}
+  nodeLabel="name"
+  nodeAutoColorBy="id"
+  linkDirectionalParticles={2}
+  linkDirectionalParticleSpeed={0.001}
+  d3VelocityDecay={0.3}
+/>
+      </div>
+      <div className="ai-insights-text">
+        {isLoading ? (
+          <>
+            <div className="ai-loader"></div>
+            <p className="ai-loading-message">{loadingMessage}</p>
+          </>
+        ) : (
+          <div className="ai-insights-content">
+            {Array.isArray(popupContent) ? (
+              popupContent.map((insight, index) => (
+                <div key={index} className="ai-insight-item">
+                  <h3>Insight {index + 1}</h3>
+                  <p>{insight}</p>
+                </div>
+              ))
+            ) : (
+              <div className="ai-insight-item">
+                <p>{popupContent}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
     <button onClick={handleClosePopup}>Close</button>
   </div>
 </Modal>

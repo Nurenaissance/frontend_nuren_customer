@@ -96,7 +96,9 @@ import CoinStatsPage from '../pages/CoinStats/CoinStatsPage';
 import IframePage from "../pages/documenteditpage/pdfeditor.jsx";
 import ImageEditorComponent from "../pages/documenteditpage/imageeditor.jsx";
 import EmailList from "../pages/Email/Email-List.jsx";
+import DocumentRag from "../pages/documenteditpage/documentRAG.jsx";
 // import EmailProviders from "../pages/Email/Email-provider.jsx";
+import Htmleditor from "../pages/documenteditpage/htmlcreator.jsx";
 
 
 const getTenantIdFromUrl = () => {
@@ -111,8 +113,10 @@ import PdfUploader from "../pages/PDF";
 import DnDFlow from "../pages/ReactFlow/Dnd.jsx";
 import EmailAppa from "../pages/Email/Emailss.jsx";
 import GmailCallback from "../pages/Email/GmailCallback.jsx";
+import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
+import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
 
 // import CustomModelForm from "../pages/CustomModel/customform";
 
@@ -339,8 +343,10 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/loyaltyform" element ={<Loyalityform/>}/>
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
-          
-          <Route path="/:tenantId/flow/:templateId?" element={<DnDFlow />} />
+          <Route path=":tenant_id/email-tracking" element ={<EmailTrackingInfo/>}/>
+
+          <Route path="/:tenantId/flow" element={<FlowBuilder />} />
+          <Route path="/:tenantId/floww/:templateId?" element={<DnDFlow />} />
           {/* <Route path=":tenant_id/compose" element={<GmailCallback />} /> */}
           <Route path=":tenant_id/compose" element={<EmailComponent/>}/>
           <Route path=":tenant_id/bulk-import" element={<BulkImport/>}/>
@@ -390,6 +396,9 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/email_setup" element={<Appa/>}/>
           <Route path=":tenant_id/InstagramMedia"  element= {<InstagramMedia/>}/>
           <Route path=":tenant_id/calllogs"  element= {<CallLogs/>}/>
+          <Route path=":tenant_id/chat2doc"  element= {<DocumentRag/>}/>
+          <Route path=":tenant_id/emaileditor"  element= {<Htmleditor/>}/>
+
         </>
       )}
 

@@ -1,8 +1,19 @@
 .text-heading{
     margin-bottom: 1rem;
-    line-height: 5rem;
-    font-weight: bold;
+    line-height: 4rem;
+    text-align: center;
+    font-weight: 600;
+
 }
 .recharts-legend-wrapper{
     display: none;
+}
+
+.linechart-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 3rem;
+
 }

@@ -259,20 +259,219 @@ h3{
   flex-basis: 100%;
   height: 0;
 }
-.ai-button {
-  background: #6D31EDFF; 
-  color: #fff;
-  border: none;
-  border-radius: 70%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-left: 10px;
+
+
+.ai-button{
+background-color: #6D31ED;
+color: white;
+padding: 3px;
+margin-left: px;
+border-radius: 30px;
 }
 
-.ai-button:hover {
-  background-color: #5C27C3; /* Darker shade on hover */
+.ai-graph-container {
+  width: 50%;
+  height: 400px;
+}
+
+.ai-popup-container {
+  display: flex;
+  gap: 20px;
+}
+
+.ai-insights-text {
+  width: 50%;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+
+.ai-popup-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(109, 49, 237, 0.2);
+  padding: 40px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  color: #333;
+  border: 2px solid #6D31ED;
+  animation: fadeIn 0.4s ease-out;
+  overflow-y: auto;
+  width: 95%;
+  max-width: 1200px;
+}
+
+.ai-popup-container {
+  display: flex;
+  gap: 20px;
+}
+
+.ai-graph-container {
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ai-graph-container:hover {
+  box-shadow: 0 6px 12px rgba(109, 49, 237, 0.2);
+}
+
+.ai-insights-text {
+  flex: 1;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+@keyframes nodePopIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes edgeDrawIn {
+  0% { stroke-dashoffset: 100%; }
+  100% { stroke-dashoffset: 0%; }
+}
+
+/* Apply animations to graph elements */
+.vis-network .vis-node {
+  animation: nodePopIn 0.5s ease-out;
+}
+
+.vis-network .vis-edge {
+  stroke-dasharray: 10;
+  animation: edgeDrawIn 1s ease-out forwards;
+}
+
+.ai-popup-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ai-popup-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.ai-popup-content::-webkit-scrollbar-thumb {
+  background: #6D31ED;
+  border-radius: 10px;
+}
+
+.ai-popup-content::-webkit-scrollbar-thumb:hover {
+  background: #5b2ac7;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -48%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.ai-popup-content h2 {
+  margin-top: 0;
+  color: #6D31ED;
+  font-size: 32px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+
+.ai-popup-content p {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.8;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+.ai-popup-content button {
+  background: linear-gradient(45deg, #6D31ED, #8B5CF6);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 30px auto 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ai-popup-content button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(109, 49, 237, 0.3);
+  background: linear-gradient(45deg, #5b2ac7, #7c3aed);
+}
+
+.ai-loader {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #6D31ED;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1.2s linear infinite;
+  margin: 30px auto;
+  display: block;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.ai-loading-message {
+  text-align: center;
+  font-style: italic;
+  color: #6D31ED;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.ai-insights-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ai-insight-item {
+  background: #f8f8f8;
+  border-left: 4px solid #6D31ED;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ai-insight-item h3 {
+  color: #6D31ED;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.ai-insight-item p {
+  margin: 0;
+  color: #555;
+}
+
+
+.ai-graph-container {
+  width: 400px;
+  height: 300px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
 }

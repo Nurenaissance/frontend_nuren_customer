@@ -6,6 +6,7 @@ import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 
 import { Dropdown,Card, ListGroup } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
+import { FaLinkedin, FaInstagram, FaWhatsapp, FaEnvelope, FaPhone } from 'react-icons/fa';
 
 
 import { Sidebar } from "../../components/Sidebar";
@@ -18,6 +19,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from '../../api';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+// import DraftTable from './DraftsTable.jsx';
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -36,13 +38,18 @@ const Campaign = () => {
   const [flows, setFlows] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [drafts, setDrafts] = useState([]);
   const [campaignStats, setCampaignStats] = useState({
     total_campaigns: 0,
     total_revenue: "0.00",
     total_actual_cost: "0.00"
 });
-
-
+const [selectedChannels, setSelectedChannels] = useState([]);
+const [showLinkedInTable, setShowLinkedInTable] = useState(false);
+const [showInstagramTable, setShowInstagramTable] = useState(false);
+const [showWhatsAppTable, setShowWhatsAppTable] = useState(false);
+const [showDraftsTable, setShowDraftsTable] = useState(false);
   const [newCampaign, setNewCampaign] = useState({
     id:"",
     campaign_name: "",
@@ -60,6 +67,7 @@ const Campaign = () => {
   });
 
   const [filterType, setFilterType] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState([]);
 
   useEffect(() => {
     const applyFilter = () => {
@@ -103,60 +111,36 @@ const Campaign = () => {
 }, []);
 
 
-  const fetchTemplates = async () => {
-    try {
-      const response = await axiosInstance.get('/node-templates/');
-      setTemplates(response.data);
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-    }
-  };
+const fetchTemplates = async () => {
+  try {
+    const response = await axiosInstance.get('/node-templates/');
+    setTemplates(response.data);
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+  }
+};
 
 
+const fetchCampaigns = async () => {
+  try {
+    const response = await axiosInstance.get('/campaign/');
+    const data = await response.data;
 
-  const loadTemplate = (template) => {
-    if (template && template.node_data) {
-      const { nodes: templateNodes, adjacencyList } = template.node_data;
-      
-      // Transform nodes to ReactFlow format
-      const transformedNodes = templateNodes.map(node => ({
-        id: node.id.toString(),
-        type: node.type,
-        data: node.data,
-        position: node.position || { x: 0, y: 0 }, // You might need to add position data to your backend
-      }));
-  
-      // Transform adjacencyList to edges
-      const transformedEdges = adjacencyList.flatMap((targets, sourceIndex) => 
-        targets.map(target => ({
-          id: `e${sourceIndex}-${target}`,
-          source: sourceIndex.toString(),
-          target: target.toString(),
-        }))
-      );
-  
-      // You'll need to decide how to use these transformed nodes and edges
-      // For now, we'll just log them
-      console.log('Transformed Nodes:', transformedNodes);
-      console.log('Transformed Edges:', transformedEdges);
-  
-      setSelectedTemplate(template);
-    }
-  };
+    const cleanedData = data.map(campaign => ({
+      ...campaign,
+      type: Array.isArray(campaign.type) 
+        ? campaign.type.map(t => t.toLowerCase()) 
+        : [campaign.type.toLowerCase()]
+    }));
+
+    setCampaigns(cleanedData);
+    setFilteredCampaigns(cleanedData);
+  } catch (error) {
+    console.log("Error fetching campaigns:", error);
+  }
+};
 
 
-
-  const fetchCampaigns = async () => {
-    try {
-      const response = await axiosInstance.get('/campaign/');
-      const data = await response.data;
-     
-      setCampaigns(data);
-      setFilteredCampaigns(data);
-    } catch (error) {
-      console.log("Error fetching campaigns:", error);
-    }
-  };
   const handleRecords3 = (event) => {
     console.log("Records per page: ", event.target.value);
   };
@@ -173,30 +157,181 @@ const Campaign = () => {
     fetchFlows();
   }, []);
 
-  const fetchFlows = async (templateIds) => {
-  try {
-    const promises = templateIds.map(id => 
-      axiosInstance.get(`/node-templates/${id}/`)
-    );
-    const responses = await Promise.all(promises);
-    const data = responses.map(response => response.data);
-    setFlows(data);
-  } catch (error) {
-    console.log("Error fetching flows:", error);
-  }
-};
+  const fetchFlows = async () => {
+    try {
+      const response = await axiosInstance.get('/node-templates/');
+      setFlows(response.data);
+    } catch (error) {
+      console.log("Error fetching flows:", error);
+    }
+  };
 
 // Usage:
-fetchFlows([1, 2, 3]); // Replace with actual IDs
+// fetchFlows([]); // Replace with actual IDs
 
-  const handleFlowsButtonClick = () => {
-    setShowFlows(!showFlows);
+const handleFlowsButtonClick = () => {
+  setShowFlows(!showFlows);
+};
+
+const handleTemplateSelect = (template) => {
+  navigate(`/${tenantId}/flow`, { state: { template } });
+};
+
+
+  const handleDeleteFlow = async (templateId) => {
+    if (window.confirm("Are you sure you want to delete this flow?")) {
+      try {
+        await axiosInstance.delete(`/node-templates/${templateId}/`);
+        // Refresh the templates list after deletion
+        fetchTemplates();
+      } catch (error) {
+        console.error("Error deleting flow:", error);
+      }
+    }
   };
 
-  const handleTemplateSelect = (templateId) => {
-    console.log("Selected template ID:", templateId); // Add this log
-    navigate(`/${tenantId}/flow`, { state: { templateId } });
+  
+
+  const handleFilterSelect = (channel) => {
+    setSelectedFilters(prev => 
+      prev.includes(channel.toLowerCase())
+        ? prev.filter(c => c !== channel.toLowerCase())
+        : [...prev, channel.toLowerCase()]
+    );
   };
+  useEffect(() => {
+    const applyFilter = () => {
+      if (selectedFilters.length === 0) {
+        setFilteredCampaigns(campaign);
+      } else {
+        const filteredData = campaign.filter(camp => 
+          camp.type.some(type => 
+            selectedFilters.includes(type.toLowerCase())
+          )
+        );
+        setFilteredCampaigns(filteredData);
+      }
+    };
+    applyFilter();
+  }, [selectedFilters, campaign]);
+
+  const fetchDrafts = async () => {
+    try {
+      const response = await axiosInstance.get('/drafts/');
+      setDrafts(response.data);
+    } catch (error) {
+      console.error("Error fetching drafts:", error);
+    }
+  };
+
+  const handleChannelClick = (channel) => {
+    if (channel.toLowerCase() === 'instagram') {
+      setShowDraftsTable(!showDraftsTable);
+      if (!showDraftsTable) {
+        fetchDrafts();
+      }
+    } else {
+      setSelectedChannels([channel]);
+      fetchCampaigns();
+    }
+  };
+
+  const handleDeleteDraft = async (draftId) => {
+    try {
+      await axiosInstance.delete(`/drafts/${draftId}/`);
+      setDrafts(drafts.filter(draft => draft.id !== draftId));
+    } catch (error) {
+      console.error("Error deleting draft:", error);
+    }
+  };
+
+  const handleLoadDraft = (draft) => {
+    navigate(`/${tenantId}/instagrampost`, { state: { draftData: draft } });
+  };
+  
+  useEffect(() => {
+    const applyFilter = () => {
+      fetchCampaigns(); // Fetch new data after channel selection changes
+    };
+    applyFilter();
+  }, [selectedChannels]);
+
+
+  // const handleLoadDraft = async (draftId) => {
+  //   try {
+  //     const loadedDraft = await loadDraft(draftId);
+  //     if (!loadedDraft) {
+  //       throw new Error('Failed to load draft');
+  //     }
+  
+  //     // Navigate to InstagramPost page with draft data
+  //     navigate(`/${tenantId}/instagrampost`, { 
+  //       state: { 
+  //         draftData: loadedDraft 
+  //       } 
+  //     });
+  //   } catch (error) {
+  //     console.error('Error loading draft:', error);
+  //     alert('Error loading draft: ' + error.message);
+  //   }
+  // };
+
+
+  const getChannelIcon = (type) => {
+    const renderIcon = (singleType) => {
+      switch (singleType.toLowerCase()) {
+        case 'linkedin':
+          return <LinkedInIcon style={{ color: "#0077B5" }} />;
+        case 'instagram':
+          return <InstagramIcon style={{ color: "#E1306C" }} />;
+        case 'whatsapp':
+          return <WhatsAppIcon style={{ color: "#25D366" }} />;
+        case 'email':
+          return <EmailIcon style={{ color: "#D44638" }} />;
+        case 'call':
+          return <CallIcon style={{ color: "#4285F4" }} />;
+        default:
+          return <ChatBubbleOutlineIcon style={{ color: "#808080" }} />;
+      }
+    };
+  
+    if (Array.isArray(type)) {
+      return type.map((t, index) => <span key={index} style={{marginRight: '5px'}}>{renderIcon(t)}</span>);
+    }
+    return renderIcon(type);
+  };
+
+  // const DraftsTable = ({ drafts, onLoadDraft, onDeleteDraft }) => (
+  //   <table className="drafts-table">
+  //     <thead>
+  //       <tr>
+  //         <th>Caption</th>
+  //         <th>Created On</th>
+  //         <th>Type</th>
+  //         <th>Scheduled</th>
+  //         <th>Actions</th>
+  //       </tr>
+  //     </thead>
+  //     <tbody>
+  //       {drafts.map((draft) => (
+  //         <tr key={draft.id}>
+  //           <td>{draft.caption.substring(0, 50)}...</td>
+  //           <td>{new Date(draft.timestamp).toLocaleString()}</td>
+  //           <td>{draft.is_story ? 'Story' : draft.is_reel ? 'Reel' : 'Post'}</td>
+  //           <td>
+  //             {draft.scheduled_date
+  //               ? `${new Date(draft.scheduled_date).toLocaleDateString()} at ${draft.scheduled_time}`
+  //               : 'Not scheduled'}
+  //           </td>
+  //           <td>
+  //             <button onClick={() => onLoadDraft(draft.id)}>Load Draft</button>
+  //             <button onClick={() => onDeleteDraft(draft.id)}>Delete Draft</button>
+  //           </td>
+  //         </tr>
+  //       ))}
+  //     </tbody>
+  //   </table>
+  // );
 
   const handleDownloadPDF = () => {
     const unit = "pt";
@@ -238,23 +373,7 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
     doc.save("campaigns_report.pdf");
   };
 
-  const handleInstagramButtonClick = () => {
-    navigate(`/${tenantId}/instagrampost`)
-  };
-  const handleWhatsappButtonClick = () => {
-    navigate(`/${tenantId}/chatbot`)
-  };
-  const handleEmailClick = () => {
-    navigate(`/${tenantId}/email-provider`)
-  };
-  const handleLinkedInClick = () => {
-    navigate(`/${tenantId}/linkedinpost`)
-  };
-  const handleFlowButtonClick = () => {
-    navigate(`/${tenantId}/flow`)
-  };
-
-
+  console.log('Campaign types:', filteredCampaigns.map(c => c.type));
   return (
    <div>
      <div className="campaign_nav">
@@ -311,8 +430,6 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
     </button>
   )}
 </div>
-
-    
       </div>
    </div>
 
@@ -340,39 +457,79 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
 
           </div>
         <div className='campaign_filter_btn'>
-               <div className='social_btn'> 
-                    <button className="campanign_btn1"   onClick={handleLinkedInClick}>
-                      <LinkedInIcon />
-                    </button>
-                    <button  className="campaign_btn2"    onClick={handleInstagramButtonClick}>
-                      <InstagramIcon />
-                    </button>
-                    <button  className="campaign_btn3"      onClick={handleWhatsappButtonClick}>
-                      <WhatsAppIcon />
-                    </button>
-                    <button   className="campaign_btn4"       onClick={handleEmailClick}>
-                      <EmailIcon />
-                    </button>
-                    <button   className="campaign_btn5"       onClick={handleEmailClick}>
-                      <CallIcon />
-                    </button>
-              </div>
+        <div className='social_btn'> 
+  {['linkedin', 'instagram', 'whatsapp', 'email', 'call'].map(channel => (
+    <button 
+      key={channel}
+      className={`campaign_btn ${selectedChannels.includes(channel) ? 'active' : ''}`} 
+      onClick={() => handleChannelClick(channel)}
+    >
+      {getChannelIcon(channel)}
+    </button>
+  ))}
+</div>
               <div className="flow-button">
   <button className="campaign_flow_btn" onClick={handleFlowsButtonClick}>
     {showFlows ? "Show Campaigns" : "Show Flows"}
   </button>
 </div>
-              <div className='filter_campaign'>
-              <select className="view-mode-select_campaign" onChange={handleRecords3}>
-                    <option value="">Filter by:Type</option>
-                    <option value="1">Date</option>
-                    <option value="2">Status</option>
-                    <option value="3">Value</option>
+<div className='filter_campaign'>
+  <Dropdown>
+    <Dropdown.Toggle variant="success" id="dropdown-basic">
+      Filter by Channel
+    </Dropdown.Toggle>
 
-                  </select>
-              </div>
+    <Dropdown.Menu>
+      {['LinkedIn', 'Instagram', 'WhatsApp', 'Email', 'Call'].map((channel) => (
+        <Dropdown.Item  key={channel} as="button" onClick={() => handleFilterSelect(channel)}>
+          <input
+            type="checkbox"
+            checked={selectedFilters.includes(channel.toLowerCase())}
+            onChange={() => {}}
+          />
+          {' '}
+          {channel}
+        </Dropdown.Item>
+      ))}
+    </Dropdown.Menu>
+  </Dropdown>
+</div>
         </div>
       <div>
+      {showDraftsTable ? (
+  <div className="drafts-table-container">
+    <h2>Instagram Drafts</h2>
+    <table className="drafts-table">
+      <thead>
+        <tr>
+          <th>Caption</th>
+          <th>Created On</th>
+          <th>Type</th>
+          <th>Scheduled</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {drafts.map((draft) => (
+          <tr key={draft.id}>
+            <td>{draft.caption.substring(0, 50)}...</td>
+            <td>{new Date(draft.timestamp).toLocaleString()}</td>
+            <td>{draft.is_story ? 'Story' : draft.is_reel ? 'Reel' : 'Post'}</td>
+            <td>
+              {draft.scheduled_date
+                ? `${new Date(draft.scheduled_date).toLocaleDateString()} at ${draft.scheduled_time}`
+                : 'Not scheduled'}
+            </td>
+            <td>
+              <button onClick={() => handleLoadDraft(draft)}>Load</button>
+              <button onClick={() => handleDeleteDraft(draft.id)}>Delete</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+) : (
       <div className="table_camp">
   <table className="campaign_table">
     <thead>
@@ -399,20 +556,28 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
       </tr>
     </thead>
     <tbody>
-      {showFlows
-        ? templates.map((template) => (
-            <tr key={template.id}>
-              <td>{template.name}</td>
-              <td>{template.description}</td>
-              <td>{template.category}</td>
-              <td>{template.createdBy}</td>
-              <td>{new Date(template.date_created).toLocaleDateString()}</td>
-              <td>
-                <button style={{border:"1px red solid", padding:'10px', borderRadius:'8px'}} onClick={() => handleTemplateSelect(template.id)}>
-                  Open Flow
-                </button>
-              </td>
-            </tr>
+      {showFlows ? flows.map((flow) => (
+            <tr key={flow.id}>
+            <td>{flow.name}</td>
+            <td>{flow.description}</td>
+            <td>{flow.category}</td>
+            <td>{flow.createdBy}</td>
+            <td>{new Date(flow.date_created).toLocaleDateString()}</td>
+            <td>
+              <button 
+                style={{border:"1px blue solid", padding:'10px', borderRadius:'8px', marginRight: '10px'}} 
+                onClick={() => handleTemplateSelect(flow)}
+              >
+                Open Flow
+              </button>
+              <button 
+                style={{border:"1px red solid", padding:'10px', borderRadius:'8px'}} 
+                onClick={() => handleDeleteFlow(flow.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
           ))
         : filteredCampaigns.map((campaign) => (
             <tr className="campaign_table_row" key={campaign.id}>
@@ -422,7 +587,10 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
                 </Link>
               </td>
               <td className="campaign_data_owner">{campaign.campaign_owner}</td>
-              <td className="cont_email">{campaign.type}</td>
+              <td className="cont_email">
+      {getChannelIcon(campaign.type)}
+      <span className="sr-only">{campaign.type.join(', ')}</span>
+    </td>
               <td className="campaign_data_cost">{campaign.start_date}</td>
               <td className="campaign_data_status">{campaign.status}</td>
               <td className='campaign_data_revenue'>{campaign.expected_revenue}</td>
@@ -431,6 +599,8 @@ fetchFlows([1, 2, 3]); // Replace with actual IDs
     </tbody>
   </table>
 </div>
+)}
+
         </div>
       </div>
     </div>

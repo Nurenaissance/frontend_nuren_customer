@@ -17,6 +17,11 @@ import NavbarPopup from './NavbarPopup.jsx';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { ref, uploadBytes, getDownloadURL,listAll } from "firebase/storage";
 import { storage, firestore } from '../../pages/Userpage/profilefirebase.jsx';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import axios from "axios";
+
+
 
 const socket = io('https://whatsappbotserver.azurewebsites.net/');
 
@@ -44,6 +49,11 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
   const [aiAnalysisData, setAiAnalysisData] = useState(null);
   const [coinCount, setCoinCount] = useState(0);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
+  // const [showAddDropdown, setShowAddDropdown] = useState(false);
+  const [showDocumentUpload, setShowDocumentUpload] = useState(false);
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [selectedDocumentType, setSelectedDocumentType] = useState('');
+  const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -51,6 +61,17 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     to_time: '',
     related_to: '',
   });
+
+  const documentTypes = [
+    'Lead',
+    'Account',
+    'Contact',
+    'Opportunity',
+    'Task',
+    'Interaction',
+    'Campaign',
+    'I don\'t know'
+  ];
 
   const [callFormData, setCallFormData] = useState({
     call_to: '',
@@ -74,6 +95,46 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
       [e.target.name]: e.target.value,
     });
   };
+
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleDocumentTypeChange = (e) => {
+    setSelectedDocumentType(e.target.value);
+  };
+
+
+  const handleUpload = async () => {
+    if (!file || !selectedDocumentType) {
+      alert('Please select a file and document type');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('model_name', selectedDocumentType);
+
+    try {
+      const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/upload/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Upload successful:', response.data);
+      alert('Document uploaded successfully!');
+      setFile(null);
+      setSelectedDocumentType('');
+      setShowDocumentUpload(false);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed. Please try again.');
+    }
+  };
+
+
+
 
   //const userId = 3;
 
@@ -118,6 +179,18 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
 
   const handleAddClick = () => {
     setShowAddDropdown(!showAddDropdown);
+    setShowDocumentUpload(false);
+    setShowManualEntry(false);
+  };
+
+  const handleDocumentUploadClick = () => {
+    setShowDocumentUpload(!showDocumentUpload);
+    setShowManualEntry(false);
+  };
+
+  const handleManualEntryClick = () => {
+    setShowManualEntry(!showManualEntry);
+    setShowDocumentUpload(false);
   };
 
   const handleMeetingClick = () => {
@@ -281,40 +354,66 @@ return (
         )}
       </div>
       
-      <div className='add-icon-container' onClick={handleAddClick}>
-        <AddIcon className='navbar-icon' />
+      <div className='add-icon-container'>
+        <AddIcon className='navbar-icon' onClick={handleAddClick} />
         {showAddDropdown && (
           <div className='add-dropdown'>
-            <div className='dropdown-item' onClick={handleCallClick}>
-              <button>Call</button>
+            <div className='dropdown-option' onClick={handleDocumentUploadClick}>
+              <UploadFileIcon />
+              <span>Document Upload</span>
             </div>
-            <div className='dropdown-item' onClick={handleMeetingClick}>
-              <button>Meeting</button>
+            <div className='dropdown-option' onClick={handleManualEntryClick}>
+              <EditNoteIcon />
+              <span>Manual Entry</span>
             </div>
-            <div className='dropdown-item'>
+          </div>
+        )}
+         {showDocumentUpload && (
+        <div className='document-upload-dropdown'>
+          <h3>Upload Document</h3>
+          <input type="file" onChange={handleFileChange} />
+          <select 
+            value={selectedDocumentType} 
+            onChange={handleDocumentTypeChange}
+            className="document-type-dropdown"
+          >
+            <option className="doc-typ-drop" value="">Select document type</option>
+            {documentTypes.map((type, index) => (
+              <option key={index} value={type}>{type}</option>
+            ))}
+          </select>
+          <button className="upload-btn" onClick={handleUpload}>Upload</button>
+        </div>
+      )}
+        {showManualEntry && (
+          <div className='manual-entry-dropdown'>
+            <h3>Manual Entry</h3>
+            <div className='entry-option' onClick={handleCallClick}>Call</div>
+            <div className='entry-option' onClick={handleMeetingClick}>Meeting</div>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/addlead`}>Lead</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/addaccount`}>Account</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/addcontact`}>Contact</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/opportunity`}>Opportunity</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/addtask`}>Tasks</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/addinteraction`}>Interaction</Link>
             </div>
-            <div className='dropdown-item'>
+            <div className='entry-option'>
               <Link to={`../${tenantId}/campaignform`}>Campaign</Link>
             </div>
           </div>
         )}
-        </div>
+      </div>
         
         <div className="coin-container" onClick={handleCoinClick}>
         <div className="coin-shine"></div>

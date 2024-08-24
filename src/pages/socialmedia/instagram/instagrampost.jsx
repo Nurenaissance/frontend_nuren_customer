@@ -31,6 +31,7 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axiosInstance from '../../../api';
 import TopNavbar from '../../TopNavbar/TopNavbar';
+import uploadToBlob from '../../../azureUpload';
 
 
 
@@ -92,6 +93,7 @@ const InstagramPost = ({ uploadedImageUrl }) => {
   const [draftImageUrl, setDraftImageUrl] = useState('');
   const [showDraftsPopup, setShowDraftsPopup] = useState(false);
   const [coinBalance, setCoinBalance] = useState(0);
+  const draftData = location.state?.draftData;
   const categories = [
     { name: 'Gen Z', icon: <EmojiEmotionsIcon /> },
     { name: 'Professional', icon: <WorkIcon /> },
@@ -193,54 +195,76 @@ const userId = 3;
   };
 
 
-
-  const handleSaveDraft = async () => {
-    await fetchWalletBalance();
-    console.log("Current balance before saving draft:", coinBalance);
-    if (parseFloat(coinBalance) < 20) {
-      alert('Insufficient balance. You need at least 20 coins to post.');
-      return;
+  useEffect(() => {
+    if (draftData) {
+      setCaption(draftData.caption || '');
+      setIsStory(draftData.is_story || false);
+      setIsReel(draftData.is_reel || false);
+      setSelectedDate(draftData.scheduled_date ? new Date(draftData.scheduled_date) : new Date());
+      setSelectedTime(draftData.scheduled_time || '12:00');
+      
+      // Handle image URLs
+      if (draftData.image_url && draftData.image_url.length > 0) {
+        Promise.all(draftData.image_url.map(url => 
+          fetch(url).then(res => res.blob()).then(blob => 
+            new File([blob], `draftImage_${Date.now()}.jpg`, { type: 'image/jpeg' })
+          )
+        )).then(fileArray => {
+          setFiles(fileArray);
+        });
+      }
     }
+  }, [draftData]);
 
-  const deductionSuccessful = await deductCoins();
-  if (!deductionSuccessful) {
-    alert('Failed to deduct coins. Please try again.');
-    return;
-  }
 
-  try {
-      console.log('Draft saving started');
+
+  // const handleSaveDraft = async () => {
+  //   await fetchWalletBalance();
+  //   console.log("Current balance before saving draft:", coinBalance);
+  //   if (parseFloat(coinBalance) < 20) {
+  //     alert('Insufficient balance. You need at least 20 coins to post.');
+  //     return;
+  //   }
   
-      // Step 1: Upload files to Firebase
-      const uploadPromises = files.map(file => {
-        console.log('Uploading file for draft:', file.name);
-        return uploadFileToFirebase(file);
-      });
+  //   const deductionSuccessful = await deductCoins();
+  //   if (!deductionSuccessful) {
+  //     alert('Failed to deduct coins. Please try again.');
+  //     return;
+  //   }
   
-      const fileURLs = await Promise.all(uploadPromises);
-      console.log('Uploaded file URLs for draft:', fileURLs);
+  //   try {
+  //     console.log('Draft saving started');
   
-      const draftData = {
-        image_url: fileURLs, // Send the array of image URLs
-        caption: caption,
-        access_token: "enter axis token",
-        timestamp: new Date().toISOString(),
-        isStory: isStory,
-        isReel: isReel,
-        scheduledDate: selectedDate.toISOString(),
-        scheduledTime: selectedTime,
-      };
+  //     // Step 1: Upload files to Azure
+  //     const uploadPromises = files.map(file => {
+  //       console.log('Uploading file for draft:', file.name);
+  //       return uploadFileToAzure(file);
+  //     });
   
-      console.log('Sending draft data:', draftData);
-      const savedDraft = await saveDraft(draftData);
-      alert('Draft saved successfully!');
-      setDrafts([...drafts, savedDraft]);
-    } catch (error) {
-      console.error('Error saving draft:', error);
-      console.error('Error response:', error.response?.data);
-      alert('Error saving draft');
-    }
-  };
+  //     const fileURLs = await Promise.all(uploadPromises);
+  //     console.log('Uploaded file URLs for draft:', fileURLs);
+  
+  //     const draftData = {
+  //       image_url: fileURLs,
+  //       caption: caption,
+  //       access_token: "enter axis token",
+  //       timestamp: new Date().toISOString(),
+  //       isStory: isStory,
+  //       isReel: isReel,
+  //       scheduledDate: selectedDate.toISOString(),
+  //       scheduledTime: selectedTime,
+  //     };
+  
+  //     console.log('Sending draft data:', draftData);
+  //     const savedDraft = await saveDraft(draftData);
+  //     alert('Draft saved successfully!');
+  //     setDrafts([...drafts, savedDraft]);
+  //   } catch (error) {
+  //     console.error('Error saving draft:', error);
+  //     console.error('Error response:', error.response?.data);
+  //     alert('Error saving draft');
+  //   }
+  // };
 
 
   const handleFetchDrafts = async () => {
@@ -254,51 +278,46 @@ const userId = 3;
     }
   };
 
-const handleLoadDraft = async (draftId) => {
-  try {
-    const loadedDraft = await loadDraft(draftId);
-    if (!loadedDraft) {
-      throw new Error('Failed to load draft');
-    }
-
-    setCaption(loadedDraft.caption || '');
-    setIsStory(loadedDraft.is_story || false);
-    setIsReel(loadedDraft.is_reel || false);
-    setSelectedDate(loadedDraft.scheduled_date ? new Date(loadedDraft.scheduled_date) : new Date());
-    setSelectedTime(loadedDraft.scheduled_time || '12:00');
-
-    let loadedFiles = [];
-    if (loadedDraft.image_url && loadedDraft.image_url.length > 0) {
-      for (const url of loadedDraft.image_url) {
-        try {
-          const file = await urlToFile(url, `draftImage_${Date.now()}.jpg`, 'image/jpeg');
-          loadedFiles.push(file);
-        } catch (fileError) {
-          console.error('Error loading image file:', url, fileError);
-          // You can add the URL to a list of failed URLs if you want to inform the user
+  const handleLoadDraft = async (draftId) => {
+    try {
+      const loadedDraft = await loadDraft(draftId);
+      if (!loadedDraft) {
+        throw new Error('Failed to load draft');
+      }
+  
+      setCaption(loadedDraft.caption || '');
+      setIsStory(loadedDraft.is_story || false);
+      setIsReel(loadedDraft.is_reel || false);
+      setSelectedDate(loadedDraft.scheduled_date ? new Date(loadedDraft.scheduled_date) : new Date());
+      setSelectedTime(loadedDraft.scheduled_time || '12:00');
+  
+      // Handle image URLs
+      if (loadedDraft.image_url && loadedDraft.image_url.length > 0) {
+        const imageUrls = loadedDraft.image_url;
+        setFiles([]); // Clear existing files
+        
+        for (const url of imageUrls) {
+          try {
+            const file = await urlToFile(url, `draftImage_${Date.now()}.jpg`, 'image/jpeg');
+            setFiles(prevFiles => [...prevFiles, file]);
+          } catch (error) {
+            console.error('Error loading image:', error);
+          }
+        }
+        
+        // Set the first image as the main image if it exists
+        if (imageUrls.length > 0) {
+          setImageUrl(imageUrls[0]);
         }
       }
+  
+      setShowDraftsPopup(false);
+      setShowPreview(true); // Show the preview after loading the draft
+    } catch (error) {
+      console.error('Error loading draft:', error);
+      alert('Error loading draft: ' + error.message);
     }
-
-    setFiles(loadedFiles);
-    if (loadedFiles.length > 0) {
-      setImage(loadedFiles[0]); // Set the first successfully loaded image as the main image
-    }
-
-    setShowDraftsPopup(false);
-
-    if (loadedFiles.length === 0 && loadedDraft.image_url && loadedDraft.image_url.length > 0) {
-      alert('The draft data has been loaded, but no images could be retrieved. They may no longer be available.');
-    } else if (loadedFiles.length < (loadedDraft.image_url ? loadedDraft.image_url.length : 0)) {
-      alert('Some images from the draft could not be loaded. They may no longer be available.');
-    }
-
-  } catch (error) {
-    console.error('Error loading draft:', error);
-    alert('Error loading draft: ' + error.message);
-  }
-};
-
+  };
 
     
   
@@ -432,24 +451,13 @@ const handleLoadDraft = async (draftId) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    if (coinBalance < 20) {
-      alert('Insufficient balance. You need at least 20 coins to post.');
-      return;
-    }
-  
-    const deductionSuccessful = await deductCoins();
-    if (!deductionSuccessful) {
-      alert('Failed to deduct coins. Please try again.');
-      return;
-    }
-  
+    
     console.log('Form submission started');
   
-    // Step 1: Upload files to Firebase
+    // Step 1: Upload files to Azure
     const uploadPromises = files.map(file => {
       console.log('Uploading file:', file.name);
-      return uploadFileToFirebase(file);
+      return uploadFileToAzure(file);
     });
   
     try {
@@ -465,10 +473,8 @@ const handleLoadDraft = async (draftId) => {
           return;
         }
         if (file.type.startsWith('image/')) {
-          // Call endpoint for single image upload
           await postSingleImage(fileUrl, isStory);
         } else if (file.type.startsWith('video/')) {
-          // Call endpoint for single video upload
           await postSingleVideo(fileUrl, isReel);
         }
       }
@@ -480,7 +486,42 @@ const handleLoadDraft = async (draftId) => {
     } catch (error) {
       console.error('Error uploading files:', error);
       alert('Error uploading files');
-      return; // Exit early if there's an error
+      return;
+    }
+  };
+  
+  const handleSaveDraft = async () => {
+    try {
+      console.log('Draft saving started');
+  
+      // Step 1: Upload files to Azure
+      const uploadPromises = files.map(file => {
+        console.log('Uploading file for draft:', file.name);
+        return uploadFileToAzure(file);
+      });
+  
+      const fileURLs = await Promise.all(uploadPromises);
+      console.log('Uploaded file URLs for draft:', fileURLs);
+  
+      const draftData = {
+        image_url: fileURLs,
+        caption: caption,
+        access_token: "enter axis token",
+        timestamp: new Date().toISOString(),
+        isStory: isStory,
+        isReel: isReel,
+        scheduledDate: selectedDate.toISOString(),
+        scheduledTime: selectedTime,
+      };
+  
+      console.log('Sending draft data:', draftData);
+      const savedDraft = await saveDraft(draftData);
+      alert('Draft saved successfully!');
+      setDrafts([...drafts, savedDraft]);
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      console.error('Error response:', error.response?.data);
+      alert('Error saving draft');
     }
   };
   const postSingleVideo = async (videoUrl, isReel) => {
@@ -735,23 +776,15 @@ const handleLoadDraft = async (draftId) => {
     console.log('Scheduled Time:', selectedTime);
   };
 
-  const uploadFileToFirebase = async (file) => {
+  const uploadFileToAzure = async (file) => {
     try {
-      console.log("Starting file upload...");
-  
-      const storageRef = ref(storage, `images/${file.name}`);
-      console.log("Storage reference created:", storageRef);
-  
-      await uploadBytes(storageRef, file);
-      console.log("File uploaded successfully.");
-  
-      const downloadURL = await getDownloadURL(storageRef);
-      console.log("Download URL retrieved:", downloadURL);
-  
-      return downloadURL;
+      console.log("Starting file upload to Azure...");
+      const fileUrl = await uploadToBlob(file, userId, tenantId);
+      console.log("File uploaded successfully. URL:", fileUrl);
+      return fileUrl;
     } catch (error) {
-      console.error("Error during file upload:", error);
-      throw error; // Re-throw the error after logging it
+      console.error("Error during file upload to Azure:", error);
+      throw error;
     }
   };
   
@@ -1002,38 +1035,38 @@ const handleLoadDraft = async (draftId) => {
         </div>
       )}
               {showPreview && (
-          <div className={`instagram-post-preview ${showPreview ? 'visible' : ''}`}>
-                <div className="preview-header">
-                  <img src={logo} alt="profile" />
-                  <span className="preview-username">nuren.ai</span>
-                </div>
-                <div className="preview-content">
-                  {files.length > 0 && (
-                    <div className="preview-media">
-                      {files.map((file, index) =>
-                        file.type.startsWith('image/') ? (
-                          <img key={index} src={URL.createObjectURL(file)} alt={`Preview ${index + 1}`} />
-                        ) : (
-                          <video key={index} controls>
-                            <source src={URL.createObjectURL(file)} type={file.type} />
-                            Your browser does not support the video tag.
-                          </video>
-                        )
-                      )}
-                    </div>
-                  )}
-                  <div className="insta-icons">
-                    <FavoriteBorderIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
-                    <MapsUgcOutlinedIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
-                    <SendOutlinedIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
-                  </div>
-                  <p className="preview-caption">
-                    <b>nuren.ai </b>
-                    {caption}
-                  </p>
-                </div>
-              </div>
-                 )}
+  <div className={`instagram-post-preview ${showPreview ? 'visible' : ''}`}>
+    <div className="preview-header">
+      <img src={logo} alt="profile" />
+      <span className="preview-username">nuren.ai</span>
+    </div>
+    <div className="preview-content">
+      {files.length > 0 && (
+        <div className="preview-media">
+          {files.map((file, index) =>
+            file.type.startsWith('image/') ? (
+              <img key={index} src={URL.createObjectURL(file)} alt={`Preview ${index + 1}`} />
+            ) : (
+              <video key={index} controls>
+                <source src={URL.createObjectURL(file)} type={file.type} />
+                Your browser does not support the video tag.
+              </video>
+            )
+          )}
+        </div>
+      )}
+      <div className="insta-icons">
+        <FavoriteBorderIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
+        <MapsUgcOutlinedIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
+        <SendOutlinedIcon style={{ fontSize: '30', marginRight: '10', marginBottom: '10' }} />
+      </div>
+      <p className="preview-caption">
+        <b>nuren.ai </b>
+        {caption}
+      </p>
+    </div>
+  </div>
+)}
             </div>
           </>
         )}

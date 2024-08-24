@@ -265,3 +265,115 @@
 .campaign-bigboxes > div:nth-child(2) { animation-delay: 0.2s; }
 .campaign-bigboxes > div:nth-child(3) { animation-delay: 0.3s; }
 .campaign-bigboxes > div:nth-child(4) { animation-delay: 0.4s; }
+
+.social_btn {
+  display: flex;
+  gap: 10px;
+}
+
+.campaign_btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.campaign_btn:hover, .campaign_btn.active {
+  background-color: #f0f0f0;
+}
+
+.campaign_btn.active {
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+.filter-dropdown-menu {
+  z-index: 1000;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+}
+
+.filter-dropdown-menu .dropdown-item {
+  padding: 8px 16px;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.filter-dropdown-menu .dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.filter-dropdown-menu .dropdown-item input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.dropdown-toggle.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-toggle.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.filter_campaign .dropdown-menu {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.table_camp {
+  margin-top: 20px;
+}
+
+
+.drafts-table-container {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.drafts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.drafts-table th, .drafts-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  color: black;
+}
+
+.drafts-table th {
+  background-color: #f2f2f2;
+}
+
+.drafts-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.drafts-table button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}

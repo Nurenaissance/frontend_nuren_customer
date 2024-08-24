@@ -1,119 +1,92 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
 import "./chart.css";
+import axiosInstance from "../../api";
 
 export class BarChart1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       optionsMixedChart: {
-        chart: {
-          id: "revenue-lead-chart",
-          toolbar: {
-            show: false
-          },
-          background: 'transparent',
-          fontFamily: 'Arial, sans-serif',
-        },
-        plotOptions: {
-          bar: {
-            columnWidth: "60%",
-            borderRadius: 5,
-            distributed: true,
-          }
-        },
-        stroke: {
-          width: [0, 4],
-          curve: 'smooth'
-        },
-        xaxis: {
-          categories: ["Sep 01", "Sep 02", "Sep 03", "Sep 04", "Sep 05", "Sep 06", "Sep 07"],
-          labels: {
-            style: {
-              colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
-              fontSize: '12px'
-            }
-          }
-        },
-        yaxis: {
-          tickAmount: 5,
-          min: 0,
-          max: 50000,
-          labels: {
-            formatter: function(val) {
-              return val.toLocaleString()
-            },
-            style: {
-              colors: '#555',
-              fontSize: '12px'
-            }
-          }
-        },
-        markers: {
-          size: 6,
-          strokeWidth: 3,
-          fillOpacity: 1,
-          strokeOpacity: 1,
-          hover: {
-            size: 8
-          }
-        },
-        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a'],
-        dataLabels: {
-          enabled: false
-        },
-        legend: {
-          show: true,
-          position: 'top',
-          horizontalAlign: 'right',
-          markers: {
-            width: 12,
-            height: 12,
-            radius: 12
-          },
-          itemMargin: {
-            horizontal: 10,
-            vertical: 0
-          },
-          labels: {
-            colors: '#333'
-          }
-        },
-        tooltip: {
-          shared: true,
-          intersect: false,
-          y: {
-            formatter: function (y) {
-              if (typeof y !== "undefined") {
-                return "$ " + y.toLocaleString();
-              }
-              return y;
-            }
-          }
-        },
-        grid: {
-          borderColor: '#f1f1f1',
-        },
-        theme: {
-          palette: 'palette1' // You can change this to palette2, palette3, etc.
-        }
+        // ... (keep the existing options)
       },
       seriesMixedChart: [
         {
           name: "Revenue",
           type: "column",
-          data: [38000, 42000, 35000, 18000, 5000, 49000, 25000]
+          data: []
         },
         {
-          name: "Leads",
+          name: "Leads Amount",
           type: "line",
-          data: [42000, 45000, 25000, 19000, 8000, 25000, 10000]
+          data: []
         }
-      ]
+      ],
+      error: null
     };
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = async () => {
+    try {
+      const response = await axiosInstance.get('generate-report/');
+      console.log('API Response:', response.data); // Debugging line
+
+      let dataToProcess = response.data;
+
+      // Check if the data is not an array but an object with a data property
+      if (!Array.isArray(dataToProcess) && dataToProcess.data) {
+        dataToProcess = dataToProcess.data;
+      }
+
+      // If it's still not an array, we'll treat it as a single item
+      if (!Array.isArray(dataToProcess)) {
+        dataToProcess = [dataToProcess];
+      }
+
+      const categories = dataToProcess.map(item => new Date(item.created_at).toLocaleDateString());
+      const revenue = dataToProcess.map(item => parseFloat(item.revenue));
+      const leadsAmount = dataToProcess.map(item => parseFloat(item.leads_amount));
+
+      this.setState(prevState => ({
+        optionsMixedChart: {
+          ...prevState.optionsMixedChart,
+          xaxis: {
+            ...prevState.optionsMixedChart.xaxis,
+            categories: categories
+          }
+        },
+        seriesMixedChart: [
+          {
+            ...prevState.seriesMixedChart[0],
+            data: revenue
+          },
+          {
+            ...prevState.seriesMixedChart[1],
+            data: leadsAmount
+          }
+        ]
+      }));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      this.setState({ error: error.message });
+    }
+  }
+
   render() {
+    const { error } = this.state;
+
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
+
+    if (this.state.seriesMixedChart[0].data.length === 0) {
+      return <div>Loading...</div>;
+    }
+
     const chartContainerStyle = {
       background: 'linear-gradient(to right, #f6f9fc, #ffffff)',
       borderRadius: '15px',
@@ -134,7 +107,7 @@ export class BarChart1 extends Component {
 
     return (
       <div className="app" style={chartContainerStyle}>
-        <h1 style={titleStyle}>Revenue vs Leads</h1>
+        <h1 style={titleStyle}>Revenue vs Leads Amount</h1>
         <Chart
           options={this.state.optionsMixedChart}
           series={this.state.seriesMixedChart}
