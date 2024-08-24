@@ -35,6 +35,7 @@
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
+  overflow: auto;
 }
 
 .chat-header-left {
@@ -64,17 +65,40 @@
   overflow-y: auto;
 }
 
-.message {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #f1f1f1;
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.user {
-  align-self: flex-end;
-  background-color: #DCF8C6;
+.conversation-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+
+.message {
+  max-width: 60%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #333;
+  color: black;
+  align-self: flex-start;  /* Aligns the user message to the left */
+  border-radius: 10px 10px 10px 0; /* Customize to your preference */
+}
+
+.bot-message {
+  background-color: lightgreen;
+  color: black;
+  align-self: flex-end;  /* Aligns the bot message to the right */
+  border-radius: 10px 10px 0 10px; /* Customize to your preference */
+}
+
 
 .chat-input-container {
   display: flex;

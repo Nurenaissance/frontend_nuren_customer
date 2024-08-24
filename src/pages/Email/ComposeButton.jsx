@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import {
   Box,
   Button,
@@ -102,9 +102,19 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
 
   const handlePromptSubmit = async () => {
     try {
-      // Call your API or function to generate a subject based on the promptText
-      const response = await axios.post('https://api.example.com/generate-subject', { prompt: promptText });
-      setSubject(response.data.generatedSubject);
+      // Replace with your OpenAI API endpoint
+      const response = await axios.post('https://api.openai.com/v1/engines/davinci/completions', {
+        prompt: promptText,
+        max_tokens: 10, // Adjust based on your needs
+        temperature: 0.7
+      }, {
+        headers: {
+          'Authorization': `Bearer YOUR_API_KEY`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setSubject(response.data.choices[0].text.trim());
       setPromptDialogOpen(false);
     } catch (error) {
       console.error('Error generating subject:', error);
