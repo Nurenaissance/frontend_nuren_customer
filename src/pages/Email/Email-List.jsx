@@ -20,7 +20,7 @@ function EmailList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
-  const { provider, emailUser, emailPass } = location.state || {};
+  const { provider, emailUser, emailPass, fromContacts } = location.state || {};
   const [selectedEmails, setSelectedEmails] = useState(new Set());
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
@@ -31,7 +31,18 @@ function EmailList() {
   const getNewlySelectedEmails = (selected, stored) => {
     return [...selected].filter(emailId => !stored.includes(emailId));
   };
+
+  console.log("Provider:", provider);
+    console.log("Email User:", emailUser);
+    console.log("Email Pass:", emailPass);
+    console.log("Contact Emails:", fromContacts);
   
+  useEffect(() => {
+    if (fromContacts) {
+      setShowComposeModal(true);
+    }
+  }, [fromContacts]);
+
   const handleCheckboxChange = (emailId) => {
     setSelectedEmails((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -51,6 +62,16 @@ function EmailList() {
       return newSelected; // Return the updated set
     });
   };
+
+ 
+
+// Function to simulate receiving emails from Contact page
+const fetchEmailsFromContactPage = async () => {
+    // Simulate fetching emails (replace with your actual data fetching logic)
+    const receivedEmails = await fetchEmails(); // Replace `fetchEmails` with your API call
+    setEmails(receivedEmails);
+};
+
     const handleSelectAllChange = () => {
       if (selectedEmails.size === emails.length && emails.length > 0) {
         // If all emails are selected, clear the selection
@@ -62,10 +83,15 @@ function EmailList() {
       }
     };
 
+<<<<<<< HEAD
     const handleTabChange = (event, newValue) => {
       setActiveTab(newValue);
     };
   
+=======
+   
+
+>>>>>>> 40eaafcf90efa984b5f02aa38e567d345733729d
   
     
   const fetchEmails = async () => {
@@ -223,7 +249,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchStoredEmails = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
+        const response = await axios.get('https://webappbaackend.azurewebsites.net/fetch-all-emails', {
           headers: {
             'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
           }
@@ -283,7 +309,7 @@ function extractMainText(emailContent) {
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axios.post('http://127.0.0.1:8000/store-selected-emails/', selectedEmailList, {
+      await axios.post('https://webappbaackend.azurewebsites.net/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -314,7 +340,7 @@ function extractMainText(emailContent) {
     // Second try-catch block for sending email messages
     try {
       // Send a POST request to your Django API to store all email content
-      await axios.post('http://127.0.0.1:8000/save-email-messages/', { emails: emailsToSend }, {
+      await axios.post('https://webappbaackend.azurewebsites.net/save-email-messages/', { emails: emailsToSend }, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -512,6 +538,7 @@ function extractMainText(emailContent) {
           onClose={() => setShowComposeModal(false)}
           emailUser={location.state.emailUser}
           provider={location.state.provider}
+          contactemails={location.state.fromContacts}
         />
       )}
     </div>

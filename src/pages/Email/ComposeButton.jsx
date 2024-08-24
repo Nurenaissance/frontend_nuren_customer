@@ -1,3 +1,4 @@
+import React, { useState,useEffect,useRef } from 'react';
 import React, { useRef, useState } from 'react';
 import {
   Box,
@@ -10,6 +11,12 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
   Switch,
   FormControlLabel,
   Modal,
@@ -21,6 +28,7 @@ import {
   Close as CloseIcon,
   AttachFile as AttachFileIcon,
   Delete as DeleteIcon,
+  AutoFixHigh as MagicStickIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
@@ -35,7 +43,7 @@ const emailProviders = {
   hostinger: { host:'smtp.hostinger.com', port:'465' },
 };
 
-function ComposeButton({ onClose, emailUser, provider }) {
+function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
@@ -43,6 +51,17 @@ function ComposeButton({ onClose, emailUser, provider }) {
   const [message, setMessage] = useState('');
   const [body, setBody] = useState('');
   const [attachments, setAttachments] = useState([]);
+  const [promptDialogOpen, setPromptDialogOpen] = useState(false);
+  const [promptText, setPromptText] = useState('');
+
+
+
+  useEffect(() => {
+    if (contactemails && contactemails.length > 0) {
+      setTo(contactemails);
+    }
+    console.log('to:',contactemails);
+  }, [contactemails]);
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
 
@@ -95,23 +114,43 @@ function ComposeButton({ onClose, emailUser, provider }) {
       setMessage('Invalid email provider');
       return;
     }
+    let links = [];
+    let modifiedContent = content;
+
+    // Regular expression to find links
+    const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
-    const trackingPixelUrl = `https://lxx1lctm-8000.inc1.devtunnels.ms/track_open/${trackingId}/`;
-    const trackingPixel = `<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
-  
-    const emailContent = isHtml ? content + trackingPixel : content;
-  
-    const emailData = {
-      smtpUser: emailUser,
-      smtpPass: localStorage.getItem(`${provider}_emailPass`),
-      to: to.replace(/\s/g, '').split(','),
-      subject: subject,
-      text: isHtml ? undefined : emailContent,
-      html: isHtml ? emailContent : undefined,
-      host: providerConfig.host,
-      port: providerConfig.port,
-    };
+      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
+      const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
+    
+      modifiedContent = content.replace(regex, (match, p1, p2) => {
+        const linkTrackingId = uuidv4(); // Generate unique ID for each link
+        const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
+        
+        links.push({
+            link_id: linkTrackingId,
+            url: p2,
+            is_clicked: false,
+            time_clicked: null
+        });
+
+        return match.replace(p2, trackingUrl);
+    });
+
+    if (isHtml) {
+      modifiedContent += trackingPixel;
+  }
+      const emailData = {
+        smtpUser: emailUser,
+        smtpPass: localStorage.getItem(`${provider}_emailPass`),
+        to: to.replace(/\s/g, '').split(','),
+        subject: subject,
+        text: isHtml ? undefined : content,
+        html: isHtml ? modifiedContent : undefined,
+        host: providerConfig.host,
+        port: providerConfig.port,
+      };
   
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
@@ -128,10 +167,11 @@ function ComposeButton({ onClose, emailUser, provider }) {
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',
-        email_id: to
+        email_id: to,
+        links: links
       };
   
-      await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', trackingData, {
+      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', trackingData, {
         headers: { 'Content-Type': 'application/json' }
       });
   
@@ -141,6 +181,32 @@ function ComposeButton({ onClose, emailUser, provider }) {
     } catch (error) {
       setMessage('Error sending email: ' + (error.response?.data?.message || error.message));
       console.error('Error sending email', error);
+    }
+  };
+
+  const handleMagicStickClick = () => {
+    setPromptDialogOpen(true);
+  };
+
+  const handlePromptSubmit = async () => {
+    try {
+      // Replace with your OpenAI API endpoint
+      const response = await axios.post('https://api.openai.com/v1/engines/davinci/completions', {
+        prompt: promptText,
+        max_tokens: 10, // Adjust based on your needs
+        temperature: 0.7
+      }, {
+        headers: {
+          'Authorization': `Bearer YOUR_API_KEY`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setSubject(response.data.choices[0].text.trim());
+      setPromptDialogOpen(false);
+    } catch (error) {
+      console.error('Error generating subject:', error);
+      setMessage('Error generating subject');
     }
   };
 
@@ -217,7 +283,7 @@ function ComposeButton({ onClose, emailUser, provider }) {
     };
   
     try {
-      await axios.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', draftData, {
+      await axios.post('https://webappbaackend.azurewebsites.net/emails/', draftData, {
         headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Draft saved successfully');
@@ -286,6 +352,15 @@ function ComposeButton({ onClose, emailUser, provider }) {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             margin="normal"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleMagicStickClick}>
+                    <MagicStickIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             variant="outlined"
           />
           <TextField
@@ -379,6 +454,27 @@ function ComposeButton({ onClose, emailUser, provider }) {
         )}
       </Paper>
 
+      {/* Prompt Dialog */}
+      <Dialog open={promptDialogOpen} onClose={() => setPromptDialogOpen(false)}>
+        <DialogTitle>Generate Subject</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter a brief prompt to generate a subject for your email:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Prompt"
+            fullWidth
+            value={promptText}
+            onChange={(e) => setPromptText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPromptDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handlePromptSubmit}>Generate</Button>
+        </DialogActions>
+      </Dialog>
       <Modal
         open={showHtmlEditor}
         onClose={handleCloseHtmlEditor}

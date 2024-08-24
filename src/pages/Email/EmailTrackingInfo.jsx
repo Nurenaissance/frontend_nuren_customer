@@ -14,7 +14,8 @@ import {
   InputLabel,
   Box,
   Typography,
-  Container
+  Container,
+  Chip
 } from '@mui/material';
 import { styled } from '@mui/system';
 import axiosInstance from '../../api';
@@ -65,14 +66,10 @@ const StyledTextField = styled(TextField)({
   minWidth: 300,
 });
 
-// Dummy data (same as before)
-const dummyData = [
-  { id: 1, emailId: 'user1@example.com', subject: 'Meeting Tomorrow', sentTime: '2024-08-22T10:00:00', status: 'Opened', openedTime: '2024-08-22T10:15:00' },
-  { id: 2, emailId: 'user2@example.com', subject: 'Project Update', sentTime: '2024-08-22T11:30:00', status: 'Not Opened', openedTime: null },
-  { id: 3, emailId: 'user3@example.com', subject: 'Urgent: Please Review', sentTime: '2024-08-22T09:15:00', status: 'Opened', openedTime: '2024-08-22T09:20:00' },
-  { id: 4, emailId: 'user4@example.com', subject: 'Weekly Newsletter', sentTime: '2024-08-21T16:00:00', status: 'Opened', openedTime: '2024-08-21T18:30:00' },
-  { id: 5, emailId: 'user5@example.com', subject: 'Invitation to Company Event', sentTime: '2024-08-20T14:45:00', status: 'Not Opened', openedTime: null },
-];
+const StyledChip = styled(Chip)({
+    margin: '2px',
+  });
+
 
 const EmailTracking = () => {
     const [emails, setEmails] = useState([]);
@@ -81,32 +78,73 @@ const EmailTracking = () => {
     const [searchTerm, setSearchTerm] = useState('');
   
     useEffect(() => {
-      fetchEmails();
-    }, []);
+        fetchEmails();
+      }, []);
+    
+      const fetchEmails = async () => {
+        try {
+          const response = await axiosInstance.get('emails/');
+          setEmails(response.data);
+        } catch (error) {
+          console.error('Error fetching emails:', error);
+        }
+      };
   
-    const fetchEmails = async () => {
-      try {
-        const response = await axiosInstance.get('emails/');
-        setEmails(response.data);
-      } catch (error) {
-        console.error('Error fetching emails:', error);
-      }
-    };
+      const filteredData = useMemo(() => {
+        return emails.filter(email => {
+          const matchesStatus = filterStatus === 'All' || 
+            (filterStatus === 'Opened' && email.is_open) || 
+            (filterStatus === 'Not Opened' && !email.is_open);
+          const matchesPeriod = filterPeriod === 'All' || 
+            (filterPeriod === 'Today' && new Date(email.time).toDateString() === new Date().toDateString()) ||
+            (filterPeriod === 'This Week' && new Date(email.time) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+          const matchesSearch = email.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                email.email_id.toLowerCase().includes(searchTerm.toLowerCase());
+          
+          return matchesStatus && matchesPeriod && matchesSearch;
+        });
+      }, [emails, filterStatus, filterPeriod, searchTerm]);
   
-    const filteredData = useMemo(() => {
-      return emails.filter(email => {
-        const matchesStatus = filterStatus === 'All' || 
-          (filterStatus === 'Opened' && email.is_open) || 
-          (filterStatus === 'Not Opened' && !email.is_open);
-        const matchesPeriod = filterPeriod === 'All' || 
-          (filterPeriod === 'Today' && new Date(email.time).toDateString() === new Date().toDateString()) ||
-          (filterPeriod === 'This Week' && new Date(email.time) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
-        const matchesSearch = email.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      const calculateTimeSpent = (email) => {
+        if (!email.is_open || !email.time_open) return '0s';
         
-        return matchesStatus && matchesPeriod && matchesSearch;
-      });
-    }, [emails, filterStatus, filterPeriod, searchTerm]);
+        const openTime = new Date(email.time_open);
+        const clickedLink = email.links.find(link => link.is_clicked && link.time_clicked);
+        
+        if (!clickedLink) return '0s';
+        
+        const clickTime = new Date(clickedLink.time_clicked);
+        const timeDiff = Math.max(0, clickTime - openTime);
   
+        const hours = Math.floor(timeDiff / 3600000);
+        const minutes = Math.floor((timeDiff % 3600000) / 60000);
+        const seconds = Math.floor((timeDiff % 60000) / 1000);
+  
+        let timeSpent = '';
+        if (hours > 0) timeSpent += `${hours}h `;
+        if (minutes > 0 || hours > 0) timeSpent += `${minutes}m `;
+        timeSpent += `${seconds}s`;
+  
+        return timeSpent.trim() || '0s';
+      };
+  
+
+      const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      };
+  
+      const getClickedButtons = (links) => {
+        return links.filter(link => link.is_clicked).length;
+      };
 
   return (
     <StyledContainer maxWidth="lg">
@@ -154,16 +192,27 @@ const EmailTracking = () => {
               <StyledTableHeaderCell>Sent Time</StyledTableHeaderCell>
               <StyledTableHeaderCell>Status</StyledTableHeaderCell>
               <StyledTableHeaderCell>Opened Time</StyledTableHeaderCell>
+              <StyledTableHeaderCell>Time Spent</StyledTableHeaderCell>
+              <StyledTableHeaderCell>Buttons Clicked</StyledTableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((row) => (
-              <TableRow key={row.id} hover>
-                <StyledTableCell>{row.emailId}</StyledTableCell>
-                <StyledTableCell>{row.subject}</StyledTableCell>
-                <StyledTableCell>{new Date(row.sentTime).toLocaleString()}</StyledTableCell>
-                <StyledTableCell>{row.status}</StyledTableCell>
-                <StyledTableCell>{row.openedTime ? new Date(row.openedTime).toLocaleString() : 'N/A'}</StyledTableCell>
+            {filteredData.map((email) => (
+              <TableRow key={email.id} hover>
+                <StyledTableCell>{email.email_id}</StyledTableCell>
+                <StyledTableCell>{email.subject}</StyledTableCell>
+                <StyledTableCell>{formatDate(email.time)}</StyledTableCell>
+                <StyledTableCell>
+                  <StyledChip 
+                    label={email.is_open ? 'Opened' : 'Not Opened'} 
+                    color={email.is_open ? 'success' : 'default'}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>{formatDate(email.time_open)}</StyledTableCell>
+                <StyledTableCell>{calculateTimeSpent(email)}</StyledTableCell>
+                <StyledTableCell>
+                  {getClickedButtons(email.links)} / {email.links.length}
+                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>

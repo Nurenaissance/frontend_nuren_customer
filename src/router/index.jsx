@@ -306,14 +306,8 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/Vendorsinfo/:id" element={<VendorInfo/>}/>
           <Route path=":tenant_id/topNavbar" element={<TopNavbar/>}/>
           <Route path=":tenant_id/custom" element={<Custom/>}/>
-          <Route path="/:tenantId/coins" element={<CoinStatsPage />} />
-
-
-
-
-       
-          <Route path=":tenant_id/addlead" element={<Lead/>} />
-        
+          <Route path="/:tenantId/coins" element={<CoinStatsPage />} />   
+          <Route path=":tenant_id/addlead" element={<Lead/>} />  
           <Route path=":tenant_id/flow2" element={<FlowGraph2/>}/>
           {/* <Route path=":tenant_id/instagramflow" element={<InstagramFlow/>}/>*/}
           <Route path=":tenant_id/whatsappflow" element={<WhatsappFlow/>}/>

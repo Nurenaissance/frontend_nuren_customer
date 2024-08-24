@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
-import { FaTrash, FaCopy, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaTrash, FaCopy, FaMinus, FaPlus, FaFlag } from 'react-icons/fa';
 import { useFlow } from './FlowContext';
 
 const nodeStyles = {
@@ -67,12 +67,21 @@ const fileInputStyles = {
   cursor: 'pointer',
 };
 
-const NodeWrapper = ({ children, style, type }) => {
+const NodeWrapper = ({ children, style, type, id }) => {
+  const { setAsStartNode, startNodeId } = useFlow();
   const { deleteElements, setNodes, getNode } = useReactFlow();
 
   const onDelete = useCallback(() => {
     deleteElements({ nodes: [{ id: getNode(type).id }] });
   }, [deleteElements, getNode, type]);
+
+  const onSetAsStart = () => {
+    setAsStartNode(id);
+  };
+
+  const isStartNode = startNodeId === id;
+
+
 
   const onCopy = useCallback(() => {
     const node = getNode(type);
@@ -89,10 +98,17 @@ const NodeWrapper = ({ children, style, type }) => {
   }, [getNode, setNodes, type]);
 
   return (
-    <div style={{ ...nodeStyles, ...style }}>
+    <div style={{ ...nodeStyles, ...style, border: isStartNode ? '2px solid #4CAF50' : '1px solid #ddd' }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <FaCopy onClick={onCopy} style={iconStyles} />
         <FaTrash onClick={onDelete} style={iconStyles} />
+        <FaFlag 
+          onClick={onSetAsStart} 
+          style={{ 
+            ...iconStyles, 
+            color: isStartNode ? '#4CAF50' : '#808080' 
+          }} 
+        />
       </div>
       {children}
     </div>

@@ -5,10 +5,11 @@ const FlowContext = createContext();
 export const FlowProvider = ({ children }) => {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
+  const [startNodeId, setStartNodeId] = useState(null);
 
   const updateNodeData = useCallback((nodeId, newData) => {
     setNodes(prevNodes => {
-      const updatedNodes = prevNodes.map(node => 
+      const updatedNodes = prevNodes.map(node =>
         node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node
       );
       console.log('Updated nodes:', updatedNodes);
@@ -16,12 +17,22 @@ export const FlowProvider = ({ children }) => {
     });
   }, []);
 
+  const setAsStartNode = useCallback((nodeId) => {
+    setStartNodeId(nodeId);
+    setNodes(prevNodes => prevNodes.map(node => ({
+      ...node,
+      data: { ...node.data, isStartNode: node.id === nodeId }
+    })));
+  }, []);
+
   const value = {
     nodes,
     setNodes,
     edges,
     setEdges,
-    updateNodeData
+    updateNodeData,
+    startNodeId,
+    setAsStartNode
   };
 
   return (

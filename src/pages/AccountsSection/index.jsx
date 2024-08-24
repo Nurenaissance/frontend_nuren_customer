@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react';
 import './AccountForm.jsx';
 import { NavLink } from 'react-router-dom';
 
+
+
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 
 const getTenantIdFromUrl = () => {
@@ -19,6 +21,7 @@ const getTenantIdFromUrl = () => {
 
 export const AccountsTable = () => {
   const tenantId = getTenantIdFromUrl();
+ 
   
   const handleAction = (event) => {
     const selectedValue = event.target.value;
