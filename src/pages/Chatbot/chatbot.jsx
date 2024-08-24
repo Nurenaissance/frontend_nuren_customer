@@ -404,7 +404,7 @@ fetchConversation(selectedContact.phone);*/
   
       if (formattedConversation.length === 0) return; // No valid messages to send
       // Example POST request using fetch API
-      const response = await fetch(`http://127.0.0.1:8000/whatsapp_convo_post/${contactPhone}/?source=whatsapp`, {
+      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactPhone}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -429,9 +429,9 @@ fetchConversation(selectedContact.phone);*/
   };
   
   // Function to fetch conversation data for a given contact
-  const fetchConversation = async (contactPhone) => {
+  const fetchConversation = async (contactId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/whatsapp_convo_get/${contactPhone}/?source=whatsapp`,{
+      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactId}`,{
         method: 'GET',
         headers: {
           'X-Tenant-Id': tenantId
@@ -644,7 +644,7 @@ fetchConversation(selectedContact.phone);*/
             onClick={() => handleContactSelection(contact)}
             style={{ cursor: 'pointer', padding: '5px' }}
           > 
-            {contact.first_name} {contact.last_name} {contact.name}
+            {contact.phone} {contact.last_name} {contact.name}
           </div>
         ))}
       </div>
@@ -662,7 +662,7 @@ fetchConversation(selectedContact.phone);*/
               )}
               </div>
               <div>
-                {selectedContact.first_name} {selectedContact.last_name}{selectedContact.name}
+                {selectedContact.phone}
                 </div>
               </div>
               <div className="chat-header-right">

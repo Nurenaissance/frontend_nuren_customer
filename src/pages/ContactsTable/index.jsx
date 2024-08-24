@@ -11,6 +11,7 @@ import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader.jsx";
+import EmailApp from "../Email/Emailss.jsx";
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -27,7 +28,9 @@ export const ContactsTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeContacts, setActiveContacts] = useState([]);
   const navigate = useNavigate();
-
+  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [selectedEmails, setSelectedEmails] = useState([]);
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [inactiveContacts, setInactiveContacts] = useState([]);
   const [recentContacts, setRecentContacts] = useState([]); // New state for recent contacts
 
@@ -46,7 +49,7 @@ export const ContactsTable = () => {
   const modelName = "contacts";
   const [activeButton, setActiveButton] = useState("All Contacts");
   const [draftContacts, setDraftContacts] = useState([]);
-
+  const [emails, setEmails] = useState([]);
   const handleButtonClick = (status) => {
     console.log("Clicked:", status);
 
@@ -122,6 +125,13 @@ export const ContactsTable = () => {
     }
   };
  
+  const handleContactSelection = (contact) => {
+    setSelectedContacts((prevSelected) =>
+      prevSelected.includes(contact.id)
+        ? prevSelected.filter((id) => id !== contact.id)
+        : [...prevSelected, contact.id]
+    );
+  };
   
 
 
@@ -347,7 +357,32 @@ export const ContactsTable = () => {
     }
   };
 
+  const handleSelectContact = (contactId) => {
+    setSelectedContacts((prevSelected) =>
+      prevSelected.includes(contactId)
+        ? prevSelected.filter((id) => id !== contactId)
+        : [...prevSelected, contactId]
+    );
+  };
+
+ 
+
   
+  const handleSendEmailClick = () => {
+    // Gather email addresses from selected contacts
+    const selectedContactEmails = contacts
+      .filter(contact => selectedContacts.includes(contact.id))
+      .map(contact => contact.email);
+  
+    setSelectedEmails(selectedContactEmails); // Update state with selected emails
+    console.log('this is selected',selectedEmails);
+    setShowEmailPopup(true); // Show email popup
+  };
+  
+
+const closeEmailPopup = () => {
+  setShowEmailPopup(false);
+};
 
 
   
@@ -476,7 +511,15 @@ export const ContactsTable = () => {
           </button>
         </div>
             
-                
+        {selectedContacts.length > 0 && (
+  <button onClick={handleSendEmailClick}>Send Email</button>
+)}
+  {showEmailPopup && (
+  <div className="email-popup-overlay">
+    <EmailApp isPopup={true} onClose={closeEmailPopup} contactemails={selectedEmails} />
+  </div>
+)}
+
       </div>
 
    
@@ -504,6 +547,7 @@ export const ContactsTable = () => {
       <table className="contacttable">
         <thead>
           <tr>
+          <th className="user1">Select</th>
             <th className="user1">USER</th>
             <th className="username1">USER NAME</th>
             <th className="useremail1">EMAIL</th>
@@ -512,73 +556,33 @@ export const ContactsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {activeButton === "All Accounts"
-            ? contacts.map((contact, index) => (
-                <tr className="contacttablerow" key={contact.id}>
-                  <td onClick={() => handleRowClick(contact)}>
-                    {generateSmiley(generateRandomColor())}
-                    <div className="cont-first_name">
-                        {contact.first_name}
-                     
-                    </div>
-                  </td>
-                  <td className="contlast_name">{contact.last_name}</td>
-                  <td className="cont_email">
-                    <a href={`mailto:${contact.email}`}>{contact.email}</a>
-                  </td>
-                  <td className="cont_phone">{contact.phone}</td>
-                  <td className="cont_phone">{contact.address}</td>
-                </tr>
-              ))
-            : activeButton === "Active"
-            ? activeContacts.map((contact, index) => (
-                <tr className="contacttablerow" key={contact.id}>
-                  <td>
-                    {generateSmiley(generateRandomColor())}
-                    <div className="cont-first_name" onClick={handleRowClick}>
-                      
-                        {contact.first_name}
-                      
-                    </div>
-                  </td>
-                  <td className="contlast_name">{contact.last_name}</td>
-                  <td className="cont_email">
-                    <a href={`mailto:${contact.email}`}>{contact.email}</a>
-                  </td>
-                  <td className="cont_phone">{contact.phone}</td>
-                  <td className="cont_phone">{contact.address}</td>
-                </tr>
-              ))
-
-
-            : contacts.map((contact, index) => (
-                <tr className="contacttablerow" key={contact.id}>
-                  <td>
-                    {generateSmiley(generateRandomColor())}
-                    <div className="cont-first_name">
-                      <Link to={`/${tenantId}/contactinfo/${contact.id}`}>
-                        {contact.first_name}
-                      </Link>
-                    </div>
-                  </td>
-                  <td className="contlast_name">{contact.last_name}</td>
-                  <td className="cont_email">
-                    <a href={`mailto:${contact.email}`}>{contact.email}</a>
-                  </td>
-                  <td className="cont_phone">{contact.id}</td>
-                  <td className="cont_phone">{contact.created_on}</td>
-                </tr>
-              ))}
-        </tbody>
+                        {contacts.map((contact) => (
+                          <tr className="contacttablerow" key={contact.id}>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={selectedContacts.includes(contact.id)}
+                                onChange={() => handleSelectContact(contact.id)}
+                              />
+                            </td>
+                            <td onClick={() => handleRowClick(contact)}>
+                              {generateSmiley(generateRandomColor())}
+                              <div className="cont-first_name">{contact.first_name}</div>
+                            </td>
+                            <td className="contlast_name">{contact.last_name}</td>
+                            <td className="cont_email">
+                              <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                            </td>
+                            <td className="cont_phone">{contact.phone}</td>
+                            <td className="cont_phone">{contact.address}</td>
+                          </tr>
+                        ))}
+                      </tbody>
       </table>
     </div>
   </div>
 )}
 
-          
-
-
-     
           {viewMode === "tile" && (
           <div className="contact-tile-view">
             {/* Implement your Kanban view here */}

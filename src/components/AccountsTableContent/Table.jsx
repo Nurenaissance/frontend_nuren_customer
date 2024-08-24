@@ -15,6 +15,8 @@ import axiosInstance from '../../api';
 import { useAuth } from "../../authContext";
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import EmailApp from "../../pages/Email/Emailss";
+import { useNavigate } from "react-router-dom";
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
   const pathArray = window.location.pathname.split('/');
@@ -29,8 +31,20 @@ const AccountsTable1 = () => {
   const [recentAccounts, setRecentAccounts] = useState([]);
   const [activeButton, setActiveButton] = useState("All Accounts");
   const [activeAccounts, setActiveAccounts] = useState([]);
-
+  const navigate = useNavigate();
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [selectedEmails, setSelectedEmails] = useState([]);
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [inactiveAccounts, setInactiveAccounts] = useState([]);
+
+    // Function to handle account selection
+    const handleAccountSelect = (accountId) => {
+      setSelectedAccounts(prevSelected =>
+        prevSelected.includes(accountId)
+          ? prevSelected.filter(id => id !== accountId) // Deselect if already selected
+          : [...prevSelected, accountId] // Add to selected accounts
+      );
+    };
  
 
   const handleButtonClick = (status) => {
@@ -179,6 +193,13 @@ const renderTableRows = () => {
     case "All Accounts":
       return accounts.map((account, index) => (
         <tr className="tablerows" key={account.id}>
+          <td>
+          <input
+            type="checkbox"
+            checked={selectedAccounts.includes(account.id)}
+            onChange={() => handleAccountSelect(account.id)}
+          />
+        </td>
         <td>
           <Link to={`/${tenantId}/accounts/${account.id}`}>
           <span className="account-circle" style={{ backgroundColor: getCircleColor(account.company.charAt(0)) }}>
@@ -266,6 +287,22 @@ const renderTableRows = () => {
     default:
       return null;
   }
+};
+
+const handleSendEmailClick = () => {
+  // Gather email addresses from selected accounts
+  const selectedAccountEmails = accounts
+    .filter(account => selectedAccounts.includes(account.id))
+    .map(account => account.email);
+
+  setSelectedEmails(selectedAccountEmails); // Update state with selected emails
+  console.log('This is selected:', selectedAccountEmails);
+  setShowEmailPopup(true); // Show email popup
+};
+
+
+const closeEmailPopup = () => {
+  setShowEmailPopup(false);
 };
 
 
@@ -373,7 +410,14 @@ const renderTableRows = () => {
             Recent
           </button>
         </div>
-            
+        {selectedAccounts.length > 0 && (
+  <button onClick={handleSendEmailClick}>Send Email</button>
+)}
+        {showEmailPopup && (
+  <div className="email-popup-overlay">
+    <EmailApp isPopup={true} onClose={closeEmailPopup} contactemails={selectedEmails} />
+  </div>
+)}
       </div>
       <select
         value={viewMode}
@@ -394,6 +438,7 @@ const renderTableRows = () => {
     <table>
       <thead className="thead1">
         <tr>
+        <th>Select</th>
           <th></th> {/* Empty th for alignment */}
           <th>Account Name</th>
           <th>Phone Number</th>

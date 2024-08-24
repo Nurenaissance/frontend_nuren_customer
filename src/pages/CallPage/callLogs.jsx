@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import "./callLogs.css"; // Assuming the CSS file is named callLogs.css
+import './callLogs.css'; // Assuming the CSS file is named callLogs.css
+import { Sidebar } from '../../components/Sidebar';
+import TopNavbar from '../TopNavbar/TopNavbar.jsx'; // Adjust the import path
+import { FaChevronDown, FaChevronUp, FaInfoCircle } from 'react-icons/fa'; // Import icons
 
 const CallLogs = () => {
   const [logs, setLogs] = useState([]);
-  const [selectedLog, setSelectedLog] = useState(null);
+  const [expandedLog, setExpandedLog] = useState(null);
+  const [detailsLog, setDetailsLog] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [popupData, setPopupData] = useState(null);
 
   const callIds = [
     "34742d26-de3c-4a76-81c0-ea578dfeee8c",
@@ -101,8 +106,16 @@ const CallLogs = () => {
     }
   };
 
-  const handleLogSelection = (log) => {
-    setSelectedLog(log);
+  const handleLogToggle = (log) => {
+    setExpandedLog(expandedLog === log ? null : log);
+  };
+
+  const handleShowPopup = (log) => {
+    setPopupData(log.to);  
+  };
+
+  const handleClosePopup = () => {
+    setPopupData(null);
   };
 
   const filteredLogs = logs.filter(
@@ -111,45 +124,77 @@ const CallLogs = () => {
   );
 
   return (
-    <div className="call-container">
-      <div className="contacts">
-        <h2>Contacts</h2>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <ul>
-          {filteredLogs.map((log, index) => (
-            <li key={index} onClick={() => handleLogSelection(log)}>
-              <div>{log.to}</div>
-            </li>
-          ))}
-        </ul>
+    <div className="calllog_mainpage">
+      <div className="calllog_navbar">
+        <TopNavbar />
       </div>
-      <div className="conversation">
-        <h2>Conversation</h2>
-        {selectedLog && (
-          <div className="conversation-text">
-            {selectedLog.concatenated_transcript
-              .split('\n')
-              .map((text, index) => (
-                <p key={index}>{text}</p>
+      <div className="call-container">
+        <div className="sidebar_calllogs">
+          <Sidebar />
+        </div>
+        <div className="calllog_content">
+          <h2>Call Log</h2>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <table className="call_table">
+            <thead>
+              <tr>
+                <th>Phone Number</th>
+                <th>Queue Status</th>
+                <th>Price</th>
+                <th>Max Duration</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLogs.map((log, index) => (
+                <React.Fragment key={index}>
+                  <tr className="call_row">
+                    <td>
+                  <div onClick={() => handleLogToggle(log)} className="contact_name">
+                  {log.to}
+                  {expandedLog === log ? <FaChevronUp /> : <FaChevronDown />}
+                </div>
+                </td>
+                    <td>{log.queue_status}</td>
+                    <td>{log.price}</td>
+                    <td>{log.max_duration}</td>
+                    <td>
+                      <button onClick={() => handleShowPopup(log)} className="details_button">
+                        <FaInfoCircle />
+                      </button>
+                      {popupData === log.to && (
+                      <div className="calllog_details_popup">
+                        <div>
+                        </div>
+                        <div className="calllog_popup_content">
+                          <p className="calllog_summary">{log.summary}</p>
+                        </div>
+                        <button className="calllog_close_popup" onClick={handleClosePopup}>X</button>
+                      </div>
+                    )}
+                    </td>
+                  </tr>
+                  {expandedLog === log && (
+                        <div className="conversation_section">
+                          <h3>Conversation</h3>
+                          <div className="conversation_text">
+                            {log.concatenated_transcript.split('\n').map((text, index) => (
+                              <p key={index}>{text}</p>
+                            ))}
+                          </div>
+                        </div>
+                  )}
+                </React.Fragment>
               ))}
-          </div>
-        )}
-      </div>
-      <div className="details">
-        <h2>Details</h2>
-        {selectedLog && (
-          <div>
-            <p><strong>Queue Status:</strong> {selectedLog.queue_status}</p>
-            <p><strong>Summary:</strong> {selectedLog.summary}</p>
-            <p><strong>Price:</strong> {selectedLog.price}</p>
-            <p><strong>Max Duration:</strong> {selectedLog.max_duration}</p>
-          </div>
-        )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
