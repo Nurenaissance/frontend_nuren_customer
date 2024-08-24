@@ -1,3 +1,4 @@
+import React, { useState,useEffect,useRef } from 'react';
 import React, { useRef, useState } from 'react';
 import {
   Box,
@@ -10,6 +11,12 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
   Switch,
   FormControlLabel,
   Modal,
@@ -21,6 +28,7 @@ import {
   Close as CloseIcon,
   AttachFile as AttachFileIcon,
   Delete as DeleteIcon,
+  AutoFixHigh as MagicStickIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
@@ -35,7 +43,7 @@ const emailProviders = {
   hostinger: { host:'smtp.hostinger.com', port:'465' },
 };
 
-function ComposeButton({ onClose, emailUser, provider }) {
+function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
@@ -43,6 +51,17 @@ function ComposeButton({ onClose, emailUser, provider }) {
   const [message, setMessage] = useState('');
   const [body, setBody] = useState('');
   const [attachments, setAttachments] = useState([]);
+  const [promptDialogOpen, setPromptDialogOpen] = useState(false);
+  const [promptText, setPromptText] = useState('');
+
+
+
+  useEffect(() => {
+    if (contactemails && contactemails.length > 0) {
+      setTo(contactemails);
+    }
+    console.log('to:',contactemails);
+  }, [contactemails]);
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
 
@@ -162,6 +181,32 @@ function ComposeButton({ onClose, emailUser, provider }) {
     } catch (error) {
       setMessage('Error sending email: ' + (error.response?.data?.message || error.message));
       console.error('Error sending email', error);
+    }
+  };
+
+  const handleMagicStickClick = () => {
+    setPromptDialogOpen(true);
+  };
+
+  const handlePromptSubmit = async () => {
+    try {
+      // Replace with your OpenAI API endpoint
+      const response = await axios.post('https://api.openai.com/v1/engines/davinci/completions', {
+        prompt: promptText,
+        max_tokens: 10, // Adjust based on your needs
+        temperature: 0.7
+      }, {
+        headers: {
+          'Authorization': `Bearer YOUR_API_KEY`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setSubject(response.data.choices[0].text.trim());
+      setPromptDialogOpen(false);
+    } catch (error) {
+      console.error('Error generating subject:', error);
+      setMessage('Error generating subject');
     }
   };
 
@@ -307,6 +352,15 @@ function ComposeButton({ onClose, emailUser, provider }) {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             margin="normal"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleMagicStickClick}>
+                    <MagicStickIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             variant="outlined"
           />
           <TextField
@@ -400,6 +454,27 @@ function ComposeButton({ onClose, emailUser, provider }) {
         )}
       </Paper>
 
+      {/* Prompt Dialog */}
+      <Dialog open={promptDialogOpen} onClose={() => setPromptDialogOpen(false)}>
+        <DialogTitle>Generate Subject</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter a brief prompt to generate a subject for your email:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Prompt"
+            fullWidth
+            value={promptText}
+            onChange={(e) => setPromptText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPromptDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handlePromptSubmit}>Generate</Button>
+        </DialogActions>
+      </Dialog>
       <Modal
         open={showHtmlEditor}
         onClose={handleCloseHtmlEditor}

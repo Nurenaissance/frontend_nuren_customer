@@ -1,64 +1,142 @@
-.call-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+.calllog_mainpage{
+  margin-left: 280px
+}
+.calllog_navbar{
+  margin-left: 25rem;
+  position: relative;
+  bottom: 6rem;
+}
+.calllog_content h2{
+  font-weight: bold;
+  font-size: 30px;
+  margin-left: 50rem;
+}
+.call_table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.contacts {
-  grid-column: 1;
+.call_table th, .call_table td {
+  padding: 15px;
+  text-align: left;
+  color: black;
 }
 
-.conversation {
-  grid-column: 2;
-  margin-left: 10px;
-  margin-right: 10px;
+.call_table th {
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.conversation h2{
-  margin-bottom: 50px;
-}
-.conversation-text{
-  margin-bottom: 50px;
-}
-.details {
-  grid-column: 3;
-}
-
-.contacts h2,
-.conversation h2,
-.details h2 {
-  margin-top: 0;
-}
-
-.contacts ul {
-  list-style: none;
-  padding: 0;
-}
-
-.contacts li {
+.call_table td {
+  
   cursor: pointer;
 }
 
-.contacts li:hover {
-  background-color: #f0f0f0;
+.call_row {
+  transition: background 0.3s, transform 0.2s;
 }
 
-.contacts input {
+.call_row:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.01);
+}
+
+.conversation_dropdown {
+  display: none;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid #4e5866;
+}
+
+.conversation_section {
+  padding: 15px;
+}
+
+.conversation_text {
+  white-space: pre-line;
+}
+
+.details_button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: darkcyan;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.details_button:hover {
+  background-color: #6d7c8a;
+  transform: translateY(-2px);
+}
+/* Overlay for the popup */
+.calllog_details_popup {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it is above other content */
 }
 
-.contacts ul {
-  display: grid;
-  gap: 5px;
+/* Popup content box */
+.calllog_popup_content {
+  background-color: #ffffff; /* White background for the popup */
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  position: relative; /* For positioning the close button */
+}
+.calllog_popup_content p{
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+/* Close button for the popup */
+.calllog_close_popup {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
 }
 
-.contacts ul li {
-  border: 1px solid #ddd;
-  padding: 10px;
+/* Paragraph for the summary */
+.calllog_summary {
+  font-size: 16px;
+  color: #555555;
+  line-height: 1.5; /* Better readability */
+  text-align: left;
 }
-.details-content p {
-  margin-bottom: 50px;
+
+/* Fade-in animation for a smooth appearance */
+.calllog_popup_content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

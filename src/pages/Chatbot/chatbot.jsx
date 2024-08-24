@@ -429,7 +429,7 @@ fetchConversation(selectedContact.phone);*/
   };
   
   // Function to fetch conversation data for a given contact
-  const fetchConversation = async (contactPhone) => {
+  const fetchConversation = async (contactId) => {
     try {
       const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactPhone}/?source=whatsapp`,{
         method: 'GET',
@@ -644,7 +644,7 @@ fetchConversation(selectedContact.phone);*/
             onClick={() => handleContactSelection(contact)}
             style={{ cursor: 'pointer', padding: '5px' }}
           > 
-            {contact.first_name} {contact.last_name} {contact.name}
+            {contact.phone} {contact.last_name} {contact.name}
           </div>
         ))}
       </div>
@@ -662,7 +662,7 @@ fetchConversation(selectedContact.phone);*/
               )}
               </div>
               <div>
-                {selectedContact.first_name} {selectedContact.last_name}{selectedContact.name}
+                {selectedContact.phone}
                 </div>
               </div>
               <div className="chat-header-right">
