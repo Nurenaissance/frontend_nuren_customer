@@ -6,6 +6,11 @@ import './EmailList.css';
 import ComposeButton from "./ComposeButton"
 import axios from 'axios';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import EmailTracking from './EmailTrackingInfo';
+import { Button, FormControlLabel, Switch, Tab, Tabs } from '@mui/material';
+import AllInboxIcon from '@mui/icons-material/AllInbox';
+import DrawIcon from '@mui/icons-material/Draw';
+import OutboxIcon from '@mui/icons-material/Outbox';
 
 function EmailList() {
   const location = useLocation();
@@ -20,6 +25,8 @@ function EmailList() {
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [storedEmails, setStoredEmails] = useState([]);
+  const [showTracking, setShowTracking] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
   const tenantId='ll';
   const getNewlySelectedEmails = (selected, stored) => {
     return [...selected].filter(emailId => !stored.includes(emailId));
@@ -55,7 +62,10 @@ function EmailList() {
       }
     };
 
-
+    const handleTabChange = (event, newValue) => {
+      setActiveTab(newValue);
+    };
+  
   
     
   const fetchEmails = async () => {
@@ -385,17 +395,49 @@ function extractMainText(emailContent) {
           <TopNavbar/>
         </div>
         <div className="email-actions">
-          <button className="compose-button" onClick={() => setShowComposeModal(true)}>Compose</button>
-          <button className="refresh-button" onClick={fetchEmails}><RefreshIcon/></button>
+        <Button
+            variant="contained"
+            color="primary"
+            startIcon={<DrawIcon />}
+            className="compose-button"
+            onClick={() => setShowComposeModal(true)}
+          >
+            Compose
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<RefreshIcon />}
+            className="refresh-button"
+            onClick={fetchEmails}
+          >
+            Refresh
+          </Button>
         </div>
-        <h1 className="email-header">Inbox</h1>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          className="email-tabs"
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          <Tab icon={<AllInboxIcon />} label="Inbox" />
+          <Tab icon={<OutboxIcon />} label="Sent Mails" />
+        </Tabs>
         {isLoading ? (
-          <p>Loading emails...</p>
+          <p className="loading-message">Loading emails...</p>
         ) : error ? (
           <p className="error-message">{error}</p>
-        ) : (<div>
-          <button onClick={storeSelectedEmails}>Store Selected Emails</button>
-         
+        ) : activeTab === 0 ? (
+          <div className="inbox-container">
+            <Button
+              variant="contained"
+              color="secondary"
+              className="store-selected-button"
+              onClick={storeSelectedEmails}
+            >
+              Store Selected Emails
+            </Button>
           <table className="email-table">
             <thead>
               <tr>
@@ -436,6 +478,8 @@ function extractMainText(emailContent) {
             </tbody>
           </table>
           </div>
+           ) : (
+            <EmailTracking />
         )}
       </div>
 

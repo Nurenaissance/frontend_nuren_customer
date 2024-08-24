@@ -86,7 +86,7 @@ const EmailTracking = () => {
   
     const fetchEmails = async () => {
       try {
-        const response = await axiosInstance.get('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/');
+        const response = await axiosInstance.get('emails/');
         setEmails(response.data);
       } catch (error) {
         console.error('Error fetching emails:', error);
@@ -110,9 +110,9 @@ const EmailTracking = () => {
 
   return (
     <StyledContainer maxWidth="lg">
-      <Typography variant="h3" gutterBottom fontWeight="bold" color="primary">
+      {/* <Typography variant="h3" gutterBottom fontWeight="bold" color="primary">
         Email Tracking
-      </Typography>
+      </Typography> */}
       <FilterContainer>
         <StyledFormControl variant="outlined">
           <InputLabel>Status</InputLabel>
