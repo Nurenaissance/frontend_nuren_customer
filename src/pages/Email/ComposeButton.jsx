@@ -14,6 +14,7 @@ import {
   FormControlLabel,
   Modal,
 } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
 import CodeIcon from '@mui/icons-material/Code';
 import {
   Send as SendIcon,
@@ -24,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import axios from 'axios';
 import EmailEditor from 'react-email-editor';
+import axiosInstance from '../../api';
 
 const emailProviders = {
   gmail: { host:'smtp.gmail.com', port:'465' },
@@ -39,6 +41,7 @@ function ComposeButton({ onClose, emailUser, provider }) {
   const [content, setContent] = useState('');
   const [isHtml, setIsHtml] = useState(false);
   const [message, setMessage] = useState('');
+  const [body, setBody] = useState('');
   const [attachments, setAttachments] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
@@ -71,6 +74,20 @@ function ComposeButton({ onClose, emailUser, provider }) {
     setAttachments(attachments.filter((_, i) => i !== index));
   };
 
+  
+
+
+
+
+  const OPERATOR_CHOICES = {
+    GMAIL: 'gmail',
+    OUTLOOK: 'outlook',
+    ZOHO: 'zoho',
+    GODADDY: 'godaddy',
+    HOSTINGER: 'hostinger',
+  };
+
+
   const handleSendEmail = async (e) => {
     e.preventDefault();
     const providerConfig = emailProviders[provider];
@@ -78,37 +95,67 @@ function ComposeButton({ onClose, emailUser, provider }) {
       setMessage('Invalid email provider');
       return;
     }
+    let links = [];
+    let modifiedContent = content;
 
-    const emailData = {
-      smtpUser: emailUser,
-      smtpPass: localStorage.getItem(`${provider}_emailPass`),
-      to: to,
-      subject: subject,
-      text: isHtml ? undefined : content,
-      html: isHtml ? content : undefined,
-      host: providerConfig.host,
-      port: providerConfig.port,
-    };
-
-    const formData = new FormData();
+    // Regular expression to find links
+    const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
+  
+    const trackingId = uuidv4();
+      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
+      const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
     
-    // Append email data
-    Object.keys(emailData).forEach(key => {
-      if (emailData[key] !== undefined) {
-        formData.append(key, emailData[key]);
-      }
+      modifiedContent = content.replace(regex, (match, p1, p2) => {
+        const linkTrackingId = uuidv4(); // Generate unique ID for each link
+        const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
+        
+        links.push({
+            link_id: linkTrackingId,
+            url: p2,
+            is_clicked: false,
+            time_clicked: null
+        });
+
+        return match.replace(p2, trackingUrl);
     });
 
-    // Append attachments
-    attachments.forEach((file, index) => {
-      formData.append(`attachment`, file);
-    });
-
+    if (isHtml) {
+      modifiedContent += trackingPixel;
+  }
+      const emailData = {
+        smtpUser: emailUser,
+        smtpPass: localStorage.getItem(`${provider}_emailPass`),
+        to: to.replace(/\s/g, '').split(','),
+        subject: subject,
+        text: isHtml ? undefined : content,
+        html: isHtml ? modifiedContent : undefined,
+        host: providerConfig.host,
+        port: providerConfig.port,
+      };
+  
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
         headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Email sent successfully');
+  
+      // Send tracking data to '/emails' endpoint
+      const trackingData = {
+        is_open: false,
+        time_open: null,
+        tracking_id: trackingId,
+        operator: OPERATOR_CHOICES[provider.toUpperCase()],
+        time: new Date().toISOString(),
+        subject: subject,
+        email_type: 'sent',
+        email_id: to,
+        links: links
+      };
+  
+      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', trackingData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+  
       setTimeout(() => {
         onClose();
       }, 2000);
@@ -117,6 +164,97 @@ function ComposeButton({ onClose, emailUser, provider }) {
       console.error('Error sending email', error);
     }
   };
+
+
+  // const handleSendEmail = async (e) => {
+  //   e.preventDefault();
+  //   const providerConfig = emailProviders[provider];
+  //   if (!providerConfig) {
+  //     setMessage('Invalid email provider');
+  //     return;
+  //   }
+  
+  //   const trackingId = uuidv4();
+  //   const trackingPixelUrl = `https://lxx1lctm-8000.inc1.devtunnels.ms/track_open/${trackingId}/`;
+  //   const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
+  
+  //   const emailData = {
+  //     smtpUser: emailUser,
+  //     smtpPass: localStorage.getItem(`${provider}_emailPass`),
+  //     to: to.replace(/\s/g, '').split(','),
+  //     subject: subject,
+  //     text: isHtml ? undefined : content,
+  //     html: isHtml ? content + trackingPixel : undefined,
+  //     host: providerConfig.host,
+  //     port: providerConfig.port,
+  //   };
+  
+  //   try {
+  //     const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData,
+  //       {
+  //         raw: btoa(`To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${trackingPixel}`),
+  //       },
+  //        {
+  //       headers: { 'Content-Type': 'application/json' }
+  //     });
+  //     setMessage('Email sent successfully');
+  
+  //     // Send tracking data to '/emails' endpoint
+  //     const trackingData = {
+  //       is_open: false,
+  //       time_open: null,
+  //       tracking_id: trackingId,
+  //       operator: OPERATOR_CHOICES[provider.toUpperCase()],
+  //       time: new Date().toISOString(),
+  //       subject: subject,
+  //       email_type: 'sent',
+  //       email_id : to
+  //     };
+  
+  //     await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', trackingData, {
+  //       headers: { 'Content-Type': 'application/json' }
+  //     });
+  
+  //     setTimeout(() => {
+  //       onClose();
+  //     }, 2000);
+  //   } catch (error) {
+  //     setMessage('Error sending email: ' + (error.response?.data?.message || error.message));
+  //     console.error('Error sending email', error);
+  //   }
+  // };
+  
+  const handleSaveDraft = async () => {
+    const trackingId = uuidv4();
+  
+    const draftData = {
+      is_open: false,
+      time_open: null,
+      tracking_id: trackingId,
+      operator: OPERATOR_CHOICES[provider.toUpperCase()],
+      time: new Date().toISOString(),
+      subject: subject,
+      email_type: 'draft'
+    };
+  
+    try {
+      await axios.post('https://webappbaackend.azurewebsites.net/emails/', draftData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      setMessage('Draft saved successfully');
+      setTimeout(() => {
+        setMessage('');
+      }, 2000);
+    } catch (error) {
+      setMessage('Error saving draft: ' + (error.response?.data?.message || error.message));
+      console.error('Error saving draft', error);
+    }
+  };
+
+  
+
+ 
+  
   return (
     <Box
       sx={{
@@ -247,6 +385,9 @@ function ComposeButton({ onClose, emailUser, provider }) {
             <Button variant="contained" type="submit" endIcon={<SendIcon />}>
               Send
             </Button>
+            <Button variant="contained" color="secondary" onClick={handleSaveDraft}>
+        Save Draft
+      </Button>
             <Button variant="outlined" onClick={onClose}>
               Cancel
             </Button>

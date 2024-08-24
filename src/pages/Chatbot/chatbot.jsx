@@ -404,7 +404,7 @@ fetchConversation(selectedContact.phone);*/
   
       if (formattedConversation.length === 0) return; // No valid messages to send
       // Example POST request using fetch API
-      const response = await fetch(`http://127.0.0.1:8000/whatsapp_convo_post/${contactPhone}/?source=whatsapp`, {
+      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_post/${contactPhone}/?source=whatsapp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -431,7 +431,7 @@ fetchConversation(selectedContact.phone);*/
   // Function to fetch conversation data for a given contact
   const fetchConversation = async (contactPhone) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/whatsapp_convo_get/${contactPhone}/?source=whatsapp`,{
+      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactPhone}/?source=whatsapp`,{
         method: 'GET',
         headers: {
           'X-Tenant-Id': tenantId

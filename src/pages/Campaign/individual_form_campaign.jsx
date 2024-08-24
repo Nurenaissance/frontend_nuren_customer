@@ -107,7 +107,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitInstagramCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('http://127.0.0.1:8000/instagram-campaigns/', {
+          const response = await fetch('https://webappbaackend.azurewebsites.net/instagram-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitWhatsAppCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('http://127.0.0.1:8000/whatsapp-campaigns/', {
+          const response = await fetch('https://webappbaackend.azurewebsites.net/whatsapp-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitEmailCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('http://127.0.0.1:8000/email-campaigns/', {
+          const response = await fetch('https://webappbaackend.azurewebsites.net/email-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitCallCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('http://127.0.0.1:8000/call-campaigns/', {
+          const response = await fetch('https://webappbaackend.azurewebsites.net/call-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

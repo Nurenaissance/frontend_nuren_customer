@@ -394,7 +394,7 @@ const [isLoading, setIsLoading] = useState(false);
   
       const prompt = `How do i sell to this person.`;
       try {
-        const response = await axiosInstance.post(`/query/`, { 
+        const response = await axiosInstance.post(`https://webappbaackend.azurewebsites.net/query/`, { 
           prompt, 
           tenant: tenantId
         });

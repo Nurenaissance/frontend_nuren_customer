@@ -116,6 +116,7 @@ import GmailCallback from "../pages/Email/GmailCallback.jsx";
 import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
+import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
 
 // import CustomModelForm from "../pages/CustomModel/customform";
 
@@ -305,14 +306,8 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/Vendorsinfo/:id" element={<VendorInfo/>}/>
           <Route path=":tenant_id/topNavbar" element={<TopNavbar/>}/>
           <Route path=":tenant_id/custom" element={<Custom/>}/>
-          <Route path="/:tenantId/coins" element={<CoinStatsPage />} />
-
-
-
-
-       
-          <Route path=":tenant_id/addlead" element={<Lead/>} />
-        
+          <Route path="/:tenantId/coins" element={<CoinStatsPage />} />   
+          <Route path=":tenant_id/addlead" element={<Lead/>} />  
           <Route path=":tenant_id/flow2" element={<FlowGraph2/>}/>
           {/* <Route path=":tenant_id/instagramflow" element={<InstagramFlow/>}/>*/}
           <Route path=":tenant_id/whatsappflow" element={<WhatsappFlow/>}/>
@@ -342,6 +337,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/loyaltyform" element ={<Loyalityform/>}/>
          
           <Route path=":tenant_id/pdf" element ={<PdfUploader/>}/>
+          <Route path=":tenant_id/email-tracking" element ={<EmailTrackingInfo/>}/>
 
           <Route path="/:tenantId/flow" element={<FlowBuilder />} />
           <Route path="/:tenantId/floww/:templateId?" element={<DnDFlow />} />

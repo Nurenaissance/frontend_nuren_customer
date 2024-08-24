@@ -213,7 +213,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchStoredEmails = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
+        const response = await axios.get('https://webappbaackend.azurewebsites.net/fetch-all-emails', {
           headers: {
             'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
           }
@@ -273,7 +273,7 @@ function extractMainText(emailContent) {
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axios.post('http://127.0.0.1:8000/store-selected-emails/', selectedEmailList, {
+      await axios.post('https://webappbaackend.azurewebsites.net/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -304,7 +304,7 @@ function extractMainText(emailContent) {
     // Second try-catch block for sending email messages
     try {
       // Send a POST request to your Django API to store all email content
-      await axios.post('http://127.0.0.1:8000/save-email-messages/', { emails: emailsToSend }, {
+      await axios.post('https://webappbaackend.azurewebsites.net/save-email-messages/', { emails: emailsToSend }, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
