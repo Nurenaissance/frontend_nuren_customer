@@ -19,6 +19,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import axiosInstance from '../../api';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import ComposeButton from '../Email/ComposeButton.jsx';
 // import DraftTable from './DraftsTable.jsx';
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -39,6 +40,8 @@ const Campaign = () => {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
+  const [draftEmails, setDraftEmails] = useState([]);
+  const [showDraftEmails, setShowDraftEmails] = useState(false);
   const [drafts, setDrafts] = useState([]);
   const [campaignStats, setCampaignStats] = useState({
     total_campaigns: 0,
@@ -109,6 +112,37 @@ const [showDraftsTable, setShowDraftsTable] = useState(false);
 
     fetchCampaignStats();
 }, []);
+
+
+useEffect(() => {
+  if (selectedChannels.includes('email')) {
+    fetchDraftEmails();
+  }
+}, [selectedChannels]);
+
+const fetchDraftEmails = async () => {
+  try {
+    const response = await axiosInstance.get('/emails/?email_type=draft');
+    setDraftEmails(response.data);
+    setShowDraftEmails(true);
+  } catch (error) {
+    console.error("Error fetching draft emails:", error);
+  }
+};
+
+const handleDeleteEmailDraft = async (draftId) => {
+  try {
+    await axiosInstance.delete(`/emails/${draftId}/`);
+    setDraftEmails(draftEmails.filter(draft => draft.id !== draftId));
+  } catch (error) {
+    console.error("Error deleting draft:", error);
+  }
+};
+
+const handleLoadEmailDraft = (draft) => {
+  setDraftToLoad(draft);
+  setShowComposeModal(true);
+};
 
 
 const fetchTemplates = async () => {
@@ -495,10 +529,36 @@ const handleTemplateSelect = (template) => {
   </Dropdown>
 </div>
         </div>
+        
       <div>
-      {showDraftsTable ? (
-  <div className="drafts-table-container">
-    <h2>Instagram Drafts</h2>
+      {showDraftEmails ? (
+              <div className="drafts-table-container">
+                <h2>Email Drafts</h2>
+                <table className="drafts-table">
+                  <thead>
+                    <tr>
+                      <th>Subject</th>
+                      <th>Created On</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {draftEmails.map((draft) => (
+                      <tr key={draft.id}>
+                        <td>{draft.subject}</td>
+                        <td>{new Date(draft.time).toLocaleString()}</td>
+                        <td>
+                          <button onClick={() => handleLoadDraft(draft)}>Load</button>
+                          <button onClick={() => handleDeleteDraft(draft.id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : showDraftsTable ? (
+              <div className="drafts-table-container">
+                <h2>Instagram Drafts</h2>``
     <table className="drafts-table">
       <thead>
         <tr>
