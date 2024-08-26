@@ -390,3 +390,136 @@
 .close-popup-button:hover {
   color: #000;
 }
+
+.flow-data-button {
+  font-size: 18px;
+  padding: 12px 24px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(45deg, #FFDAB9, #FFE4B5);
+  color: #333;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: block;
+  width: 80%;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flow-data-button:hover {
+  background: linear-gradient(45deg, #FFE4B5, #FFDAB9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.flow-data-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flow-data-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.broadcast-message-button {
+  font-size: 18px;
+  padding: 12px 24px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  background: linear-gradient(45deg, #90EE90, #98FB98);
+  color: #333;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: block;
+  width: 90%;  /* Slightly wider than the Send Flow Data button */
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.broadcast-message-button:hover {
+  background: linear-gradient(45deg, #98FB98, #90EE90);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.broadcast-message-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.broadcast-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.broadcast-popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.broadcast-popup-content h2 {
+  margin-top: 0;
+}
+
+.broadcast-popup-content textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.contact-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.contact-item {
+  margin-bottom: 5px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-buttons button:first-child {
+  background-color: #90EE90;
+}
+
+.popup-buttons button:last-child {
+  background-color: #FFB6C1;
+}

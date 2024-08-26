@@ -47,8 +47,12 @@ const Chatbot = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [previousContact, setPreviousContact] = useState(null);
   const [newMessages, setNewMessages] = useState(['']);
- 
+  const [showBroadcastPopup, setShowBroadcastPopup] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [selectedPhones, setSelectedPhones] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  
+  const [isSendingBroadcast, setIsSendingBroadcast] = useState(false);
 
 
   const openPopup = () => {
@@ -462,6 +466,7 @@ socket.on('node-message', (message) => {
     useEffect(() => {
       console.log("Selected flow has changed:", selectedFlow);
     }, [selectedFlow]);
+    const [isSending, setIsSending] = useState(false);
 
     const handleSendFlowData = async () => {
       if (!selectedFlow) {
@@ -478,21 +483,83 @@ socket.on('node-message', (message) => {
       }
     
       try {
+        setIsSending(true);
         console.log('Sending flow data:', selectedFlowData);
-        const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/set-flow/ ', selectedFlowData, {
+        const response = await axiosInstance.post('http://127.0.0.1:8000/set-flow/ ', selectedFlowData, {
           headers: {
             'Content-Type': 'application/json',
             token: localStorage.getItem('token'),
           },
         });
         console.log('Flow data sent successfully:', response.data);
-        // Add user feedback here (e.g., success message)
+        if (response.status === 200) {
+          // Add user feedback here (e.g., success message)
+          console.log('Flow data sent successfully');
+        }
       } catch (error) {
         console.error('Error sending flow data:', error);
         // Add user feedback here (e.g., error message)
+      } finally {
+        setIsSending(false);
       }
     };
-
+    useEffect(() => {
+      return () => {
+        // This cleanup function will run when the component unmounts
+        setIsSending(false);
+      };
+    }, []);
+    const handleBroadcastMessage = () => {
+      setShowBroadcastPopup(true);
+    };
+    const handleCloseBroadcastPopup = () => {
+      setShowBroadcastPopup(false);
+      setBroadcastMessage('');
+      setSelectedPhones([]);
+      setIsSendingBroadcast(false);
+    };
+    
+    const handleSendBroadcast = async () => {
+      if (selectedPhones.length === 0 || !broadcastMessage.trim()) {
+        alert("Please select at least one contact and enter a message.");
+        return;
+      }
+    
+      setIsSendingBroadcast(true);
+    
+      try {
+        const response = await axiosInstance.post('https://www.sendbroadcastmessage.com', {
+          contacts: selectedPhones,
+          message: broadcastMessage
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+        });
+    
+        if (response.status === 200) {
+          console.log("Broadcast sent successfully");
+          alert("Broadcast message sent successfully!");
+          handleCloseBroadcastPopup();
+        } else {
+          throw new Error("Failed to send broadcast");
+        }
+      } catch (error) {
+        console.error("Error sending broadcast:", error);
+        alert("Failed to send broadcast message. Please try again.");
+      } finally {
+        setIsSendingBroadcast(false);
+      }
+    };
+    
+    const handlePhoneSelection = (phoneNumber) => {
+      setSelectedContacts(prevSelected => 
+        prevSelected.includes(phoneNumber)
+          ? prevSelected.filter(num => num !== phoneNumber)
+          : [...prevSelected, phoneNumber]
+      );
+    };
 
   return (
     <div className="chatbot-container">
@@ -633,7 +700,59 @@ socket.on('node-message', (message) => {
     </option>
   ))}
 </select>
-            <button onClick={handleSendFlowData}>Send Flow Data</button>
+<button 
+  onClick={handleSendFlowData} 
+  className="flow-data-button"
+  disabled={isSending}
+>
+  {isSending ? "Sending..." : "Send Flow Data"}
+</button>
+
+<button 
+  onClick={handleBroadcastMessage} 
+  className="broadcast-message-button"
+>
+  Broadcast Message
+</button>
+
+{showBroadcastPopup && (
+  <div className="broadcast-popup">
+    <div className="broadcast-popup-content">
+      <h2>Broadcast Message</h2>
+      <textarea
+        value={broadcastMessage}
+        onChange={(e) => setBroadcastMessage(e.target.value)}
+        placeholder="Type your broadcast message here..."
+      />
+      <div className="contact-list">
+        <h3>Select Contacts:</h3>
+        {contacts.map(contact => (
+          <div key={contact.id} className="contact-item">
+            <input
+              type="checkbox"
+              id={`contact-${contact.id}`}
+              checked={selectedPhones.includes(contact.id)}
+              onChange={() => handlePhoneSelection(contact.id)}
+            />
+            <label htmlFor={`contact-${contact.id}`}>
+              {contact.first_name} {contact.last_name} ({contact.phone})
+            </label>
+          </div>
+        ))}
+      </div>3
+
+<div className="popup-buttons">
+  <button 
+    onClick={handleSendBroadcast} 
+    disabled={isSendingBroadcast}
+  >
+    {isSendingBroadcast ? "Sending..." : "Send Broadcast"}
+  </button>
+  <button onClick={handleCloseBroadcastPopup}>Cancel</button>
+</div>
+    </div>
+  </div>
+)}
           </div>
         {selectedContact && (
           <div className="chatbot-contact-details">
