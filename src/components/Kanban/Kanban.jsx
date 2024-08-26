@@ -392,9 +392,9 @@ const [isLoading, setIsLoading] = useState(false);
         return;
       }
   
-      const prompt = `all the contact persons`;
+      const prompt = `How do i sell to this person.`;
       try {
-        const response = await axiosInstance.post(`https://8twdg37p-8000.inc1.devtunnels.ms/query/`, { 
+        const response = await axiosInstance.post(`https://webappbaackend.azurewebsites.net/query/`, { 
           prompt, 
           tenant: tenantId
         });

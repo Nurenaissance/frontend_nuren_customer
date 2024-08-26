@@ -68,6 +68,7 @@ const fileInputStyles = {
 };
 
 const NodeWrapper = ({ children, style, type }) => {
+  
   const { deleteElements, setNodes, getNode } = useReactFlow();
 
   const onDelete = useCallback(() => {
@@ -136,53 +137,60 @@ const removeOption = (index) => {
   updateNodeData(id, { question, optionType, options: newOptions });
 };
 
-  return (
-    <NodeWrapper style={{ background: 'linear-gradient(to bottom, #FFA500, #FF8C00)' }} type="askQuestion">
-    <Handle type="target" position={Position.Left} isConnectable={isConnectable} />
-    <h3 style={{ marginBottom: '15px', color: '#fff' }}>Ask Question</h3>
-    <textarea
-        style={textAreaStyles}
-        value={question}
-        onChange={handleQuestionChange}
-        placeholder="Enter question"
+return (
+  <NodeWrapper style={{ background: 'linear-gradient(to bottom, #FFA500, #FF8C00)', position: 'relative' }} type="askQuestion">
+      <Handle type="target" position={Position.Left} isConnectable={isConnectable} />
+      <h3 style={{ marginBottom: '15px', color: '#fff' }}>Ask Question</h3>
+      <textarea
+          style={textAreaStyles}
+          value={question}
+          onChange={handleQuestionChange}
+          placeholder="Enter question"
       />
-    <select 
-      value={optionType} 
-      onChange={handleOptionTypeChange}
-      style={selectStyles}
-    >
-      <option value="Buttons">Buttons</option>
-      <option value="Lists">Lists</option>
-      <option value="Variables">Variables</option>
-    </select>
-    {options.map((option, index) => (
-      <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-        <input
-          style={{ ...inputStyles, width: '80%' }}
-          value={option}
-          onChange={(e) => handleOptionChange(index, e.target.value)}
-          placeholder={`Option ${index + 1}`}
-        />
-        <FaMinus onClick={() => removeOption(index)} style={{ ...iconStyles, color: '#d32f2f' }} />
-        {optionType === 'Lists' && (
-          <Handle
-            type="source"
-            position={Position.Right}
-            id={`option-${index}`}
-            style={{ top: `${20 + (index * 40)}px`, right: '-10px' }}
-            isConnectable={isConnectable}
-          />
-        )}
-      </div>
-    ))}
-    <button style={{ ...buttonStyles, background: '#FF8C00' }} onClick={addOption}>
-      <FaPlus style={{ marginRight: '5px' }} /> Add Option
-    </button>
-    {optionType !== 'Lists' && (
-      <Handle type="source" position={Position.Right} isConnectable={isConnectable} />
-    )}
+      <select 
+          value={optionType} 
+          onChange={handleOptionTypeChange}
+          style={selectStyles}
+      >
+          <option value="Buttons">Buttons</option>
+          <option value="Lists">Lists</option>
+          <option value="Variables">Variables</option>
+      </select>
+      {options.map((option, index) => (
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', position: 'relative' }}>
+              <input
+                  style={{ ...inputStyles, width: '80%' }}
+                  value={option}
+                  onChange={(e) => handleOptionChange(index, e.target.value)}
+                  placeholder={`Option ${index + 1}`}
+              />
+              <FaMinus onClick={() => removeOption(index)} style={{ ...iconStyles, color: '#d32f2f' }} />
+              {(optionType === 'Buttons' || optionType === 'Lists') && (
+                  <Handle
+                      type="source"
+                      position={Position.Right}
+                      id={`option-${index}`}
+                      style={{
+                        
+                          top: '50%',
+                          right: '-10px',
+                          background: '#784212',
+                          width: '12px',
+                          height: '12px',
+                      }}
+                      isConnectable={isConnectable}
+                  />
+              )}
+          </div>
+      ))}
+      <button style={{ ...buttonStyles, background: '#FF8C00' }} onClick={addOption}>
+          <FaPlus style={{ marginRight: '5px' }} /> Add Option
+      </button>
+      {optionType === 'Variables' && (
+          <Handle type="source" position={Position.Right} isConnectable={isConnectable} />
+      )}
   </NodeWrapper>
-  );
+);
 };
 
 export const SendMessageNode = ({ data, isConnectable }) => {

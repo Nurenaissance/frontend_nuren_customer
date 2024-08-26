@@ -43,7 +43,7 @@ const ComposeEmail = () => {
   const handleSendEmail = async () => {
     try {
       const trackingId = uuidv4();
-      const trackingPixelUrl = `http://localhost:8000/track_open/${trackingId}/`;
+      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
       const emailBodyWithTracker = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
 
       const response = await axios.post(
