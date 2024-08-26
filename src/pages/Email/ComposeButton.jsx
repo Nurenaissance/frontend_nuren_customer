@@ -1,5 +1,4 @@
 import React, { useState,useEffect,useRef } from 'react';
-import React, { useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -58,10 +57,19 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
 
   useEffect(() => {
     if (contactemails && contactemails.length > 0) {
-      setTo(contactemails);
+      // Join email addresses with commas and trim extra spaces
+      const formattedEmails = contactemails
+        .map(email => email.trim())
+        .filter(email => email) // Remove any empty entries
+        .join(',');
+  
+      setTo(formattedEmails);
+    } else {
+      setTo('');
     }
-    console.log('to:',contactemails);
   }, [contactemails]);
+  
+
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
 
@@ -121,10 +129,18 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
   
     const emailContent = isHtml ? content + trackingPixel : content;
   
+    // Handle multiple recipients
+    const recipients = to.split(',').map(email => email.trim()).filter(email => email); // Split and trim emails
+  
+    if (recipients.length === 0) {
+      setMessage('No valid email addresses found.');
+      return;
+    }
+  
     const emailData = {
       smtpUser: emailUser,
       smtpPass: localStorage.getItem(`${provider}_emailPass`),
-      to: to.replace(/\s/g, '').split(','),
+      to: recipients.join(','), // Ensure `to` is a comma-separated string
       subject: subject,
       text: isHtml ? undefined : emailContent,
       html: isHtml ? emailContent : undefined,
@@ -147,7 +163,7 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',
-        email_id: to
+        email_id: recipients.join(',') // Send tracking data for all recipients
       };
   
       await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', trackingData, {
@@ -162,6 +178,8 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       console.error('Error sending email', error);
     }
   };
+  
+  
 
   const handleMagicStickClick = () => {
     setPromptDialogOpen(true);
