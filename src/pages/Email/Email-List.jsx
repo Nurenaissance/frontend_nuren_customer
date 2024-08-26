@@ -11,6 +11,12 @@ import { Button, FormControlLabel, Switch, Tab, Tabs } from '@mui/material';
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DrawIcon from '@mui/icons-material/Draw';
 import OutboxIcon from '@mui/icons-material/Outbox';
+import { Card, CardContent, Typography } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import SendIcon from '@mui/icons-material/Send';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import TouchAppIcon from '@mui/icons-material/TouchApp';
+import axiosInstance from '../../api';
 
 function EmailList() {
   const location = useLocation();
@@ -20,29 +26,30 @@ function EmailList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
-  const { provider, emailUser, emailPass, fromContacts } = location.state || {};
+  const { provider, emailUser, emailPass } = location.state || {};
   const [selectedEmails, setSelectedEmails] = useState(new Set());
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [storedEmails, setStoredEmails] = useState([]);
   const [showTracking, setShowTracking] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [totalMails, setTotalMails] = useState(0);
+  const [sentEmails, setSentEmails] = useState([]);
+  const [receivedEmails, setReceivedEmails] = useState([]);
+  const [sentMails, setSentMails] = useState(0);
+  const [openedMails, setOpenedMails] = useState(0);
+  const [clickedMails, setClickedMails] = useState(0);
+  const cardData = [
+    { icon: <EmailIcon />, value: totalMails, label: "Total Mails", color: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" },
+    { icon: <SendIcon />, value: sentMails, label: "Sent Mails", color: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)" },
+    { icon: <VisibilityIcon />, value: openedMails, label: "Opened Mails", color: "linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)" },
+    { icon: <TouchAppIcon />, value: clickedMails, label: "Clicked Mails", color: "linear-gradient(45deg, #9C27B0 30%, #E1BEE7 90%)" },
+  ];
   const tenantId='ll';
   const getNewlySelectedEmails = (selected, stored) => {
     return [...selected].filter(emailId => !stored.includes(emailId));
   };
-
-  console.log("Provider:", provider);
-    console.log("Email User:", emailUser);
-    console.log("Email Pass:", emailPass);
-    console.log("Contact Emails:", fromContacts);
   
-  useEffect(() => {
-    if (fromContacts) {
-      setShowComposeModal(true);
-    }
-  }, [fromContacts]);
-
   const handleCheckboxChange = (emailId) => {
     setSelectedEmails((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -62,16 +69,6 @@ function EmailList() {
       return newSelected; // Return the updated set
     });
   };
-
- 
-
-// Function to simulate receiving emails from Contact page
-const fetchEmailsFromContactPage = async () => {
-    // Simulate fetching emails (replace with your actual data fetching logic)
-    const receivedEmails = await fetchEmails(); // Replace `fetchEmails` with your API call
-    setEmails(receivedEmails);
-};
-
     const handleSelectAllChange = () => {
       if (selectedEmails.size === emails.length && emails.length > 0) {
         // If all emails are selected, clear the selection
@@ -83,15 +80,10 @@ const fetchEmailsFromContactPage = async () => {
       }
     };
 
-<<<<<<< HEAD
     const handleTabChange = (event, newValue) => {
       setActiveTab(newValue);
     };
   
-=======
-   
-
->>>>>>> 40eaafcf90efa984b5f02aa38e567d345733729d
   
     
   const fetchEmails = async () => {
@@ -128,37 +120,48 @@ const fetchEmailsFromContactPage = async () => {
 
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/receive-emails', {
-          imapUser: emailUser,
-          imapPass: emailPass,
-          host: config.host,
-          port: config.port,
+        imapUser: emailUser,
+        imapPass: emailPass,
+        host: config.host,
+        port: config.port,
       });
-
-       if (response.data && Array.isArray(response.data)) {
+  
+      if (response.data && Array.isArray(response.data)) {
         setEmails(response.data);
-        
-    
+        return response.data;
       } else {
-           setError('Received invalid data from server');
+        throw new Error('Received invalid data from server');
       }
     } catch (error) {
       console.error('Error fetching emails:', error);
-      setError(`Failed to fetch emails: ${error.message}`);
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
-};
+  };
 
 useEffect(() => {
   const savedSelections = JSON.parse(localStorage.getItem('selectedEmails')) || [];
   setSelectedRows(new Set(savedSelections));
+  // fetchEmailStats();
 }, []);
 
 useEffect(() => {
-  console.log("Provider:", provider);
-  console.log("Email User:", emailUser);
-  console.log("Email Pass:", emailPass);
-  fetchEmails();
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      await fetchEmails();
+      const stats = await fetchEmailStats();
+      setTotalMails(stats.totalMails);
+      setSentMails(stats.sentMails);
+      setOpenedMails(stats.openedMails);
+      setClickedMails(stats.clickedMails);
+    } catch (error) {
+      setError('Failed to fetch data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchData();
 }, []);
 
 
@@ -229,6 +232,23 @@ useEffect(() => {
     };
 };
 
+
+
+const fetchEmailStats = async () => {
+  try {
+    const sentResponse = await axiosInstance.get('emails/');
+    return {
+      totalMails: emails.length,
+      sentMails: sentResponse.data.length,
+      openedMails: sentResponse.data.filter(email => email.is_open).length,
+      clickedMails: sentResponse.data.filter(email => email.links.some(link => link.is_clicked)).length
+    };
+  } catch (error) {
+    console.error('Error fetching emails:', error);
+    throw error;
+  }
+};
+
   
   const extractPdfData = (multipartData) => {
     // Split the multipart data into sections
@@ -249,7 +269,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchStoredEmails = async () => {
       try {
-        const response = await axios.get('https://webappbaackend.azurewebsites.net/fetch-all-emails', {
+        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
           headers: {
             'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
           }
@@ -309,7 +329,7 @@ function extractMainText(emailContent) {
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axios.post('https://webappbaackend.azurewebsites.net/store-selected-emails/', selectedEmailList, {
+      await axios.post('http://127.0.0.1:8000/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -340,7 +360,7 @@ function extractMainText(emailContent) {
     // Second try-catch block for sending email messages
     try {
       // Send a POST request to your Django API to store all email content
-      await axios.post('https://webappbaackend.azurewebsites.net/save-email-messages/', { emails: emailsToSend }, {
+      await axios.post('http://127.0.0.1:8000/save-email-messages/', { emails: emailsToSend }, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -440,6 +460,17 @@ function extractMainText(emailContent) {
             Refresh
           </Button>
         </div>
+        <div className="email-stats">
+  {cardData.map((card, index) => (
+    <Card key={index} className="stat-card" style={{ background: card.color }}>
+      <CardContent>
+        {React.cloneElement(card.icon, { className: "stat-icon" })}
+        <Typography variant="h6" style={{ color: 'white' }}>{card.value}</Typography>
+        <Typography variant="subtitle1" style={{ color: 'white' }}>{card.label}</Typography>
+      </CardContent>
+    </Card>
+  ))}
+</div>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
@@ -538,7 +569,6 @@ function extractMainText(emailContent) {
           onClose={() => setShowComposeModal(false)}
           emailUser={location.state.emailUser}
           provider={location.state.provider}
-          contactemails={location.state.fromContacts}
         />
       )}
     </div>

@@ -29,7 +29,7 @@ const nodeTypes = {
 };
 
 const FlowBuilderContent = () => {
-  const { nodes, setNodes, edges, setEdges, updateNodeData,startNodeId, setAsStartNode,setStartNodeId } = useFlow();
+  const { nodes, setNodes, edges, setEdges, updateNodeData } = useFlow();
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { templateId } = useParams();
@@ -130,35 +130,33 @@ const FlowBuilderContent = () => {
 
   const saveFlow = useCallback(async () => {
     console.log('Current nodes:', nodes);
-    console.log('Current edges:', edges);
-    const flow = {
-      name: flowName,
-      description: flowDescription,
-      category: "default",
-      node_data: {
-        nodes: nodes.map(({ id, type, position, data }) => {
-          const { updateNodeData, ...cleanData } = data;
-          return { id, type, position, data: cleanData };
-        }),
-        edges: edges,
-        startNodeId: startNodeId
-      }
-    };
-    console.log('Flow to be saved:', flow);
-    
-    try {
-      const response = await axiosInstance.post('/node-templates/', flow);
-      console.log('Flow saved successfully:', response.data);
-      setShowSavePopup(false);
-      setIsExistingFlow(true);
-      setSelectedFlow(flowName);
-      fetchExistingFlows();
-      navigate('/ll/chatbot');
-    } catch (error) {
-      console.error('Error saving flow:', error);
+  console.log('Current edges:', edges);
+  const flow = {
+    name: flowName,
+    description: flowDescription,
+    category: "default",
+    node_data: {
+      nodes: nodes.map(({ id, type, position, data }) => {
+        const { updateNodeData, ...cleanData } = data;
+        return { id, type, position, data: cleanData };
+      }),
+      edges: edges
     }
-  }, [nodes, edges, flowName, flowDescription, navigate, fetchExistingFlows, startNodeId]);
-
+  };
+  console.log('Flow to be saved:', flow);
+  
+  try {
+    const response = await axiosInstance.post('/node-templates/', flow);
+    console.log('Flow saved successfully:', response.data);
+    setShowSavePopup(false);
+    setIsExistingFlow(true);
+    setSelectedFlow(flowName);
+    fetchExistingFlows();
+    navigate('/ll/chatbot');
+  } catch (error) {
+    console.error('Error saving flow:', error);
+  }
+}, [nodes, edges, flowName, flowDescription, navigate, fetchExistingFlows]);
 
   const handleSaveConfirm = (name, description) => {
     setFlowName(name);
@@ -194,13 +192,12 @@ const FlowBuilderContent = () => {
             updateNodeData: (newData) => updateNodeData(node.id, newData),
           },
         }));
-  
+
         setNodes(mappedNodes);
         setEdges(flow.node_data.edges);
         setFlowName(flow.name);
         setFlowDescription(flow.description);
         setIsExistingFlow(true);
-        setStartNodeId(flow.node_data.startNodeId);
       } catch (error) {
         console.error('Error fetching flow:', error);
         resetFlow();
@@ -208,7 +205,7 @@ const FlowBuilderContent = () => {
         setIsLoading(false);
       }
     }
-  }, [setNodes, setEdges, updateNodeData, resetFlow, setStartNodeId]);
+  }, [setNodes, setEdges, updateNodeData, resetFlow]);
 
 
   return (

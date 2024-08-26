@@ -379,3 +379,151 @@
 }
 
 /* ... (keep existing styles for email popup, attachments, etc.) */
+
+.email-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  flex: 1;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0));
+  transition: top 0.3s ease;
+}
+
+.stat-card:hover::before {
+  top: 0;
+}
+
+.stat-card .MuiCardContent-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.stat-icon {
+  font-size: 40px !important;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.1);
+}
+
+.stat-card .MuiTypography-h6 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stat-card .MuiTypography-subtitle1 {
+  font-size: 14px;
+  color: #666;
+}
+
+.total-mails {
+  background-color: #e3f2fd;
+}
+
+.sent-mails {
+  background-color: #e8f5e9;
+}
+
+.opened-mails {
+  background-color: #fff3e0;
+}
+
+.clicked-mails {
+  background-color: #fce4ec;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.stat-card:hover .MuiTypography-h6 {
+  animation: pulse 1s infinite;
+}
+
+.email-stats-cards {
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stats-icon {
+  font-size: 3rem !important;
+  margin-bottom: 10px;
+}
+
+.MuiTypography-h4 {
+  font-weight: bold;
+}
+
+.MuiTypography-subtitle1 {
+  color: rgba(0, 0, 0, 0.6);
+}
+.email-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  width: 200px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+  font-size: 48px !important;
+  color: white;
+  margin-bottom: 10px;
+}

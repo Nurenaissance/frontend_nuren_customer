@@ -1,27 +1,3 @@
-const flowData = {
-  "nodes": [
-    { "id": 0, "type": "button", "body": "Hi user, Welcome to our hospital. How can we help you today?" },
-    { "id": 1, "type": "button_element", "body": "Book an appointment" },
-    { "id": 2, "type": "button_element", "body": "Know Clinic Address" },
-    { "id": 3, "type": "button_element", "body": "Learn about us" },
-    { "id": 4, "type": "Input", "body": "Please share your appointment date." },
-    { "id": 5, "type": "string", "body": "Our Clinic address is" },
-    { "id": 6, "type": "string", "body": "about us" },
-    { "id": 7, "type": "Input", "body": "What time?" },
-    { "id": 8, "type": "Input", "body": "Name of the patient?" },
-    { "id": 9, "type": "button", "body": "Great! choose doctor" },
-    { "id": 10, "type": "button_element", "body": "Dr. Ira" },
-    { "id": 11, "type": "button_element", "body": "Dr. John" },
-    { "id": 12, "type": "string", "body": "Congrats, appointment booked." },
-    { "id": 13, "type": "button", "body": "Do you want to book an appointment?" },
-    { "id": 14, "type": "button_element", "body": "Yes" },
-    { "id": 15, "type": "button_element", "body": "No" },
-    { "id": 16, "type": "button_element", "body": "Talk to AI" },
-    { "id": 17, "type": "Input", "body": "Sure, directing you to AI section." },
-    { "id": 18, "type": "string", "body": "Thank you! Have a great day. Please visit again!" }
-  ],
-  "adjacencyList": [[1, 2, 3], [4], [5], [6], [7], [13], [13], [8], [9], [10, 11], [12], [12], [], [14, 15, 16], [4], [18], [17], [], []]
-};
 
 import React, { useState, useEffect } from 'react';
 import './chatbot.css';
@@ -37,11 +13,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
 import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
-//import {getdata} from './chatfirebase';
 import axios from 'axios';
-//import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
-//import { app, db } from '../socialmedia/instagram/firebase.js';
-//import { onSnapshot } from "firebase/firestore";
+
 import io from 'socket.io-client';
 
 const socket = io('https://whatsappbotserver.azurewebsites.net/');
@@ -100,28 +73,7 @@ const Chatbot = () => {
       console.error("Error fetching contacts data:", error);
     }
   };
- /* const fetchFirebaseContacts = async () => {
-    try {
-      const dataMap = new Map();
-      await getdata(dataMap);
-      // Convert Map to array of objects for easier manipulation
-      const extractedContacts = Array.from(dataMap).map(([id, [user_replies, bot_replies, name, phoneNumber]]) => ({
-        id,
-        user_replies,
-        bot_replies,
-        name,
-        phoneNumber
-      }));
-      setFirebaseContacts(extractedContacts); 
-      console.log(firebaseContacts);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
-    }
-  };
 
-  useEffect(() => {
-    fetchFirebaseContacts();
-  }, []);*/
 
   useEffect(() => {
     fetchContacts();
@@ -230,36 +182,12 @@ const Chatbot = () => {
       console.log('No file selected');
     }
   };
-  /*const fetchConversation = async () => {
-    try {
-      const response = await axios.get(`https://whatsappbotserver.azurewebsites.net/get-map?phone=919643393874`);
-      const { bot_replies, user_replies } = response.data;
-      const newConversation = [];
-      for (let i = 0; i < bot_replies.length; i++) {
-        if (bot_replies[i] !== '.') {
-          newConversation.push({ text: bot_replies[i], sender: 'bot' });
-        }
-        if (user_replies[i] && user_replies[i] !== '.') {
-          newConversation.push({ text: user_replies[i], sender: 'user' });
-        }
-      }
-      setConversation(newConversation);
-    } catch (error) {
-      console.error('Error fetching conversation:', error);
-    }
-  };*/
+
 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to the server');
     });
-
-    /*socket.on('latestMessage', (message) => {
-      if (message) {
-        console.log('Got New hahahahahah',message.body);
-        setConversation(prevMessages => [...prevMessages, { text: message.body, sender: 'bot' }]);
-      }
-    });*/
     
 
     socket.on('new-message', (message) => {
@@ -285,11 +213,6 @@ socket.on('node-message', (message) => {
     }}
   }
 });
-/*
-if(previousContact.phone){
-sendDataToBackend(previousContact.phone, conversation);}
-setConversation(['']);
-fetchConversation(selectedContact.phone);*/
 
     return () => {
       socket.off('node-message');
@@ -298,31 +221,6 @@ fetchConversation(selectedContact.phone);*/
   }, [selectedContact]);
   
     
-    /*useEffect(() => {
-      // Firestore listener setup
-      
-      const unsubscribe = onSnapshot(doc(db, "whatsapp", "919643393874"), (doc) => {
-        fetchConversation();
-        console.log("Current data: ", doc.data());
-    });
-    
-
-      // Clean up listener when component unmounts
-      return () => unsubscribe();
-    }, []);*/
- /* useEffect(() => {
-    const fetchUploadedFiles = async (contactId) => {
-      try {
-        const response = await axiosInstance.get(`/documents/?entity_type=10&entity_id=${contactId}`);
-        setUploadedFiles(response.data);
-        
-        
-      } catch (error) {
-        console.error("Error fetching uploaded files:", error);
-      }
-    };
-    fetchUploadedFiles();
-  }, );*/
   const handleSend = async () => {
     setMessageTemplates('');
     if (!selectedContact || !messageTemplates[selectedContact.id]) {
@@ -341,13 +239,6 @@ fetchConversation(selectedContact.phone);*/
       const response = await axiosInstance.post(
         'https://whatsappbotserver.azurewebsites.net/send-message',
         payload,  // Let Axios handle the JSON conversion
-        {/*
-          headers: {
-            'Content-Type': 'application/json',
-            token: localStorage.getItem('token'),
-          },
-          */
-        }
       );
   
       // Update local state with the new message
@@ -529,45 +420,7 @@ fetchConversation(selectedContact.phone);*/
     }));
   };
 
-  {/*const handleSendFlowData = async () => {
-    const flowData = {
-      "nodes": [
-        { "id": 0, "type": "button", "body": "Hi user, Welcome to our hospital. How can we help you today?" },
-        { "id": 1, "type": "button_element", "body": "Book an appointment" },
-        { "id": 2, "type": "button_element", "body": "Know Clinic Address" },
-        { "id": 3, "type": "button_element", "body": "Learn about us" },
-        { "id": 4, "type": "Input", "body": "Please share your appointment date." },
-        { "id": 5, "type": "string", "body": "Our Clinic address is" },
-        { "id": 6, "type": "string", "body": "about us" },
-        { "id": 7, "type": "Input", "body": "What time?" },
-        { "id": 8, "type": "Input", "body": "Name of the patient?" },
-        { "id": 9, "type": "button", "body": "Great! choose doctor" },
-        { "id": 10, "type": "button_element", "body": "Dr. Ira" },
-        { "id": 11, "type": "button_element", "body": "Dr. John" },
-        { "id": 12, "type": "string", "body": "Congrats, appointment booked." },
-        { "id": 13, "type": "button", "body": "Do you want to book an appointment?" },
-        { "id": 14, "type": "button_element", "body": "Yes" },
-        { "id": 15, "type": "button_element", "body": "No" },
-        { "id": 16, "type": "button_element", "body": "Talk to AI" },
-        { "id": 17, "type": "AI", "body": "Sure, directing you to AI section." },
-        { "id": 18, "type": "string", "body": "Thank you! Have a great day. Please visit again!" }
-      ],
-      "adjacencyList": [[1, 2, 3], [4], [5], [6], [7], [13], [13], [8], [9], [10, 11], [12], [12], [], [14, 15, 16], [4], [18], [17], [], []]
-    };
-
-    try {
-      // Send flow data to backend
-      await axiosInstance.post('https://whatsappbotserver.azurewebsites.net/flowdata', flowData, {
-        headers: {
-          token: localStorage.getItem('token'),
-        },
-      });
-
-      console.log('Flow data sent successfully');
-    } catch (error) {
-      console.error('Error sending flow data:', error);
-    }
-  };*/}
+  
 
     const handleRedirect = () => {
       window.location.href = 'https://www.facebook.com/v18.0/dialog/oauth?client_id=1546607802575879&redirect_uri=https%3A%2F%2Fcrm.nuren.ai%2Fll%2Fchatbot&response_type=code&config_id=1573657073196264&state=pass-through%20value';
@@ -582,8 +435,13 @@ fetchConversation(selectedContact.phone);*/
         const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/node-templates/', {
           headers: { token: localStorage.getItem('token') },
         });
-        setFlows(response.data);
-        console.log('this is flow',flows);
+        // Ensure each flow has an id property
+        const flowsWithIds = response.data.map(flow => ({
+          ...flow,
+          id: flow.id.toString() // Ensure id is a string for consistency
+        }));
+        setFlows(flowsWithIds);
+        console.log('Fetched flows:', flowsWithIds);
       } catch (error) {
         console.error("Error fetching flows:", error);
       }
@@ -597,6 +455,8 @@ fetchConversation(selectedContact.phone);*/
       const selectedValue = event.target.value;
       console.log("Selected flow ID:", selectedValue);
       setSelectedFlow(selectedValue);
+      const selectedFlowData = flows.find(flow => flow.id === selectedValue);
+      console.log("Selected flow data:", selectedFlowData);
     };
   
     useEffect(() => {
@@ -604,19 +464,32 @@ fetchConversation(selectedContact.phone);*/
     }, [selectedFlow]);
 
     const handleSendFlowData = async () => {
+      if (!selectedFlow) {
+        console.error('No flow selected');
+        return;
+      }
+    
       const selectedFlowData = flows.find(flow => flow.id === selectedFlow);
-      console.log('this is selected flow', selectedFlowData);
+      if (!selectedFlowData) {
+        console.error('Selected flow data not found');
+        console.log('Current flows:', flows);
+        console.log('Selected flow ID:', selectedFlow);
+        return;
+      }
+    
       try {
-        await axiosInstance.post('https://whatsappbotserver.azurewebsites.net/flowdata', flowData, {
+        console.log('Sending flow data:', selectedFlowData);
+        const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/set-flow/ ', selectedFlowData, {
           headers: {
             'Content-Type': 'application/json',
             token: localStorage.getItem('token'),
           },
         });
-        console.log('this is selected flow', selectedFlowData);
-        console.log('Flow data sent successfully');
+        console.log('Flow data sent successfully:', response.data);
+        // Add user feedback here (e.g., success message)
       } catch (error) {
         console.error('Error sending flow data:', error);
+        // Add user feedback here (e.g., error message)
       }
     };
 
@@ -753,13 +626,13 @@ fetchConversation(selectedContact.phone);*/
         <div>
           <button onClick={handleCreateFlow}>Create Flow</button>
           <select value={selectedFlow} onChange={handleFlowChange}>
-              <option value="" disabled>Select a flow</option>
-              {flows.map(flow => (
-                <option key={flow.id} value={flow.id}>
-                  {flow.name}
-                </option>
-              ))}
-            </select>
+  <option value="" disabled>Select a flow</option>
+  {flows.map(flow => (
+    <option key={flow.id} value={flow.id}>
+      {flow.name || flow.id}
+    </option>
+  ))}
+</select>
             <button onClick={handleSendFlowData}>Send Flow Data</button>
           </div>
         {selectedContact && (

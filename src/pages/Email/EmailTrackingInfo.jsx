@@ -83,7 +83,7 @@ const EmailTracking = () => {
     
       const fetchEmails = async () => {
         try {
-          const response = await axiosInstance.get('emails/');
+          const response = await axiosInstance.get('emails/?email_type=sent');
           setEmails(response.data);
         } catch (error) {
           console.error('Error fetching emails:', error);
@@ -111,21 +111,29 @@ const EmailTracking = () => {
         const openTime = new Date(email.time_open);
         const clickedLink = email.links.find(link => link.is_clicked && link.time_clicked);
         
-        if (!clickedLink) return '0s';
+        if (!clickedLink || !clickedLink.time_clicked) return '0s';
         
         const clickTime = new Date(clickedLink.time_clicked);
-        const timeDiff = Math.max(0, clickTime - openTime);
-  
-        const hours = Math.floor(timeDiff / 3600000);
-        const minutes = Math.floor((timeDiff % 3600000) / 60000);
-        const seconds = Math.floor((timeDiff % 60000) / 1000);
-  
-        let timeSpent = '';
-        if (hours > 0) timeSpent += `${hours}h `;
-        if (minutes > 0 || hours > 0) timeSpent += `${minutes}m `;
-        timeSpent += `${seconds}s`;
-  
-        return timeSpent.trim() || '0s';
+        
+        // Ensure both dates are valid
+        if (isNaN(openTime.getTime()) || isNaN(clickTime.getTime())) return 'Invalid date';
+      
+        // Calculate time difference in milliseconds
+        const timeDiff = clickTime.getTime() - openTime.getTime();
+        
+        if (timeDiff < 0) return 'Invalid time data';
+      
+        const seconds = Math.floor(timeDiff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+      
+        if (hours > 0) {
+          return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+        } else if (minutes > 0) {
+          return `${minutes}m ${seconds % 60}s`;
+        } else {
+          return `${seconds}s`;
+        }
       };
   
 
