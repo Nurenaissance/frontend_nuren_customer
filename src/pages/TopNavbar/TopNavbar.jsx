@@ -117,7 +117,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     formData.append('model_name', selectedDocumentType);
 
     try {
-      const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/upload/', formData, {
+      const response = await axiosInstance.post('https://webappbaackend.azurewebsites.net/upload/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
