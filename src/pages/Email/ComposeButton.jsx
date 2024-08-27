@@ -22,6 +22,7 @@ import {
   Modal,
   MenuItem,
 } from '@mui/material';
+import uploadToBlob from "../../azureUpload.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import CodeIcon from '@mui/icons-material/Code';
 import {
@@ -36,6 +37,7 @@ import axios from 'axios';
 import EmailEditor from 'react-email-editor';
 import axiosInstance from '../../api';
 
+
 const emailProviders = {
   gmail: { host:'smtp.gmail.com', port:'465' },
   outlook: { host:'smtp-mail.outlook.com', port:'465'},
@@ -44,7 +46,7 @@ const emailProviders = {
   hostinger: { host:'smtp.hostinger.com', port:'465' },
 };
 
-function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
+function ComposeButton({ contactemails, show, onClose, emailUser, provider, userId, tenantId }) {
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
@@ -87,15 +89,25 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
     });
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
-    setAttachments([...attachments, ...files]);
+    const uploadedFiles = [];
+  
+    for (const file of files) {
+      try {
+        const fileUrl = await uploadToBlob(file, userId, tenantId);
+        uploadedFiles.push({ name: file.name, url: fileUrl });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  
+    setAttachments([...attachments, ...uploadedFiles]);
   };
 
   const removeAttachment = (index) => {
-    setAttachments(attachments.filter((_, i) => i !== index));
+    setAttachments(prevAttachments => prevAttachments.filter((_, i) => i !== index));
   };
-
   
 
 
@@ -119,41 +131,43 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
     }
     let links = [];
     let modifiedContent = content;
-
+  
     // Regular expression to find links
     const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
-      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
-      const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
-    
-      modifiedContent = content.replace(regex, (match, p1, p2) => {
-        const linkTrackingId = uuidv4(); // Generate unique ID for each link
-        const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
-        
-        links.push({
-            link_id: linkTrackingId,
-            url: p2,
-            is_clicked: false,
-            time_clicked: null
-        });
-
-        return match.replace(p2, trackingUrl);
+    const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
+    const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
+  
+    modifiedContent = content.replace(regex, (match, p1, p2) => {
+      const linkTrackingId = uuidv4(); // Generate unique ID for each link
+      const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
+      
+      links.push({
+          link_id: linkTrackingId,
+          url: p2,
+          is_clicked: false,
+          time_clicked: null
+      });
+  
+      return match.replace(p2, trackingUrl);
     });
-
+  
     if (isHtml) {
       modifiedContent += trackingPixel;
-  }
-      const emailData = {
-        smtpUser: emailUser,
-        smtpPass: localStorage.getItem(`${provider}_emailPass`),
-        to: to.replace(/\s/g, '').split(','),
-        subject: subject,
-        text: isHtml ? undefined : content,
-        html: isHtml ? modifiedContent : undefined,
-        host: providerConfig.host,
-        port: providerConfig.port,
-      };
+    }
+  
+    const emailData = {
+      smtpUser: emailUser,
+      smtpPass: localStorage.getItem(`${provider}_emailPass`),
+      to: to.replace(/\s/g, '').split(','),
+      subject: subject,
+      text: isHtml ? undefined : content,
+      html: isHtml ? modifiedContent : undefined,
+      host: providerConfig.host,
+      port: providerConfig.port,
+      attachments: attachments.map(att => ({ filename: att.name, path: att.url }))
+    };
   
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
@@ -171,16 +185,26 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         subject: subject,
         email_type: 'sent',
         email_id: to,
-        links: links
+        links: links,
+        open_count: 0,
+        total_time_spent: '0:00:00'
       };
+
+      console.log('Sending tracking data:', JSON.stringify(trackingData, null, 2));
   
-      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', trackingData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-  
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      try {
+        const response = await axiosInstance.post('/emails/', trackingData, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        console.log('Server response:', response.data);
+        setMessage('Email sent successfully');
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      } catch (error) {
+        console.error('Error sending email:', error.response?.data || error.message);
+        setMessage('Error sending email: ' + (error.response?.data?.error || error.message));
+      }
     } catch (error) {
       setMessage('Error sending email: ' + (error.response?.data?.message || error.message));
       console.error('Error sending email', error);
@@ -298,6 +322,11 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       setSubject(draft.subject || '');
       setContent(draft.content || '');
       setIsHtml(draft.is_html || false);
+      if (draft.attachments && Array.isArray(draft.attachments)) {
+        setAttachments(draft.attachments);
+      } else {
+        setAttachments([]);
+      }
     }
   };
 
@@ -316,7 +345,8 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       email_type: 'draft',
       email_id: to,
       content: content,
-      is_html: isHtml
+      is_html: isHtml,
+      attachments: attachments.map(att => ({ name: att.name, url: att.url }))
     };
   
     try {
@@ -460,19 +490,25 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
             </label>
           </Box>
           {attachments.length > 0 && (
-            <List>
-              {attachments.map((file, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={file.name} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => removeAttachment(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          )}
+  <List>
+    {attachments.map((file, index) => (
+      <ListItem key={index}>
+        <ListItemText 
+          primary={
+            <a href={file.url} download={file.name}>
+              {file.name}
+            </a>
+          } 
+        />
+        <ListItemSecondaryAction>
+          <IconButton edge="end" onClick={() => removeAttachment(index)}>
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    ))}
+  </List>
+)}
           <Box display="flex" alignItems="center" gap={2} mb={2}>
   <TextField
     select
