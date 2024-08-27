@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useRef } from 'react';
-// import { useRef, useState } from 'react';
+
 import {
   Box,
   Button,
@@ -63,10 +63,19 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
 
   useEffect(() => {
     if (contactemails && contactemails.length > 0) {
-      setTo(contactemails);
+      // Join email addresses with commas and trim extra spaces
+      const formattedEmails = contactemails
+        .map(email => email.trim())
+        .filter(email => email) // Remove any empty entries
+        .join(',');
+  
+      setTo(formattedEmails);
+    } else {
+      setTo('');
     }
-    console.log('to:',contactemails);
   }, [contactemails]);
+  
+
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
 
@@ -136,21 +145,22 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
     const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
-    const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
-    const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
-  
-    modifiedContent = content.replace(regex, (match, p1, p2) => {
-      const linkTrackingId = uuidv4(); // Generate unique ID for each link
-      const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
-      
-      links.push({
-          link_id: linkTrackingId,
-          url: p2,
-          is_clicked: false,
-          time_clicked: null
-      });
-  
-      return match.replace(p2, trackingUrl);
+
+      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
+      const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
+    
+      modifiedContent = content.replace(regex, (match, p1, p2) => {
+        const linkTrackingId = uuidv4(); // Generate unique ID for each link
+        const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
+        
+        links.push({
+            link_id: linkTrackingId,
+            url: p2,
+            is_clicked: false,
+            time_clicked: null
+        });
+
+        return match.replace(p2, trackingUrl);
     });
   
     if (isHtml) {
@@ -184,13 +194,13 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',
+
         email_id: to,
         links: links,
         open_count: 0,
         total_time_spent: '0:00:00'
-      };
 
-      console.log('Sending tracking data:', JSON.stringify(trackingData, null, 2));
+      };
   
       try {
         const response = await axiosInstance.post('/emails/', trackingData, {
@@ -210,6 +220,8 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
       console.error('Error sending email', error);
     }
   };
+  
+  
 
   const handleMagicStickClick = () => {
     setPromptDialogOpen(true);
