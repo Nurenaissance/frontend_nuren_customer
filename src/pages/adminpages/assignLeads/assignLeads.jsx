@@ -6,19 +6,20 @@ import LeadsCard from './LeadsCard';
 import axiosInstance from "../../../api.jsx";
 import { Sidebar } from '../../../components/Sidebar/index.jsx';
 import TopNavbar from '../../TopNavbar/TopNavbar.jsx';
-
+import Loader from '../../../components/Loader/Loader.jsx';
 const MainLeadContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
 const SidebarContainer = styled.div`
-  width: 100%;
+  
 `;
 
 const LeadsCardContainer = styled.div`
   width: 100%;
   display: flex;
+  margin-left:255px;
   flex-direction: column;
   padding: 20px;
 `;
@@ -44,7 +45,7 @@ const ProfileCardsRow = styled.div`
 
 const LeadNav = styled.div`
   width: 100%;
-  margin-top: -5%;
+  margin-top: -7%;
   margin-bottom: 3rem;
 `;
 
@@ -211,9 +212,7 @@ const AssignLeads = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading users...</div>;
-  }
+
 
   if (error) {
     return <div>Error loading users: {error}</div>;
@@ -221,6 +220,7 @@ const AssignLeads = () => {
 
   return (
     <MainLeadContainer>
+      <Loader isLoading={isLoading}>
       <SidebarContainer>
         <Sidebar />
       </SidebarContainer>
@@ -278,6 +278,7 @@ const AssignLeads = () => {
           )}
         </DragDropContext>
       </LeadsCardContainer>
+      </Loader>
     </MainLeadContainer>
   );
 };

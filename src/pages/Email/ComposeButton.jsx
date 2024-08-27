@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useRef } from 'react';
-// import { useRef, useState } from 'react';
+
 import {
   Box,
   Button,
@@ -61,10 +61,19 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
 
   useEffect(() => {
     if (contactemails && contactemails.length > 0) {
-      setTo(contactemails);
+      // Join email addresses with commas and trim extra spaces
+      const formattedEmails = contactemails
+        .map(email => email.trim())
+        .filter(email => email) // Remove any empty entries
+        .join(',');
+  
+      setTo(formattedEmails);
+    } else {
+      setTo('');
     }
-    console.log('to:',contactemails);
   }, [contactemails]);
+  
+
   const [showPreview, setShowPreview] = useState(false);
   const [showHtmlEditor, setShowHtmlEditor] = useState(false);
 
@@ -124,6 +133,7 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
     const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
+
       const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
       const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
     
@@ -154,7 +164,7 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         host: providerConfig.host,
         port: providerConfig.port,
       };
-  
+
     try {
       const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData, {
         headers: { 'Content-Type': 'application/json' }
@@ -170,8 +180,10 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',
+
         email_id: to,
         links: links
+
       };
   
       await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', trackingData, {
@@ -186,6 +198,8 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       console.error('Error sending email', error);
     }
   };
+  
+  
 
   const handleMagicStickClick = () => {
     setPromptDialogOpen(true);
