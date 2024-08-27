@@ -322,7 +322,7 @@ socket.on('node-message', (message) => {
   // Function to fetch conversation data for a given contact
   const fetchConversation = async (contactId) => {
     try {
-      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactPhone}/?source=whatsapp`,{
+      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactId}/?source=whatsapp`,{
         method: 'GET',
         headers: {
           'X-Tenant-Id': tenantId
