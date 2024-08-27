@@ -166,7 +166,7 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         is_open: false,
         time_open: null,
         tracking_id: trackingId,
-        operator: OPERATOR_CHOICES[provider.toUpperCase()],
+        operator: "other",
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',

@@ -524,7 +524,7 @@ const userId = 3;
       alert('Error saving draft');
     }
   };
-  const postSingleVideo = async (videoUrl, isReel) => {
+  /*const postSingleVideo = async (videoUrl, isReel) => {
     const postData = {
       video_url: videoUrl,
       access_token: accessToken,
@@ -620,7 +620,7 @@ const userId = 3;
       console.error('Error posting carousel images:', error);
       alert('Error posting carousel images');
     }
-  };
+  };*/
   
   
   

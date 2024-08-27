@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import './LiveChat.css'; // Ensure you create this CSS file
 
 
-const socket = io('https://hx587qc4-5173.inc1.devtunnels.ms/');
+//const socket = io('https://hx587qc4-5173.inc1.devtunnels.ms/');
 const getTenantIdFromUrl = () => {
     // Example: Extract tenant_id from "/3/home"
     const pathArray = window.location.pathname.split('/');
@@ -54,7 +54,7 @@ const LiveChat = () => {
   const [mediaIds, setMediaIds] = useState([]);
   const [instagramContacts,setInstagramContacts] = useState([]);// Initialize as an empty array
   const [selectedContact, setSelectedContact] = useState(null);
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchInstagramContacts = async () => {
       try {
         const response = await fetch('https://nuren-insta.vercel.app/instagram-conversations', {
@@ -79,11 +79,11 @@ const LiveChat = () => {
     // Call fetchInstagramContacts when component mounts
     fetchInstagramContacts();
 
-  }, []);
+  }, []);*/
  
   
   // Function to fetch conversation data for a given contact
-  const fetchConversation = async (conversationId, accessToken) => {
+  /*const fetchConversation = async (conversationId, accessToken) => {
     try {
       const response = await fetch('https://nuren-insta.vercel.app/fetch-conversation', {
         method: 'POST',
@@ -104,7 +104,7 @@ const LiveChat = () => {
     } catch (error) {
       console.error('Error fetching conversation from backend:', error);
     }
-  };
+  };*/
   
   const processAndSetMessages = (messages) => {
     let transformedMessages = [];
@@ -138,7 +138,7 @@ const LiveChat = () => {
 
   const sendMessage = () => {
     if (input && recId) {
-      socket.emit('send_message', { rec_id: recId, text: input });
+     // socket.emit('send_message', { rec_id: recId, text: input });
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: input, sender: 'bot' }

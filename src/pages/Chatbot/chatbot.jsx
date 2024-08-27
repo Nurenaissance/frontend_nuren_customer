@@ -231,8 +231,12 @@ socket.on('node-message', (message) => {
     const newMessage = { content: messageTemplates[selectedContact.id] };
   
     try {
+      let phoneNumber = selectedContact.phone;
+  if (phoneNumber.startsWith("91")) {
+    phoneNumber = phoneNumber.slice(2); // Remove the first two characters
+  }
       const payload = {
-        phoneNumber: selectedContact.phone,
+        phoneNumbers: [phoneNumber],
         message: newMessage.content,
       };
   

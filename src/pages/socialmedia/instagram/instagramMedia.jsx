@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import './instagramMedia.css';
 
-const socket = io('https://nuren-insta.vercel.app/');
+//const socket = io('https://nuren-insta.vercel.app/');
 
 const InstagramMedia = () => {
     const [mediaIds, setMediaIds] = useState([]);
@@ -13,7 +13,7 @@ const InstagramMedia = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+   /* useEffect(() => {
         fetchMediaIds();
     }, []);
 
@@ -49,7 +49,7 @@ const InstagramMedia = () => {
             setLoading(false);
         }
     };
-
+*/
     const handleCommentReply = () => {
         if (commentId && commentInput) {
             socket.emit('send_comment_reply', { comment_id: commentId, text: commentInput });
