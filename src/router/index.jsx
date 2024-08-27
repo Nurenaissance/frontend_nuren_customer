@@ -117,6 +117,7 @@ import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
 import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
+import BroadcastPage from "../pages/Chatbot/Broadcast/BroadcastPage.jsx";
 
 // import CustomModelForm from "../pages/CustomModel/customform";
 
@@ -367,6 +368,7 @@ export const RouteWrapper = () => {
           
           <Route path=":tenant_id/loyaltyinfo"  element= {<LoyaltyInfo/>}/>
           <Route path=":tenant_id/chatbot"  element= {<Chatbot/>}/>
+          <Route path=":tenant_id/broadcast"  element= {<BroadcastPage/>}/>
 
 
 
