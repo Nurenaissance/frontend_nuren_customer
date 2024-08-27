@@ -14,6 +14,7 @@ import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
 import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid'; 
 
 import io from 'socket.io-client';
 
@@ -47,8 +48,14 @@ const Chatbot = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [previousContact, setPreviousContact] = useState(null);
   const [newMessages, setNewMessages] = useState(['']);
- 
+  const [showBroadcastPopup, setShowBroadcastPopup] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [selectedPhones, setSelectedPhones] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+const [groupName, setGroupName] = useState('');
+const [groups, setGroups] = useState([]);
+  
+  const [isSendingBroadcast, setIsSendingBroadcast] = useState(false);
 
 
   const openPopup = () => {
@@ -231,15 +238,29 @@ socket.on('node-message', (message) => {
     const newMessage = { content: messageTemplates[selectedContact.id] };
   
     try {
-      const payload = {
-        phoneNumber: selectedContact.phone,
-        message: newMessage.content,
-      };
-  
-      const response = await axiosInstance.post(
-        'https://whatsappbotserver.azurewebsites.net/send-message',
-        payload,  // Let Axios handle the JSON conversion
-      );
+      if (selectedContact.isGroup) {
+        // Send message to all group members
+        const sendPromises = selectedContact.members.map(memberId => {
+          const member = contacts.find(c => c.id === memberId);
+          return axiosInstance.post(
+            'https://8twdg37p-3000.inc1.devtunnels.ms/send-message/',
+            {
+              phoneNumber: member.phone,
+              message: newMessage.content,
+            }
+          );
+        });
+        await Promise.all(sendPromises);
+      } else {
+        // Send message to individual contact
+        await axiosInstance.post(
+          'https://8twdg37p-3000.inc1.devtunnels.ms/send-message/',
+          {
+            phoneNumber: selectedContact.phone,
+            message: newMessage.content,
+          }
+        );
+      }
   
       // Update local state with the new message
       setConversation(prevConversation => [
@@ -247,9 +268,7 @@ socket.on('node-message', (message) => {
         { text: newMessage.content, sender: 'bot' }
       ]);
       setNewMessages(prevMessages => [...prevMessages, { text: newMessage.content, sender: 'bot'}]);
-      console.log("hry GPT this is a convo",conversation);
-  
-      
+      console.log("Message sent successfully");
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -360,54 +379,14 @@ socket.on('node-message', (message) => {
   }, [selectedContact]);
   const handleContactSelection = async (contact) => {
     if(selectedContact){
-    setPreviousContact(selectedContact);}
+      setPreviousContact(selectedContact);
+    }
+    setSelectedContact({...contact, isGroup: false});
     console.log("contactthatiamsetting",contact);
     setSelectedContact(contact);
    
-   /* if (contact && contact.id) {
-      await fetchProfileImage(contact.id);
-      if (!messages[contact.id]) {
-        setMessages(prevMessages => ({
-          ...prevMessages,
-          [contact.id]: []
-        }));
-      }
-    } else {
-      console.error('Invalid contact:', contact);
-    }*/
-   // fetchConversation(contact.id);
   };
- /* const handleContactSelection = async (contact) => {
-    if (selectedContact) {
-      console.log("idhardekjhh",selectedContact.phone);
-      // Store data for the previous contact
-      await sendDataToBackend(selectedContact.phone, conversation);
-      setPreviousContact(selectedContact);
-    }
-  
-    // Set the previous contact to the current selected contact before updating selected contact
-
-  
-    // Update the selected contact
-    setSelectedContact(contact);
-  
-    // Fetch profile image and conversation data for the new contact
-    
-    if (contact && contact.id) {
-      await fetchProfileImage(contact.id);
-      if (!messages[contact.id]) {
-        setMessages(prevMessages => ({
-          ...prevMessages,
-          [contact.id]: []
-        }));
-      }
-      // Fetch conversation data for the new contact
-      //await fetchConversation(contact.phone);
-    } else {
-      console.error('Invalid contact:', contact);
-    }
-  }; */
-
+ 
   const handleToggleSmileys = () => {
     setShowSmileys(!showSmileys);
   };
@@ -462,6 +441,7 @@ socket.on('node-message', (message) => {
     useEffect(() => {
       console.log("Selected flow has changed:", selectedFlow);
     }, [selectedFlow]);
+    const [isSending, setIsSending] = useState(false);
 
     const handleSendFlowData = async () => {
       if (!selectedFlow) {
@@ -478,184 +458,582 @@ socket.on('node-message', (message) => {
       }
     
       try {
+        setIsSending(true);
         console.log('Sending flow data:', selectedFlowData);
-        const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/set-flow/ ', selectedFlowData, {
+        const response = await axiosInstance.post('http://127.0.0.1:8000/set-flow/ ', selectedFlowData, {
           headers: {
             'Content-Type': 'application/json',
             token: localStorage.getItem('token'),
           },
         });
         console.log('Flow data sent successfully:', response.data);
-        // Add user feedback here (e.g., success message)
+        if (response.status === 200) {
+          // Add user feedback here (e.g., success message)
+          console.log('Flow data sent successfully');
+        }
       } catch (error) {
         console.error('Error sending flow data:', error);
         // Add user feedback here (e.g., error message)
+      } finally {
+        setIsSending(false);
+      }
+    };
+    useEffect(() => {
+      return () => {
+        // This cleanup function will run when the component unmounts
+        setIsSending(false);
+        const savedGroups = JSON.parse(localStorage.getItem('broadcastGroups') || '[]');
+        setGroups(savedGroups);
+      };
+    }, []);
+    const handleBroadcastMessage = () => {
+      setShowBroadcastPopup(true);
+    };
+
+    const handleCloseBroadcastPopup = () => {
+      setShowBroadcastPopup(false);
+      setBroadcastMessage('');
+      setSelectedPhones([]);
+      setGroupName('');
+      setIsSendingBroadcast(false);
+    };
+
+    const handleGroupSelection = (group) => {
+      console.log("Selected group:", group);
+      setSelectedContact({
+        id: group.id,
+        phone: `Group: ${group.name}`,
+        first_name: group.name,
+        last_name: '',
+        isGroup: true,
+        members: group.members
+      });
+      
+      // Fetch or set the group conversation
+      const groupConversation = [
+        { text: "Welcome to the group!", sender: 'bot' },
+        { text: "Last broadcast message: " + broadcastMessage, sender: 'bot' }
+      ];
+      setConversation(groupConversation);
+    };
+    
+   
+    const handleSendBroadcast = async () => {
+      if (selectedPhones.length === 0 || !broadcastMessage.trim()) {
+        alert("Please select at least one contact and enter a message.");
+        return;
+      }
+    
+      setIsSendingBroadcast(true);
+    
+      try {
+        // Create a new group and save it to local storage
+        const newGroup = {
+          id: uuidv4(),
+          name: groupName || `Broadcast Group ${new Date().toISOString()}`,
+          members: selectedPhones
+        };
+        saveGroupToLocalStorage(newGroup);
+    
+        // Prepare the data in the specified format
+        const phoneNumbers = selectedPhones.map(contactId => {
+          const contact = contacts.find(c => c.id === contactId);
+          return parseInt(contact.phone); // Ensure the phone number is an integer
+        });
+    
+        const payload = {
+          phoneNumbers: phoneNumbers,
+          message: broadcastMessage
+        };
+    
+        // Send the broadcast message
+        const response = await axiosInstance.post('https://8twdg37p-3000.inc1.devtunnels.ms/send-message/', payload);
+    
+        if (response.status === 200) {
+          console.log("Broadcast sent successfully");
+          alert("Broadcast message sent successfully!");
+          handleCloseBroadcastPopup();
+        } else {
+          throw new Error("Failed to send broadcast");
+        }
+
+        const broadcastMessageObj = { text: broadcastMessage, sender: 'bot' };
+        setGroups(prevGroups => prevGroups.map(group => ({
+          ...group,
+          conversation: [...(group.conversation || []), broadcastMessageObj]
+        })));
+    
+        // If the current selected contact is a group, update the conversation
+        if (selectedContact && selectedContact.isGroup) {
+          setConversation(prevConversation => [...prevConversation, broadcastMessageObj]);
+        }
+
+      } catch (error) {
+        console.error("Error sending broadcast:", error);
+        alert("Failed to send broadcast message. Please try again.");
+      } finally {
+        setIsSendingBroadcast(false);
       }
     };
 
 
-  return (
-    <div className="chatbot-container">
-      <div className="chatbot-chat-header">
-        <h1 className='chatbot-contact'>Contact</h1>
-        <div className='chatbot-contain'>
+const handlePhoneSelection = (contactId) => {
+  setSelectedPhones(prevSelected => 
+    prevSelected.includes(contactId)
+      ? prevSelected.filter(id => id !== contactId)
+      : [...prevSelected, contactId]
+  );
+};
+
+const saveGroupToLocalStorage = (group) => {
+  const existingGroups = JSON.parse(localStorage.getItem('broadcastGroups') || '[]');
+  const updatedGroups = [...existingGroups, group];
+  localStorage.setItem('broadcastGroups', JSON.stringify(updatedGroups));
+};
+
+//   return (
+//     <div className="chatbot-container">
+//       <div className="chatbot-chat-header">
+//         <h1 className='chatbot-contact'>Contact</h1>
+//         <div className='chatbot-contain'>
+//           <input
+//             type="text"
+//             placeholder="Search contacts..."
+//             value={searchText}
+//             className='chatbot-search'
+//             onChange={(e) => setSearchText(e.target.value)}
+//           />
+//           <SearchIcon className="search-icon" style={{ width: '20px', height: '24px' }} />
+//         </div>
+//         <div className="scrollable-contacts">
+//   <h1 className='chatbot-msg'>All messages</h1>
+//   <h2 className='chatbot-groups'>Groups</h2>
+//   {groups.map(group => (
+//     <div
+//       key={group.id}
+//       className="chatbot-group"
+//       onClick={() => handleGroupSelection(group)}
+//       style={{ cursor: 'pointer', padding: '5px' }}
+//     >
+//       {group.name} ({group.members.length} members)
+//     </div>
+//   ))}
+//   <h2 className='chatbot-contacts-title'>Contacts</h2>
+//   {filteredContacts.map(contact => (
+//     <div
+//       key={contact.id}
+//       className="chatbot-contacts"
+//       onClick={() => handleContactSelection(contact)}
+//       style={{ cursor: 'pointer', padding: '5px' }}
+//     > 
+//       {contact.phone} {contact.last_name} {contact.name}
+//     </div>
+//   ))}
+// </div>
+//       </div>
+//       <div className="chatbot-messages-container1">
+//         {selectedContact && (
+//           <div className="contact-box">
+//             <div className="chat-header">
+//               <div className="chat-header-left">
+//                 <div>
+//               {profileImage ? (
+//                 <img src={profileImage} alt="Profile" className="chatbot-profile-icon" />
+//               ):(
+//                 <span className="account-circle">Profile Image</span>
+//               )}
+//               </div>
+//               <div>
+//                 {selectedContact.phone}
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//         <div className="messages">
+//         {selectedContact && (
+//           <div className="conversation-text">
+//             {conversation.map((message, index) => (
+//               <div key={index} className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}>
+//                 {message.text !== '.' && message.text}
+//               </div>
+//             ))}
+//             </div>
+//           )}
+//         </div>
+//         <div className="chat-input-container">
+//           <div className="emoji-toggle-container">
+//             <EmojiEmotionsIcon className="header-icon-smiley" onClick={handleToggleSmileys} />
+//             {showSmileys && (
+//               <div className="emoji-picker-container">
+//                 <Picker onEmojiClick={handleSelectSmiley} />
+//               </div>
+//             )}
+//           </div>
+//           <div className="chatbot-left-icons">
+//             <EditIcon className="header-icon-edit" style={{ width: '20px', height: '20px' }} />
+//             <label htmlFor="file-upload">
+//             <CloudUploadIcon className="header-icon-upload" style={{ width: '20px', height: '20px', cursor: 'pointer' }} />
+//           </label>
+//           <input
+//             id="file-upload"
+//             type="file"
+//             style={{ display: 'none' }}
+//             onChange={handleUploadedFile}
+//           />
+//           </div>
+//           <div className="chatbot-typing-area">
+//           <textarea
+//             id="message"
+//             name="message"
+//             value={messageTemplates[selectedContact?.id] || ''}
+//             onChange={(e) => setMessageTemplates(prevTemplates => ({
+//               ...prevTemplates,
+//               [selectedContact?.id]: e.target.value
+//             }))}
+//             placeholder="Type a message"
+//             className="custom-chatbot-typing"
+//           />
+//           </div>
+//           <div className="chatbot-buttons">
+//             <button className="chatbot-generatemsg" onClick={handleGenerateMessage}>Generate Message</button>
+//             <button className='chatbot-sendmsg' onClick={handleSend}>Send</button>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="chatbot-contact-section">
+//       <button className="chatbot-signupbutton" onClick={handleRedirect}>Sign Up</button>
+//       <div className="content">
+//       {/* Your existing content here */}
+//       <button onClick={openPopup} className="open-popup-button">
+//        Image Editor
+//       </button>
+
+//       {showPopup && (
+//         <div className="editimage-popup">
+//           <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
+//           <div className="editimage-popup-container">
+//             <div className="editimage-popup-content">
+//               <ImageEditorComponent onClose={handlePopupClose}/>
+//             </div>
+//             <button onClick={handlePopupClose} className="close-popup-button">
+//               Close
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//         <h1 className='chatbot-details'>Contact Details</h1>
+//         <div>
+//           <button onClick={handleCreateFlow}>Create Flow</button>
+//           <select value={selectedFlow} onChange={handleFlowChange}>
+//   <option value="" disabled>Select a flow</option>
+//   {flows.map(flow => (
+//     <option key={flow.id} value={flow.id}>
+//       {flow.name || flow.id}
+//     </option>
+//   ))}
+// </select>
+// <button 
+//   onClick={handleSendFlowData} 
+//   className="flow-data-button"
+//   disabled={isSending}
+// >
+//   {isSending ? "Sending..." : "Send Flow Data"}
+// </button>
+
+// <button 
+//   onClick={handleBroadcastMessage} 
+//   className="broadcast-message-button"
+// >
+//   Broadcast Message
+// </button>
+
+// {showBroadcastPopup && (
+//   <div className="broadcast-popup">
+//     <div className="broadcast-popup-content">
+//       <h2>Broadcast Message</h2>
+//       <input
+//         type="text"
+//         value={groupName}
+//         onChange={(e) => setGroupName(e.target.value)}
+//         placeholder="Enter group name (optional)"
+//         className="group-name-input"
+//       />
+//       <textarea
+//         value={broadcastMessage}
+//         onChange={(e) => setBroadcastMessage(e.target.value)}
+//         placeholder="Type your broadcast message here..."
+//       />
+//       <div className="contact-list">
+//         <h3>Select Contacts:</h3>
+//         {contacts.map(contact => (
+//           <div key={contact.id} className="contact-item">
+//             <input
+//               type="checkbox"
+//               id={`contact-${contact.id}`}
+//               checked={selectedPhones.includes(contact.id)}
+//               onChange={() => handlePhoneSelection(contact.id)}
+//             />
+//             <label htmlFor={`contact-${contact.id}`}>
+//               {contact.first_name} {contact.last_name} ({contact.phone})
+//             </label>
+//           </div>
+//         ))}
+//       </div>
+//       <div className="popup-buttons">
+//         <button 
+//           onClick={handleSendBroadcast} 
+//           disabled={isSendingBroadcast || selectedPhones.length === 0 || !broadcastMessage.trim()}
+//         >
+//           {isSendingBroadcast ? "Sending..." : "Send Broadcast"}
+//         </button>
+//         <button onClick={handleCloseBroadcastPopup}>Cancel</button>
+//       </div>
+//     </div>
+//   </div>
+// )}
+//           </div>
+//         {selectedContact && (
+//           <div className="chatbot-contact-details">
+//             <div className="profile-info">
+//               {profileImage ? (
+//                 <img src={profileImage} alt="Profile" className="chatbot-profile-image" />
+//               ) : (
+//                 <span className="account-circle">Profile Image</span>
+//               )}
+//               <div>
+//                 <h2>{selectedContact.first_name} {selectedContact.last_name} {selectedContact.name}</h2>
+                
+//               </div>
+              
+//                 <div className="chatbot-contacts-details">
+//                 <p className='chatbot-phone'> <CallRoundedIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.phone}{selectedContact.id}</p>
+//                 <p className='chatbot-mail'><MailIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.email}</p>
+//                 </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+
+ return (
+    <div className="cb-container">
+      <div className="cb-sidebar">
+        <h1 className='cb-sidebar-title'>Contacts</h1>
+        <div className='cb-search-container'>
           <input
             type="text"
             placeholder="Search contacts..."
             value={searchText}
-            className='chatbot-search'
+            className='cb-search-input'
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <SearchIcon className="search-icon" style={{ width: '20px', height: '24px' }} />
+          <SearchIcon className="cb-search-icon" />
         </div>
-        <div className="scrollable-contacts">
-        <h1 className='chatbot-msg'>All messages</h1>
-        {filteredContacts.map(contact => (
-          <div
-            key={contact.id}
-            className="chatbot-contacts"
-            onClick={() => handleContactSelection(contact)}
-            style={{ cursor: 'pointer', padding: '5px' }}
-          > 
-            {contact.phone} {contact.last_name} {contact.name}
-          </div>
-        ))}
-      </div>
-      </div>
-      <div className="chatbot-messages-container1">
-        {selectedContact && (
-          <div className="contact-box">
-            <div className="chat-header">
-              <div className="chat-header-left">
-                <div>
-              {profileImage ? (
-                <img src={profileImage} alt="Profile" className="chatbot-profile-icon" />
-              ):(
-                <span className="account-circle">Profile Image</span>
-              )}
-              </div>
-              <div>
-                {selectedContact.phone}
-                </div>
-              </div>
-              <div className="chat-header-right">
-                <div className='box-chatbot1'>
-                  <MailIcon className="header-icon" style={{ width: '20px', height: '20px' }} />
-                </div>
-                <div className='box-chatbot1'>
-                  <CallRoundedIcon className="header-icon" style={{ width: '20px', height: '20px' }} />
-                </div>
-              </div>
+        <div className="cb-contact-list">
+          <h2 className='cb-group-title'>Groups</h2>
+          {groups.map(group => (
+            <div
+              key={group.id}
+              className="cb-group-item"
+              onClick={() => handleGroupSelection(group)}
+            >
+              {group.name} ({group.members.length})
             </div>
-          </div>
-        )}
-        <div className="messages">
-        {selectedContact && (
-          <div className="conversation-text">
-            {conversation.map((message, index) => (
-              <div key={index} className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}>
-                {message.text !== '.' && message.text}
-              </div>
-            ))}
-            </div>
-          )}
+          ))}
+          <h2 className='cb-contact-title'>Contacts</h2>
+          {filteredContacts.map(contact => (
+  <div
+    key={contact.id}
+    className={`cb-contact-item ${selectedContact?.id === contact.id ? 'cb-selected' : ''}`}
+    onClick={() => handleContactSelection(contact)}
+  >
+    <div className="cb-contact-info">
+      <span className="cb-contact-name">{contact.first_name} {contact.last_name}</span>
+      <span className="cb-contact-phone">{contact.phone}</span>
+    </div>
+  </div>
+))}
         </div>
-        <div className="chat-input-container">
-          <div className="emoji-toggle-container">
-            <EmojiEmotionsIcon className="header-icon-smiley" onClick={handleToggleSmileys} />
+      </div>
+      <div className="cb-main">
+      {selectedContact && (
+  <div className="cb-chat-header">
+    <div className="cb-chat-contact-info">
+      {profileImage ? (
+        <img src={profileImage} alt="Profile" className="cb-profile-icon" />
+      ) : (
+        <span className="cb-default-avatar">{selectedContact.first_name && selectedContact.first_name[0]}</span>
+      )}
+      <div className="cb-contact-details">
+        <span className="cb-contact-name">{selectedContact.first_name} {selectedContact.last_name}</span>
+        <span className="cb-contact-phone">{selectedContact.phone}</span>
+      </div>
+    </div>
+  </div>
+)}
+       <div className="cb-message-container">
+  {conversation.map((message, index) => (
+    <div key={index} className={`cb-message ${message.sender === 'user' ? 'cb-user-message' : 'cb-bot-message'}`}>
+      {message.text}
+    </div>
+  ))}
+</div>
+        <div className="cb-input-container">
+          <div className="cb-emoji-container">
+            <EmojiEmotionsIcon className="cb-emoji-icon" onClick={handleToggleSmileys} />
             {showSmileys && (
-              <div className="emoji-picker-container">
+              <div className="cb-emoji-picker">
                 <Picker onEmojiClick={handleSelectSmiley} />
               </div>
             )}
           </div>
-          <div className="chatbot-left-icons">
-            <EditIcon className="header-icon-edit" style={{ width: '20px', height: '20px' }} />
+          <div className="cb-input-actions">
             <label htmlFor="file-upload">
-            <CloudUploadIcon className="header-icon-upload" style={{ width: '20px', height: '20px', cursor: 'pointer' }} />
-          </label>
-          <input
-            id="file-upload"
-            type="file"
-            style={{ display: 'none' }}
-            onChange={handleUploadedFile}
-          />
+              <CloudUploadIcon className="cb-action-icon" />
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              style={{ display: 'none' }}
+              onChange={handleUploadedFile}
+            />
           </div>
-          <div className="chatbot-typing-area">
           <textarea
-            id="message"
-            name="message"
-            value={messageTemplates[selectedContact?.id] || ''}
-            onChange={(e) => setMessageTemplates(prevTemplates => ({
-              ...prevTemplates,
-              [selectedContact?.id]: e.target.value
-            }))}
-            placeholder="Type a message"
-            className="custom-chatbot-typing"
-          />
-          </div>
-          <div className="chatbot-buttons">
-            <button className="chatbot-generatemsg" onClick={handleGenerateMessage}>Generate Message</button>
-            <button className='chatbot-sendmsg' onClick={handleSend}>Send</button>
+  value={selectedContact && messageTemplates[selectedContact.id] || ''}
+  onChange={(e) => {
+    if (selectedContact) {
+      setMessageTemplates(prevTemplates => ({
+        ...prevTemplates,
+        [selectedContact.id]: e.target.value
+      }));
+    }
+  }}
+  placeholder="Type a message"
+  className="cb-input-field"
+/>
+          <div className="cb-send-actions">
+            <button className="cb-generate-btn" onClick={handleGenerateMessage}>Generate</button>
+            <button className='cb-send-btn' onClick={handleSend}>Send</button>
           </div>
         </div>
       </div>
-      <div className="chatbot-contact-section">
-      <button className="chatbot-signupbutton" onClick={handleRedirect}>Sign Up</button>
-      <div className="content">
-      {/* Your existing content here */}
-      <button onClick={openPopup} className="open-popup-button">
+      <div className="cb-details-panel">
+        <div className="cb-img-pop">
+      <button className="cb-signup-btn" onClick={handleRedirect}>Sign Up</button>
+      <button onClick={openPopup} className="open-popup-button-cb">
        Image Editor
+       </button>
+       </div>
+       {showPopup && (
+  <div className="cb-image-editor-popup">
+    <div className="cb-image-editor-overlay" onClick={handlePopupClose}></div>
+    <div className="cb-image-editor-container">
+      <div className="cb-image-editor-content">
+        <ImageEditorComponent onClose={handlePopupClose}/>
+      </div>
+      <button onClick={handlePopupClose} className="cb-close-popup-btn">
+        Close
       </button>
-
-      {showPopup && (
-        <div className="editimage-popup">
-          <div className="editimage-popup-overlay" onClick={handlePopupClose}></div>
-          <div className="editimage-popup-container">
-            <div className="editimage-popup-content">
-              <ImageEditorComponent onClose={handlePopupClose}/>
+    </div>
+  </div>
+)}
+        <h1 className='cb-details-title'>Contact Details</h1>
+        {selectedContact && (
+  <div className="cb-contact-full-details">
+    <div className="cb-profile-section">
+      {profileImage ? (
+        <img src={profileImage} alt="Profile" className="cb-profile-image" />
+      ) : (
+        <span className="cb-default-avatar-large">{selectedContact.first_name && selectedContact.first_name[0]}</span>
+      )}
+      <h2>{selectedContact.first_name} {selectedContact.last_name}</h2>
+    </div>
+    <div className="cb-contact-info-details">
+      <p className='cb-info-item'>
+        <CallRoundedIcon className="cb-info-icon" />
+        {selectedContact.phone}
+      </p>
+      <p className='cb-info-item'>
+        <MailIcon className="cb-info-icon" />
+        {selectedContact.email}
+      </p>
+    </div>
+  </div>
+)}
+        <div className="cb-actions">
+          <button onClick={handleCreateFlow} className="cb-action-btn">Create Flow</button>
+          <select value={selectedFlow} onChange={handleFlowChange} className="cb-flow-select">
+            <option value="" disabled>Select a flow</option>
+            {flows.map(flow => (
+              <option key={flow.id} value={flow.id}>
+                {flow.name || flow.id}
+              </option>
+            ))}
+          </select>
+          <button 
+            onClick={handleSendFlowData} 
+            className="cb-flow-btn"
+            disabled={isSending}
+          >
+            {isSending ? "Sending..." : "Send Flow Data"}
+          </button>
+          <button 
+            onClick={handleBroadcastMessage} 
+            className="cb-broadcast-btn"
+          >
+            Broadcast Message
+          </button>
+        </div>
+      </div>
+      {showBroadcastPopup && (
+        <div className="cb-broadcast-popup">
+          <div className="cb-broadcast-content">
+            <h2>Broadcast Message</h2>
+            <input
+              type="text"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              placeholder="Enter group name (optional)"
+              className="cb-group-name-input"
+            />
+            <textarea
+              value={broadcastMessage}
+              onChange={(e) => setBroadcastMessage(e.target.value)}
+              placeholder="Type your broadcast message here..."
+              className="cb-broadcast-message-input"
+            />
+            <div className="cb-broadcast-contact-list">
+              <h3>Select Contacts:</h3>
+              {contacts.map(contact => (
+                <div key={contact.id} className="cb-broadcast-contact-item">
+                  <input
+                    type="checkbox"
+                    id={`contact-${contact.id}`}
+                    checked={selectedPhones.includes(contact.id)}
+                    onChange={() => handlePhoneSelection(contact.id)}
+                  />
+                  <label htmlFor={`contact-${contact.id}`}>
+                    {contact.first_name} {contact.last_name} ({contact.phone})
+                  </label>
+                </div>
+              ))}
             </div>
-            <button onClick={handlePopupClose} className="close-popup-button">
-              Close
-            </button>
+            <div className="cb-broadcast-actions">
+              <button 
+                onClick={handleSendBroadcast} 
+                disabled={isSendingBroadcast || selectedPhones.length === 0 || !broadcastMessage.trim()}
+                className="cb-send-broadcast-btn"
+              >
+                {isSendingBroadcast ? "Sending..." : "Send Broadcast"}
+              </button>
+              <button onClick={handleCloseBroadcastPopup} className="cb-cancel-broadcast-btn">Cancel</button>
+            </div>
           </div>
         </div>
       )}
-    </div>
-        <h1 className='chatbot-details'>Contact Details</h1>
-        <div>
-          <button onClick={handleCreateFlow}>Create Flow</button>
-          <select value={selectedFlow} onChange={handleFlowChange}>
-  <option value="" disabled>Select a flow</option>
-  {flows.map(flow => (
-    <option key={flow.id} value={flow.id}>
-      {flow.name || flow.id}
-    </option>
-  ))}
-</select>
-            <button onClick={handleSendFlowData}>Send Flow Data</button>
-          </div>
-        {selectedContact && (
-          <div className="chatbot-contact-details">
-            <div className="profile-info">
-              {profileImage ? (
-                <img src={profileImage} alt="Profile" className="chatbot-profile-image" />
-              ) : (
-                <span className="account-circle">Profile Image</span>
-              )}
-              <div>
-                <h2>{selectedContact.first_name} {selectedContact.last_name} {selectedContact.name}</h2>
-                
-              </div>
-              
-                <div className="chatbot-contacts-details">
-                <p className='chatbot-phone'> <CallRoundedIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.phone}{selectedContact.id}</p>
-                <p className='chatbot-mail'><MailIcon className="header-icon" style={{ width: '20px', height: '20px' }} />{selectedContact.email}</p>
-                </div>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
