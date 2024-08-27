@@ -269,7 +269,7 @@ const fetchEmailStats = async () => {
   useEffect(() => {
     const fetchStoredEmails = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
+        const response = await axios.get('https://webappbaackend.azurewebsites.net/fetch-all-emails', {
           headers: {
             'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
           }
