@@ -4,7 +4,7 @@ import AccountsTable1 from "../../components/AccountsTableContent/Table.jsx";
 import React, { useState, useEffect } from 'react';
 import './AccountForm.jsx';
 import { NavLink } from 'react-router-dom';
-
+import Loader from "../../components/Loader/Loader.jsx";
 
 
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
@@ -21,7 +21,8 @@ const getTenantIdFromUrl = () => {
 
 export const AccountsTable = () => {
   const tenantId = getTenantIdFromUrl();
- 
+  const [isLoading, setIsLoading] = useState(true);
+
   
   const handleAction = (event) => {
     const selectedValue = event.target.value;
@@ -37,6 +38,12 @@ export const AccountsTable = () => {
     }
   };
 
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds delay for demonstration
+  }, []);
   const handlePlusClick1 = () => {
     console.log("Plus clicked");
   };
@@ -51,6 +58,7 @@ export const AccountsTable = () => {
       <div className="account_nav">
     <TopNavbar/>
   </div>
+  <Loader isLoading={isLoading}>
     <div className='accounts_main_page'>
               <div className="home_left_box1">
                 <Sidebar />
@@ -59,6 +67,7 @@ export const AccountsTable = () => {
               <AccountsTable1/>
               </div>
     </div>
+    </Loader>
     </div>
     
   );

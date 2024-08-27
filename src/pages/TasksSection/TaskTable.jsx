@@ -6,7 +6,7 @@ import { NavLink,Link } from 'react-router-dom';
 import { Dropdown  } from "react-bootstrap";
 import TopNavbar from "../TopNavbar/TopNavbar.jsx"; // Adjust the import path
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
-
+import Loader from "../../components/Loader/Loader.jsx";
 
 import axios from "axios";
 import "./task.css";
@@ -43,6 +43,14 @@ export const TaskTable = () => {
   };
   const [tasks, setTasks] = useState([]);
   const [viewMode, setViewMode] = useState("table"); // Default view mode is table
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds delay for demonstration
+  }, []);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -92,6 +100,7 @@ export const TaskTable = () => {
   return (
   
     <div className="tasks_main_component" style={{marginTop:'-60px'}}>
+      <Loader isLoading={isLoading}>
         <div className="home_left_box1" style={{"top":"0rem"}}>
           <Sidebar />
         </div>
@@ -214,6 +223,7 @@ export const TaskTable = () => {
      
     </div>
   </div>
+  </Loader>
 </div>
   );
 };

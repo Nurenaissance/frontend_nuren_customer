@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import EmailEditor from 'react-email-editor';
 
 const HtmlEditor = (props) => {
   const emailEditorRef = useRef(null);

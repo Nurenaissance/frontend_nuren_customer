@@ -32,9 +32,12 @@ import { useAuth } from '../../authContext';
 import axiosInstance from '../../api';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-
+import DocumentRag from '../../pages/documenteditpage/documentRAG';
 import LockIcon from '@mui/icons-material/Lock';
 import CloseIcon from '@mui/icons-material/Close';
+import DescriptionIcon from '@mui/icons-material/Description';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+
 
 
 import EditIcon from '@mui/icons-material/Edit';
@@ -412,6 +415,16 @@ export const Sidebar = ({ onSelectModel }) => {
                 icon={<EditIcon />}
                 text="PDF Editor"
               />
+                <NurenSidebarItem
+            to = {formatLink("/chat2doc")}
+            icon={<DescriptionIcon/>}
+            text="Document"
+            />
+            <NurenSidebarItem
+            to = {formatLink("/assignLeads")}
+            icon = {<SupervisorAccountIcon/>}
+            text = "Assign Lead"
+            />
                 <NurenSidebarItem
               icon={<LayersIcon />}
               text="Model"
