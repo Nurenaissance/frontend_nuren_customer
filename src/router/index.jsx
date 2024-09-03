@@ -15,7 +15,6 @@ import Met from "../pages/Meetings/met";
 import CallPage from "../pages/CallPage/callpage";
 import Form2 from "../pages/ContactsTable/Form2";
 import ContactInfo from "../pages/ContactsTable/ContactInfo";
-import EmailComponent from "../pages/MassEmail/Compose";
 import AccountsPage from "../pages/AccountsInfoPage/AccountInfoPage";
 import ShowLead from "../pages/Lead/ShowLead";
 import AccountForm from "../pages/AccountsSection/AccountForm";
@@ -36,7 +35,7 @@ import FaceB from "../pages/facebook/facebook";
 import Interaction from "../pages/InteractionPage/InteractionPage";
 import AddInteractionForm from "../pages/InteractionPage/AddInteractionForm";
 import InteractionDetailsPage from "../pages/InteractionPage/InteractionDetailsPage";
-import FlowGraph2 from "../pages/ReactFlow2/Flowgraph";
+
 import Campaign from "../pages/Campaign/campaign";
 import Campaignform from "../pages/Campaign/Campaignform";
 
@@ -44,7 +43,6 @@ import InstaAuth from "../pages/socialmedia/instagram/InstaAuth";
 import InstagramPost from "../pages/socialmedia/instagram/instagrampost";
 import CampaignInfo from "../pages/Campaign/campaigninfo";
 //import InstagramFlow from "../pages/ReactFlow2/dndInstagram";
-import WhatsappFlow from "../pages/ReactFlow2/dndWhatsapp";
 import Userprofile from "../pages/Userpage/Userprofile";
 import Reminder from "../pages/Reminders/Reminder";
 
@@ -310,9 +308,6 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/custom" element={<Custom/>}/>
           <Route path="/:tenantId/coins" element={<CoinStatsPage />} />   
           <Route path=":tenant_id/addlead" element={<Lead/>} />  
-          <Route path=":tenant_id/flow2" element={<FlowGraph2/>}/>
-          {/* <Route path=":tenant_id/instagramflow" element={<InstagramFlow/>}/>*/}
-          <Route path=":tenant_id/whatsappflow" element={<WhatsappFlow/>}/>
           <Route path=":tenant_id/contactinfo/:id" element={<ContactInfo/>}/>
           <Route path=":tenant_id/ShowLead/:id" element={<ShowLead/>}/>
           <Route path=":tenant_id/convert/:id" element={<ConvertLead/>}/>
@@ -332,7 +327,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/accounts/:id" element={<AccountsPage />} />
           <Route path=":tenant_id/send-email/:id" element={<SendEmail/>}/>
           <Route path=":tenant_id/send-msg/:id" element={<WhatsApp/>}/>
-          <Route path=":tenant_id/email" element={<EmailComponent/>} />
+          
           <Route path=":tenant_id/tasks" element={<TaskTable/>} />
           <Route path=":tenant_id/interaction" element={<Interaction/>}/>
           <Route path=":tenant_id/addtask" element={<AddTaskForm/>}/>
@@ -344,7 +339,7 @@ export const RouteWrapper = () => {
           <Route path="/:tenantId/flow" element={<FlowBuilder />} />
           <Route path="/:tenantId/floww/:templateId?" element={<DnDFlow />} />
           {/* <Route path=":tenant_id/compose" element={<GmailCallback />} /> */}
-          <Route path=":tenant_id/compose" element={<EmailComponent/>}/>
+         
           <Route path=":tenant_id/bulk-import" element={<BulkImport/>}/>
           <Route path=":tenant_id/flow" element={<FlowGraph/>}/>
           <Route path=":tenant_id/FB" element={<FaceB/>}/>
@@ -374,7 +369,7 @@ export const RouteWrapper = () => {
 
 
 
-          <Route path=":tenant_id/chatbot/" element={<Chatbot/>}/>
+      
 
 
           <Route path=":tenant_id/productform"  element= {<ProductForm/>}/>
@@ -400,7 +395,7 @@ export const RouteWrapper = () => {
         </>
       )}
 
-<Route path="chatbotredirect"  element= {<Chatbotredirect/>}/>
+      <Route path="chatbotredirect"  element= {<Chatbotredirect/>}/>
     {/*<Route path="*" element={<Login/>} />*/}
     <Route path="*" element={<NotFound />} />
     

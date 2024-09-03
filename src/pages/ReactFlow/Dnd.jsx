@@ -343,7 +343,7 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
             onNodeDoubleClick={onNodeDoubleClick}
             onNodeClick={onNodeClick}
-            fitView
+            minZoom={0.001}
           >
             <Controls />
             <MiniMap />

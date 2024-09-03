@@ -257,7 +257,7 @@ const FlowBuilderContent = () => {
               onInit={setReactFlowInstance}
               onDrop={onDrop}
               onDragOver={(event) => event.preventDefault()}
-              fitView
+              minZoom={0.001}
             >
               <Controls />
               <MiniMap />
