@@ -6,18 +6,24 @@ const Chatbotredirect = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    const tenantID = JSON.parse(localStorage.getItem('tenant_id')); // Replace with your actual local storage key
+  
     const timer = setInterval(() => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(timer);
-          // Redirect to chatbot page
-          window.location.href = 'chatbot'; // Replace with your actual chatbot page URL
+          // Redirect to tenantID/chatbot page
+          if (tenantID) {
+            window.location.href = `${tenantID}/chatbot`; // Redirect to tenantID/chatbot
+          } else {
+            console.error('Tenant ID not found');
+          }
           return 100;
         }
         return prevProgress + (100 / 30); // Increase by 100/30 every second
       });
     }, 1000);
-
+  
     return () => clearInterval(timer);
   }, []);
 

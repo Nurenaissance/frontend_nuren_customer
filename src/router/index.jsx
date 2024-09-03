@@ -370,7 +370,7 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/loyaltyinfo"  element= {<LoyaltyInfo/>}/>
           <Route path=":tenant_id/chatbot"  element= {<Chatbot/>}/>
           <Route path=":tenant_id/broadcast"  element= {<BroadcastPage/>}/>
-          <Route path=":tenant_id/chatbotredirect"  element= {<Chatbotredirect/>}/>
+        
 
 
 
@@ -400,7 +400,7 @@ export const RouteWrapper = () => {
         </>
       )}
 
-
+<Route path="chatbotredirect"  element= {<Chatbotredirect/>}/>
     {/*<Route path="*" element={<Login/>} />*/}
     <Route path="*" element={<NotFound />} />
     
