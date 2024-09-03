@@ -31,7 +31,7 @@ const nodeTypes = {
   start: ({ data }) => (
     <div style={{ padding: '10px', border: '2px solid #4CAF50', borderRadius: '5px', background: '#E8F5E9' }}>
       <strong>{data.label}</strong>
-      <Handle type="source" position={Position.Bottom} id="a" />
+      <Handle type="source" position={Position.Right} id="a" />
     </div>
   ),
 };
