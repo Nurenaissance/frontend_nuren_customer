@@ -319,20 +319,20 @@ function extractMainText(emailContent) {
     const fetchedEmailIds = storedEmails.map(email => email.id);
   
     // Filter to get newly selected emails (those not in fetchedEmailIds)
-    const newlySelectedEmails = selectedEmailIds.filter(emailId => !fetchedEmailIds.includes(emailId));
+    const newlySelectedEmails = emails.filter(email => selectedEmailIds.includes(email.id) && !fetchedEmailIds.includes(email.id));
   
     // Prepare the selected email list for storage
-    const selectedEmailList = newlySelectedEmails.map(emailId => ({
-      email_id: emailId,  // Use the emailId directly
-      from: 'dummy@example.com',  // Dummy data for from
-      subject: 'Dummy Subject',    // Dummy data for subject
-      text: 'Dummy text content'    // Dummy data for text
+    const selectedEmailList = newlySelectedEmails.map(email => ({
+      email_id: email.id,
+      from: email.from,
+      subject: email.subject,
+      text: email.text
     }));
   
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axiosInstance.post('/store-selected-emails/', selectedEmailList, {
+      await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
