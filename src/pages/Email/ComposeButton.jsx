@@ -19,6 +19,7 @@ import {
   Switch,
   FormControlLabel,
   Modal,
+  MenuItem,
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import CodeIcon from '@mui/icons-material/Code';
@@ -52,6 +53,8 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
   const [attachments, setAttachments] = useState([]);
   const [promptDialogOpen, setPromptDialogOpen] = useState(false);
   const [promptText, setPromptText] = useState('');
+  const [drafts, setDrafts] = useState([]);
+  const [selectedDraft, setSelectedDraft] = useState('');
 
 
 
@@ -122,6 +125,11 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       setMessage('Invalid email provider');
       return;
     }
+    let links = [];
+    let modifiedContent = content;
+
+    // Regular expression to find links
+    const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
     const trackingPixelUrl = `https://lxx1lctm-8000.inc1.devtunnels.ms/track_open/${trackingId}/`;
@@ -166,7 +174,7 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
         email_id: recipients.join(',') // Send tracking data for all recipients
       };
   
-      await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', trackingData, {
+      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', trackingData, {
         headers: { 'Content-Type': 'application/json' }
       });
   
@@ -265,6 +273,37 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
   //     console.error('Error sending email', error);
   //   }
   // };
+
+  const fetchDrafts = async () => {
+    try {
+      const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/emails/?email_type=draft');
+      setDrafts(response.data);
+    } catch (error) {
+      console.error('Error fetching drafts:', error);
+      setMessage('Error fetching drafts');
+    }
+  };
+  
+  useEffect(() => {
+    fetchDrafts();
+  }, []);
+  
+  
+  const handleDraftSelection = (event) => {
+    setSelectedDraft(event.target.value);
+  };
+
+  const loadDraft = () => {
+    const draft = drafts.find(d => d.tracking_id === selectedDraft);
+    if (draft) {
+      setTo(draft.email_id || '');
+      setSubject(draft.subject || '');
+      setContent(draft.content || '');
+      setIsHtml(draft.is_html || false);
+    }
+  };
+
+
   
   const handleSaveDraft = async () => {
     const trackingId = uuidv4();
@@ -276,14 +315,18 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
       operator: OPERATOR_CHOICES[provider.toUpperCase()],
       time: new Date().toISOString(),
       subject: subject,
-      email_type: 'draft'
+      email_type: 'draft',
+      email_id: to,
+      content: content,
+      is_html: isHtml
     };
   
     try {
-      await axios.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', draftData, {
+      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', draftData, {
         headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Draft saved successfully');
+      fetchDrafts(); // Refresh the drafts list
       setTimeout(() => {
         setMessage('');
       }, 2000);
@@ -432,6 +475,29 @@ function ComposeButton({ contactemails,show, onClose, emailUser, provider }) {
               ))}
             </List>
           )}
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+  <TextField
+    select
+    label="Select Draft"
+    value={selectedDraft}
+    onChange={handleDraftSelection}
+    variant="outlined"
+    sx={{ minWidth: 200 }}
+  >
+    {drafts.map((draft) => (
+      <MenuItem key={draft.tracking_id} value={draft.tracking_id}>
+        {draft.subject || 'Untitled Draft'}
+      </MenuItem>
+    ))}
+  </TextField>
+  <Button
+    variant="contained"
+    onClick={loadDraft}
+    disabled={!selectedDraft}
+  >
+    Load Draft
+  </Button>
+</Box>
           <Box mt={2} display="flex" justifyContent="flex-end" gap={1}>
             <Button variant="contained" type="submit" endIcon={<SendIcon />}>
               Send
