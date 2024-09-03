@@ -157,6 +157,9 @@ const FlowBuilderContent = () => {
       node_data: {
         nodes: nodes.filter(node => node.id !== 'start').map(({ id, type, position, data }) => {
           const { updateNodeData, ...cleanData } = data;
+          if (type === 'askQuestion' && cleanData.optionType === 'Variables') {
+            return { id, type, position, data: { ...cleanData, dataTypes: cleanData.dataTypes || [] } };
+          }
           return { id, type, position, data: cleanData };
         }),
         edges: edges.filter(edge => edge.source !== 'start'),
