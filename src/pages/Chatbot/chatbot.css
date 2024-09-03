@@ -478,3 +478,12 @@ align-items: center;
 justify-content: space-between;
 margin-bottom: 4rem;
 }
+
+.cb-unread-count {
+  background-color: #ff0000;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 5px;
+}
