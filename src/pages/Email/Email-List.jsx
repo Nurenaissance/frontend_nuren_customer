@@ -349,11 +349,11 @@ function extractMainText(emailContent) {
       .filter(email => newlySelectedEmails.includes(email.id)) // Only include newly selected emails
       .map(email => {
         const { combinedContent, subject } = extractHumanReadableContent(email.text);
-        const combineContent2=extractInnerText(combinedContent);
-        const combineContent3=extractMainText(combineContent2);// Use your existing function
+        // const combineContent2=extractInnerText(combinedContent);
+        // const combineContent3=extractMainText(combineContent2);// Use your existing function
         return {
           sender: email.from,  // Email sender
-          content: subject + combineContent3, // Combined content
+          content: subject + combinedContent, // Combined content
           sent_at: new Date().toISOString(), // Current date/time in ISO format
           platform: 'email', // Set platform to 'email'
           userid: emailUser, // Adjust this if you have a different user ID
