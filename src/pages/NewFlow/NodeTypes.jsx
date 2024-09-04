@@ -81,6 +81,16 @@ const highlightErrorStyle = {
   boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.2)',
 };
 
+const ContactDropdown = ({ filteredContacts, onContactSelect }) => (
+  <div className="contact-dropdown" style={{ position: 'absolute', zIndex: 1000, background: 'white', border: '1px solid #ccc' }}>
+    {filteredContacts.map(contact => (
+      <div key={contact.id} onClick={() => onContactSelect(contact)} style={{ padding: '5px', cursor: 'pointer' }}>
+        {contact.name}
+      </div>
+    ))}
+  </div>
+);
+
 const NodeWrapper = ({ children, style, type }) => {
   
   const { deleteElements, setNodes, getNode } = useReactFlow();
@@ -114,7 +124,7 @@ const NodeWrapper = ({ children, style, type }) => {
   );
 };
 
-export const AskQuestionNode = ({ data, isConnectable }) => {
+export const AskQuestionNode = ({ data, isConnectable, onInputChange, showContactDropdown, filteredContacts, onContactSelect  }) => {
     const [question, setQuestion] = useState(data.question || '');
     const [optionType, setOptionType] = useState(data.optionType || 'Buttons');
     const [options, setOptions] = useState(data.options || []);
@@ -311,11 +321,11 @@ return (
             height: '12px',
         }} position={Position.Right} isConnectable={isConnectable} />
       )}
-  </NodeWrapper>
+{showContactDropdown && <ContactDropdown filteredContacts={filteredContacts} onContactSelect={onContactSelect} />}  </NodeWrapper>
 );
 };
 
-export const SendMessageNode = ({ data, isConnectable }) => {
+export const SendMessageNode = ({ data, isConnectable, onInputChange, showContactDropdown, filteredContacts, onContactSelect }) => {
   const [fields, setFields] = useState(data.fields || [{ type: 'Message', content: '' }]);
   const { id } = data;
 const { updateNodeData } = useFlow();
@@ -438,7 +448,7 @@ const renderInput = (field, index) => {
             <FaMinus onClick={() => removeField(index)} style={{ ...iconStyles, color: '#d32f2f' }} />
           </div>
           {renderInput(field, index)}
-          {field.fileName && <div style={{ fontSize: '12px', marginTop: '5px' }}>File: {field.fileName}</div>}
+          {showContactDropdown && <ContactDropdown filteredContacts={filteredContacts} onContactSelect={(contact) => onContactSelect(contact, data.id, index)} />}
         </div>
       ))}
       <button style={{ ...buttonStyles, background: '#FF6347' }} onClick={() => addField('Message')}>
@@ -456,7 +466,7 @@ const renderInput = (field, index) => {
   );
 };
 
-export const SetConditionNode = ({ data, isConnectable }) => {
+export const SetConditionNode = ({ data, isConnectable, onInputChange, showContactDropdown, filteredContacts, onContactSelect  }) => {
   const [condition, setCondition] = useState(data.condition || '');
   const { id } = data;
 const { updateNodeData } = useFlow();
@@ -486,6 +496,7 @@ const { updateNodeData } = useFlow();
         onChange={handleConditionChange}
         placeholder="Enter condition"
       />
+       {showContactDropdown && <ContactDropdown filteredContacts={filteredContacts} onContactSelect={(contact) => onContactSelect(contact, data.id, 'condition')} />}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
         <div style={{ background: '#d9f7be', padding: '5px 10px', borderRadius: '4px', color: '#389e0d' }}>True</div>
         <div style={{ background: '#ffccc7', padding: '5px 10px', borderRadius: '4px', color: '#cf1322' }}>False</div>

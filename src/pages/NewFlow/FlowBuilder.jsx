@@ -49,7 +49,100 @@ const FlowBuilderContent = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [flowName, setFlowName] = useState('');
   const [flowDescription, setFlowDescription] = useState('');
+  const [contacts, setContacts] = useState([]);
+  const [showContactDropdown, setShowContactDropdown] = useState(false);
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [currentNodeId, setCurrentNodeId] = useState(null);
+  const [currentFieldIndex, setCurrentFieldIndex] = useState(null);
 
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const response = await axiosInstance.get('/contacts/');
+        setContacts(response.data || []); // Ensure contacts is always an array
+      } catch (error) {
+        console.error('Error fetching contacts:', error);
+        setContacts([]); // Set to empty array if there's an error
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
+
+  const handleContactSelect = (contact) => {
+    const formattedContact = `{{${contact.name}}}`;
+    updateNodeData(currentNodeId, (prevData) => {
+      const updatedFields = [...prevData.fields];
+      updatedFields[currentFieldIndex] = {
+        ...updatedFields[currentFieldIndex],
+        content: updatedFields[currentFieldIndex].content + formattedContact
+      };
+      return { ...prevData, fields: updatedFields };
+    });
+    setShowContactDropdown(false);
+  };
+
+
+  const handleInputChange = (nodeId, fieldIndex, value) => {
+    setCurrentNodeId(nodeId);
+    setCurrentFieldIndex(fieldIndex);
+
+    if (value.endsWith('@')) {
+      setShowContactDropdown(true);
+      setContactSearchTerm('');
+    } else if (showContactDropdown) {
+      setContactSearchTerm(value.split('@').pop());
+    }
+
+    updateNodeData(nodeId, (prevData) => {
+      const updatedFields = [...prevData.fields];
+      updatedFields[fieldIndex] = {
+        ...updatedFields[fieldIndex],
+        content: value
+      };
+      return { ...prevData, fields: updatedFields };
+    });
+  };
+
+  const filteredContacts = useMemo(() => {
+    return contacts.filter(contact => 
+      contact && contact.name && typeof contact.name === 'string' &&
+      contact.name.toLowerCase().includes((contactSearchTerm || '').toLowerCase())
+    );
+  }, [contacts, contactSearchTerm]);
+
+
+  const customNodeTypes = {
+    ...nodeTypes,
+    askQuestion: (props) => (
+      <AskQuestionNode
+        {...props}
+        onInputChange={handleInputChange}
+        showContactDropdown={showContactDropdown}
+        filteredContacts={filteredContacts}
+        onContactSelect={handleContactSelect}
+      />
+    ),
+    sendMessage: (props) => (
+      <SendMessageNode
+        {...props}
+        onInputChange={handleInputChange}
+        showContactDropdown={showContactDropdown}
+        filteredContacts={filteredContacts}
+        onContactSelect={handleContactSelect}
+      />
+    ),
+    setCondition: (props) => (
+      <SetConditionNode
+        {...props}
+        onInputChange={handleInputChange}
+        showContactDropdown={showContactDropdown}
+        filteredContacts={filteredContacts}
+        onContactSelect={handleContactSelect}
+      />
+    ),
+  };
 
 
   const startNode = {
