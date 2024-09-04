@@ -6,25 +6,47 @@ const Chatbotredirect = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const tenantID = JSON.parse(localStorage.getItem('tenant_id')); // Replace with your actual local storage key
-  
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress >= 100) {
-          clearInterval(timer);
-          // Redirect to tenantID/chatbot page
-          if (tenantID) {
-            window.location.href = `${tenantID}/chatbot`; // Redirect to tenantID/chatbot
-          } else {
-            console.error('Tenant ID not found');
-          }
-          return 100;
+    const handleAccessToken = async () => {
+      try {
+        // Get authorization code from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        console.log("Here is the code",code);
+        if (code) {
+          // Send the auth code to the backend
+          const response = await axios.post('https://whatsappbotserver.azurewebsites.net/login-flow', { code });
+
+          // Handle the response (you can save token or do other logic here)
+          console.log('Backend response:', response.data);
+
+          // Get tenantID from local storage and redirect
+          const tenantID = JSON.parse(localStorage.getItem('tenant_id')); // Replace with your actual local storage key
+
+          const timer = setInterval(() => {
+            setProgress((prevProgress) => {
+              if (prevProgress >= 100) {
+                clearInterval(timer);
+                if (tenantID) {
+                  window.location.href = `${tenantID}/chatbot`; // Redirect to tenantID/chatbot
+                } else {
+                  console.error('Tenant ID not found');
+                }
+                return 100;
+              }
+              return prevProgress + (100 / 30); // Increase by 100/30 every second
+            });
+          }, 1000);
+        } else {
+          console.error('Authorization code not found in URL');
         }
-        return prevProgress + (100 / 30); // Increase by 100/30 every second
-      });
-    }, 1000);
-  
-    return () => clearInterval(timer);
+      } catch (error) {
+        console.error('Error during login flow:', error);
+      }
+    };
+
+    handleAccessToken();
+
+    return () => clearInterval(); // Cleanup
   }, []);
 
   const containerStyle = {
