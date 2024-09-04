@@ -157,7 +157,7 @@ const BroadcastPage = () => {
       };
   
       // Send the broadcast message
-      const response = await axiosInstance.post('https://8twdg37p-8080.inc1.devtunnels.ms/send-template/', payload);
+      const response = await axiosInstance.post('https://whatsappbotserver.azurewebsites.net/send-template/', payload);
   
       if (response.status === 200) {
         console.log("Broadcast sent successfully");
