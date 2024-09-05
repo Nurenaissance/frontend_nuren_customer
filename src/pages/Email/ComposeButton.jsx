@@ -146,12 +146,12 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
   
     const trackingId = uuidv4();
 
-      const trackingPixelUrl = `https://webappbaackend.azurewebsites.net/track_open/${trackingId}/`;
+      const trackingPixelUrl = `https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/track_open/${trackingId}/`;
       const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
     
       modifiedContent = content.replace(regex, (match, p1, p2) => {
         const linkTrackingId = uuidv4(); // Generate unique ID for each link
-        const trackingUrl = `https://webappbaackend.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
+        const trackingUrl = `https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/track_click/${trackingId}/${linkTrackingId}/?redirect_url=${encodeURIComponent(p2)}`;
         
         links.push({
             link_id: linkTrackingId,
@@ -310,7 +310,7 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
 
   const fetchDrafts = async () => {
     try {
-      const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/emails/?email_type=draft');
+      const response = await axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/emails/?email_type=draft');
       setDrafts(response.data);
     } catch (error) {
       console.error('Error fetching drafts:', error);
@@ -362,7 +362,7 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
     };
   
     try {
-      await axiosInstance.post('https://webappbaackend.azurewebsites.net/emails/', draftData, {
+      await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/emails/', draftData, {
         headers: { 'Content-Type': 'application/json' }
       });
       setMessage('Draft saved successfully');

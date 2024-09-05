@@ -573,7 +573,7 @@ const Chatbot = () => {
   
       if (formattedConversation.length === 0) return;
   
-      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_post/${contactPhone}/?source=whatsapp`, {
+      const response = await fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/whatsapp_convo_post/${contactPhone}/?source=whatsapp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -600,7 +600,7 @@ const Chatbot = () => {
   // Function to fetch conversation data for a given contact
   const fetchConversation = async (contactId) => {
     try {
-      const response = await fetch(`https://webappbaackend.azurewebsites.net/whatsapp_convo_get/${contactId}/?source=whatsapp`, {
+      const response = await fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/whatsapp_convo_get/${contactId}/?source=whatsapp`, {
         method: 'GET',
         headers: {
           'X-Tenant-ID': tenantId
@@ -699,7 +699,7 @@ const Chatbot = () => {
   
     const fetchFlows = async () => {
       try {
-        const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/node-templates/', {
+        const response = await axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/node-templates/', {
           headers: { token: localStorage.getItem('token') },
         });
         // Ensure each flow has an id property

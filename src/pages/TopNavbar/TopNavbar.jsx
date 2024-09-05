@@ -117,7 +117,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     formData.append('model_name', selectedDocumentType);
 
     try {
-      const response = await axiosInstance.post('https://webappbaackend.azurewebsites.net/upload/', formData, {
+      const response = await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/upload/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -254,7 +254,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     console.log('Search Query:', searchQuery);
     try {
       const tenant = tenantId
-      const response = await fetch('https://webappbaackend.azurewebsites.net/execute-query/', {
+      const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/execute-query/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

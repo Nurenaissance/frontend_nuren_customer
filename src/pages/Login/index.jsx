@@ -49,7 +49,7 @@ export const Login = () => {
       password: password,
     };
 
-    fetch('https://webappbaackend.azurewebsites.net/login/', {
+    fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

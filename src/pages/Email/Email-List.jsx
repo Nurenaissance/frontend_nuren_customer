@@ -332,7 +332,7 @@ function extractMainText(emailContent) {
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/store-selected-emails/', selectedEmailList, {
+      await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
