@@ -34,7 +34,7 @@ const Models = () => {
     useEffect(() => {
         const fetchModels = async () => {
             try {
-                const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/dynamic-models/');
+                const response = await axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/dynamic-models/');
                 setModels(response.data);
             
             } catch (error) {
@@ -51,7 +51,7 @@ const Models = () => {
                 setLoading(true);
                 try {
                     console.log('This is model name:', modelName);
-                    const response = await axiosInstance.get(`https://webappbaackend.azurewebsites.net/dynamic-model-data/${modelName}/`);
+                    const response = await axiosInstance.get(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/dynamic-model-data/${modelName}/`);
                     setModelData(response.data);
                     console.log('Model data:', response.data);
                 } catch (error) {
@@ -80,7 +80,7 @@ const Models = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch(`https://webappbaackend.azurewebsites.net/dynamic-model-data/${modelName}/`, {
+            const response = await fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/dynamic-model-data/${modelName}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

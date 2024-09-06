@@ -107,7 +107,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitInstagramCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('https://webappbaackend.azurewebsites.net/instagram-campaigns/', {
+          const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/instagram-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitWhatsAppCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('https://webappbaackend.azurewebsites.net/whatsapp-campaigns/', {
+          const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/whatsapp-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitEmailCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('https://webappbaackend.azurewebsites.net/email-campaigns/', {
+          const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/email-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ const AdditionalCampaignFields = ({ additionalFields }) => {
       const handleSubmitCallCampaign = async (e) => {
         e.preventDefault();
         try {
-          const response = await fetch('https://webappbaackend.azurewebsites.net/call-campaigns/', {
+          const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/call-campaigns/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -47,7 +47,7 @@ export const Register = () => {
 
   useEffect(() => {
     // Fetch organisation names from the backend when component mounts
-    fetch(`https://webappbaackend.azurewebsites.net/createTenant`)
+    fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/createTenant`)
       .then((res) => res.json())
       .then((data) => {
         // Extract organisation names from the response
@@ -86,7 +86,7 @@ export const Register = () => {
     const selectedTenantId = selectedOrg ? selectedOrg.tenantId : "";
 
     try {
-      const response = await fetch(`https://webappbaackend.azurewebsites.net/register/`, {
+      const response = await fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export const Register = () => {
   const handlePopupSubmit = () => {
     // Handle submission of the new organisation popup form
     // Implement logic to create the new organisation
-    fetch(`https://webappbaackend.azurewebsites.net/createTenant/`, {
+    fetch(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/createTenant/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

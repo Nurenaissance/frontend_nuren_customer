@@ -9,7 +9,9 @@ import ReactFlow, {
   MiniMap,
   Background,
   applyNodeChanges,
-  applyEdgeChanges
+  applyEdgeChanges,
+  Handle,
+  Position
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { AskQuestionNode, SendMessageNode, SetConditionNode } from './NodeTypes';
@@ -25,7 +27,13 @@ const getId = () => `${id++}`;
 const nodeTypes = {
   askQuestion: AskQuestionNode,
   sendMessage: SendMessageNode,
-  setCondition: SetConditionNode
+  setCondition: SetConditionNode,
+  start: ({ data }) => (
+    <div style={{ padding: '10px', border: '2px solid #4CAF50', borderRadius: '5px', background: '#E8F5E9' }}>
+      <strong>{data.label}</strong>
+      <Handle type="source" position={Position.Right} id="a" />
+    </div>
+  ),
 };
 
 const FlowBuilderContent = () => {
@@ -43,14 +51,26 @@ const FlowBuilderContent = () => {
   const [flowDescription, setFlowDescription] = useState('');
 
 
+
+  const startNode = {
+    id: 'start',
+    type: 'start',
+    position: { x: 0, y: 0 },
+    data: { label: 'Start' },
+  };
+
   const resetFlow = useCallback(() => {
-    setNodes([]);
+    setNodes([startNode]);
     setEdges([]);
     setFlowName('');
     setFlowDescription('');
     setIsExistingFlow(false);
     setSelectedFlow('');
   }, [setNodes, setEdges]);
+
+  useEffect(() => {
+    resetFlow();
+  }, [resetFlow]);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -67,9 +87,7 @@ const FlowBuilderContent = () => {
     [setEdges]
   );
 
-  useEffect(() => {
-    fetchExistingFlows();
-  }, []);
+
 
   const fetchExistingFlows = async () => {
     try {
@@ -92,7 +110,7 @@ const FlowBuilderContent = () => {
   
       const type = event.dataTransfer.getData("application/reactflow");
   
-      if (typeof type === "undefined" || !type) {
+      if (typeof type === "undefined" || !type || type === 'start') {
         return;
       }
   
@@ -130,33 +148,38 @@ const FlowBuilderContent = () => {
 
   const saveFlow = useCallback(async () => {
     console.log('Current nodes:', nodes);
-  console.log('Current edges:', edges);
-  const flow = {
-    name: flowName,
-    description: flowDescription,
-    category: "default",
-    node_data: {
-      nodes: nodes.map(({ id, type, position, data }) => {
-        const { updateNodeData, ...cleanData } = data;
-        return { id, type, position, data: cleanData };
-      }),
-      edges: edges
+    console.log('Current edges:', edges);
+    const startEdge = edges.find(edge => edge.source === 'start');
+    const flow = {
+      name: flowName,
+      description: flowDescription,
+      category: "default",
+      node_data: {
+        nodes: nodes.filter(node => node.id !== 'start').map(({ id, type, position, data }) => {
+          const { updateNodeData, ...cleanData } = data;
+          if (type === 'askQuestion' && cleanData.optionType === 'Variables') {
+            return { id, type, position, data: { ...cleanData, dataTypes: cleanData.dataTypes || [] } };
+          }
+          return { id, type, position, data: cleanData };
+        }),
+        edges: edges.filter(edge => edge.source !== 'start'),
+        start: startEdge ? startEdge.target : null
+      }
+    };
+    console.log('Flow to be saved:', flow);
+    
+    try {
+      const response = await axiosInstance.post('/node-templates/', flow);
+      console.log('Flow saved successfully:', response.data);
+      setShowSavePopup(false);
+      setIsExistingFlow(true);
+      setSelectedFlow(flowName);
+      fetchExistingFlows();
+      navigate('/ll/chatbot');
+    } catch (error) {
+      console.error('Error saving flow:', error);
     }
-  };
-  console.log('Flow to be saved:', flow);
-  
-  try {
-    const response = await axiosInstance.post('/node-templates/', flow);
-    console.log('Flow saved successfully:', response.data);
-    setShowSavePopup(false);
-    setIsExistingFlow(true);
-    setSelectedFlow(flowName);
-    fetchExistingFlows();
-    navigate('/ll/chatbot');
-  } catch (error) {
-    console.error('Error saving flow:', error);
-  }
-}, [nodes, edges, flowName, flowDescription, navigate, fetchExistingFlows]);
+  }, [nodes, edges, flowName, flowDescription, navigate, fetchExistingFlows]);
 
   const handleSaveConfirm = (name, description) => {
     setFlowName(name);
@@ -185,16 +208,24 @@ const FlowBuilderContent = () => {
         const response = await axiosInstance.get(`/node-templates/${flowId}/`);
         const flow = response.data;
         
-        const mappedNodes = flow.node_data.nodes.map(node => ({
-          ...node,
-          data: {
-            ...node.data,
-            updateNodeData: (newData) => updateNodeData(node.id, newData),
-          },
-        }));
+        const mappedNodes = [
+          startNode,
+          ...flow.node_data.nodes.map(node => ({
+            ...node,
+            data: {
+              ...node.data,
+              updateNodeData: (newData) => updateNodeData(node.id, newData),
+            },
+          }))
+        ];
+
+        const mappedEdges = [
+          ...(flow.node_data.start ? [{ id: 'start-edge', source: 'start', target: flow.node_data.start }] : []),
+          ...flow.node_data.edges
+        ];
 
         setNodes(mappedNodes);
-        setEdges(flow.node_data.edges);
+        setEdges(mappedEdges);
         setFlowName(flow.name);
         setFlowDescription(flow.description);
         setIsExistingFlow(true);
@@ -225,8 +256,8 @@ const FlowBuilderContent = () => {
               onConnect={onConnect}
               onInit={setReactFlowInstance}
               onDrop={onDrop}
-              onDragOver={onDragOver}
-              fitView
+              onDragOver={(event) => event.preventDefault()}
+              minZoom={0.001}
             >
               <Controls />
               <MiniMap />

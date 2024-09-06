@@ -55,12 +55,12 @@ export const Product = () => {
 
     const filteredProducts = products.filter(
         (product) =>
-          product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.product_code.includes(searchTerm) ||
+          (product.product_name?.toLowerCase().includes(searchTerm.toLowerCase()) || // Null-safe check for product_name
+          product.product_code?.includes(searchTerm)) && // Null-safe check for product_code
           (filters.active === "" || product.productActive === (filters.active === "true")) &&
-          (filters.owner === "" || product.product_owner.toLowerCase().includes(filters.owner.toLowerCase()))
+          (filters.owner === "" || product.product_owner?.toLowerCase().includes(filters.owner.toLowerCase())) // Null-safe check for product_owner
       );
-
+      
     const handleImport = (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();

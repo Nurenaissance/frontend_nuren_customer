@@ -12,7 +12,10 @@ const samplePrompts = [
   "Create an image of a modern business dashboard for a marketing CRM with no text above the image. The dashboard should display key performance indicators such as sales growth, customer acquisition, and conversion rates. Use a clean and professional design with a blue and white color scheme.",
   "Generate a professional marketing image for a Sales CRM targeting medium enterprises in finance, featuring a light blue to white background, green and orange accents, dark gray text, a modern office photo with CRM icons and interface screenshots highlighting workflows and lead management, incorporating a sales performance chart, centered company logo with Roboto font.",
 ];
-
+const getTenantIdFromUrl = () => {
+  const pathArray = window.location.pathname.split('/');
+  return pathArray.length >= 2 ? pathArray[1] : null;
+};
 const ImageEditor = () => {
   const { userId } = useAuth();
   const [base64Data, setBase64Data] = useState('');
@@ -21,7 +24,7 @@ const ImageEditor = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const iframeRef = useRef(null);
-  
+  const tenantId=getTenantIdFromUrl();
   const [inpaintingText, setInpaintingText] = useState('Make a car');
   const [aspectRatio, setAspectRatio] = useState('instagram'); //
   const [savedscript,setSavedScript]=useState('');
@@ -105,6 +108,7 @@ const ImageEditor = () => {
   }, []);   */
   const handleUploadToAzure = async (base64Data) => {
     try {
+      const tenantId=getTenantIdFromUrl();
       console.log("Starting upload to Azure...");
       const blob = await fetch(base64Data).then(res => res.blob());
       console.log("Blob created:", blob);
@@ -137,7 +141,7 @@ const ImageEditor = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${secretKey}`,
+            Authorization: `Bearer `,
           },
         }
       );
@@ -202,6 +206,8 @@ console.log('Config:', config);
 
   const encodedConfig = config ? encodeURIComponent(JSON.stringify(config)) : null;
   const photopeaUrl = encodedConfig ? `https://www.photopea.com#${encodedConfig}` : null;
+  console.log("yaha dekh naaaa",photopeaUrl);
+  console.log("firse ",encodedConfig);
 
   useEffect(() => {
     console.log("photopeaUrl updated:", photopeaUrl);

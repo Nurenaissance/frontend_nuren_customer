@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'https://webappbaackend.azurewebsites.net/'; // Replace this with your actual API base URL when ready
+const API_BASE_URL = 'https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/'; // Replace this with your actual API base URL when ready
 
 const InstaApis = axios.create({
   baseURL: API_BASE_URL,

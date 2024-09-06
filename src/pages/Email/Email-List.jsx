@@ -17,6 +17,8 @@ import SendIcon from '@mui/icons-material/Send';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import axiosInstance from '../../api';
+import { useAuth } from '../../authContext.jsx'
+
 
 function EmailList() {
   const location = useLocation();
@@ -39,6 +41,7 @@ function EmailList() {
   const [sentMails, setSentMails] = useState(0);
   const [openedMails, setOpenedMails] = useState(0);
   const [clickedMails, setClickedMails] = useState(0);
+  const { userId } = useAuth();
   const cardData = [
     { icon: <EmailIcon />, value: totalMails, label: "Total Mails", color: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" },
     { icon: <SendIcon />, value: sentMails, label: "Sent Mails", color: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)" },
@@ -277,7 +280,7 @@ const fetchEmailStats = async () => {
   useEffect(() => {
     const fetchStoredEmails = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/fetch-all-emails', {
+        const response = await axiosInstance.get('/fetch-all-emails', {
           headers: {
             'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
           }
@@ -324,20 +327,20 @@ function extractMainText(emailContent) {
     const fetchedEmailIds = storedEmails.map(email => email.id);
   
     // Filter to get newly selected emails (those not in fetchedEmailIds)
-    const newlySelectedEmails = selectedEmailIds.filter(emailId => !fetchedEmailIds.includes(emailId));
+    const newlySelectedEmails = emails.filter(email => selectedEmailIds.includes(email.id) && !fetchedEmailIds.includes(email.id));
   
     // Prepare the selected email list for storage
-    const selectedEmailList = newlySelectedEmails.map(emailId => ({
-      email_id: emailId,  // Use the emailId directly
-      from: 'dummy@example.com',  // Dummy data for from
-      subject: 'Dummy Subject',    // Dummy data for subject
-      text: 'Dummy text content'    // Dummy data for text
+    const selectedEmailList = newlySelectedEmails.map(email => ({
+      email_id: email.id,
+      from: email.from,
+      subject: email.subject,
+      text: email.text
     }));
   
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axios.post('http://127.0.0.1:8000/store-selected-emails/', selectedEmailList, {
+      await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -354,11 +357,11 @@ function extractMainText(emailContent) {
       .filter(email => newlySelectedEmails.includes(email.id)) // Only include newly selected emails
       .map(email => {
         const { combinedContent, subject } = extractHumanReadableContent(email.text);
-        const combineContent2=extractInnerText(combinedContent);
-        const combineContent3=extractMainText(combineContent2);// Use your existing function
+        // const combineContent2=extractInnerText(combinedContent);
+        // const combineContent3=extractMainText(combineContent2);// Use your existing function
         return {
           sender: email.from,  // Email sender
-          content: subject + combineContent3, // Combined content
+          content: subject + combinedContent, // Combined content
           sent_at: new Date().toISOString(), // Current date/time in ISO format
           platform: 'email', // Set platform to 'email'
           userid: emailUser, // Adjust this if you have a different user ID
@@ -368,7 +371,7 @@ function extractMainText(emailContent) {
     // Second try-catch block for sending email messages
     try {
       // Send a POST request to your Django API to store all email content
-      await axios.post('http://127.0.0.1:8000/save-email-messages/', { emails: emailsToSend }, {
+      await axiosInstance.post('/save-email-messages/', { emails: emailsToSend }, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }
@@ -572,6 +575,7 @@ function extractMainText(emailContent) {
         </div>
       )}
 
+<<<<<<< HEAD
       {showComposeModal && (
         <ComposeButton
           onClose={() => setShowComposeModal(false)}
@@ -580,6 +584,17 @@ function extractMainText(emailContent) {
           contactemails={location.state.fromContacts}
         />
       )}
+=======
+{showComposeModal && (
+  <ComposeButton
+    onClose={() => setShowComposeModal(false)}
+    emailUser={location.state.emailUser}
+    provider={location.state.provider}
+    userId={userId} // Add this line
+    tenantId={tenantId} // Add this line if tenantId is also needed
+  />
+)}
+>>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
     </div>
   );
 }

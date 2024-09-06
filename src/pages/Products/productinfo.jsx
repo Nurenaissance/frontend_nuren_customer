@@ -50,7 +50,7 @@ export const ProductInfo = () => {
 
         // Send a POST request to your backend with the file URL
         console.log('Sending POST request to backend...');
-        const response = await axiosInstance.post('https://webappbaackend.azurewebsites.net/documents/', {
+        const response = await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/documents/', {
           name: selectedFile.name,
           document_type: selectedFile.type,
           description: 'Your file description',
