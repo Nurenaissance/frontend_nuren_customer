@@ -156,7 +156,7 @@ const Met = ({ handleScheduleMeeting, scheduleData, setScheduleData }) => {
           <Sidebar />
         </div>
         <div className="meetings-header1" style={{ display:'flex' }}>
-          <h1 className="meeting_head"style={{marginLeft:'350px'}}>Meetings</h1>
+          <h1 className="meeting_head"style={{marginLeft:'700px'}}>Meetings</h1>
           <div className="meeting-header-buttons">
             <div>
               <Dropdown>

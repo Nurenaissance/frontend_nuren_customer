@@ -103,9 +103,8 @@ export const Product = () => {
         <div className="product-page">
             <Sidebar className="product-sidebar" />
             <div className="product-content">
-                
+            <h1>Products</h1>
                 <div className="product-header">
-                    <h1>Products</h1>
                     <div className="product-header-actions">
                         <input
                             type="text"

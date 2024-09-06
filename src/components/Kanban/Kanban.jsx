@@ -523,7 +523,7 @@ const [isLoading, setIsLoading] = useState(false);
                             className="card_"
                           >
                             <div className="license">
-                              {card.amount} licenses
+                              {card.amount} 
                               <div className="status">{card.status}</div>
                               <button 
           onClick={() => handleDeleteLead(card.id)} 

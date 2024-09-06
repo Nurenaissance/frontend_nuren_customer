@@ -104,7 +104,10 @@
   color: #171A1FFF;
   margin-left: 10px;
 }
-
+.int_heading h1{
+  margin-left: 40rem;
+  margin-bottom: 6rem;
+}
 .table1 table {
   width: 100%;
   border-collapse: collapse;

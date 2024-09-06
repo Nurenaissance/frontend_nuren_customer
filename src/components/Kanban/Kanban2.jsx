@@ -429,8 +429,7 @@ const handleClosePopup = () => {
                                   {...provided.dragHandleProps}
                                   className="card_"
                                 >
-                                  <div className="license">
-                                    {card.amount} licenses
+                                  <div className="license"> 
                                     <div className="status">{card.stage}</div>
                                     <button 
           onClick={() => handleDeleteOpportunity(card.id)} 
@@ -488,7 +487,7 @@ const handleClosePopup = () => {
                                     </div>
                                     <div className="c2">
                                       {card.closedOn}
-                                      <div className="r1">${card.amount}</div>
+                                      <div className="opportunitycardamount">${card.amount}</div>
                                     </div>
                                   </div>
                                 </div>
