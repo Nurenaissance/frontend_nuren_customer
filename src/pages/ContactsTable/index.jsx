@@ -66,6 +66,7 @@ export const ContactsTable = () => {
       const response = await axiosInstance.get('/contacts/');
       const data = response.data;
       setContacts(data);
+      console.log("this is contact",contacts);
       setFilteredContacts(data);
       const drafts = data.filter(contact => contact.status === "Draft");
       setDraftContacts(drafts);
@@ -551,8 +552,8 @@ const closeEmailPopup = () => {
             <th className="user1">USER</th>
             <th className="username1">USER NAME</th>
             <th className="useremail1">EMAIL</th>
-            <th className="useraccount1">ROLE</th>
-            <th className="usercontact1">Contact Name</th>
+            <th className="useraccount1">PHONE NUMBER</th>
+            <th className="usercontact1">ADRESS</th>
           </tr>
         </thead>
         <tbody>
@@ -565,11 +566,12 @@ const closeEmailPopup = () => {
                                 onChange={() => handleSelectContact(contact.id)}
                               />
                             </td>
-                            <td onClick={() => handleRowClick(contact)}>
-                              {generateSmiley(generateRandomColor())}
-                              <div className="cont-first_name">{contact.first_name}</div>
+                            <td>
+                            <div className="cont-user">{contact.id}</div>
                             </td>
-                            <td className="contlast_name">{contact.last_name}</td>
+                            <td >
+                              <div className="cont-first_name">{contact.name}</div>
+                            </td>
                             <td className="cont_email">
                               <a href={`mailto:${contact.email}`}>{contact.email}</a>
                             </td>

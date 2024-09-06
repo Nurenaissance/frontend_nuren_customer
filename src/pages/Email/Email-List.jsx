@@ -28,7 +28,7 @@ function EmailList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
-  const { provider, emailUser, emailPass } = location.state || {};
+  const { provider, emailUser, emailPass,fromContacts } = location.state || {};
   const [selectedEmails, setSelectedEmails] = useState(new Set());
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
@@ -53,6 +53,14 @@ function EmailList() {
     return [...selected].filter(emailId => !stored.includes(emailId));
   };
   
+  useEffect(() => {
+    if (fromContacts) {
+      setShowComposeModal(true);
+    }
+    console.log(fromContacts);
+  }, [fromContacts]);
+
+
   const handleCheckboxChange = (emailId) => {
     setSelectedEmails((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -567,6 +575,16 @@ function extractMainText(emailContent) {
         </div>
       )}
 
+<<<<<<< HEAD
+      {showComposeModal && (
+        <ComposeButton
+          onClose={() => setShowComposeModal(false)}
+          emailUser={location.state.emailUser}
+          provider={location.state.provider}
+          contactemails={location.state.fromContacts}
+        />
+      )}
+=======
 {showComposeModal && (
   <ComposeButton
     onClose={() => setShowComposeModal(false)}
@@ -576,6 +594,7 @@ function extractMainText(emailContent) {
     tenantId={tenantId} // Add this line if tenantId is also needed
   />
 )}
+>>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
     </div>
   );
 }

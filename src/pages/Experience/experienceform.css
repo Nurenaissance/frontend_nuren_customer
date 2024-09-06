@@ -1,0 +1,125 @@
+/* Container for the entire form and sidebar */
+.experience-form-container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  
+  /* Back button in the sidebar */
+  .experience-back-button {
+    padding: 12px;
+    background-color: #fff;
+    color: #6D31EDFF;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 20px;
+  }
+  
+  .experience-back-button:hover {
+    background-color: #6D31EDFF;
+    color: #fff;
+  }
+  
+  /* Form content styling */
+  .experience-form-content {
+    flex-grow: 3;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form title styling */
+  .experience-form-content h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  /* Form group styling */
+  .experience-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .experience-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .experience-form-group input,
+  .experience-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .experience-form-group input:focus,
+  .experience-form-group textarea:focus {
+    border-color: #6D31EDFF;
+  }
+  
+  /* Textarea for larger input fields */
+  .experience-form-group textarea {
+    height: 100px;
+    resize: none;
+  }
+  
+  /* Submit button styling */
+  .experience-submit-button {
+    padding: 15px;
+    background-color: #62CD14FF;
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .experience-submit-button:hover {
+    background-color: #50a811;
+  }
+  
+  /* Add a little spacing between form groups */
+  .experience-form-group + .experience-form-group {
+    margin-top: 15px;
+  }
+  
+  /* Box shadow on form fields */
+  .experience-form-group input,
+  .experience-form-group textarea {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Adding some responsiveness */
+  @media (max-width: 768px) {
+    .experience-form-container {
+      flex-direction: column;
+    }
+  
+    .experience-sidebar {
+      box-shadow: none;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+  
+    .experience-form-content {
+      margin: 20px;
+      padding: 30px;
+    }
+  }
+  
