@@ -25,6 +25,7 @@ const getTenantIdFromUrl = () => {
 
 const Remind = () => {
   const [reminders, setReminders] = useState([]);
+  const [recentReminders, setRecentReminders] = useState([]);
   const tenantId = getTenantIdFromUrl();
   const modelName = "reminder";
 
@@ -39,6 +40,7 @@ const Remind = () => {
     };
     fetchReminders();
   }, []);
+  
 
   const handleDownloadExcel = () => {
     const ws = XLSX.utils.json_to_sheet(reminders);
@@ -88,6 +90,9 @@ const Remind = () => {
   
     doc.save("reminders_report.pdf");
   };
+
+ 
+
   
 
   return (
@@ -101,9 +106,8 @@ const Remind = () => {
       </div>
       <div>
       <div className="remind-merge">
-     <div className="remind-head">
+     <div className="remind-heading">
         <h1>Reminders</h1>
-
         </div>
         <div className="excel_form">
         <div >
@@ -129,67 +133,35 @@ const Remind = () => {
     
         
      </div>
-
      <div className="remind-box">
-      <div >
+      <div>
         <p className="reminds-box-head">Upcoming Reminders this week</p>
       </div>
-
       <div className='reminds-boxes'>
-      <div className="first-remindbx">
-        <div className='rem-box'>
-        <div>  <h1 className="first_head_rem">Upcoming Meeting </h1></div>
-        <div className="rem">
-          In 10 min
-        </div>
-        
-        
-        </div>
-        <div>
-          <h1 className="external_remind">External Meeting-Negotiation</h1>
-        </div>
-        <div>
-          <h1 className="time-remind">  <AccessTimeRoundedIcon/>08:00-09:00 PM</h1>
-        </div>
-       
-
-</div>
-<div className="second-remindbx">
-<div className='rem-box'>
-        <div>  <h1 className="first_head_rem">Upcoming Meeting </h1></div>
-        <div className="rem">
-          In 10 min
-        </div>
-        
-        
-        </div>
-        <div>
-          <h1 className="external_remind">External Meeting-Negotiation</h1>
-        </div>
-        <div>
-          <h1 className="time-remind">  <AccessTimeRoundedIcon/>08:00-09:00 PM</h1>
-        </div>
-</div>
-<div className="third-remindbx">
-<div className='rem-box'>
-        <div>  <h1 className="first_head_rem">Upcoming Meeting </h1></div>
-        <div className="rem">
-          In 10 min
-        </div>
-        
-        
-        </div>
-        <div>
-          <h1 className="external_remind">External Meeting-Negotiation</h1>
-        </div>
-        <div>
-          <h1 className="time-remind">  <AccessTimeRoundedIcon/>08:00-09:00 PM</h1>
-        </div>
-</div>
-
+        {/* Only render the first 3 reminders */}
+        {reminders.slice(0, 3).map((reminder, index) => (
+          <div key={index} className="remindbx">
+            <div className='rem-box'>
+              <div>
+                <h1 className="first_head_rem">Upcoming Meeting</h1>
+              </div>
+              <div className="rem">
+                In {reminder.time_until_meeting} min
+              </div>
+            </div>
+            <div>
+              <h1 className="external_remind">{reminder.meeting_title}</h1>
+            </div>
+            <div>
+              <h1 className="time-remind">
+                <AccessTimeRoundedIcon />
+                {reminder.event_date_time}
+              </h1>
+            </div>
+          </div>
+        ))}
       </div>
-     
-     </div>
+    </div>
 
    
      <div className='table_remind'> 
