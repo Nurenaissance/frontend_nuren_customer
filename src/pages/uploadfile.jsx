@@ -41,7 +41,6 @@ const UploadToMeta = () => {
       console.error('Error starting upload session:', error);
     }
   };
-
   const handleStartUpload = async () => {
     try {
       const response = await axios.post(
