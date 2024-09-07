@@ -575,16 +575,6 @@ function extractMainText(emailContent) {
         </div>
       )}
 
-<<<<<<< HEAD
-      {showComposeModal && (
-        <ComposeButton
-          onClose={() => setShowComposeModal(false)}
-          emailUser={location.state.emailUser}
-          provider={location.state.provider}
-          contactemails={location.state.fromContacts}
-        />
-      )}
-=======
 {showComposeModal && (
   <ComposeButton
     onClose={() => setShowComposeModal(false)}
@@ -594,7 +584,6 @@ function extractMainText(emailContent) {
     tenantId={tenantId} // Add this line if tenantId is also needed
   />
 )}
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
     </div>
   );
 }

@@ -307,7 +307,7 @@ const BroadcastPage = () => {
   
   const fetchBroadcastHistory = async () => {
     try {
-      const response = await axiosInstance.get('https://8twdg37p-8000.inc1.devtunnels.ms/get-status/');
+      const response = await axiosInstance.get('get-status/');
       const formattedHistory = formatBroadcastHistory(response.data.message_statuses);
       setBroadcastHistory(formattedHistory);
     } catch (error) {

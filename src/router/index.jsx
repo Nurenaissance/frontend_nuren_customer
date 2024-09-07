@@ -115,15 +115,12 @@ import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
 import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
-<<<<<<< HEAD
 import { Experience } from "../pages/Experience/Experience.jsx";
 import ExperienceInfo from "../pages/Experience/experienceinfo.jsx";
 import ExperienceForm from "../pages/Experience/experienceform.jsx";
-=======
 import BroadcastPage from "../pages/Chatbot/Broadcast/BroadcastPage.jsx";
 import Chatbotredirect from "../pages/Chatbot/Chatbotredirect.jsx";
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
-
+import UploadToMeta from "../pages/uploadfile.jsx";
 // import CustomModelForm from "../pages/CustomModel/customform";
 
 
@@ -406,6 +403,8 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/experiencemodel"  element= {<Experience/>}/>
           <Route path=":tenant_id/experienceinfo/:id"  element= {<ExperienceInfo/>}/>
           <Route path=":tenant_id/experienceform"  element= {<ExperienceForm/>}/>
+          <Route path="/:tenantId/uploadtometa" element={<UploadToMeta />} />
+       
         </>
       )}
 

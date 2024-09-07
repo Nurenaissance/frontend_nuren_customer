@@ -1,8 +1,4 @@
 import React, { useState,useEffect,useRef } from 'react';
-<<<<<<< HEAD
-=======
-
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
 import {
   Box,
   Button,
@@ -148,19 +144,6 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
     const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
-<<<<<<< HEAD
-    const trackingPixelUrl = `https://lxx1lctm-8000.inc1.devtunnels.ms/track_open/${trackingId}/`;
-    const trackingPixel = `<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
-  
-    const emailContent = isHtml ? content + trackingPixel : content;
-  
-    // Handle multiple recipients
-    const recipients = to.split(',').map(email => email.trim()).filter(email => email); // Split and trim emails
-  
-    if (recipients.length === 0) {
-      setMessage('No valid email addresses found.');
-      return;
-=======
 
       const trackingPixelUrl = `https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/track_open/${trackingId}/`;
       const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
@@ -181,7 +164,6 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
   
     if (isHtml) {
       modifiedContent += trackingPixel;
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
     }
   
     const emailData = {
@@ -211,16 +193,12 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
         time: new Date().toISOString(),
         subject: subject,
         email_type: 'sent',
-<<<<<<< HEAD
-        email_id: recipients.join(',') // Send tracking data for all recipients
-=======
 
         email_id: to,
         links: links,
         open_count: 0,
         total_time_spent: '0:00:00'
 
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
       };
   
       try {

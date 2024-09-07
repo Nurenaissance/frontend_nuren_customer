@@ -329,7 +329,7 @@ export const Sidebar = ({ onSelectModel }) => {
               toggleDropdown={toggleDropdown(setSocialDropdownOpen)}
             >
               <NurenSidebarItem
-                to={formatmewLink(accessToken)}
+                to={formatLink("/instagrampost")}
                 icon={<InstagramIcon />}
                 text="Instagram"
               />

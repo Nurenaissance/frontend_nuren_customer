@@ -260,13 +260,8 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     setIsLoading(true); // Start the loader
   
     try {
-<<<<<<< HEAD
-      const tenant = tenantId;
-      const response = await fetch('https://webappbaackend.azurewebsites.net/execute-query/', {
-=======
       const tenant = tenantId
       const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/execute-query/', {
->>>>>>> 5d3c8da9bf8efae318135bd98b2b9772d3437f67
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
