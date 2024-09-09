@@ -7,14 +7,14 @@ const Sidebar = () => {
   };
 
   const sidebarStyle = {
-    width: '200px',
+    width: '240px',
     padding: '15px',
     backgroundColor: '#f0f0f0',
     borderRight: '1px solid #ccc',
   };
 
   const headerStyle = {
-    fontSize: '18px',
+    fontSize: '20px',
     fontWeight: 'bold',
     marginBottom: '15px',
   };

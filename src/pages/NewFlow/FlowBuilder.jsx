@@ -49,100 +49,9 @@ const FlowBuilderContent = () => {
   const [selectedFlow, setSelectedFlow] = useState('');
   const [flowName, setFlowName] = useState('');
   const [flowDescription, setFlowDescription] = useState('');
-  const [contacts, setContacts] = useState([]);
-  const [showContactDropdown, setShowContactDropdown] = useState(false);
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
-  const [currentNodeId, setCurrentNodeId] = useState(null);
-  const [currentFieldIndex, setCurrentFieldIndex] = useState(null);
+  const [fallbackMessage, setFallbackMessage] = useState('');
+  const [fallbackCount, setFallbackCount] = useState(1);
 
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await axiosInstance.get('/contacts/');
-        setContacts(response.data || []); // Ensure contacts is always an array
-      } catch (error) {
-        console.error('Error fetching contacts:', error);
-        setContacts([]); // Set to empty array if there's an error
-      }
-    };
-
-    fetchContacts();
-  }, []);
-
-
-  const handleContactSelect = (contact) => {
-    const formattedContact = `{{${contact.name}}}`;
-    updateNodeData(currentNodeId, (prevData) => {
-      const updatedFields = [...prevData.fields];
-      updatedFields[currentFieldIndex] = {
-        ...updatedFields[currentFieldIndex],
-        content: updatedFields[currentFieldIndex].content + formattedContact
-      };
-      return { ...prevData, fields: updatedFields };
-    });
-    setShowContactDropdown(false);
-  };
-
-
-  const handleInputChange = (nodeId, fieldIndex, value) => {
-    setCurrentNodeId(nodeId);
-    setCurrentFieldIndex(fieldIndex);
-
-    if (value.endsWith('@')) {
-      setShowContactDropdown(true);
-      setContactSearchTerm('');
-    } else if (showContactDropdown) {
-      setContactSearchTerm(value.split('@').pop());
-    }
-
-    updateNodeData(nodeId, (prevData) => {
-      const updatedFields = [...prevData.fields];
-      updatedFields[fieldIndex] = {
-        ...updatedFields[fieldIndex],
-        content: value
-      };
-      return { ...prevData, fields: updatedFields };
-    });
-  };
-
-  const filteredContacts = useMemo(() => {
-    return contacts.filter(contact => 
-      contact && contact.name && typeof contact.name === 'string' &&
-      contact.name.toLowerCase().includes((contactSearchTerm || '').toLowerCase())
-    );
-  }, [contacts, contactSearchTerm]);
-
-
-  const customNodeTypes = {
-    ...nodeTypes,
-    askQuestion: (props) => (
-      <AskQuestionNode
-        {...props}
-        onInputChange={handleInputChange}
-        showContactDropdown={showContactDropdown}
-        filteredContacts={filteredContacts}
-        onContactSelect={handleContactSelect}
-      />
-    ),
-    sendMessage: (props) => (
-      <SendMessageNode
-        {...props}
-        onInputChange={handleInputChange}
-        showContactDropdown={showContactDropdown}
-        filteredContacts={filteredContacts}
-        onContactSelect={handleContactSelect}
-      />
-    ),
-    setCondition: (props) => (
-      <SetConditionNode
-        {...props}
-        onInputChange={handleInputChange}
-        showContactDropdown={showContactDropdown}
-        filteredContacts={filteredContacts}
-        onContactSelect={handleContactSelect}
-      />
-    ),
-  };
 
 
   const startNode = {
@@ -256,8 +165,10 @@ const FlowBuilderContent = () => {
           return { id, type, position, data: cleanData };
         }),
         edges: edges.filter(edge => edge.source !== 'start'),
-        start: startEdge ? startEdge.target : null
-      }
+        start: startEdge ? startEdge.target : null,
+        fallback_message: fallbackMessage,
+        fallback_count: fallbackCount
+      },
     };
     console.log('Flow to be saved:', flow);
     
@@ -278,6 +189,7 @@ const FlowBuilderContent = () => {
     setFlowName(name);
     setFlowDescription(description);
     saveFlow();
+    setShowSavePopup(false);
   };
 
   useEffect(() => {
@@ -361,18 +273,45 @@ const FlowBuilderContent = () => {
       </ReactFlowProvider>
       <div className="sidebar">
         <button onClick={() => setShowSavePopup(true)}>Save Flow</button>
-        <select value={selectedFlow} onChange={handleFlowSelect}>
+        <select style={{marginBottom:'3rem'}} value={selectedFlow} onChange={handleFlowSelect}>
           <option value="">Select a flow</option>
           <option value="create_new">Create New Flow</option>
           {existingFlows.map(flow => (
             <option key={flow.id} value={flow.id}>{flow.name}</option>
           ))}
         </select>
+        <div style={{marginBottom:'2rem'}}>
+          <label htmlFor="fallbackMessage">Fallback Message:</label>
+          <input
+            id="fallbackMessage"
+            style={{padding:'5px', borderRadius:'6px'}}
+            type="text"
+            value={fallbackMessage}
+            onChange={(e) => setFallbackMessage(e.target.value)}
+            placeholder="Enter fallback message"
+          />
+        </div>
+        <div>
+          <label htmlFor="fallbackCount">Fallback Count:</label>
+          <select
+            id="fallbackCount"
+            value={fallbackCount}
+            onChange={(e) => setFallbackCount(Number(e.target.value))}
+          >
+            {[1, 2, 3, 4, 5,6,7,8,9,10].map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       {showSavePopup && (
         <SaveFlowPopup
           onSave={handleSaveConfirm}
           onCancel={() => setShowSavePopup(false)}
+          fallbackMessage={fallbackMessage}
+          fallbackCount={fallbackCount}
         />
       )}
     </div>
