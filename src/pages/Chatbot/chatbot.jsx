@@ -9,8 +9,13 @@ import CallRoundedIcon from '@mui/icons-material/CallRounded';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import CloseIcon from '@mui/icons-material/Close'
 import uploadToBlob from "../../azureUpload.jsx";
 import Picker from 'emoji-picker-react';
+import shortid from 'shortid';
 import ImageEditorComponent from "../../pages/documenteditpage/imageeditor.jsx";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'; 
@@ -60,6 +65,17 @@ const Chatbot = () => {
   const [isSendingBroadcast, setIsSendingBroadcast] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState({});
   const messageEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [imageToSend, setImageToSend] = useState(null);
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [imageCaption, setImageCaption] = useState('');
+  const [imageMap, setImageMap] = useState({});
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [accessToken, setAccessToken] = useState('');
+  const [businessPhoneNumberId, setBusinessPhoneNumberId] = useState('');
+  const [headerMediaId, setHeaderMediaId] = useState('');
+
 
   const openPopup = () => {
     setShowPopup(true);
@@ -87,70 +103,80 @@ const Chatbot = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
+
+  
   
 
-  const renderInteractiveMessage = (parsedMessage) => {
-    try {
-      const { type, interactive, text } = parsedMessage;
-  
-      if (type === 'interactive') {
-        if (interactive.type === 'list') {
-          // Handle list type interactive messages
-          return (
-            <div className="interactive-message">
-              <div className="message-text">{interactive.body.text}</div>
-              <div className="message-buttons">
-                {interactive.action.sections.map((section, sectionIndex) => (
-                  <div key={sectionIndex} className="section">
-                    {section.rows.map((row) => (
-                      <button key={row.id} className="button_interactive">
-                        {row.title}
-                      </button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        } else if (interactive.type === 'button') {
-          // Handle button type interactive messages
-          return (
-            <div className="interactive-message">
-              <div className="message-text">{interactive.body.text}</div>
-              <div className="message-buttons">
-                {interactive.action.buttons.map((button, buttonIndex) => (
-                  <button key={buttonIndex} className="button_interactive">
-                    {button.reply.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        } else if (interactive.type === 'text') {
-          // Handle text type interactive messages
-          return (
-            <div className="interactive-message">
-              <div className="message-text">
-                {interactive.text.body}
-              </div>
-            </div>
-          );
-        }
-      } else if (type === 'text') {
-        // Handle plain text messages
+const renderInteractiveMessage = (parsedMessage) => {
+  try {
+    const { type, interactive, text, image } = parsedMessage;
+
+    if (type === 'interactive') {
+      if (interactive.type === 'list') {
+        // Handle list type interactive messages
         return (
-          <div className="plain-message">
-            {text.body}
+          <div className="interactive-message">
+            <div className="message-text">{interactive.body.text}</div>
+            <div className="message-buttons">
+              {interactive.action.sections.map((section, sectionIndex) => (
+                <div key={sectionIndex} className="section">
+                  {section.rows.map((row) => (
+                    <button key={row.id} className="button_interactive">
+                      {row.title}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      } else if (interactive.type === 'button') {
+        // Handle button type interactive messages
+        return (
+          <div className="interactive-message">
+            <div className="message-text">{interactive.body.text}</div>
+            <div className="message-buttons">
+              {interactive.action.buttons.map((button, buttonIndex) => (
+                <button key={buttonIndex} className="button_interactive">
+                  {button.reply.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      } else if (interactive.type === 'text') {
+        // Handle text type interactive messages
+        return (
+          <div className="interactive-message">
+            <div className="message-text">
+              {interactive.text.body}
+            </div>
           </div>
         );
       }
-  
-      return <div className="error">Unsupported message type</div>;
-    } catch (e) {
-      console.error('Error rendering message:', e);
-      return <div className="error">Failed to render message</div>;
+    } else if (type === 'text') {
+      // Handle plain text messages
+      return (
+        <div className="plain-message">
+          {text.body}
+        </div>
+      );
+    } else if (type === 'image') {
+      // Handle image messages
+      return (
+        <div className="image-message">
+          <img src={image.link} alt="Sent image" className="cb-message-image" />
+          {image.caption && <p className="cb-message-caption">{image.caption}</p>}
+        </div>
+      );
     }
-  };
+
+    return <div className="error">Unsupported message type</div>;
+  } catch (e) {
+    console.error('Error rendering message:', e);
+    return <div className="error">Failed to render message</div>;
+  }
+};
   
   const fixJsonString = (jsonString) => {
     try {
@@ -291,6 +317,200 @@ const Chatbot = () => {
     e.preventDefault();
     await generateChatbotMessage();
   };
+
+  useEffect(() => {
+    const fetchTenantData = async () => {
+      try {
+        const business_phone_number_id = 241683569037594;
+        const response = await axiosInstance.get(`/whatsapp_tenant/?business_phone_id=${business_phone_number_id}`);
+        setAccessToken(response.data.access_token);
+        setBusinessPhoneNumberId(response.data.business_phone_number_id);
+      } catch (error) {
+        console.error('Error fetching tenant data:', error);
+      }
+    };
+    
+    fetchTenantData();
+  }, []);
+
+  const handleFileSelect = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setIsUploading(true);
+      try {
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'image'); // Adjust based on file type if needed
+        formData.append('messaging_product', 'whatsapp');
+  
+        // Upload to Facebook Graph API
+        const response = await axiosInstance.post(
+          'https://graph.facebook.com/v16.0/241683569037594/media',
+          formData,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        console.log('File uploaded to WhatsApp, ID:', response.data.id);
+        setHeaderMediaId(response.data.id);
+  
+        if (response.data && response.data.id) {
+          // Store the media ID
+          const mediaId = response.data.id;
+          
+          // You might want to store this mediaId in state or use it immediately
+          setImageToSend(mediaId);
+          setShowImagePreview(true);
+  
+          // If you want to show a preview, you can still use FileReader
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            setImageMap(prevMap => ({
+              ...prevMap,
+              [mediaId]: e.target.result
+            }));
+          };
+          reader.readAsDataURL(file);
+        } else {
+          throw new Error('Failed to upload media');
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Failed to upload file. Please try again.');
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
+
+
+  const handleImageSend = async () => {
+    if (!imageToSend || !selectedContact) return;
+  
+    try {
+      const response = await axiosInstance.post(
+        'https://whatsappbotserver.azurewebsites.net/send-message',
+        {
+          phoneNumbers: [selectedContact.phone],
+          messageType: "image",
+          additionalData: {
+            imageId: setImageToSend, // Use the media ID here
+            caption: imageCaption
+          },
+          business_phone_number_id: "241683569037594"
+        }
+      );
+  
+      if (response.status === 200) {
+        setConversation(prev => [...prev, { 
+          type: 'image', 
+          sender: 'bot', 
+          imageId: imageToSend,
+          imageUrl: imageMap[imageToSend], // This is for preview purposes
+          caption: imageCaption 
+        }]);
+        setImageToSend(null);
+        setImageCaption('');
+        setShowImagePreview(false);
+      }
+    } catch (error) {
+      console.error('Error sending image:', error);
+      alert('Failed to send image. Please try again.');
+    }
+  };
+
+
+
+  // const handleImageSend = async () => {
+  //   if (!imageToSend || !selectedContact) return;
+
+  //   try {
+  //     const imageUrl = imageMap[imageToSend];
+  //     const response = await axiosInstance.post(
+  //       'https://hx587qc4-8080.inc1.devtunnels.ms/send-message',
+  //       {
+  //         phoneNumbers: [selectedContact.phone],
+  //         url: false,
+  //         messageType: "image",
+  //         additionalData: {
+  //           imageUrl: imageUrl,
+  //           caption: imageCaption
+  //         },
+  //         business_phone_number_id: "241683569037594"
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       setConversation(prev => [...prev, { 
+  //         type: 'image', 
+  //         sender: 'bot', 
+  //         imageId: imageToSend,
+  //         imageUrl: imageUrl, // Add this line
+  //         caption: imageCaption 
+  //       }]);
+  //       setImageToSend(null);
+  //       setImageCaption('');
+  //       setShowImagePreview(false);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sending image:', error);
+  //   }
+  // };
+
+  // Function to handle back navigation
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  // Scroll to bottom of chat
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [conversation]);
+
+  // Render message function
+  // const renderMessage = (message, index) => {
+  //   const isUser = message.sender === 'user';
+  //   const messageClass = `cb-message ${isUser ? 'cb-user-message' : 'cb-bot-message'}`;
+
+  //   if (message.type === 'image') {
+  //     return (
+  //       <div key={index} className={messageClass}>
+  //         <img 
+  //           src={message.imageUrl || imageMap[message.imageId]} 
+  //           alt="Sent image" 
+  //           className="cb-message-image" 
+  //           onError={(e) => {
+  //             console.error("Error loading image:", e);
+  //             e.target.onerror = null;
+  //             e.target.src = "path/to/fallback/image.png"; // Add a fallback image
+  //           }}
+  //         />
+  //         {message.caption && <p className="cb-message-caption">{message.caption}</p>}
+  //       </div>
+  //     );
+  //   }
+
+  //   // Handle text and interactive messages
+  //   if (typeof message.text === 'string') {
+  //     if (message.text.trim().startsWith('{') || message.text.trim().startsWith('[')) {
+  //       try {
+  //         const fixedMessage = fixJsonString(message.text);
+  //         const parsedMessage = JSON.parse(fixedMessage);
+  //         return renderInteractiveMessage(parsedMessage);
+  //       } catch (e) {
+  //         console.error('Failed to parse JSON message:', e);
+  //         return <div className="error">Failed to parse message</div>;
+  //       }
+  //     }
+  //     return <div>{message.text || <span className="error">Message content is undefined</span>}</div>;
+  //   }
+  //   return <div className="error">Invalid message format</div>;
+  // };
+
 
   const handleUploadedFile = async (event, contactId) => {
     const selectedFile = event.target.files[0];
@@ -537,18 +757,6 @@ const Chatbot = () => {
 
   
   
-  
-  
-
-  const handleMailClick = () => {
-    console.log('Mail icon clicked');
-    // Add functionality for mail click here
-  };
-
-  const handleVoiceClick = () => {
-    console.log('Voice icon clicked');
-    // Add functionality for voice click here
-  };
 
 
   const filteredContacts = contacts.filter(contact => {
@@ -751,13 +959,13 @@ const Chatbot = () => {
         setIsSending(true);
         const dataToSend = {
           ...selectedFlowData,
-          accountID: accountID,
-          access_token:'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P',
-          firstInsert:'8',
+          // accountID: accountID,
+          // access_token:'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P',
+          // firstInsert:'8',
           business_phone_number_id:'241683569037594'
         };
         console.log('Sending flow data:', dataToSend);
-        const response = await axiosInstance.post('https://whatsappbotserver.azurewebsites.net/insert_data/', dataToSend, {
+        const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/insert-data/', dataToSend, {
           headers: {
             'Content-Type': 'application/json',
             token: localStorage.getItem('token'),
@@ -795,24 +1003,6 @@ const Chatbot = () => {
       setIsSendingBroadcast(false);
     };
 
-    const handleGroupSelection = (group) => {
-      console.log("Selected group:", group);
-      setSelectedContact({
-        id: group.id,
-        phone: `Group: ${group.name}`,
-        first_name: group.name,
-        last_name: '',
-        isGroup: true,
-        members: group.members
-      });
-      
-      // Fetch or set the group conversation
-      const groupConversation = [
-        { text: "Welcome to the group!", sender: 'bot' },
-        { text: "Last broadcast message: " + broadcastMessage, sender: 'bot' }
-      ];
-      setConversation(groupConversation);
-    };
     
    
     const handleSendBroadcast = async () => {
@@ -894,7 +1084,9 @@ const saveGroupToLocalStorage = (group) => {
  return (
     <div className="cb-container">
       <div className="cb-sidebar">
-        <h1 className='cb-sidebar-title'>Contacts</h1>
+        <h1 className='cb-sidebar-title'>
+      <ArrowBackIcon className="cb-back-icon" onClick={handleBack} /> 
+          Contacts</h1>
         <div className='cb-search-container'>
           <input
             type="text"
@@ -906,16 +1098,6 @@ const saveGroupToLocalStorage = (group) => {
           <SearchIcon className="cb-search-icon" />
         </div>
         <div className="cb-contact-list">
-          <h2 className='cb-group-title'>Groups</h2>
-          {groups.map(group => (
-            <div
-              key={group.id}
-              className="cb-group-item"
-              onClick={() => handleGroupSelection(group)}
-            >
-              {group.name} ({group.members.length})
-            </div>
-          ))}
           <h2 className='cb-contact-title'>Contacts</h2>
           {filteredContacts.map(contact => (
             <div
@@ -944,84 +1126,81 @@ const saveGroupToLocalStorage = (group) => {
       </div>
       <div className="cb-main">
       {selectedContact && (
-  <div className="cb-chat-header">
-    <div className="cb-chat-contact-info">
-      {profileImage ? (
-        <img src={profileImage} alt="Profile" className="cb-profile-icon" />
-      ) : (
-        <span className="cb-default-avatar">{selectedContact.first_name && selectedContact.first_name[0]}</span>
-      )}
-      <div className="cb-contact-details">
-        <span className="cb-contact-name">{selectedContact.first_name} {selectedContact.last_name}</span>
-        <span className="cb-contact-phone">{selectedContact.phone}</span>
-      </div>
-    </div>
-  </div>
+   <div className="cb-chat-header">
+   {selectedContact && (
+     <div className="cb-chat-contact-info">
+       {profileImage ? (
+         <img src={profileImage} alt="Profile" className="cb-profile-icon" />
+       ) : (
+         <span className="cb-default-avatar">{selectedContact.first_name && selectedContact.first_name[0]}</span>
+       )}
+       <div className="cb-contact-details">
+         <span className="cb-contact-name">{selectedContact.first_name} {selectedContact.last_name}</span>
+         <span className="cb-contact-phone">{selectedContact.phone}</span>
+       </div>
+     </div>
+   )}
+ </div>
 )}
-       <div className="cb-message-container">
-      {conversation.map((message, index) => (
-        <div
-          key={index}
-          className={`cb-message ${message.sender === 'user' ? 'cb-user-message' : 'cb-bot-message'}`}
-        >
-          {(() => {
-            if (typeof message.text === 'string') {
-              if (message.text.trim().startsWith('{') || message.text.trim().startsWith('[')) {
-                try {
-                  const fixedMessage = fixJsonString(message.text);
-                  const parsedMessage = JSON.parse(fixedMessage);
-                  console.log('Parsed Message:', parsedMessage); // Debugging line
-                  return renderInteractiveMessage(parsedMessage);
-                } catch (e) {
-                  console.error('Failed to parse JSON message:', e);
-                  return <div className="error">Failed to parse message</div>;
-                }
-              }
-              return message.text || <div className="error">Message content is undefined</div>;
+      <div className="cb-message-container">
+  {conversation.map((message, index) => (
+    <div
+      key={index}
+      className={`cb-message ${message.sender === 'user' ? 'cb-user-message' : 'cb-bot-message'}`}
+    >
+      {(() => {
+        if (typeof message.text === 'string') {
+          if (message.text.trim().startsWith('{') || message.text.trim().startsWith('[')) {
+            try {
+              const fixedMessage = fixJsonString(message.text);
+              const parsedMessage = JSON.parse(fixedMessage);
+              console.log('Parsed Message:', parsedMessage);
+              return renderInteractiveMessage(parsedMessage);
+            } catch (e) {
+              console.error('Failed to parse JSON message:', e);
+              return <div className="error">Failed to parse message</div>;
             }
-            return <div className="error">Invalid message format</div>;
-          })()}
-        </div>
-      ))}
+          }
+          return message.text || <div className="error">Message content is undefined</div>;
+        }
+        return <div className="error">Invalid message format</div>;
+      })()}
     </div>
-        <div className="cb-input-container">
-          <div className="cb-emoji-container">
-            <EmojiEmotionsIcon className="cb-emoji-icon" onClick={handleToggleSmileys} />
-            {showSmileys && (
-              <div className="cb-emoji-picker">
-                <Picker onEmojiClick={handleSelectSmiley} />
-              </div>
-            )}
-          </div>
+  ))}
+  <div ref={messageEndRef} />
+</div>
+    <div className="cb-input-container">
           <div className="cb-input-actions">
-            <label htmlFor="file-upload">
-              <CloudUploadIcon className="cb-action-icon" />
-            </label>
+            <EmojiEmotionsIcon className="cb-action-icon" onClick={handleToggleSmileys} />
             <input
-              id="file-upload"
               type="file"
+              accept="image/*"
               style={{ display: 'none' }}
-              onChange={handleUploadedFile}
+              onChange={handleFileSelect}
+              ref={fileInputRef}
             />
+            <AttachFileIcon className="cb-action-icon" onClick={() => fileInputRef.current.click()} />
           </div>
           <textarea
-  value={selectedContact && messageTemplates[selectedContact.id] || ''}
-  onChange={(e) => {
-    if (selectedContact) {
-      setMessageTemplates(prevTemplates => ({
-        ...prevTemplates,
-        [selectedContact.id]: e.target.value
-      }));
-    }
-  }}
-  placeholder="Type a message"
-  className="cb-input-field"
-/>
-          <div className="cb-send-actions">
-            <button className="cb-generate-btn" onClick={handleGenerateMessage}>Generate</button>
-            <button className='cb-send-btn' onClick={handleSend}>Send</button>
-          </div>
+            value={selectedContact && messageTemplates[selectedContact.id] || ''}
+            onChange={(e) => {
+              if (selectedContact) {
+                setMessageTemplates(prevTemplates => ({
+                  ...prevTemplates,
+                  [selectedContact.id]: e.target.value
+                }));
+              }
+            }}
+            placeholder="Type a message"
+            className="cb-input-field"
+          />
+          <SendIcon className="cb-send-icon" onClick={handleSend} />
         </div>
+        {showSmileys && (
+          <div className="cb-emoji-picker">
+            <Picker onEmojiClick={handleSelectSmiley} />
+          </div>
+        )}
       </div>
       <div className="cb-details-panel">
         <div className="cb-img-pop">
@@ -1094,6 +1273,27 @@ const saveGroupToLocalStorage = (group) => {
           </button>
         </div>
       </div>
+      {showImagePreview && (
+      <div className="cb-image-preview-overlay">
+        <div className="cb-image-preview-container">
+          <CloseIcon className="cb-close-preview" onClick={() => setShowImagePreview(false)} />
+          <img src={imageMap[imageToSend]} alt="Preview" className="cb-preview-image" />
+          <textarea
+            value={imageCaption}
+            onChange={(e) => setImageCaption(e.target.value)}
+            placeholder="Add a caption..."
+            className="cb-image-caption-input"
+          />
+          <button 
+            className="cb-send-image-btn" 
+            onClick={handleImageSend}
+            // disabled={isUploading || !blobUrl}
+          >
+            {isUploading ? "Uploading..." : "Send"}
+          </button>
+        </div>
+      </div>
+    )}
       {showBroadcastPopup && (
         <div className="cb-broadcast-popup">
           <div className="cb-broadcast-content">
@@ -1122,7 +1322,7 @@ const saveGroupToLocalStorage = (group) => {
                     onChange={() => handlePhoneSelection(contact.id)}
                   />
                   <label htmlFor={`contact-${contact.id}`}>
-                    {contact.first_name} {contact.last_name} ({contact.phone})
+                    {contact.name} ({contact.phone})
                   </label>
                 </div>
               ))}
