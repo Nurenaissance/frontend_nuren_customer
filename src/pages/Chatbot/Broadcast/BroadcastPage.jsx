@@ -423,29 +423,32 @@ const BroadcastPage = () => {
     if (selectedFile) {
       setHeaderImage(selectedFile);
       setHeaderContent(URL.createObjectURL(selectedFile));
-      
+  
       try {
         console.log('Uploading file to WhatsApp Media API...');
-        
+  
         const formData = new FormData();
         formData.append('file', selectedFile);
         formData.append('type', 'image');
         formData.append('messaging_product', 'whatsapp');
-
+  
         const response = await axios.post(
-          'https://graph.facebook.com/v16.0/241683569037594/media',
+          'https://my-template-whatsapp.vercel.app/uploadMedia',
           formData,
           {
             headers: {
               'Authorization': `Bearer ${accessToken}`,
               'Content-Type': 'multipart/form-data',
             },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(progress);
+            },
           }
         );
-
-        console.log('File uploaded to WhatsApp, ID:', response.data.id);
-
-        setHeaderMediaId(response.data.id);
+  
+        console.log('File uploaded to WhatsApp, ID:', response.data.body.h);
+        setHeaderMediaId(response.data.body.h);
         setUploadProgress(100);
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -453,7 +456,6 @@ const BroadcastPage = () => {
       }
     }
   };
-
 
   return (
     <div className="bp-broadcast-page">

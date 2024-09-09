@@ -253,12 +253,12 @@ return (
       <TopNavbar profileImageUrl={profileImageUrl} userId={userId} />
     </div>
     <div>
-      <h2 className="user-profile-container1">User Profile</h2>
       <div className="user-profile-wrapper">
         {isLoading ? (
           <div>Loading...</div>
         ) : user ? (
           <div className="profile-details" style={{marginLeft:'350px'}}>
+            <h2 className="user-profile-container1">User Profile</h2>
             <div className="avatar-container">
               <div className="container-behind-avatar">
                 <div className='semi-half-circle'></div>
