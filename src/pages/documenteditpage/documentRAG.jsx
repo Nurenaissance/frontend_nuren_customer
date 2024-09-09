@@ -16,7 +16,7 @@ const DocumentRag = () => {
     try {
       setChatMessages((prevMessages) => [...prevMessages, { content: message, type: 'user' }]);
 
-      const response = await axios.post('https://hx587qc4-8000.inc1.devtunnels.ms/api/get-pdf/', {
+      const response = await axios.post('https://nurenai2backend.azurewebsites.net/api/get-pdf/', {
         message: message,
         zipName: zipName,
         prompt: prompt,
@@ -38,7 +38,7 @@ const DocumentRag = () => {
         const formData = new FormData();
         formData.append('file', file);
     
-        const response = await axios.post('https://hx587qc4-8000.inc1.devtunnels.ms/api/upload-pdf/', formData, {
+        const response = await axios.post('https://nurenai2backend.azurewebsites.net/api/upload-pdf/', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
