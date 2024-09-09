@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../api";
 import "./AddInteractionForm.css";
 import { useNavigate } from "react-router-dom";
+import { Sidebar } from '../../components/Sidebar';
+import TopNavbar from '../TopNavbar/TopNavbar';
 
 const getTenantIdFromUrl = () => {
   // Example: Extract tenant_id from "/3/home"
@@ -131,7 +133,12 @@ const AddInteractionForm = () => {
   };
 
   return (
+    <div className="ip-container">
+      <Sidebar/>
+      <div className="ip-content">
+        <TopNavbar/>
     <div className="interaction-form-container">
+      <a href="javascript:history.back()" className="ip-back-button">← Back</a>
       <h1 className="form-title">Add Interaction Form</h1>
       <form onSubmit={handleSubmit}>
       <div className="form-field">
@@ -222,6 +229,8 @@ const AddInteractionForm = () => {
         </button>
         {error && <div className="error-message">Error: {error}</div>}
       </form>
+    </div>
+    </div>
     </div>
   );
 };
