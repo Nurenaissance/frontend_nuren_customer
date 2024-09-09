@@ -1,7 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
 import { FaTrash, FaCopy, FaMinus, FaPlus } from 'react-icons/fa';
 import { useFlow } from './FlowContext';
+import uploadToBlob from "../../azureUpload.jsx";
+import { convertMentionsForBackend, convertMentionsForFrontend, MentionTextArea } from './MentionTextArea';
+import { useAuth } from '../../authContext.jsx';
+import axiosInstance from '../../api.jsx';
 
 const nodeStyles = {
   padding: '20px',
@@ -37,6 +41,13 @@ const buttonStyles = {
   margin: '10px 5px',
   fontSize: '14px',
   transition: 'background-color 0.3s, transform 0.1s',
+};
+
+const handleStyles = {
+  width: '12px',
+  height: '12px',
+  background: '#784212',
+  border: '2px solid #fff',
 };
 
 const iconStyles = {
@@ -76,9 +87,45 @@ const errorStyles = {
   marginTop: '5px',
 };
 
+const mentionListStyles = {
+  position: 'absolute',
+  backgroundColor: '#fff',
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  zIndex: 1000,
+  maxHeight: '150px',
+  overflowY: 'auto',
+};
+
+const mentionItemStyles = {
+  padding: '8px 12px',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: '#f0f0f0',
+  },
+};
+
+const mentionOptions = [
+  { id: 'name', label: 'Name' },
+  { id: 'phoneno', label: 'Phone Number' },
+  { id: 'email', label: 'Email' },
+  { id: 'description', label: 'Address' },
+  { id: 'createdBy', label: 'Account' },
+];
+
 const highlightErrorStyle = {
   borderColor: '#ff4d4f',
   boxShadow: '0 0 0 2px rgba(255, 77, 79, 0.2)',
+};
+
+const getTenantIdFromUrl = () => {
+  // Example: Extract tenant_id from "/3/home"
+  const pathArray = window.location.pathname.split('/');
+  if (pathArray.length >= 2) {
+    return pathArray[1]; // Assumes tenant_id is the first part of the path
+  }
+  return null; // Return null if tenant ID is not found or not in the expected place
 };
 
 const NodeWrapper = ({ children, style, type }) => {
@@ -106,355 +153,381 @@ const NodeWrapper = ({ children, style, type }) => {
   return (
     <div style={{ ...nodeStyles, ...style }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {/* <FaCopy onClick={onCopy} style={iconStyles} /> */}
-        {/* <FaTrash onClick={onDelete} style={iconStyles} /> */}
       </div>
       {children}
     </div>
   );
 };
 
+
+
+
 export const AskQuestionNode = ({ data, isConnectable }) => {
-    const [question, setQuestion] = useState(data.question || '');
-    const [optionType, setOptionType] = useState(data.optionType || 'Buttons');
-    const [options, setOptions] = useState(data.options || []);
-    const [dataTypes, setDataTypes] = useState(data.dataTypes || []);
-    const [errors, setErrors] = useState({});
-    const { id } = data;
-const { updateNodeData } = useFlow();
+  const [question, setQuestion] = useState(data.question || '');
+  const [optionType, setOptionType] = useState(data.optionType || 'Buttons');
+  const [options, setOptions] = useState(data.options || []);
+  const [variable, setVariable] = useState(data.variable || '');
+  const [dataType, setDataType] = useState(data.dataType || '');
+  const [errors, setErrors] = useState({});
+  const { id } = data;
+  const { updateNodeData } = useFlow();
 
-const handleQuestionChange = (e) => {
-  const newQuestion = e.target.value;
-  setQuestion(newQuestion);
-  updateNodeData(id, { question: newQuestion, optionType, options, dataTypes });
-};
-
-const handleOptionTypeChange = (e) => {
-  const newOptionType = e.target.value;
-  setOptionType(newOptionType);
-  if (newOptionType === 'Variables' && options.length === 0) {
-    setOptions(['']);
-    setDataTypes(['']);
-  }
-  updateNodeData(id, { question, optionType: newOptionType, options, dataTypes });
-};
-
-const handleOptionChange = (index, value) => {
-  const newOptions = options.map((opt, i) => i === index ? value : opt);
-  setOptions(newOptions);
-  updateNodeData(id, { question, optionType, options: newOptions, dataTypes });
-};
-
-const handleDataTypeChange = (index, value) => {
-  const newDataTypes = dataTypes.map((type, i) => i === index ? value : type);
-  setDataTypes(newDataTypes);
-  setErrors(prev => ({ ...prev, [index]: '' }));
-  updateNodeData(id, { question, optionType, options, dataTypes: newDataTypes });
-};
-
-const addOption = () => {
-  const newOptions = [...options, ''];
-  const newDataTypes = [...dataTypes, ''];
-  setOptions(newOptions);
-  setDataTypes(newDataTypes);
-  updateNodeData(id, { question, optionType, options: newOptions, dataTypes: newDataTypes });
-};
-
-const removeOption = (index) => {
-  const newOptions = options.filter((_, i) => i !== index);
-  const newDataTypes = dataTypes.filter((_, i) => i !== index);
-  setOptions(newOptions);
-  setDataTypes(newDataTypes);
-  updateNodeData(id, { question, optionType, options: newOptions, dataTypes: newDataTypes });
-};
-
-const validateAndSend = () => {
-  let hasErrors = false;
-  const newErrors = {};
-
-  if (optionType === 'Variables') {
-    dataTypes.forEach((type, index) => {
-      if (!type) {
-        newErrors[index] = 'Please select a data type';
-        hasErrors = true;
-      }
+  const handleQuestionChange = (e) => {
+    const newQuestion = e.target.value;
+    setQuestion(newQuestion);
+    updateNodeData(id, { 
+      question: convertMentionsForBackend(newQuestion), 
+      optionType, 
+      options, 
+      dataType 
     });
-  }
-
-  setErrors(newErrors);
-
-  if (!hasErrors) {
-    // Send data to backend
-    console.log('Sending to backend:', { question, optionType, options, dataTypes });
-    // Implement your backend sending logic here
-  }
-};
-
-const getOptionStyle = (type, index) => {
-  const baseStyle = {
-    ...inputStyles,
-    width: type === 'Variables' ? 'calc(60% - 20px)' : 'calc(100% - 40px)',
   };
 
-  switch (type) {
-    case 'Buttons':
-      return {
-        ...baseStyle,
-        background: '#e6f7ff',
-        border: '1px solid #91d5ff',
-        borderRadius: '20px',
-        padding: '8px 15px',
-        cursor: 'pointer',
-        color: '#0050b3',
-        fontWeight: 'bold',
-      };
-    case 'Lists':
-      return {
-        ...baseStyle,
-        background: '#f6ffed',
-        borderLeft: '3px solid #b7eb8f',
-        borderRadius: '0 6px 6px 0',
-        paddingLeft: '15px',
-        color: '#389e0d',
-      };
-    case 'Variables':
-      return {
-        ...baseStyle,
-        ...(errors[index] ? highlightErrorStyle : {}),
-      };
-    default:
-      return baseStyle;
-  }
-};
+  const handleOptionTypeChange = (e) => {
+    const newOptionType = e.target.value;
+    setOptionType(newOptionType);
+    if (newOptionType === 'Text') {
+      setOptions([]);
+    }
+    updateNodeData(id, { question, optionType: newOptionType, options, variable, dataType });
+  };
 
-return (
-  <NodeWrapper style={{ background: '#fff5f5', borderColor: '#ffa39e' }} type="askQuestion">
-      <Handle type="target"  style={{
-                        top: '50%',
-                        right: '-10px',
-                        background: '#784212',
-                        width: '12px',
-                        height: '12px',
-                    }} position={Position.Left} isConnectable={isConnectable} />
-      <h3 style={{ marginBottom: '15px', color: '#cf1322' }}>Ask Question</h3>
-      <textarea
-          style={textAreaStyles}
-          value={question}
-          onChange={handleQuestionChange}
-          placeholder="Enter question"
-      />
-      <select 
-          value={optionType} 
-          onChange={handleOptionTypeChange}
-          style={selectStyles}
-      >
-          <option value="Buttons">Buttons</option>
-          <option value="Lists">Lists</option>
-          <option value="Variables">Variables</option>
-      </select>
-      {options.map((option, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', position: 'relative' }}>
-              <input
-                  style={getOptionStyle(optionType)}
-                  value={option}
-                  onChange={(e) => handleOptionChange(index, e.target.value)}
-                  placeholder={`${optionType === 'Buttons' ? 'Button' : optionType === 'Lists' ? 'List item' : 'Variable'} ${index + 1}`}
-              />
-               {optionType === 'Variables' && (
-            <select
-              value={dataTypes[index] || ''}
-              onChange={(e) => handleDataTypeChange(index, e.target.value)}
-              style={{
-                ...selectStyles,
-                width: '40%',
-                marginLeft: '10px',
-                ...(errors[index] ? highlightErrorStyle : {}),
-              }}
-            >
-              <option value="">Select Type</option>
-              <option value="string">String</option>
-              <option value="number">Number</option>
-              <option value="boolean">Boolean</option>
-              <option value="date">Date</option>
-            </select>
-          )}
-              <FaMinus onClick={() => removeOption(index)} style={{ ...iconStyles, color: '#ff4d4f', marginLeft: '10px' }} />
-                 {errors[index] && <div style={errorStyles}>{errors[index]}</div>}
-              {(optionType === 'Buttons' || optionType === 'Lists') && (
-                  <Handle
-                      type="source"
-                      position={Position.Right}
-                      id={`option-${index}`}
-                      style={{
-                        
-                          top: '50%',
-                          right: '-25px',
-                          background: '#722ed1',
-                          width: '12px',
-                          height: '12px',
-                      }}
-                      isConnectable={isConnectable}
-                  />
-              )}
-          </div>
-      ))}
-      <button style={{ ...buttonStyles, background: '#ff7a45', display: optionType === 'Variables' && options.length >= 1 ? 'none' : 'inline-flex' }}   disabled={optionType === 'Variables' && options.length >= 1} onClick={addOption}>
-          <FaPlus style={{ marginRight: '5px' }} /> Add Option
-      </button>
-      {optionType === 'Variables' && (
-          <Handle type="source"  style={{
-                        
-            // top: '50%',
-            // right: '-10px',
-            // background: '#784212',
-            width: '12px',
-            height: '12px',
-        }} position={Position.Right} isConnectable={isConnectable} />
-      )}
-  </NodeWrapper>
-);
-};
+  const handleOptionChange = (index, value) => {
+    const newOptions = options.map((opt, i) => i === index ? value : opt);
+    setOptions(newOptions);
+    updateNodeData(id, { question, optionType, options: newOptions, variable, dataType });
+  };
 
-export const SendMessageNode = ({ data, isConnectable }) => {
-  const [fields, setFields] = useState(data.fields || [{ type: 'Message', content: '' }]);
-  const { id } = data;
-const { updateNodeData } = useFlow();
+  const handleVariableChange = (value) => {
+    setVariable(value);
+    updateNodeData(id, { question, optionType, options, variable: value, dataType });
+  };
 
-const updateNodeDataSafely = (newFields) => {
-  updateNodeData(id, { fields: newFields });
-};
+  const handleDataTypeChange = (value) => {
+    setDataType(value);
+    updateNodeData(id, { question, optionType, options, variable, dataType: value });
+  };
 
-const addField = (type) => {
-  const newFields = [...fields, { type, content: '' }];
-  setFields(newFields);
-  updateNodeDataSafely(newFields);
-};
+  const addOption = () => {
+    if ((optionType === 'Buttons' && options.length < 3) || 
+        (optionType === 'Lists' && options.length < 10)) {
+      const newOptions = [...options, ''];
+      setOptions(newOptions);
+      updateNodeData(id, { question, optionType, options: newOptions, variable, dataType });
+    }
+  };
 
-const updateField = (index, updatedField) => {
-  const newFields = fields.map((field, i) => 
-      i === index ? { ...field, ...updatedField } : field
-  );
-  setFields(newFields);
-  updateNodeDataSafely(newFields);
-};
+  const removeOption = (index) => {
+    const newOptions = options.filter((_, i) => i !== index);
+    setOptions(newOptions);
+    updateNodeData(id, { question, optionType, options: newOptions, variable, dataType });
+  };
 
-const removeField = (index) => {
-  const newFields = fields.filter((_, i) => i !== index);
-  setFields(newFields);
-  updateNodeDataSafely(newFields);
-};
+  const getOptionStyle = (type) => {
+    const baseStyle = {
+      ...inputStyles,
+      width: 'calc(100% - 60px)', // Adjusted to make room for the handle
+    };
 
-const renderInput = (field, index) => {
-  switch (field.type) {
-    case 'Image':
-    case 'Document':
-    case 'Audio':
-    case 'Video':
+    switch (type) {
+      case 'Buttons':
+        return {
+          ...baseStyle,
+          background: '#e6f7ff',
+          border: '1px solid #91d5ff',
+          borderRadius: '20px',
+          padding: '8px 15px',
+          cursor: 'pointer',
+          color: '#0050b3',
+          fontWeight: 'bold',
+        };
+      case 'Lists':
+        return {
+          ...baseStyle,
+          background: '#f6ffed',
+          borderLeft: '3px solid #b7eb8f',
+          borderRadius: '0 6px 6px 0',
+          paddingLeft: '15px',
+          color: '#389e0d',
+        };
+      default:
+        return baseStyle;
+    }
+  };
+
+  const renderOptions = () => {
+    if (optionType === 'Text') {
       return (
-        <div>
-          {field.content && (
-            <div style={{ marginBottom: '10px' }}>
-              {field.type === 'Image' && (
-                <img
-                  src={field.content}
-                  alt={field.fileName}
-                  style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                />
-              )}
-              {field.type === 'Document' && (
-                <iframe
-                  src={field.content}
-                  title={field.fileName}
-                  style={{ width: '100%', height: '300px' }}
-                />
-              )}
-              {(field.type === 'Audio' || field.type === 'Video') && (
-                <div>
-                  <h4>{field.fileName}</h4>
-                  {field.type === 'Audio' && (
-                    <audio controls src={field.content} style={{ width: '100%' }} />
-                  )}
-                  {field.type === 'Video' && (
-                    <video controls src={field.content} style={{ width: '100%', maxHeight: '300px' }} />
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-          <input
-            type="file"
-            accept={`${field.type.toLowerCase()}/*`}
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                  updateField(index, { content: event.target.result, fileName: file.name });
-                };
-                reader.readAsDataURL(file);
-              }
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="text"
+            style={{
+              ...handleStyles,
             }}
-            style={fileInputStyles}
+            isConnectable={isConnectable}
           />
+      );
+    } else {
+      return options.map((option, index) => (
+        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', position: 'relative' }}>
+          <Handle
+            type="source"
+            position={Position.Right}
+            id={`option-${index}`}
+            style={{
+              ...handleStyles,
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}
+            isConnectable={isConnectable}
+          />
+          <input
+            style={getOptionStyle(optionType)}
+            value={option}
+            onChange={(e) => handleOptionChange(index, e.target.value)}
+            placeholder={`${optionType === 'Buttons' ? 'Button' : 'List item'} ${index + 1}`}
+          />
+          <FaMinus onClick={() => removeOption(index)} style={{ cursor: 'pointer', marginLeft: '10px' }} />
         </div>
-      );
-    default:
-      return (
-        <textarea
-          value={field.content}
-          onChange={(e) => updateField(index, { content: e.target.value })}
-          placeholder={`Enter ${field.type.toLowerCase()}`}
-          style={textAreaStyles}
-        />
-      );
-  }
-};
+      ));
+    }
+  };
 
   return (
-    <NodeWrapper style={{ background: '#e6fffb', borderColor: '#87e8de' }} type="sendMessage">
-      <Handle type="target"  style={{
-                        
-                        top: '50%',
-                        right: '-10px',
-                        background: '#784212',
-                        width: '12px',
-                        height: '12px',
-                    }} position={Position.Left} isConnectable={isConnectable} />
-      <h3 style={{ marginBottom: '15px', color: '#006d75' }}>Send Message</h3>
-      {fields.map((field, index) => (
-        <div key={index} style={{ marginBottom: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-            <select 
-              value={field.type} 
-              onChange={(e) => updateField(index, { type: e.target.value, content: '' })}
-              style={{ ...selectStyles, width: '40%', marginRight: '10px' , color:'black' }}
-            >
-              <option value="Message">Message</option>
-              <option value="Image">Image</option>
-              <option value="Document">Document</option>
-              <option value="Audio">Audio</option>
-              <option value="Video">Video</option>
-            </select>
-            <FaMinus onClick={() => removeField(index)} style={{ ...iconStyles, color: '#d32f2f' }} />
-          </div>
-          {renderInput(field, index)}
-          {field.fileName && <div style={{ fontSize: '12px', marginTop: '5px' }}>File: {field.fileName}</div>}
-        </div>
-      ))}
-      <button style={{ ...buttonStyles, background: '#FF6347' }} onClick={() => addField('Message')}>
-        <FaPlus style={{ marginRight: '5px' }} /> Add Field
-      </button>
-      <Handle type="source"  style={{
-                        
-                        top: '50%',
-                        right: '-10px',
-                        background: '#784212',
-                        width: '12px',
-                        height: '12px',
-                    }} position={Position.Right} isConnectable={isConnectable} />
+    <NodeWrapper style={{ background: '#fff5f5', borderColor: '#ffa39e' }} type="askQuestion">
+      <Handle type="target" style={{
+        top: '50%',
+        right: '-10px',
+        background: '#784212',
+        width: '12px',
+        height: '12px',
+      }} position={Position.Left} isConnectable={isConnectable} />
+      <h3 style={{ marginBottom: '15px', color: '#cf1322' }}>Ask Question</h3>
+      <MentionTextArea
+        value={convertMentionsForFrontend(question)}
+        onChange={handleQuestionChange}
+        placeholder="Enter question"
+      />
+      <h4>Variables (Optional)</h4>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+        <input
+          style={{ ...inputStyles, width: 'calc(60% - 10px)', marginRight: '10px' }}
+          value={variable}
+          onChange={(e) => handleVariableChange(e.target.value)}
+          placeholder='Variable Name'
+        />
+        <select
+          value={dataType}
+          onChange={(e) => handleDataTypeChange(e.target.value)}
+          style={{ ...selectStyles, width: '40%' }}
+        >
+          <option value="">Select Type</option>
+          <option value="string">String</option>
+          <option value="number">Number</option>
+          <option value="boolean">Boolean</option>
+          <option value="date">Date</option>
+        </select>
+      </div>
+      <select 
+        value={optionType} 
+        onChange={handleOptionTypeChange}
+        style={selectStyles}
+      >
+        <option value="Buttons">Buttons</option>
+        <option value="Lists">Lists</option>
+        <option value="Text">Text</option>
+      </select>
+      {renderOptions()}
+      {optionType !== 'Text' && ((optionType === 'Buttons' && options.length < 3) || (optionType === 'Lists' && options.length < 10)) && (
+        <button style={buttonStyles} onClick={addOption}>
+          <FaPlus style={{ marginRight: '5px' }} /> Add Option
+        </button>
+      )}
     </NodeWrapper>
   );
 };
+
+
+
+
+
+
+export const SendMessageNode = ({ data, isConnectable }) => {
+  const [field, setField] = useState(data.fields || { type: 'Message', content: { text: '', caption: '', med_id: '' } });
+  const { id } = data;
+  const { updateNodeData } = useFlow();
+  const textAreaRef = useRef(null);
+  const { userId } = useAuth();
+  const tenantId = getTenantIdFromUrl();
+  const [accessToken, setAccessToken] = useState('');
+  const fileInputRef = useRef(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const response = await axiosInstance.get(`/whatsapp_tenant/?business_phone_id=241683569037594`);
+        setAccessToken(response.data.access_token);
+      } catch (error) {
+        console.error('Error fetching access token:', error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
+
+
+  const updateNodeDataSafely = (newFields) => {
+    updateNodeData(id, { fields: newFields });
+  };
+
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', file.type.startsWith('image/') ? 'image' : 'document');
+        formData.append('messaging_product', 'whatsapp');
+
+        const response = await axiosInstance.post(
+          'https://graph.facebook.com/v16.0/241683569037594/media',
+          formData,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        console.log('File uploaded to WhatsApp, ID:', response.data.id);
+        const blobUrl = await uploadToBlob(file, userId, tenantId);
+
+        setField({
+          type: file.type.startsWith('image/') ? 'Image' : file.type.startsWith('video/') ? 'Video' : 'Document',
+          content: {
+            url: blobUrl,
+            med_id: response.data.id, // Store the media ID instead of the URL
+            text: '',
+            caption: ''
+          }
+        });
+
+        if (file.type.startsWith('image/')) {
+          setPreviewUrl(URL.createObjectURL(file));
+        }
+
+      } catch (error) {
+        console.error('Error uploading file to WhatsApp Media API:', error);
+      }
+    }
+  };
+
+  const handleTextAreaChange = (e) => {
+    const { value } = e.target;
+    setField(prevField => ({
+      type: 'text',
+      content: { ...prevField.content, text: convertMentionsForBackend(value) }
+    }));
+  };
+
+
+  const handleCaptionChange = (e) => {
+    const { value } = e.target;
+    setField(prevField => ({
+      ...prevField,
+      content: { ...prevField.content, caption: convertMentionsForBackend(value) }
+    }));
+  };
+
+  useEffect(() => {
+    updateNodeDataSafely(field);
+  }, [field]);
+
+  
+
+  const renderInput = () => {
+    switch (field.type) {
+      case 'Image':
+      case 'Video':
+      case 'Document':
+        return (
+          <div>
+            {field.content && field.content.med_id && (
+              <div style={{ marginBottom: '10px' }}>
+                {field.type === 'Image' && previewUrl && (
+                  <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }} />
+                )}
+              </div>
+            )}
+            <input
+              type="file"
+              accept={`${field.type.toLowerCase()}/*`}
+              onChange={handleFileChange}
+              style={fileInputStyles}
+              ref={fileInputRef}
+            />
+            <MentionTextArea
+              value={convertMentionsForFrontend(field.content?.caption || '')}
+              onChange={handleCaptionChange}
+              placeholder="Enter caption"
+            />
+          </div>
+        );
+      default:
+        return (
+          <div style={{ position: 'relative' }} ref={textAreaRef}>
+            <MentionTextArea
+             value={convertMentionsForFrontend(field.content?.text || '')}
+              onChange={handleTextAreaChange}
+              placeholder="Enter message"
+            />
+          </div>
+        );
+    }
+  };
+
+  return (
+    <NodeWrapper style={{ background: '#e6fffb', borderColor: '#87e8de' }} type="sendMessage">
+      <Handle type="target" style={{
+        top: '50%',
+        left: '-5px',
+        background: '#784212',
+        width: '12px',
+        height: '12px',
+      }} position={Position.Left} isConnectable={isConnectable} />
+      <h3 style={{ marginBottom: '15px', color: '#006d75' }}>Send Message</h3>
+      <div style={{ marginBottom: '15px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+          <select 
+            value={field.type} 
+            onChange={(e) => setField({ type: e.target.value, content: { text: '', caption: '', med_id: '' } })}
+            style={{ ...selectStyles, width: '100%', marginRight: '10px', color:'black' }}
+          >
+            <option value="Message">Message</option>
+            <option value="Image">Image</option>
+            <option value="Document">Document</option>
+            <option value="Video">Video</option>
+          </select>
+        </div>
+        {renderInput()}
+      </div>
+      <Handle type="source" style={{
+        top: '50%',
+        right: '-5px',
+        background: '#784212',
+        width: '12px',
+        height: '12px',
+      }} position={Position.Right} isConnectable={isConnectable} />
+    </NodeWrapper>
+  );
+};
+
+
+
 
 export const SetConditionNode = ({ data, isConnectable }) => {
   const [condition, setCondition] = useState(data.condition || '');
@@ -462,12 +535,11 @@ export const SetConditionNode = ({ data, isConnectable }) => {
 const { updateNodeData } = useFlow();
 
 
-  const handleConditionChange = (e) => {
-    const newCondition = e.target.value;
-    setCondition(newCondition);
-    updateNodeData(id, { condition: newCondition });
-      // updateNodeData({ condition: newCondition });
-  };
+const handleConditionChange = (e) => {
+  const newCondition = e.target.value;
+  setCondition(newCondition);
+  updateNodeData(id, { condition: convertMentionsForBackend(newCondition) });
+};
 
   return (
     <NodeWrapper style={{ background: '#f9f0ff', borderColor: '#d3adf7' }} type="setCondition">
@@ -480,9 +552,8 @@ const { updateNodeData } = useFlow();
                         height: '12px',
                     }} position={Position.Left} isConnectable={isConnectable} />
       <h3 style={{ marginBottom: '15px', color: '#531dab' }}>Set Condition</h3>
-      <textarea
-        style={textAreaStyles}
-        value={condition}
+      <MentionTextArea
+        value={convertMentionsForFrontend(condition)}
         onChange={handleConditionChange}
         placeholder="Enter condition"
       />

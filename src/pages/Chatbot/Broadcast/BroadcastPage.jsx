@@ -4,6 +4,18 @@ import axiosInstance from '../../../api';
 import axios from 'axios';
 import { Edit2, Trash2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid'; 
+// import { uploadToBlob } from '../../../utils/azureStorage';
+import { useAuth } from '../../../authContext';
+import uploadToBlob from '../../../azureUpload';
+
+const getTenantIdFromUrl = () => {
+  // Example: Extract tenant_id from "/3/home"
+  const pathArray = window.location.pathname.split('/');
+  if (pathArray.length >= 2) {
+    return pathArray[1]; // Assumes tenant_id is the first part of the path
+  }
+  return null; // Return null if tenant ID is not found or not in the expected place
+};
 
 const BroadcastPage = () => {
   const [showTemplatePopup, setShowTemplatePopup] = useState(false);
@@ -33,7 +45,12 @@ const BroadcastPage = () => {
   const [broadcastHistory, setBroadcastHistory] = useState([]);
   const [selectedTemplateDetails, setSelectedTemplateDetails] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [headerImageUrl, setHeaderImageUrl] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [headerMediaId, setHeaderMediaId] = useState('');
+  const { userId } = useAuth();
   const fileInputRef = useRef(null);
+  const tenantId=getTenantIdFromUrl();
 
 
   const fetchTemplates = useCallback(async () => {
@@ -204,7 +221,7 @@ const BroadcastPage = () => {
         type: "HEADER",
         format: headerType.toUpperCase(),
         text: headerType === 'text' ? headerContent : undefined,
-        example: headerType === 'image' ? { header_handle: [headerContent] } : undefined,
+        example: headerType === 'image' ? { header_handle: [headerMediaId] } : undefined,
       },
       {
         type: "BODY",
@@ -401,11 +418,39 @@ const BroadcastPage = () => {
     setButtons(updatedButtons);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setHeaderImage(file);
-      setHeaderContent(URL.createObjectURL(file));
+  const handleImageUpload = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setHeaderImage(selectedFile);
+      setHeaderContent(URL.createObjectURL(selectedFile));
+      
+      try {
+        console.log('Uploading file to WhatsApp Media API...');
+        
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('type', 'image');
+        formData.append('messaging_product', 'whatsapp');
+
+        const response = await axios.post(
+          'https://graph.facebook.com/v16.0/241683569037594/media',
+          formData,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        console.log('File uploaded to WhatsApp, ID:', response.data.id);
+
+        setHeaderMediaId(response.data.id);
+        setUploadProgress(100);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        setUploadProgress(0);
+      }
     }
   };
 
@@ -593,34 +638,35 @@ const BroadcastPage = () => {
                   </select>
                 </div>
                 <div className="bp-form-group">
-                  <label>Header (Optional)</label>
-                  <select value={headerType} onChange={(e) => setHeaderType(e.target.value)}>
-                    <option value="text">Text</option>
-                    <option value="image">Image</option>
-                  </select>
-                  {headerType === 'text' ? (
-                    <input
-                      type="text"
-                      value={headerContent}
-                      onChange={(e) => setHeaderContent(e.target.value)}
-                      placeholder="Header Text"
-                    />
-                  ) : (
-                    <>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        style={{ display: 'none' }}
-                        ref={fileInputRef}
-                      />
-                      <button type="button" onClick={() => fileInputRef.current.click()}>
-                        Upload Image
-                      </button>
-                      {headerImage && <span>{headerImage.name}</span>}
-                    </>
-                  )}
-                </div>
+            <label>Header (Optional)</label>
+            <select value={headerType} onChange={(e) => setHeaderType(e.target.value)}>
+              <option value="text">Text</option>
+              <option value="image">Image</option>
+            </select>
+            {headerType === 'text' ? (
+              <input
+                type="text"
+                value={headerContent}
+                onChange={(e) => setHeaderContent(e.target.value)}
+                placeholder="Header Text"
+              />
+            ) : (
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                  ref={fileInputRef}
+                />
+                <button type="button" onClick={() => fileInputRef.current.click()}>
+                  Upload Image
+                </button>
+                {headerImage && <span>{headerImage.name}</span>}
+                {uploadProgress > 0 && <progress value={uploadProgress} max="100" />}
+              </>
+            )}
+          </div>
                 <div className="bp-form-group">
                   <label>Body Text</label>
                   <textarea
