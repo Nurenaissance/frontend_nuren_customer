@@ -617,20 +617,11 @@ const [selectedFile, setSelectedFile] = useState(null);
     
 
     <div className="pages">
-      
-     <div className="sidebar1">
-      <ul>
-        {relatedListItems.map((item) => (
-          <li key={item}>
-            <a href={`#${item}`} onClick={() => handleScrollToSection(item)}>
-              {item}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {/* */}
+     
+    
 
-      <div className="relatedList-Contacts">
+      <div className="sidebar1">
             <Link to={`../${tenantId}/contacts`} className="contact-back-button"> Back</Link>
           </div>
 

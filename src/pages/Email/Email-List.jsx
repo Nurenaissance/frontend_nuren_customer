@@ -28,7 +28,7 @@ function EmailList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const popupRef = useRef(null);
-  const { provider, emailUser, emailPass } = location.state || {};
+  const { provider, emailUser, emailPass,fromContacts } = location.state || {};
   const [selectedEmails, setSelectedEmails] = useState(new Set());
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
@@ -53,6 +53,14 @@ function EmailList() {
     return [...selected].filter(emailId => !stored.includes(emailId));
   };
   
+  useEffect(() => {
+    if (fromContacts) {
+      setShowComposeModal(true);
+    }
+    console.log(fromContacts);
+  }, [fromContacts]);
+
+
   const handleCheckboxChange = (emailId) => {
     setSelectedEmails((prevSelected) => {
       const newSelected = new Set(prevSelected);
@@ -332,7 +340,7 @@ function extractMainText(emailContent) {
     // First try-catch block for storing selected emails
     try {
       // Store the newly selected emails
-      await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/store-selected-emails/', selectedEmailList, {
+      await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/store-selected-emails/', selectedEmailList, {
         headers: {
           'X-Tenant-ID': tenantId // Attach the tenant ID in a custom header
         }

@@ -595,7 +595,7 @@ const AssignLeads = () => {
   const fetchUsersAndLeads = async () => {
     try {
       const [usersResponse, leadsResponse] = await Promise.all([
-        axiosInstance.get('https://webappbaackend.azurewebsites.net/get-all-user/'),
+        axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/get-all-user/'),
         axiosInstance.get('/leads/')
       ]);
 

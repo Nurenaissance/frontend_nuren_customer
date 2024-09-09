@@ -115,9 +115,12 @@ import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 // import FlowBuilder from "../pages/NewFlow/FlowBuilder.jsx";
 import CallLogs from "../pages/CallPage/callLogs.jsx";
 import EmailTrackingInfo from "../pages/Email/EmailTrackingInfo.jsx";
+import { Experience } from "../pages/Experience/Experience.jsx";
+import ExperienceInfo from "../pages/Experience/experienceinfo.jsx";
+import ExperienceForm from "../pages/Experience/experienceform.jsx";
 import BroadcastPage from "../pages/Chatbot/Broadcast/BroadcastPage.jsx";
 import Chatbotredirect from "../pages/Chatbot/Chatbotredirect.jsx";
-
+import UploadToMeta from "../pages/uploadfile.jsx";
 // import CustomModelForm from "../pages/CustomModel/customform";
 
 
@@ -227,15 +230,21 @@ export const RouteWrapper = () => {
   useEffect(() => {
     const fetchReminders = async () => {
       try {
-        const response = await axiosInstance.get('/reminders/');
+        const response = await axiosInstance.get('/reminders/', {
+          headers: {
+            'Tenant-ID': tenantId, // Replace 'Tenant-ID' with the actual header key your backend expects
+          }
+        });
         setReminder(response.data);
-        console.log(reminder)
+        console.log(reminder);
       } catch (error) {
         console.error("Error fetching reminders:", error);
       }
     };
+    
     fetchReminders();
-  }, []);
+  }, [tenantId]); // Ensure tenantId is included in the dependency array if it might change
+  
 
   useEffect(() => {
       const storedReminders = JSON.parse(localStorage.getItem('reminders')) || [];
@@ -391,7 +400,11 @@ export const RouteWrapper = () => {
           <Route path=":tenant_id/calllogs"  element= {<CallLogs/>}/>
           <Route path=":tenant_id/chat2doc"  element= {<DocumentRag/>}/>
           <Route path=":tenant_id/emaileditor"  element= {<Htmleditor/>}/>
-
+          <Route path=":tenant_id/experiencemodel"  element= {<Experience/>}/>
+          <Route path=":tenant_id/experienceinfo/:id"  element= {<ExperienceInfo/>}/>
+          <Route path=":tenant_id/experienceform"  element= {<ExperienceForm/>}/>
+          <Route path="/:tenantId/uploadtometa" element={<UploadToMeta />} />
+       
         </>
       )}
 

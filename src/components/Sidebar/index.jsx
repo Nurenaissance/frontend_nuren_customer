@@ -188,7 +188,7 @@ export const Sidebar = ({ onSelectModel }) => {
   useEffect(() => {
     const fetchModels = async () => {
         try {
-            const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/dynamic-models/');
+            const response = await axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/dynamic-models/');
             setModels(response.data);
             setLoading(false);
         } catch (error) {
@@ -329,7 +329,7 @@ export const Sidebar = ({ onSelectModel }) => {
               toggleDropdown={toggleDropdown(setSocialDropdownOpen)}
             >
               <NurenSidebarItem
-                to={formatmewLink(accessToken)}
+                to={formatLink("/instagrampost")}
                 icon={<InstagramIcon />}
                 text="Instagram"
               />

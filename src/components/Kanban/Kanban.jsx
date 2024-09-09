@@ -394,7 +394,7 @@ const [isLoading, setIsLoading] = useState(false);
   
       const prompt = `How do i sell to this person.`;
       try {
-        const response = await axiosInstance.post(`https://webappbaackend.azurewebsites.net/query/`, { 
+        const response = await axiosInstance.post(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/query/`, { 
           prompt, 
           tenant: tenantId
         });
@@ -523,7 +523,7 @@ const [isLoading, setIsLoading] = useState(false);
                             className="card_"
                           >
                             <div className="license">
-                              {card.amount} licenses
+                              {card.amount} 
                               <div className="status">{card.status}</div>
                               <button 
           onClick={() => handleDeleteLead(card.id)} 

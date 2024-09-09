@@ -285,8 +285,8 @@ const DnDFlow = () => {
     localStorage.setItem('flowData', JSON.stringify(data));
 
     const url = templateId 
-      ? `https://webappbaackend.azurewebsites.net/node-templates/${templateId}/`
-      : "https://webappbaackend.azurewebsites.net/node-templates/";
+      ? `https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/node-templates/${templateId}/`
+      : "https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/node-templates/";
 
     const method = templateId ? 'put' : 'post';
 

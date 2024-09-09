@@ -27,7 +27,7 @@ export const Card = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(`https://webappbaackend.azurewebsites.net/generate-report/`);
+        const response = await axiosInstance.get(`https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/generate-report/`);
         console.log("API Response:", response.data);
         setTotalLeads(response.data.total_leads);
         setCreatedAt(response.data.created_at);

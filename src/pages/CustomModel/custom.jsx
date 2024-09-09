@@ -18,7 +18,7 @@ const Custom = () => {
     useEffect(() => {
         const fetchModels = async () => {
             try {
-                const response = await axiosInstance.get('https://webappbaackend.azurewebsites.net/dynamic-models/');
+                const response = await axiosInstance.get('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/dynamic-models/');
                 setModels(response.data);
                 setLoading(false);
             } catch (error) {
@@ -54,7 +54,7 @@ const Custom = () => {
                 model_name: modelName,
                 fields: fields.map(field => ({ field_name: field.fieldName, field_type: field.fieldType }))
             };
-            const response = await axiosInstance.post('https://webappbaackend.azurewebsites.net/create-dynamic-model/', newModel);
+            const response = await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/create-dynamic-model/', newModel);
             if (response.data.success) {
                 setFields([{ fieldName: '', fieldType: '' }]); // Reset fields
                 setModelName(''); // Reset model name

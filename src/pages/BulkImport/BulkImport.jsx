@@ -50,7 +50,7 @@ const BulkImport = () => {
       formData.append('column_mappings_json', JSON.stringify(columnMappings));
       formData.append('model_name', "Account");
 
-      const response = await axios.post('https://webappbaackend.azurewebsites.net/uploadexcel/', formData, {
+      const response = await axios.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/uploadexcel/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'X-Tenant-ID': "ll"
@@ -72,7 +72,7 @@ const BulkImport = () => {
       formData.append('startrow', startrow);
       console.log("file",excelFile);
 
-      axios.post('https://webappbaackend.azurewebsites.net/excel-column/', formData, {
+      axios.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/excel-column/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'X-Tenant-ID': "ll" // Custom header for tenant ID

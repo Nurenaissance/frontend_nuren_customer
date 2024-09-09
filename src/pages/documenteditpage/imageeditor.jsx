@@ -201,7 +201,7 @@ const ImageEditor = () => {
     }
   
 
-// Use config for further operations
+
 console.log('Config:', config);
 
   const encodedConfig = config ? encodeURIComponent(JSON.stringify(config)) : null;

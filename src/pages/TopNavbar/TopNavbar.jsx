@@ -20,6 +20,7 @@ import { storage, firestore } from '../../pages/Userpage/profilefirebase.jsx';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import axios from "axios";
+import Loader from "../../components/Loader/Loader.jsx";
 
 
 
@@ -54,6 +55,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [selectedDocumentType, setSelectedDocumentType] = useState('');
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     location: '',
@@ -61,6 +63,8 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     to_time: '',
     related_to: '',
   });
+
+ 
 
   const documentTypes = [
     'Lead',
@@ -117,7 +121,7 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
     formData.append('model_name', selectedDocumentType);
 
     try {
-      const response = await axiosInstance.post('https://webappbaackend.azurewebsites.net/upload/', formData, {
+      const response = await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/upload/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -252,9 +256,12 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
   const handleSearchClick = async () => {
     console.log('Search button clicked');
     console.log('Search Query:', searchQuery);
+  
+    setIsLoading(true); // Start the loader
+  
     try {
       const tenant = tenantId
-      const response = await fetch('https://webappbaackend.azurewebsites.net/execute-query/', {
+      const response = await fetch('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/execute-query/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -262,19 +269,22 @@ const TopNavbar = ({ openMeetingForm, openCallForm, totalCoins = 0 }) => {
         },
         body: JSON.stringify({ prompt: searchQuery }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+  
       const data = await response.json();
       console.log('Response from backend:', data);
       setTableData(data);
       setPopupVisible(true);
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setIsLoading(false); // Stop the loader regardless of success or failure
     }
   };
+  
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSearchClick();
@@ -599,9 +609,18 @@ return (
           </div>
         </div>
       )}
-      {popupVisible && (
+       {isLoading && (
+      <div className="loader-overlay">
+        <div className="loader-container">
+          <div className="loader"></div>
+        </div>
+      </div>
+    )}
+     
+      {popupVisible && ( 
         <NavbarPopup data={tableData} onClose={handleClosePopup} />
       )}
+     
     </div>
   );
 };
