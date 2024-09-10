@@ -180,16 +180,20 @@ if (imageId) {
       });
 
       // Log the image URL from the response
-      console.log(response.data.url);
-      try {
-        // Send a GET request using Axios with authorization header
-        let image = await axios.get(response.data.url, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      console.log(imnage,"yahahaahahahahah");
-      }catch(error){console.log("Error fetching image");}
+          console.log('Image URL:', response.data.url);
+
+      // Step 2: Send another GET request to fetch the raw image data
+      const config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: response.data.url,
+        headers: { 
+          'Authorization': `Bearer ${token}`
+        }
+      };
+  
+      const imageResponse = await axios.request(config);
+      console.log(imageResponse);
 
     } catch (error) {
       console.error('Error fetching image URL:', error);
