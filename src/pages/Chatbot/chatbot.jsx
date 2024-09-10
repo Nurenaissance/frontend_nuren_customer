@@ -161,15 +161,52 @@ const renderInteractiveMessage = (parsedMessage) => {
           {text.body}
         </div>
       );
-    } else if (type === 'image') {
-      // Handle image messages
-      console.log("yer link haiiii",image.link);
-      return (
-        <div className="image-message">
-          <img src={image.link} alt="Sent image" className="cb-message-image" />
-          {image.caption && <p className="cb-message-caption">{image.caption}</p>}
-        </div>
-      );
+      } else if (type === 'image') {
+        // Handle image messages
+        console.log("yer link haiiii",image.id);
+        let imageId = image.id; // Extract the image ID
+        
+if (imageId) {
+  const url = `https://graph.facebook.com/v20.0/${imageId}`;
+  const token = 'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P';
+  //let response='';
+  const fetchImageUrl = async () => {
+    try {
+      // Send a GET request using Axios with authorization header
+      let response = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      // Log the image URL from the response
+      console.log(response.data.url);
+      try {
+        // Send a GET request using Axios with authorization header
+        let image = await axios.get(response.data.url, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      console.log(imnage,"yahahaahahahahah");
+      }catch(error){console.log("Error fetching image");}
+
+    } catch (error) {
+      console.error('Error fetching image URL:', error);
+    }
+  };
+
+  fetchImageUrl();
+
+  // Call the async function to fetch the image URL
+  
+}
+        return (
+          <div className="image-message">
+            <img src={image.link} alt="Sent image" className="cb-message-image" />
+            {image.caption && <p className="cb-message-caption">{image.caption}</p>}
+          </div>
+        );
     }
 
     return <div className="error">Unsupported message type</div>;
