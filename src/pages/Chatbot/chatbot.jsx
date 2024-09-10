@@ -163,6 +163,7 @@ const renderInteractiveMessage = (parsedMessage) => {
       );
     } else if (type === 'image') {
       // Handle image messages
+      console.log("yer link haiiii",image.link);
       return (
         <div className="image-message">
           <img src={image.link} alt="Sent image" className="cb-message-image" />
