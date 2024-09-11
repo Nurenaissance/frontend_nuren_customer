@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import io from 'socket.io-client';
 
-const socket = io('https://whatsappbotserver.azurewebsites.net/');
+const socket = io('https://hx587qc4-8080.inc1.devtunnels.ms/');
 
 
 const getTenantIdFromUrl = () => {
@@ -163,51 +163,37 @@ const renderInteractiveMessage = (parsedMessage) => {
       );
       } else if (type === 'image') {
         // Handle image messages
+        let response='';
         console.log("yer link haiiii",image.id);
         let imageId = image.id; // Extract the image ID
         
-if (imageId) {
-  const url = `https://graph.facebook.com/v20.0/${imageId}`;
-  const token = 'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P';
-  //let response='';
-  const fetchImageUrl = async () => {
-    try {
-      // Send a GET request using Axios with authorization header
-      let response = await axios.get(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+        if (imageId) {
+          const url = `https://hx587qc4-8080.inc1.devtunnels.ms/imageData/241683569037594/${imageId}`;
+          const token = 'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P';
+          //let response='';
+          const fetchImageUrl = async () => {
+            try {
+              // Send a GET request using Axios with authorization header
+              let response = await axios.get(url);
+
+              // Log the image URL from the response
+                  console.log('Image URL:', response.data);
+
+              // Step 2: Send another GET request to fetch the raw image data
+            
+            } catch (error) {
+              console.error('Error fetching image URL:', error);
+            }
+          };
+
+          //fetchImageUrl();
+
+          // Call the async function to fetch the image URL
+          
         }
-      });
-
-      // Log the image URL from the response
-          console.log('Image URL:', response.data.url);
-
-      // Step 2: Send another GET request to fetch the raw image data
-      const config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: response.data.url,
-        headers: { 
-          'Authorization': `Bearer ${token}`
-        }
-      };
-  
-      const imageResponse = await axios.request(config);
-      console.log(imageResponse);
-
-    } catch (error) {
-      console.error('Error fetching image URL:', error);
-    }
-  };
-
-  fetchImageUrl();
-
-  // Call the async function to fetch the image URL
-  
-}
         return (
           <div className="image-message">
-            <img src={image.link} alt="Sent image" className="cb-message-image" />
+            <img src={response.data} alt="Sent image" className="cb-message-image" />
             {image.caption && <p className="cb-message-caption">{image.caption}</p>}
           </div>
         );
@@ -435,7 +421,7 @@ if (imageId) {
   
     try {
       const response = await axiosInstance.post(
-        'https://whatsappbotserver.azurewebsites.net/send-message',
+        'http://127.0.0.1:8080/send-message',
         {
           phoneNumbers: [selectedContact.phone],
           messageType: "image",
@@ -754,7 +740,7 @@ if (imageId) {
           }
       
           return axiosInstance.post(
-            'https://whatsappbotserver.azurewebsites.net/send-message',
+            'http://127.0.0.1:8080/send-message',
             {
               phoneNumbers: [phoneNumber],
               message: newMessage.content,
@@ -771,7 +757,7 @@ if (imageId) {
           phoneNumber = phoneNumber.slice(2);
         }
         await axiosInstance.post(
-          'https://whatsappbotserver.azurewebsites.net/send-message',
+          'http://127.0.0.1:8080/send-message',
           {
             phoneNumbers: [phoneNumber],
             message: newMessage.content,
@@ -940,7 +926,7 @@ if (imageId) {
   
 
     const handleRedirect = () => {
-      window.location.href = 'https://www.facebook.com/v18.0/dialog/oauth?client_id=1546607802575879&redirect_uri=https%3A%2F%2Fcrm.nuren.ai%2Fchatbotredirect&response_type=code&config_id=1573657073196264&state=pass-through%20value';
+      window.location.href = 'https://www.facebook.com/v18.0/dialog/oauth?client_id=1546607802575879&redirect_uri=https%3A%2F%2Fwhatsapp.nuren.ai%2Fchatbotredirect&response_type=code&config_id=1573657073196264&state=pass-through%20value';
     };
 
     const handleCreateFlow = () => {
@@ -1078,7 +1064,7 @@ if (imageId) {
         };
     
         // Send the broadcast message
-        const response = await axiosInstance.post('https://whatsappbotserver.azurewebsites.net/send-message/', payload);
+        const response = await axiosInstance.post('http://127.0.0.1:8080/send-message', payload);
     
         if (response.status === 200) {
           console.log("Broadcast sent successfully");
