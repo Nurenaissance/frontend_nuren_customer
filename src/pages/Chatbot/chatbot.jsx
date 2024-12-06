@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import io from 'socket.io-client';
 
-const socket = io('https://hx587qc4-8080.inc1.devtunnels.ms/');
+const socket = io('https://whatsappbotserver.azurewebsites.net/');
 
 
 const getTenantIdFromUrl = () => {
@@ -86,18 +86,18 @@ const Chatbot = () => {
   };
 
 
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to the server');
-      fetchAllMessages();
-    });
+  // useEffect(() => {
+  //   socket.on('connect', () => {
+  //     console.log('Connected to the server');
+  //     fetchAllMessages();
+  //   });
   
-    socket.on('new-message', handleNewMessage);
+  //   socket.on('new-message', handleNewMessage);
   
-    return () => {
-      socket.off('new-message', handleNewMessage);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off('new-message', handleNewMessage);
+  //   };
+  // }, []);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -162,38 +162,10 @@ const renderInteractiveMessage = (parsedMessage) => {
         </div>
       );
       } else if (type === 'image') {
-        // Handle image messages
-        let response='';
-        console.log("yer link haiiii",image.id);
-        let imageId = image.id; // Extract the image ID
-        
-        if (imageId) {
-          const url = `https://hx587qc4-8080.inc1.devtunnels.ms/imageData/241683569037594/${imageId}`;
-          const token = 'EAAVZBobCt7AcBO8trGDsP8t4bTe2mRA7sNdZCQ346G9ZANwsi4CVdKM5MwYwaPlirOHAcpDQ63LoHxPfx81tN9h2SUIHc1LUeEByCzS8eQGH2J7wwe9tqAxZAdwr4SxkXGku2l7imqWY16qemnlOBrjYH3dMjN4gamsTikIROudOL3ScvBzwkuShhth0rR9P';
-          //let response='';
-          const fetchImageUrl = async () => {
-            try {
-              // Send a GET request using Axios with authorization header
-              let response = await axios.get(url);
-
-              // Log the image URL from the response
-                  console.log('Image URL:', response.data);
-
-              // Step 2: Send another GET request to fetch the raw image data
-            
-            } catch (error) {
-              console.error('Error fetching image URL:', error);
-            }
-          };
-
-          //fetchImageUrl();
-
-          // Call the async function to fetch the image URL
-          
-        }
+        // Handle image messages//Ayush below is a line
         return (
           <div className="image-message">
-            <img src={response.data} alt="Sent image" className="cb-message-image" />
+            <img src={image.id} alt="Sent image" className="cb-message-image" />
             {image.caption && <p className="cb-message-caption">{image.caption}</p>}
           </div>
         );
@@ -306,45 +278,7 @@ const renderInteractiveMessage = (parsedMessage) => {
     if ( tenantId) {
         fetchProfileImage();
     }
-}, [ tenantId]);
-
-  const generateChatbotMessage = async () => {
-    try {
-      if (!selectedContact) {
-        console.error('No contact selected');
-        return;
-      }
-  
-      const name = `${selectedContact.first_name} ${selectedContact.last_name}`;
-      const prompts = [
-        `Hey ${name}! 😊 Thinking Python for AI. Simple and powerful. What do you think, ${name}?`,
-        `Hi ${name}! 😄 Python's great for AI. Let's make something cool!`,
-      ];
-  
-      const randomIndex = Math.floor(Math.random() * prompts.length);
-      const prompt = prompts[randomIndex];
-  
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: prompt },
-        ],
-      });
-  
-      const messageContent = response.choices[0].message.content.trim();
-      setMessageTemplates(prevTemplates => ({
-        ...prevTemplates,
-        [selectedContact.id]: messageContent
-      }));
-    } catch (error) {
-      console.error('Error generating WhatsApp message:', error);
-    }
-  };
-
-  const handleGenerateMessage = async (e) => {
-    e.preventDefault();
-    await generateChatbotMessage();
-  };
+}, [tenantId]);
 
   useEffect(() => {
     const fetchTenantData = async () => {
@@ -420,8 +354,8 @@ const renderInteractiveMessage = (parsedMessage) => {
     if (!imageToSend || !selectedContact) return;
   
     try {
-      const response = await axiosInstance.post(
-        'http://127.0.0.1:8080/send-message',
+      const response = await axios.post(
+        'https://whatsappbotserver.azurewebsites.net/send-message',
         {
           phoneNumbers: [selectedContact.phone],
           messageType: "image",
@@ -451,45 +385,6 @@ const renderInteractiveMessage = (parsedMessage) => {
     }
   };
 
-
-
-  // const handleImageSend = async () => {
-  //   if (!imageToSend || !selectedContact) return;
-
-  //   try {
-  //     const imageUrl = imageMap[imageToSend];
-  //     const response = await axiosInstance.post(
-  //       'https://hx587qc4-8080.inc1.devtunnels.ms/send-message',
-  //       {
-  //         phoneNumbers: [selectedContact.phone],
-  //         url: false,
-  //         messageType: "image",
-  //         additionalData: {
-  //           imageUrl: imageUrl,
-  //           caption: imageCaption
-  //         },
-  //         business_phone_number_id: "241683569037594"
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       setConversation(prev => [...prev, { 
-  //         type: 'image', 
-  //         sender: 'bot', 
-  //         imageId: imageToSend,
-  //         imageUrl: imageUrl, // Add this line
-  //         caption: imageCaption 
-  //       }]);
-  //       setImageToSend(null);
-  //       setImageCaption('');
-  //       setShowImagePreview(false);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error sending image:', error);
-  //   }
-  // };
-
-  // Function to handle back navigation
   const handleBack = () => {
     navigate(-1);
   };
@@ -499,45 +394,6 @@ const renderInteractiveMessage = (parsedMessage) => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
-  // Render message function
-  // const renderMessage = (message, index) => {
-  //   const isUser = message.sender === 'user';
-  //   const messageClass = `cb-message ${isUser ? 'cb-user-message' : 'cb-bot-message'}`;
-
-  //   if (message.type === 'image') {
-  //     return (
-  //       <div key={index} className={messageClass}>
-  //         <img 
-  //           src={message.imageUrl || imageMap[message.imageId]} 
-  //           alt="Sent image" 
-  //           className="cb-message-image" 
-  //           onError={(e) => {
-  //             console.error("Error loading image:", e);
-  //             e.target.onerror = null;
-  //             e.target.src = "path/to/fallback/image.png"; // Add a fallback image
-  //           }}
-  //         />
-  //         {message.caption && <p className="cb-message-caption">{message.caption}</p>}
-  //       </div>
-  //     );
-  //   }
-
-  //   // Handle text and interactive messages
-  //   if (typeof message.text === 'string') {
-  //     if (message.text.trim().startsWith('{') || message.text.trim().startsWith('[')) {
-  //       try {
-  //         const fixedMessage = fixJsonString(message.text);
-  //         const parsedMessage = JSON.parse(fixedMessage);
-  //         return renderInteractiveMessage(parsedMessage);
-  //       } catch (e) {
-  //         console.error('Failed to parse JSON message:', e);
-  //         return <div className="error">Failed to parse message</div>;
-  //       }
-  //     }
-  //     return <div>{message.text || <span className="error">Message content is undefined</span>}</div>;
-  //   }
-  //   return <div className="error">Invalid message format</div>;
-  // };
 
 
   const handleUploadedFile = async (event, contactId) => {
@@ -575,58 +431,42 @@ const renderInteractiveMessage = (parsedMessage) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {                                                 //AYUSH THIS IS A LINE
     socket.on('connect', () => {
       console.log('Connected to the server');
-      // Request all messages upon connection
-      socket.emit('fetch-all-messages', { tenantId });
     });
 
-    socket.on('all-messages', (messages) => {
-      handleAllMessages(messages);
-    });
+    
 
     socket.on('new-message', (message) => {
       if (message) {
-        console.log('Got New Message', message.contactPhone.wa_id);
-        
-        setContacts(prevContacts => {
-          const updatedContacts = prevContacts.map(contact => 
-            parseInt(contact.phone) === parseInt(message.contactPhone.wa_id)
-              ? { ...contact, hasNewMessage: true }
-              : contact
-          );
-          
-          // Sort contacts: new messages first, then alphabetically
-          return updatedContacts.sort((a, b) => {
-            if (a.hasNewMessage === b.hasNewMessage) {
-              return a.first_name.localeCompare(b.first_name);
-            }
-            return b.hasNewMessage ? 1 : -1;
-          });
-        });
-
-        setAllConversations(prevConversations => ({
-          ...prevConversations,
-          [message.contactPhone.wa_id]: [
-            ...(prevConversations[message.contactPhone.wa_id] || []),
-            { text: message.message, sender: 'user' }
-          ]
-        }));
-    
-        if (selectedContact && parseInt(message.contactPhone.wa_id) === parseInt(selectedContact.phone)) {
-          setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'user' }]);
-          setNewMessages(prevMessages => [...prevMessages, { text: message.message, sender: 'user' }]);
+        console.log('Got New Message', selectedContact.phone);
+       
+  {
+        if (parseInt(message.contactPhone.wa_id) == parseInt(selectedContact.phone)) {
+          console.log("hogyaaaaaaaaaaaaaaaaaaaaaaaaaaaa");  
+          setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'user'}]);
+          //setNewMessages(prevMessages => [...prevMessages, { text: message.message, sender: 'user'}]);
         }
-      }
+      }}
     });
 
+  socket.on('node-message', (message) => {
+  if (message) {
+    
+    console.log('Got New NOde Message',message);
+  {
+   {
+    setConversation(prevMessages => [...prevMessages, { text: message.message, sender: 'bot' }]);
+    }}
+  }
+  });
+
     return () => {
-      socket.off('connect');
-      socket.off('all-messages');
+      socket.off('node-message');
       socket.off('new-message');
     };
-  }, []);
+  }, [selectedContact]);
 
   const handleAllMessages = (messages) => {
     setAllMessages(messages);
@@ -739,8 +579,8 @@ const renderInteractiveMessage = (parsedMessage) => {
             phoneNumber = phoneNumber.slice(2);
           }
       
-          return axiosInstance.post(
-            'http://127.0.0.1:8080/send-message',
+          return axios.post(
+            'https://whatsappbotserver.azurewebsites.net/send-message',
             {
               phoneNumbers: [phoneNumber],
               message: newMessage.content,
@@ -756,8 +596,8 @@ const renderInteractiveMessage = (parsedMessage) => {
         if (phoneNumber.startsWith("91")) {
           phoneNumber = phoneNumber.slice(2);
         }
-        await axiosInstance.post(
-          'http://127.0.0.1:8080/send-message',
+        await axios.post(
+          'https://whatsappbotserver.azurewebsites.net/send-message',
           {
             phoneNumbers: [phoneNumber],
             message: newMessage.content,
@@ -868,7 +708,7 @@ const renderInteractiveMessage = (parsedMessage) => {
     if (previousContact) {
       // Save conversation data for the previous contact
       console.log("commentsdsdsd::::::::::::::::::::::::::::::::::::",conversation);
-      sendDataToBackend(previousContact.phone, newMessages);
+      // sendDataToBackend(previousContact.phone, newMessages); //Ayush here is a line
     }
     
     // Clear current conversation
@@ -993,7 +833,7 @@ const renderInteractiveMessage = (parsedMessage) => {
           business_phone_number_id:'241683569037594'
         };
         console.log('Sending flow data:', dataToSend);
-        const response = await axiosInstance.post('https://8twdg37p-8000.inc1.devtunnels.ms/insert-data/', dataToSend, {
+        const response = await axiosInstance.post('https://backenreal-hgg2d7a0d9fzctgj.eastus-01.azurewebsites.net/insert-data/', dataToSend, {
           headers: {
             'Content-Type': 'application/json',
             token: localStorage.getItem('token'),
@@ -1064,7 +904,8 @@ const renderInteractiveMessage = (parsedMessage) => {
         };
     
         // Send the broadcast message
-        const response = await axiosInstance.post('http://127.0.0.1:8080/send-message', payload);
+        const response =  await axios.post(
+          'https://whatsappbotserver.azurewebsites.net/send-message', payload);
     
         if (response.status === 200) {
           console.log("Broadcast sent successfully");
@@ -1182,7 +1023,7 @@ const saveGroupToLocalStorage = (group) => {
             try {
               const fixedMessage = fixJsonString(message.text);
               const parsedMessage = JSON.parse(fixedMessage);
-              console.log('Parsed Message:', parsedMessage);
+              //console.log('Parsed Message:', parsedMessage);
               return renderInteractiveMessage(parsedMessage);
             } catch (e) {
               console.error('Failed to parse JSON message:', e);

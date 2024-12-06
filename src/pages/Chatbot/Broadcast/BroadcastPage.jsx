@@ -56,7 +56,7 @@ const BroadcastPage = () => {
   const fetchTemplates = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const url = `https://graph.facebook.com/v20.0/441785372346471/message_templates?fields=name,status,components,language,category`;
+      const url = `https://graph.facebook.com/v20.0/272281175968279/message_templates?fields=name,status,components,language,category`;
       const response = await axios.get(url, {
         headers: {
           'Authorization': `Bearer ${accessToken}`

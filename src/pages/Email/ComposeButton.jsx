@@ -141,7 +141,7 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
     let modifiedContent = content;
   
     // Regular expression to find links
-    const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
+    /*const regex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
   
     const trackingId = uuidv4();
 
@@ -160,11 +160,11 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
         });
 
         return match.replace(p2, trackingUrl);
-    });
+    });*/
   
-    if (isHtml) {
+    /*if (isHtml) {
       modifiedContent += trackingPixel;
-    }
+    }*/
   
     const emailData = {
       smtpUser: emailUser,
@@ -249,63 +249,6 @@ function ComposeButton({ contactemails, show, onClose, emailUser, provider, user
   };
 
 
-  // const handleSendEmail = async (e) => {
-  //   e.preventDefault();
-  //   const providerConfig = emailProviders[provider];
-  //   if (!providerConfig) {
-  //     setMessage('Invalid email provider');
-  //     return;
-  //   }
-  
-  //   const trackingId = uuidv4();
-  //   const trackingPixelUrl = `https://lxx1lctm-8000.inc1.devtunnels.ms/track_open/${trackingId}/`;
-  //   const trackingPixel = `${body}<img src="${trackingPixelUrl}" alt="" style="display:none;" />`;
-  
-  //   const emailData = {
-  //     smtpUser: emailUser,
-  //     smtpPass: localStorage.getItem(`${provider}_emailPass`),
-  //     to: to.replace(/\s/g, '').split(','),
-  //     subject: subject,
-  //     text: isHtml ? undefined : content,
-  //     html: isHtml ? content + trackingPixel : undefined,
-  //     host: providerConfig.host,
-  //     port: providerConfig.port,
-  //   };
-  
-  //   try {
-  //     const response = await axios.post('https://emailserver-lake.vercel.app/send-email', emailData,
-  //       {
-  //         raw: btoa(`To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n${trackingPixel}`),
-  //       },
-  //        {
-  //       headers: { 'Content-Type': 'application/json' }
-  //     });
-  //     setMessage('Email sent successfully');
-  
-  //     // Send tracking data to '/emails' endpoint
-  //     const trackingData = {
-  //       is_open: false,
-  //       time_open: null,
-  //       tracking_id: trackingId,
-  //       operator: OPERATOR_CHOICES[provider.toUpperCase()],
-  //       time: new Date().toISOString(),
-  //       subject: subject,
-  //       email_type: 'sent',
-  //       email_id : to
-  //     };
-  
-  //     await axiosInstance.post('https://lxx1lctm-8000.inc1.devtunnels.ms/emails/', trackingData, {
-  //       headers: { 'Content-Type': 'application/json' }
-  //     });
-  
-  //     setTimeout(() => {
-  //       onClose();
-  //     }, 2000);
-  //   } catch (error) {
-  //     setMessage('Error sending email: ' + (error.response?.data?.message || error.message));
-  //     console.error('Error sending email', error);
-  //   }
-  // };
 
   const fetchDrafts = async () => {
     try {
